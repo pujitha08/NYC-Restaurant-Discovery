@@ -74,6 +74,16 @@ python -m src.data.build_final
 
 # 7. Dietary-term frequency check
 python -m src.data.dietary_terms
+
+# 8. (optional) EDA figures and summary -> reports/eda/
+python -m src.data.eda
+
+# 9. Clean reviews and recompute low_evidence (see "Cleaning decisions")
+python -m src.data.clean_reviews
+
+# 10. Build per-restaurant documents and review chunks
+#     (downloads the all-MiniLM-L6-v2 tokenizer via huggingface_hub, installed with sentence-transformers)
+python -m src.data.build_docs
 ```
 
 Review download URL: https://mcauleylab.ucsd.edu/public_datasets/gdrive/googlelocal/review-New_York.json.gz
@@ -89,7 +99,35 @@ All scripts stream their input line by line. The borough scope comes from `BOROU
 | `restaurants_final.jsonl` | all `restaurants_meta` fields plus `num_text_reviews` (int) and `low_evidence` (bool, true if fewer than 5 text reviews) | 15,447 restaurants, 633 `low_evidence` |
 | `dietary_term_counts.csv` | `term_group`, `reviews`, `pct_reviews`, `restaurants`, `pct_restaurants`, `top_restaurants` | 11 term groups |
 
+| `reviews_clean.jsonl` | `review_id` (line number in `reviews_filtered.jsonl`), `gmap_id`, `user_id`, `rating`, `time` (null for placeholder dates), `text` (cleaned) | 2,156,429 reviews |
+| `restaurants_clean.jsonl` | `restaurants_final` fields with `num_clean_reviews` added and `low_evidence` recomputed on cleaned reviews | 15,447 restaurants, 826 `low_evidence` |
+| `restaurant_docs.jsonl` | `RestaurantDoc` in `src/schemas.py`: `gmap_id`, `name`, `borough`, `address`, `categories`, `avg_rating`, `num_clean_reviews`, `low_evidence`, `text` (all clean reviews, newline-joined) | 15,447 docs (68 with empty text) |
+| `review_chunks.jsonl` | `Chunk` in `src/schemas.py`: `chunk_id`, `gmap_id`, `text`, `review_ids`, `times` | 605,540 chunks |
+
 Filtering notes: "restaurant" means a category containing "restaurant" (excluding supply/equipment-type categories) or one of Cafe, Deli, Diner, Bistro, etc. Permanently closed restaurants (3,992 in scope) are dropped; temporarily closed ones are kept. 44 duplicate `gmap_id` records were collapsed. Reviews with null or empty text (2,261,223 for in-scope restaurants) are dropped. 25 restaurants have no text reviews.
+
+## Cleaning decisions
+
+`clean_reviews.py` turns the 2,759,578 filtered reviews into 2,156,429 clean ones (78.1%). Each review is counted at the first stage that removes it:
+
+| Stage | Rule | Removed |
+|---|---|---|
+| Exact duplicate rows | same `gmap_id`, `user_id`, `time` and text (copies from the source) | 65,158 |
+| Null fields | `rating` or `user_id` is null | 1,995 |
+| Too short | under 5 words after cleaning | 528,708 |
+| Template reviews | cleaned text (case-insensitive) occurs 20+ times statewide; all copies dropped (116 distinct texts) | 4,754 |
+| Duplicate in restaurant | same cleaned text of 5+ words in one restaurant; first kept | 2,534 |
+
+Text cleaning, applied before the length check:
+- Google-translated reviews keep only the translation. The "(Translated by Google)" marker and everything from "(Original)" onward are dropped (236,007 reviews were affected; most of them are then removed as too short).
+- Whitespace is collapsed to single spaces.
+- The placeholder date 1990-12-31 is set to null (232 kept reviews), since it is not a real review date.
+
+Cross-restaurant copies below 20 occurrences are kept: the same text can be a legitimate review of two different places.
+
+Restaurants: 826 now have fewer than 5 clean reviews and are `low_evidence` (633 before cleaning), including 68 with none. Those 68 get an empty-text doc but no chunks.
+
+Chunks hold up to 5 consecutive reviews of one restaurant, closed once they reach about 150 words. Every chunk is at most 256 tokens under the all-MiniLM-L6-v2 tokenizer (special tokens included); a review longer than that is split into several chunks. Median chunk: 115 words, 147 tokens.
 
 ## Week 1 findings
 

@@ -14,6 +14,14 @@ venv/
 data/*
 !data/.gitkeep
 
+# EDA outputs: keep EDA_SUMMARY.md and three key figures; the rest regenerates with
+# `python -m src.data.eda`
+reports/eda/*.png
+reports/eda/*.csv
+!reports/eda/words_per_restaurant.png
+!reports/eda/review_length.png
+!reports/eda/dietary_rate_by_category.png
+
 # Notebooks
 .ipynb_checkpoints/
 
