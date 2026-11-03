@@ -46,10 +46,19 @@ class Chunk:
 
 
 @dataclass
+class Snippet:
+    """A single review offered as evidence for a result."""
+
+    text: str
+    review_id: int  # line number in reviews_filtered.jsonl; also the `review_id` field of reviews_clean.jsonl
+    time: Optional[int] = None  # Unix ms; None for placeholder dates
+
+
+@dataclass
 class RetrievalResult:
     """A single ranked hit from a retrieval method."""
 
     gmap_id: str
     score: float
-    method: str  # e.g. "tfidf" or "embedding"
-    evidence_snippets: List[str] = field(default_factory=list)
+    method: str  # e.g. "tfidf", "tfidf_chunks" or "embedding"
+    evidence_snippets: List[Snippet] = field(default_factory=list)

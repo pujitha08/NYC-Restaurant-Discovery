@@ -17,6 +17,7 @@ from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from src.config import DATA_DIR
+from src.retrieval.evidence import ReviewStore, best_reviews
 from src.schemas import RetrievalResult
 
 PROCESSED = DATA_DIR / "processed"
@@ -57,6 +58,7 @@ class TfidfRetriever:
         self.matrix = matrix  # (n_restaurants, n_terms), rows L2-normalized, CSR
         self.meta = meta  # one dict per matrix row
         self.reviews_path = Path(reviews_path)
+        self.store = ReviewStore(reviews_path)
         self._boroughs = np.array([m["borough"].lower() for m in meta])
         self._low_evidence = np.array([m["low_evidence"] for m in meta])
 
@@ -120,28 +122,30 @@ class TfidfRetriever:
                 for i in top if scores[i] > 0]
 
     def snippets(self, row, q, n=N_SNIPPETS):
-        """The n cleaned reviews of restaurant `row` most similar to the query vector `q`."""
+        """The n reviews of restaurant `row` most similar to the query vector `q`, as Snippets."""
         m = self.meta[row]
         if not m["review_count"]:
             return []
-        with open(self.reviews_path, "rb") as f:
-            f.seek(m["review_offset"])
-            texts = [json.loads(f.readline())["text"] for _ in range(m["review_count"])]
-        sims = (self.vectorizer.transform(texts) @ q.T).toarray().ravel()
-        best = np.argsort(-sims)[:n]
-        return [texts[i] for i in best if sims[i] > 0]
+        return best_reviews(self.vectorizer, q, self.store.read_span(m["review_offset"], m["review_count"]), n)
 
     def info(self, gmap_id):
         return next(m for m in self.meta if m["gmap_id"] == gmap_id)
 
 
+def format_snippet(snippet, width=240):
+    date = time.strftime("%Y-%m", time.gmtime(snippet.time / 1000)) if snippet.time else "n/a"
+    text = snippet.text if width is None or len(snippet.text) <= width else snippet.text[:width] + "…"
+    return f"[review {snippet.review_id}, {date}] {text}"
+
+
 def print_results(retriever, results, width=240):
+    """Print ranked results; width=None prints snippets in full."""
     for rank, r in enumerate(results, 1):
         m = retriever.info(r.gmap_id)
         print(f"{rank:>2}. {m['name']} ({m['borough']})  score={r.score:.3f}  "
               f"reviews={m['num_clean_reviews']}  {m['address']}")
         for s in r.evidence_snippets:
-            print(f"      - {s[:width]}{'…' if len(s) > width else ''}")
+            print(f"      - {format_snippet(s, width)}")
 
 
 def main(argv=None):
