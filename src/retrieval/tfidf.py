@@ -17,7 +17,7 @@ from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from src.config import DATA_DIR
-from src.retrieval.evidence import ReviewStore, best_reviews
+from src.retrieval.evidence import ReviewStore, best_reviews, requirement_terms
 from src.schemas import RetrievalResult
 
 PROCESSED = DATA_DIR / "processed"
@@ -106,6 +106,7 @@ class TfidfRetriever:
         if q.nnz == 0:  # no query term is in the vocabulary
             return []
         scores = (self.matrix @ q.T).toarray().ravel()
+        requirements = requirement_terms(self.vectorizer, q)
 
         allowed = np.ones(len(scores), dtype=bool)
         if boroughs:
@@ -118,15 +119,16 @@ class TfidfRetriever:
         top = np.argpartition(-scores, k - 1)[:k]
         top = top[np.argsort(-scores[top])]
         return [RetrievalResult(gmap_id=self.meta[i]["gmap_id"], score=float(scores[i]), method=METHOD,
-                                evidence_snippets=self.snippets(i, q))
+                                evidence_snippets=self.snippets(i, q, requirements=requirements))
                 for i in top if scores[i] > 0]
 
-    def snippets(self, row, q, n=N_SNIPPETS):
+    def snippets(self, row, q, n=N_SNIPPETS, requirements=None):
         """The n reviews of restaurant `row` most similar to the query vector `q`, as Snippets."""
         m = self.meta[row]
         if not m["review_count"]:
             return []
-        return best_reviews(self.vectorizer, q, self.store.read_span(m["review_offset"], m["review_count"]), n)
+        return best_reviews(self.vectorizer, q, self.store.read_span(m["review_offset"], m["review_count"]),
+                            n, requirements)
 
     def info(self, gmap_id):
         return next(m for m in self.meta if m["gmap_id"] == gmap_id)

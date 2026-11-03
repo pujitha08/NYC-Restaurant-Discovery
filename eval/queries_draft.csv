@@ -1,0 +1,31 @@
+query_id,query,category,borough,paraphrase_group,notes
+Q01,vegan food,single_diet,,P01,Plain keyword; easy for BoW.
+Q02,plant-based restaurant,single_diet,,P01,[hard-bow] Same need as Q01 with no shared keyword; reviews say 'vegan'.
+Q03,gluten-free options,single_diet,,P02,Keyword query; easy.
+Q04,restaurants that serve no gluten,single_diet,,P02,[hard-bow] Negation phrasing; 'gluten' also matches 'contains gluten'.
+Q05,halal restaurant,single_diet,,P03,Keyword query; easy.
+Q06,where to find halal meat,single_diet,,P03,Intent paraphrase of Q05; 'meat' pulls in steakhouses.
+Q07,kosher restaurant,single_diet,,,Reviews also say 'kosher salt' and 'kosher-style deli' (noisy term).
+Q08,vegetarian friendly menu,single_diet,,,'Vegetarian' is a noisy term (Week 1 findings); mentions of one veggie dish are weak evidence.
+Q09,dairy-free options,single_diet,,P04,'Dairy-free' often appears as 'non-dairy milk' in coffee shops.
+Q10,good for lactose intolerant people,single_diet,,P04,[hard-bow] Paraphrase of Q09; reviews rarely say 'lactose intolerant'.
+Q11,pescatarian seafood restaurant,single_diet,,,'Pescatarian' is rare; seafood dominates the match.
+Q12,low carb keto friendly,single_diet,,,[hard-bow] Rare vocabulary; 'low carb' mentions are sparse.
+Q13,vegan but my friends eat meat,mixed_group,,P05,[hard-bow] Needs both a vegan menu and meat dishes; BoW rewards either side.
+Q14,"group dinner with a vegetarian, a halal eater and a gluten-free guest",mixed_group,,,[hard-bow] Three constraints at once; no single review covers all.
+Q15,place where vegans and meat lovers can both eat,mixed_group,,P05,[hard-bow] Paraphrase of Q13.
+Q16,kosher family dinner with kids,mixed_group,,,"Kosher plus a group need ('family', 'kids')."
+Q17,birthday dinner for 8 with vegan and gluten-free guests,mixed_group,,,[hard-bow] Party size and two diets; 'birthday' pulls in unrelated reviews.
+Q18,"date night, one of us is vegetarian and the other loves steak",mixed_group,,,[hard-bow] Needs a steak place with a real vegetarian entree.
+Q19,peanut allergy safe,allergy,,P06,Peanut dishes match as well as peanut safety (known false positive).
+Q20,restaurant careful about peanut allergies,allergy,,P06,[hard-bow] Paraphrase of Q19; 'careful' is the signal.
+Q21,celiac safe,allergy,,P07,Keyword query; negative reviews ('NOT celiac safe') also match.
+Q22,"safe for celiac disease, no cross contamination",allergy,,P07,[hard-bow] Requires cross-contact language and negation handling.
+Q23,nut-free bakery,allergy,,P08,Category plus requirement; 'nut' also matches 'Cro-nut'.
+Q24,bakery safe for tree nut allergy,allergy,,P08,[hard-bow] Paraphrase of Q23; reviews say 'nut free' not 'tree nut allergy'.
+Q25,shellfish allergy,allergy,,,"Sparse in reviews; mostly warnings, not accommodation."
+Q26,dedicated gluten-free fryer,allergy,,,"[hard-bow] Cross-contact detail ('separate fryer', 'own fryer') phrased many ways."
+Q27,vegan brunch,diet_plus_filter,Brooklyn,,Diet plus meal-type filter plus borough.
+Q28,gluten-free pizza,diet_plus_filter,Manhattan,,Diet plus dish category; 'pizza' dominates the TF-IDF match.
+Q29,halal chinese food,diet_plus_filter,Manhattan,,Diet plus cuisine; few matches expected.
+Q30,kosher bakery,diet_plus_filter,Brooklyn,,Diet plus venue category; 'bakery' dominates the match.

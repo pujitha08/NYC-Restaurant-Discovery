@@ -29,3 +29,6 @@ reports/eda/*.csv
 .DS_Store
 .idea/
 .vscode/
+
+# Judging pool: regenerate with `python -m eval.make_pool` (rebuilt once the semantic retriever exists)
+eval/pool.csv

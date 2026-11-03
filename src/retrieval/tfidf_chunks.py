@@ -19,7 +19,7 @@ import numpy as np
 from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from src.retrieval.evidence import REVIEWS_PATH, ReviewStore, best_reviews
+from src.retrieval.evidence import REVIEWS_PATH, ReviewStore, best_reviews, requirement_terms
 from src.retrieval.tfidf import DOCS_PATH, PROCESSED, VECTORIZER_PARAMS, print_results
 from src.schemas import RetrievalResult
 
@@ -170,6 +170,7 @@ class ChunkTfidfRetriever:
             return []
         scores, hit, owners = self._aggregate(q, self._mode(density_mode))
         scores = self._mask(scores, boroughs, include_low_evidence)
+        requirements = requirement_terms(self.vectorizer, q)
 
         k = min(top_k, len(scores))
         best = np.argpartition(-scores, k - 1)[:k]
@@ -181,10 +182,10 @@ class ChunkTfidfRetriever:
             start = np.searchsorted(owners, i, side="left")  # best chunk of restaurant i comes first
             chunk_ids = hit[start:start + TOP_CHUNKS]
             results.append(RetrievalResult(gmap_id=self.meta[i]["gmap_id"], score=float(scores[i]),
-                                           method=METHOD, evidence_snippets=self._evidence(chunk_ids, q)))
+                                           method=METHOD, evidence_snippets=self._evidence(chunk_ids, q, requirements)))
         return results
 
-    def _evidence(self, chunk_ids, q):
+    def _evidence(self, chunk_ids, q, requirements=None):
         """Split the chunks back into their reviews and return the 3 reviews that best match the query."""
         review_ids = []
         with open(self.chunks_path, "rb") as f:
@@ -192,7 +193,7 @@ class ChunkTfidfRetriever:
                 f.seek(self.offsets[cid])
                 review_ids += json.loads(f.readline())["review_ids"]
         unique_ids = list(dict.fromkeys(review_ids))  # a long review split over chunks appears once
-        return best_reviews(self.vectorizer, q, self.store.get(unique_ids))
+        return best_reviews(self.vectorizer, q, self.store.get(unique_ids), requirements=requirements)
 
     def info(self, gmap_id):
         return self.meta[self._by_id[gmap_id]]
