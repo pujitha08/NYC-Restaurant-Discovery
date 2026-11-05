@@ -9,6 +9,7 @@ dist/
 .venv/
 venv/
 .env
+.env.txt
 
 # Data (large; share via Drive/Hugging Face, not git)
 data/*
