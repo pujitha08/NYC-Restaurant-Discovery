@@ -1,0 +1,181 @@
+"""Lazy GroqCloud client and strict JSON handling; importing this module is offline."""
+
+import json
+import os
+
+
+# Documentation snapshot: https://console.groq.com/docs/structured-outputs (2026-11-05).
+# Account access is separate. Recheck these sets when choosing a new model.
+STRICT_MODELS = frozenset({"openai/gpt-oss-20b", "openai/gpt-oss-120b",
+                           "qwen/qwen3.8-27b", "meta-models/muse-spark-open"})
+SCHEMA_MODELS = STRICT_MODELS | {"openai/gpt-oss-safeguard-20b"}
+
+
+class LLMError(Exception):
+    """Safe public error metadata. Never attach a raw SDK exception or response."""
+
+    category = "llm"
+    default_code = "llm_error"
+
+    def __init__(self, message, *, code=None, http_status=None):
+        super().__init__(message)
+        self.code = code or self.default_code
+        self.http_status = http_status
+
+
+class LLMConfigurationError(LLMError, ValueError):
+    """Required local configuration is missing."""
+
+    category = "configuration"
+    default_code = "invalid_configuration"
+
+
+class LLMResponseError(LLMError, ValueError):
+    """The response is incomplete or violates the output contract."""
+
+    category = "response"
+    default_code = "invalid_response"
+
+
+class LLMAPIError(LLMError, RuntimeError):
+    """The SDK request failed; details are deliberately not echoed."""
+
+    category = "provider"
+    default_code = "provider_failure"
+
+    def __init__(self, message, *, category="provider", code=None, http_status=None):
+        super().__init__(message, code=code, http_status=http_status)
+        self.category = category
+
+
+def _safe_api_error(exc):
+    """Classify supported SDK exceptions without copying provider text or arbitrary codes."""
+    try:
+        import openai
+    except ImportError:
+        openai = None  # Offline fakes and demo also work without the SDK installed.
+
+    def is_sdk(name):
+        cls = getattr(openai, name, None)
+        return isinstance(cls, type) and isinstance(exc, cls)
+
+    status = getattr(exc, "status_code", None) if is_sdk("APIStatusError") else None
+    status = status if type(status) is int and 100 <= status <= 599 else None
+    if is_sdk("APITimeoutError") or isinstance(exc, TimeoutError):
+        category, code, message = "timeout", "request_timeout", "The model request timed out. Try again manually later."
+    elif is_sdk("APIConnectionError") or isinstance(exc, ConnectionError):
+        category, code, message = "network", "connection_failed", "Could not reach GroqCloud. Check connectivity."
+    elif is_sdk("AuthenticationError") or status == 401:
+        category, code, message = "authentication", "authentication_failed", "GroqCloud authentication failed. Check the local API key."
+    elif is_sdk("PermissionDeniedError") or status == 403:
+        category, code, message = "permission", "permission_denied", "GroqCloud denied access. Check account and model permissions."
+    elif is_sdk("RateLimitError") or status == 429:
+        category, code, message = "rate_limit", "rate_limited", "GroqCloud rate limit reached. Wait before a manual retry and check quota."
+    elif is_sdk("BadRequestError") or status == 400:
+        category = "bad_request"
+        # The SDK exposes parsed error codes. Only this known, non-sensitive value is retained.
+        if getattr(exc, "code", None) == "output_parse_failed":
+            code, message = "output_parse_failed", "GroqCloud could not produce a parsable structured response. No result is available."
+        else:
+            code, message = "bad_request", "GroqCloud rejected the request. Check the model and structured-output configuration."
+    else:
+        category, code, message = "provider", "provider_failure", "The model request failed. No result is available."
+    return LLMAPIError(message, category=category, code=code, http_status=status)
+
+
+def get_client():
+    """Create a GroqCloud-only SDK client on demand, never at import time."""
+    key = os.environ.get("GROQ_API_KEY", "").strip()
+    if (not key or key.lower() in {"your-groq-api-key-here", "replace_with_your_groq_key"}
+            or any(c.isspace() for c in key)):
+        raise LLMConfigurationError("Set a non-placeholder GROQ_API_KEY in local configuration.",
+                                    code="invalid_api_key_configuration")
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise LLMConfigurationError("Install the project's openai dependency.") from None
+    failure = None
+    try:
+        client = OpenAI(api_key=key, base_url="https://api.groq.com/openai/v1", timeout=30.0, max_retries=0)
+    except Exception:
+        failure = LLMConfigurationError("Could not initialize the GroqCloud SDK client. Check local SDK configuration.",
+                                        code="client_initialization_failed")
+    if failure is not None:
+        raise failure from None
+    return client
+
+
+def resolve_model(model=None):
+    value = model if model is not None else os.environ.get("GROQ_MODEL", "")
+    if not isinstance(value, str) or not value.strip() or value.strip() == "your-groq-model-id-here":
+        raise LLMConfigurationError("Set GROQ_MODEL or pass a nonempty model ID explicitly.", code="missing_model")
+    return value.strip()
+
+
+def exact_object(value, keys):
+    if not isinstance(value, dict) or set(value) != set(keys):
+        raise LLMResponseError("JSON object has missing or unexpected fields.")
+
+
+def nonempty_string(value):
+    if not isinstance(value, str) or not value.strip():
+        raise LLMResponseError("Expected a nonempty string.")
+
+
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise LLMResponseError("Duplicate JSON object key.")
+        result[key] = value
+    return result
+
+
+def _invalid_constant(value):
+    raise LLMResponseError("Nonstandard JSON numeric constant.")
+
+
+def request_json(*, client, model, name, schema, system, payload):
+    """Request schema-constrained JSON; injected clients must be offline fakes or GroqCloud clients.
+
+    SDK retries are disabled for clients we create. Injected clients own their policy.
+    """
+    model = resolve_model(model)
+    if model not in SCHEMA_MODELS:
+        raise LLMConfigurationError(
+            "Model is not in the documented Groq JSON Schema support list; review model support first.",
+            code="unsupported_model")
+    if client is None:
+        client = get_client()
+    failure = None
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "system", "content": system},
+                      {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
+            response_format={"type": "json_schema", "json_schema": {
+                "name": name, "strict": model in STRICT_MODELS, "schema": schema}},
+        )
+    except Exception as exc:
+        failure = _safe_api_error(exc)
+    # Raise outside the handler so the public exception has no sensitive __context__.
+    if failure is not None:
+        raise failure from None
+    try:
+        if len(response.choices) != 1:
+            raise LLMResponseError("Expected exactly one response choice.")
+        choice = response.choices[0]
+        if getattr(choice.message, "refusal", None) or choice.finish_reason == "content_filter":
+            raise LLMResponseError("The model declined to provide a structured response.", code="refused_response")
+        if choice.finish_reason != "stop":
+            raise LLMResponseError("The model response was incomplete.", code="incomplete_response")
+        content = choice.message.content
+        if not isinstance(content, str):
+            raise LLMResponseError("Expected JSON text.")
+        return json.loads(content, object_pairs_hook=_unique_object,
+                          parse_constant=_invalid_constant)
+    except LLMResponseError as exc:
+        failure = exc
+    except (AttributeError, TypeError, ValueError, IndexError):
+        failure = LLMResponseError("Invalid structured model response.")
+    raise failure from None
