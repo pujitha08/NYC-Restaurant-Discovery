@@ -32,8 +32,18 @@ up) the run stops; rerun later to resume.
 Providers (--provider, recorded in every record): groq (default; GROQ_API_KEY, GROQ_MODEL) or
 openrouter (OPENROUTER_API_KEY, OPENROUTER_MODEL, default openai/gpt-oss-120b; strict json_schema
 with provider.require_parameters, so only upstreams that support it are used; the upstream that
-served each call is logged as usage.served_by). This script (only) loads the git-ignored repo-root
+served each call is logged as usage.served_by). --openrouter-upstream SLUG pins OpenRouter to one
+upstream (provider.order=[SLUG], allow_fallbacks=false, still require_parameters); it is logged
+as openrouter_upstream in every record. This script (only) loads the git-ignored repo-root
 .env with python-dotenv, and refuses if .env is not git-ignored.
+
+Pacing defaults depend on the provider (PACING_DEFAULTS; --rpm/--tpm override): Groq 25 RPM and
+7,000 TPM (its gpt-oss base limits are 30 RPM / 8K TPM); OpenRouter 60 RPM and 100,000 TPM.
+OpenRouter documents no platform-level request cap for paid models: the practical limits are the
+credit balance, an in-flight spending budget, and the upstream's own limits (429s, retried with
+backoff). Calls are sequential (about 1 s each), so 60 RPM is roughly the natural pace, and
+100,000 tokens is also the per-call budget for batches. A billing error (HTTP 402, credits
+exhausted) stops the run.
 
 Run from the repo root:
     python -m eval.llm_judge --dry-run                       # build prompts, estimate tokens, no API call
@@ -54,7 +64,7 @@ import time
 from pathlib import Path
 
 from src.llm.groq_client import (PROVIDERS, REASONING_EFFORTS, STRICT_MODELS, LLMAPIError, LLMConfigurationError,
-                                 LLMResponseError, exact_object, nonempty_string, request_json,
+                                 LLMResponseError, exact_object, nonempty_string, normalize_upstream, request_json,
                                  supports_reasoning_effort)
 
 REPO = Path(__file__).resolve().parent.parent
@@ -73,6 +83,7 @@ BACKOFF_BASE, BACKOFF_CAP = 2.0, 120.0
 OUTPUT_TOKEN_ALLOWANCE = 400  # first restaurant of a call: reasoning + JSON
 OUTPUT_TOKENS_PER_EXTRA = 150  # each further restaurant in a batch
 SEED = 6165
+PACING_DEFAULTS = {"groq": {"rpm": 25, "tpm": 7000}, "openrouter": {"rpm": 60, "tpm": 100_000}}
 NO_EVIDENCE_REASON = "No reviews were shown for this restaurant, so there is no evidence for the need."
 USAGE_KEYS = ("prompt_tokens", "completion_tokens", "reasoning_tokens", "total_tokens")
 
@@ -258,9 +269,10 @@ class Judge:
     """Shared settings for single-pair and batch calls."""
 
     def __init__(self, *, client, model, rubric_text, max_retries, pacer, reasoning_effort=None, seed=SEED,
-                 provider="groq"):
+                 provider="groq", openrouter_upstream=None):
         self.client, self.model, self.max_retries, self.pacer, self.seed = client, model, max_retries, pacer, seed
         self.provider = provider
+        self.openrouter_upstream = normalize_upstream(openrouter_upstream) if openrouter_upstream else None
         self.reasoning_effort = reasoning_effort if reasoning_effort and supports_reasoning_effort(model) else None
         self.system, self.system_batch = system_prompt(rubric_text), system_prompt(rubric_text, batch=True)
         self.phash, self.phash_batch = prompt_hash(self.system), prompt_hash(self.system_batch, BATCH_SCHEMA)
@@ -274,7 +286,8 @@ class Judge:
             try:
                 data, usage = request_json(client=self.client, model=self.model, name=name, schema=schema,
                                            system=system, payload=payload, reasoning_effort=self.reasoning_effort,
-                                           return_usage=True, provider=self.provider)
+                                           return_usage=True, provider=self.provider,
+                                           openrouter_upstream=self.openrouter_upstream)
                 self.pacer.adjust(usage.get("total_tokens"))
                 return check(data), usage, attempt + 1, round(time.monotonic() - t, 2)
             except LLMAPIError as e:
@@ -290,7 +303,8 @@ class Judge:
 
     def _base(self, row, phash, batch_size, batch_id=None):
         return {"query_id": row["query_id"], "gmap_id": row["gmap_id"], "prompt_sha256": phash,
-                "provider": self.provider, "model": self.model, "reasoning_effort": self.reasoning_effort,
+                "provider": self.provider, "openrouter_upstream": self.openrouter_upstream,
+                "model": self.model, "reasoning_effort": self.reasoning_effort,
                 "batch_size": batch_size, "batch_id": batch_id}
 
     def _error(self, row, phash, batch_size, e, batch_id=None):
@@ -336,7 +350,7 @@ class Judge:
                 name="relevance_labels", schema=BATCH_SCHEMA, system=self.system_batch, payload=payload,
                 tokens=estimate_tokens(self.system_batch, payload, len(order)), check=lambda d: validate_batch(d, shown))
         except LLMAPIError as e:
-            if e.category in RETRYABLE:  # quota or connectivity: single calls would fail the same way
+            if e.category in RETRYABLE or e.category == "billing":  # single calls would fail the same way
                 return [(None, self._error(r, self.phash_batch, len(order), e, batch_id)) for r in rows]
             return [self.single(r, fallback=True) for r in rows]
         except LLMResponseError:
@@ -413,8 +427,12 @@ def main(argv=None, client=None):
     ap.add_argument("--batch-size", type=int, default=1, help="restaurants per call, same query (default 1)")
     ap.add_argument("--seed", type=int, default=SEED, help="seed for the order of restaurants within a batch")
     ap.add_argument("--limit", type=int, default=None, help="label at most this many new pairs")
-    ap.add_argument("--rpm", type=int, default=25, help="max requests per minute (default 25)")
-    ap.add_argument("--tpm", type=int, default=7000, help="max tokens per minute, and per call (default 7000)")
+    ap.add_argument("--rpm", type=int, default=None,
+                    help="max requests per minute (default: groq 25, openrouter 60)")
+    ap.add_argument("--tpm", type=int, default=None,
+                    help="max tokens per minute, and per call (default: groq 7000, openrouter 100000)")
+    ap.add_argument("--openrouter-upstream", default=None, metavar="SLUG",
+                    help="pin OpenRouter to one upstream provider slug (e.g. crusoe); no fallbacks")
     ap.add_argument("--max-retries", type=int, default=5)
     ap.add_argument("--max-rate-limited", type=int, default=3,
                     help="stop after this many consecutive calls fail on rate limits")
@@ -422,6 +440,19 @@ def main(argv=None, client=None):
     args = ap.parse_args(argv)
     if args.batch_size < 1:
         sys.exit("--batch-size must be at least 1")
+    for key, value in PACING_DEFAULTS[args.provider].items():
+        if getattr(args, key) is None:
+            setattr(args, key, value)
+    if args.openrouter_upstream is not None:
+        if args.provider != "openrouter":
+            sys.exit("--openrouter-upstream requires --provider openrouter")
+        try:
+            slug = normalize_upstream(args.openrouter_upstream)
+        except LLMConfigurationError as e:
+            sys.exit(f"{e} (code {e.code})")
+        if slug != args.openrouter_upstream:
+            print(f"Note: using OpenRouter provider slug {slug!r} (slugs are lowercase).")
+        args.openrouter_upstream = slug
 
     rubric = args.rubric.read_text(encoding="utf-8")
     rows = read_pool(args.pool, args.sample_key if args.sample else None)
@@ -473,7 +504,9 @@ def main(argv=None, client=None):
 
     judge = Judge(client=client, model=model, rubric_text=rubric, max_retries=args.max_retries,
                   pacer=Pacer(args.rpm, args.tpm), reasoning_effort=args.reasoning_effort, seed=args.seed,
-                  provider=args.provider)
+                  provider=args.provider, openrouter_upstream=args.openrouter_upstream)
+    print(f"Pacing: {args.rpm} requests/min, {args.tpm:,} tokens/min"
+          + (f"; OpenRouter upstream pinned to {args.openrouter_upstream!r} (no fallbacks)" if args.openrouter_upstream else ""))
     ok = failed = streak = 0
     for row in rule_rows:
         append_jsonl(args.out, judge.rule_record(row))
@@ -483,7 +516,7 @@ def main(argv=None, client=None):
             outcomes = judge.batch(unit) if len(unit) > 1 else [judge.single(unit[0])]
         except LLMConfigurationError as e:
             sys.exit(f"Configuration error, stopping: {e} (code {e.code})")
-        rate_limited = False
+        rate_limited = billing = False
         for record, error in outcomes:
             if record:
                 append_jsonl(args.out, record)
@@ -492,7 +525,11 @@ def main(argv=None, client=None):
                 append_jsonl(args.errors, error)
                 failed += 1
                 rate_limited |= error["category"] == "rate_limit"
+                billing |= error["category"] == "billing"
                 print(f"  failed {error['query_id']}/{error['gmap_id']}: {error['category']}/{error['code']}")
+        if billing:
+            print("Stopping: the provider requires payment or credits (billing/payment_required). Rerun after topping up.")
+            break
         streak = streak + 1 if rate_limited and not any(r for r, _ in outcomes) else 0
         if streak >= args.max_rate_limited:
             print(f"Stopping: {streak} consecutive calls hit rate limits (quota likely used up). Rerun later to resume.")

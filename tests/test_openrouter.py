@@ -65,6 +65,27 @@ class RequestTests(unittest.TestCase):
         call(client, model="mistralai/some-model", reasoning_effort="high")
         self.assertNotIn("reasoning", client.calls[0]["extra_body"])
 
+    def test_pinned_upstream_disables_fallbacks_and_keeps_require_parameters(self):
+        client = Client()
+        call(client, reasoning_effort="low", openrouter_upstream="Crusoe")
+        self.assertEqual(client.calls[0]["extra_body"], {
+            "provider": {"require_parameters": True, "order": ["crusoe"], "allow_fallbacks": False},
+            "reasoning": {"effort": "low"}})
+        client = Client()
+        call(client, openrouter_upstream="deepinfra/turbo")
+        self.assertEqual(client.calls[0]["extra_body"]["provider"]["order"], ["deepinfra/turbo"])
+
+    def test_invalid_or_misplaced_upstream(self):
+        for bad in ("", "two words", "crusoe;drop", "a/b/c", "x" * 70):
+            with self.subTest(bad=bad), self.assertRaises(LLMConfigurationError) as ctx:
+                call(Client(), openrouter_upstream=bad)
+            self.assertEqual(ctx.exception.code, "invalid_openrouter_upstream")
+        client = Client()
+        with self.assertRaises(LLMConfigurationError):
+            request_json(client=client, model="openai/gpt-oss-20b", name="t", schema=SCHEMA, system="s", payload={},
+                         openrouter_upstream="crusoe")  # Groq path
+        self.assertEqual(client.calls, [])
+
     def test_groq_allow_list_does_not_apply(self):
         self.assertEqual(call(Client(), model="vendor/not-on-groq"), {"x": 1})
 
@@ -186,6 +207,61 @@ class JudgeProviderTests(unittest.TestCase):
         self.assertEqual(by_gid["G1"]["usage"]["served_by"], "Groq")
         self.assertEqual(by_gid["G1"]["model"], "openai/gpt-oss-120b")
         self.assertEqual(by_gid["G2"]["source"], "rule")
+
+    def test_upstream_flag_is_sent_and_logged(self):
+        client = self.answer()
+        recs, out = self.run_judge(client, "--provider", "openrouter", "--openrouter-upstream", "Crusoe")
+        self.assertIn("slug 'crusoe'", out)
+        self.assertIn("upstream pinned to 'crusoe' (no fallbacks)", out)
+        self.assertEqual(client.calls[0]["extra_body"]["provider"],
+                         {"require_parameters": True, "order": ["crusoe"], "allow_fallbacks": False})
+        self.assertEqual({r["openrouter_upstream"] for r in recs}, {"crusoe"})  # rule record too
+
+    def test_upstream_requires_openrouter_and_a_valid_slug(self):
+        for extra in (["--openrouter-upstream", "crusoe"], ["--provider", "openrouter", "--openrouter-upstream", "no good"]):
+            with self.subTest(extra=extra), self.assertRaises(SystemExit):
+                self.run_judge(self.answer(), *extra)
+
+    def test_unpinned_records_log_none(self):
+        recs, _ = self.run_judge(self.answer(), "--provider", "openrouter")
+        self.assertEqual({r["openrouter_upstream"] for r in recs}, {None})
+
+    def test_pacing_defaults_depend_on_provider(self):
+        captured = []
+        real = llm_judge.Pacer
+
+        def spy(rpm, tpm, **kw):
+            captured.append((rpm, tpm))
+            return real(0, 0, **kw)  # do not actually pace in the test
+
+        out = self.dir / "labels.jsonl"
+        base = ["--pool", str(self.dir / "pool.csv"), "--errors", str(self.dir / "err.jsonl")]
+        with patch.object(llm_judge, "Pacer", side_effect=spy), redirect_stdout(io.StringIO()):
+            for k, extra in enumerate((["--provider", "openrouter"], ["--model", "openai/gpt-oss-20b"],
+                                       ["--provider", "openrouter", "--rpm", "5", "--tpm", "900"])):
+                llm_judge.main(base + ["--out", str(self.dir / f"labels{k}.jsonl"), *extra], client=self.answer())
+        self.assertEqual(captured, [(60, 100_000), (25, 7000), (5, 900)])
+        self.assertEqual(llm_judge.PACING_DEFAULTS["openrouter"], {"rpm": 60, "tpm": 100_000})
+
+    def test_billing_error_stops_the_run(self):
+        rows = []
+        for k in range(4):
+            r = {c: "" for c in make_pool.COLUMNS}
+            r.update(query_id="Q1", query="vegan", gmap_id=f"G{k}", name=f"R{k}", borough="Brooklyn",
+                     evidence_status="retrieved", evidence_review_ids=str(k), evidence_1=f"[review {k}, 2020-01] vegan")
+            rows.append(r)
+        with open(self.dir / "pool.csv", "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=make_pool.COLUMNS)
+            w.writeheader()
+            w.writerows(rows)
+        billing = LLMAPIError("credits", category="billing", code="payment_required", http_status=402)
+        with patch.object(llm_judge, "request_json", side_effect=billing) as fake:
+            with redirect_stdout(io.StringIO()) as out:
+                llm_judge.main(["--pool", str(self.dir / "pool.csv"), "--out", str(self.dir / "l.jsonl"),
+                                "--errors", str(self.dir / "e.jsonl"), "--provider", "openrouter",
+                                "--rpm", "0", "--tpm", "0"], client=self.answer())
+        self.assertEqual(fake.call_count, 1)  # not retried, and the run stops
+        self.assertIn("billing/payment_required", out.getvalue())
 
     def test_groq_is_the_default_and_recorded(self):
         client = self.answer()

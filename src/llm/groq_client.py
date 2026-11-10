@@ -161,6 +161,16 @@ def _usage(response):
 
 PROVIDERS = ("groq", "openrouter")
 _SERVED_BY = re.compile(r"^[\w .()/-]{1,64}$")
+_UPSTREAM_SLUG = re.compile(r"^[a-z0-9][a-z0-9._-]{0,63}(/[a-z0-9._-]{1,32})?$")
+
+
+def normalize_upstream(slug):
+    """An OpenRouter provider slug (e.g. "crusoe", "deepinfra/turbo"), lowercased; raises if malformed."""
+    value = slug.strip().lower() if isinstance(slug, str) else ""
+    if not _UPSTREAM_SLUG.match(value):
+        raise LLMConfigurationError("OpenRouter upstream must be a provider slug such as 'crusoe' or 'deepinfra/turbo'.",
+                                    code="invalid_openrouter_upstream")
+    return value
 
 
 def _served_by(response):
@@ -170,7 +180,7 @@ def _served_by(response):
 
 
 def request_json(*, client, model, name, schema, system, payload, reasoning_effort=None, return_usage=False,
-                 provider="groq"):
+                 provider="groq", openrouter_upstream=None):
     """Request schema-constrained JSON; injected clients must be offline fakes or clients for `provider`.
 
     SDK retries are disabled for clients we create. Injected clients own their policy.
@@ -183,9 +193,15 @@ def request_json(*, client, model, name, schema, system, payload, reasoning_effo
     strict json_schema and sends provider={"require_parameters": true}, so OpenRouter routes only
     to upstreams that support every request parameter; reasoning effort is sent as
     reasoning={"effort": ...}. Its usage dict also has "served_by" (the upstream, if reported).
+    openrouter_upstream (OpenRouter only): pin routing to that provider slug with
+    provider={"require_parameters": true, "order": [slug], "allow_fallbacks": false}; the request
+    fails rather than going to another upstream.
     """
     if provider not in PROVIDERS:
         raise LLMConfigurationError(f"provider must be one of {PROVIDERS}.", code="invalid_provider")
+    if openrouter_upstream is not None and provider != "openrouter":
+        raise LLMConfigurationError("openrouter_upstream applies only to provider='openrouter'.",
+                                    code="invalid_openrouter_upstream")
     if reasoning_effort is not None and reasoning_effort not in REASONING_EFFORTS:
         raise LLMConfigurationError(f"reasoning_effort must be one of {REASONING_EFFORTS}.",
                                     code="invalid_reasoning_effort")
@@ -194,6 +210,8 @@ def request_json(*, client, model, name, schema, system, payload, reasoning_effo
         model = openrouter_client.resolve_model(model)
         provider_name, strict = openrouter_client.PROVIDER_NAME, True
         body = {"provider": {"require_parameters": True}}
+        if openrouter_upstream is not None:
+            body["provider"].update(order=[normalize_upstream(openrouter_upstream)], allow_fallbacks=False)
         if reasoning_effort and supports_reasoning_effort(model):
             body["reasoning"] = {"effort": reasoning_effort}
         extra = {"extra_body": body}
