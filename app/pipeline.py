@@ -51,6 +51,15 @@ AUTO_SUMMARIES = 3  # summarize the top results automatically; the rest on reque
 DATA_THROUGH = "September 2021"
 
 STATUS_SUPPORTED, STATUS_MIXED, STATUS_INSUFFICIENT = "supported", "mixed", "insufficient evidence"
+# Allergy guard: for allergy-sensitive queries "supported" is never shown (reviews cannot establish allergy
+# suitability, and the summarizer's "support" can mean "on topic", e.g. two "avoid" warnings for Q20).
+STATUS_NEUTRAL = "Reviews discuss this — read each claim"
+ALLERGY_NOTE = ("Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, "
+                "preparation and cross-contact before ordering.")
+ALLERGY_TERMS = re.compile(
+    r"\b(allerg\w*|celiac\w*|coeliac\w*|anaphyla\w*|epi-?pens?|cross[- ]?(?:contact|contaminat\w*)"
+    r"|(?:tree[- ]?)?nut[- ]free|peanut[- ]free|gluten[- ]intoleran\w*)\b", re.IGNORECASE)
+LLM_REASONING_EFFORT = "low"  # parser and summarizer calls (gpt-oss); fewer reasoning tokens per search
 
 # docs/llm.md "Safe error contract and UI handling": category -> what the user is told.
 ERROR_MESSAGES = {
@@ -84,9 +93,11 @@ class Claim:
 
 @dataclass
 class Summary:
-    status: str  # supported / mixed / insufficient evidence
+    status: str  # supported / mixed / insufficient evidence / STATUS_NEUTRAL (allergy guard)
     claims: List[Claim]
     limitations: List[str]
+    guarded: bool = False  # allergy-sensitive query: no "supported" status and no support check marks
+    note: Optional[str] = None  # ALLERGY_NOTE when guarded
 
 
 @dataclass
@@ -122,6 +133,7 @@ class SearchOutcome:
     timings: Dict[str, float] = field(default_factory=dict)
     llm_calls: List[Dict] = field(default_factory=list)
     model: Optional[str] = None
+    allergy_sensitive: bool = False
 
 
 # ---- LLM client ---------------------------------------------------------------
@@ -205,7 +217,7 @@ def parse(query, client, model):
     if client is None:
         return None, None
     try:
-        return parse_query(query, client=client, model=model), None
+        return parse_query(query, client=client, model=model, reasoning_effort=LLM_REASONING_EFFORT), None
     except LLMError as e:
         return None, error_info(e)
 
@@ -225,28 +237,38 @@ def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_eviden
     return views, results
 
 
-def display_status(summary):
+def is_allergy_sensitive(query, parsed):
+    """True if parsed allergens are non-empty, parsing failed (parsed is None) or the text names allergy terms."""
+    return parsed is None or bool(parsed.allergens) or bool(ALLERGY_TERMS.search(query))
+
+
+def display_status(summary, guarded=False):
     if summary.status == "insufficient_evidence":
         return STATUS_INSUFFICIENT
     labels = {c.label for c in summary.claims}
     if "contradiction" in labels:
         return STATUS_MIXED
-    return STATUS_SUPPORTED if "support" in labels else STATUS_INSUFFICIENT
+    if "support" not in labels:
+        return STATUS_INSUFFICIENT
+    return STATUS_NEUTRAL if guarded else STATUS_SUPPORTED
 
 
-def to_summary(raw, view):
+def to_summary(raw, view, guarded=False):
     by_id = {e.review_id: e for e in view.excerpts}
     claims = [Claim(c.text, c.label, [by_id[i] for i in c.review_ids if i in by_id]) for c in raw.claims]
-    return Summary(display_status(raw), claims, list(raw.limitations))
+    return Summary(display_status(raw, guarded), claims, list(raw.limitations), guarded,
+                   ALLERGY_NOTE if guarded else None)
 
 
-def summarize(view, result, context, client, model):
+def summarize(view, result, context, client, model, guarded=False):
     """Fill view.summary or view.summary_error. Returns the error dict (or None)."""
     if not result.evidence_snippets:
-        view.summary = Summary(STATUS_INSUFFICIENT, [], ["No review excerpts were retrieved for this restaurant."])
+        view.summary = Summary(STATUS_INSUFFICIENT, [], ["No review excerpts were retrieved for this restaurant."],
+                               guarded, ALLERGY_NOTE if guarded else None)
         return None
     try:
-        view.summary = to_summary(summarize_evidence(context, result, client=client, model=model), view)
+        raw = summarize_evidence(context, result, client=client, model=model, reasoning_effort=LLM_REASONING_EFFORT)
+        view.summary = to_summary(raw, view, guarded)
         view.summary_error = None
         return None
     except LLMError as e:
@@ -278,6 +300,7 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
                                "Searching with your exact words instead.")
     # The summarizer needs the need: the parsed query, or the raw request when parsing failed.
     outcome.summary_context = outcome.parsed or ParsedQuery(preferences=[query])
+    outcome.allergy_sensitive = is_allergy_sensitive(query, outcome.parsed)
 
     outcome.boroughs, notice = borough_filter(borough_choice, outcome.parsed, query)
     if notice:
@@ -296,7 +319,7 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
         elif stop:
             view.summary_skipped = stop
         else:
-            error = summarize(view, result, outcome.summary_context, client, model)
+            error = summarize(view, result, outcome.summary_context, client, model, outcome.allergy_sensitive)
             if error and error["category"] in ("rate_limit", "configuration", "authentication", "billing"):
                 stop = error["message"]  # do not keep calling; show excerpts for the rest
     outcome.timings["summarize_s"] = round(time.monotonic() - t, 3)
@@ -316,7 +339,7 @@ def explain(outcome, raw, gmap_id, *, client, model, log_path=_DEFAULT_LOG):
     if client is None:
         view.summary_error = outcome.setup_error or error_info(LLMConfigurationError("not configured"))
     else:
-        summarize(view, raw[index], outcome.summary_context, client, model)
+        summarize(view, raw[index], outcome.summary_context, client, model, outcome.allergy_sensitive)
         view.summary_skipped = None
     elapsed = round(time.monotonic() - t, 3)
     calls = client.take() if isinstance(client, UsageRecorder) else []
@@ -332,7 +355,7 @@ def _summary_record(v):
                        for c in v.summary.claims] if v.summary else [],
             "limitations": v.summary.limitations if v.summary else [],
             "error": {k: v.summary_error[k] for k in ("category", "code")} if v.summary_error else None,
-            "skipped": v.summary_skipped}
+            "guarded": v.summary.guarded if v.summary else None, "skipped": v.summary_skipped}
 
 
 def log_record(kind, outcome, extra=None):
@@ -340,6 +363,7 @@ def log_record(kind, outcome, extra=None):
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "event": kind, "request_id": outcome.request_id, "query": outcome.query,
         "borough_choice": outcome.borough_choice, "boroughs": outcome.boroughs, "method": outcome.method,
+        "allergy_sensitive": outcome.allergy_sensitive, "reasoning_effort": LLM_REASONING_EFFORT,
         "parsed": asdict(outcome.parsed) if outcome.parsed else None,
         "model": outcome.model, "prompt_sha256": prompt_hashes(),
         "errors": {"setup": _code(outcome.setup_error), "parse": _code(outcome.parse_error),

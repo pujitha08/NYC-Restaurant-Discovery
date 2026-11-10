@@ -21,8 +21,11 @@ STATUS_TEXT = {
     pipeline.STATUS_SUPPORTED: "Evidence: **supported** by reviewers (not a safety guarantee)",
     pipeline.STATUS_MIXED: "Evidence: **mixed** ⚠ some reviews contradict others",
     pipeline.STATUS_INSUFFICIENT: "Evidence: **insufficient**: the reviews shown don't establish this",
+    pipeline.STATUS_NEUTRAL: f"Evidence: **{pipeline.STATUS_NEUTRAL}**",
 }
 CLAIM_MARK = {"support": "✓ Supports", "contradiction": "⚠ **Contradicts**", "uncertainty": "? Unclear"}
+# Allergy-sensitive queries: no check marks; a "support" claim is shown as a neutral reviewer report.
+GUARDED_CLAIM_MARK = {**CLAIM_MARK, "support": "• Reviewer report"}
 _MD_SPECIAL = re.compile(r"([\\`*_{}\[\]<>#|$~])")
 
 
@@ -53,8 +56,11 @@ def show_excerpts(view, title="Review excerpts"):
 def show_summary(view):
     s = view.summary
     st.markdown(STATUS_TEXT[s.status])
+    if s.note:
+        st.warning(s.note)
+    marks = GUARDED_CLAIM_MARK if s.guarded else CLAIM_MARK
     for c in s.claims:
-        st.markdown(f"{CLAIM_MARK.get(c.label, c.label)}: {md(c.text)}")
+        st.markdown(f"{marks.get(c.label, c.label)}: {md(c.text)}")
         for e in c.excerpts:
             st.markdown(f"> {md(e.text)}\n>\n> *Review from {e.date}*")
     for limitation in s.limitations:
