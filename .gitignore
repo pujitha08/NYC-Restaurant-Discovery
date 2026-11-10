@@ -37,3 +37,6 @@ eval/pool.csv
 eval/runs.csv
 # LLM judge failures (retried on the next run); eval/llm_labels.jsonl itself is kept
 eval/llm_judge_errors.jsonl
+
+# App request logs (queries, results, timings; never keys)
+logs/
