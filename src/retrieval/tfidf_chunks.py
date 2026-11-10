@@ -179,8 +179,12 @@ class ChunkTfidfRetriever:
         for i in best:
             if scores[i] <= 0:
                 continue
-            start = np.searchsorted(owners, i, side="left")  # best chunk of restaurant i comes first
-            chunk_ids = hit[start:start + TOP_CHUNKS]
+            # owners is sorted (see _aggregate), so restaurant i's chunks are hit[start:end], best first.
+            # Bound the slice to that run: a restaurant with fewer than TOP_CHUNKS matching chunks
+            # must not pick up the next restaurant's chunks as evidence.
+            start = np.searchsorted(owners, i, side="left")
+            end = np.searchsorted(owners, i, side="right")
+            chunk_ids = hit[start:min(start + TOP_CHUNKS, end)]
             results.append(RetrievalResult(gmap_id=self.meta[i]["gmap_id"], score=float(scores[i]),
                                            method=METHOD, evidence_snippets=self._evidence(chunk_ids, q, requirements)))
         return results

@@ -6,6 +6,7 @@ time. This module only picks and loads reviews; it has no say in how restaurants
 
 import json
 import re
+import weakref
 from pathlib import Path
 
 import numpy as np
@@ -76,9 +77,26 @@ class ReviewStore:
             return [json.loads(f.readline()) for _ in range(count)]
 
 
+# vectorizer -> (its vocabulary_ dict, feature names). get_feature_names_out() sorts the whole
+# vocabulary (1.3M terms, ~0.8 s) on every call, and one search calls query_terms up to 11 times.
+_FEATURE_NAMES = weakref.WeakKeyDictionary()
+
+
+def feature_names(vectorizer):
+    """vectorizer.get_feature_names_out(), computed once per fitted vocabulary.
+
+    Refitting replaces vocabulary_, which invalidates the cached names.
+    """
+    cached = _FEATURE_NAMES.get(vectorizer)
+    if cached is None or cached[0] is not vectorizer.vocabulary_:
+        cached = (vectorizer.vocabulary_, vectorizer.get_feature_names_out())
+        _FEATURE_NAMES[vectorizer] = cached
+    return cached[1]
+
+
 def query_terms(vectorizer, q):
     """Unigram features of query vector `q` as {term: idf}."""
-    names = vectorizer.get_feature_names_out()
+    names = feature_names(vectorizer)
     return {names[j]: float(vectorizer.idf_[j]) for j in q.indices if " " not in names[j]}
 
 
