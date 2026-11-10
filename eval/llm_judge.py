@@ -29,8 +29,11 @@ to --tpm tokens and --rpm requests per minute (estimates, corrected with the rep
 After --max-rate-limited consecutive failed calls on rate limits (e.g. the daily quota is used
 up) the run stops; rerun later to resume.
 
-Configuration: GROQ_API_KEY and GROQ_MODEL from the environment; this script (only) loads the
-git-ignored repo-root .env with python-dotenv, and refuses if .env is not git-ignored.
+Providers (--provider, recorded in every record): groq (default; GROQ_API_KEY, GROQ_MODEL) or
+openrouter (OPENROUTER_API_KEY, OPENROUTER_MODEL, default openai/gpt-oss-120b; strict json_schema
+with provider.require_parameters, so only upstreams that support it are used; the upstream that
+served each call is logged as usage.served_by). This script (only) loads the git-ignored repo-root
+.env with python-dotenv, and refuses if .env is not git-ignored.
 
 Run from the repo root:
     python -m eval.llm_judge --dry-run                       # build prompts, estimate tokens, no API call
@@ -50,8 +53,8 @@ import sys
 import time
 from pathlib import Path
 
-from src.llm.groq_client import (REASONING_EFFORTS, STRICT_MODELS, LLMAPIError, LLMConfigurationError,
-                                 LLMResponseError, exact_object, nonempty_string, request_json, resolve_model,
+from src.llm.groq_client import (PROVIDERS, REASONING_EFFORTS, STRICT_MODELS, LLMAPIError, LLMConfigurationError,
+                                 LLMResponseError, exact_object, nonempty_string, request_json,
                                  supports_reasoning_effort)
 
 REPO = Path(__file__).resolve().parent.parent
@@ -254,8 +257,10 @@ def per_pair(usage, n):
 class Judge:
     """Shared settings for single-pair and batch calls."""
 
-    def __init__(self, *, client, model, rubric_text, max_retries, pacer, reasoning_effort=None, seed=SEED):
+    def __init__(self, *, client, model, rubric_text, max_retries, pacer, reasoning_effort=None, seed=SEED,
+                 provider="groq"):
         self.client, self.model, self.max_retries, self.pacer, self.seed = client, model, max_retries, pacer, seed
+        self.provider = provider
         self.reasoning_effort = reasoning_effort if reasoning_effort and supports_reasoning_effort(model) else None
         self.system, self.system_batch = system_prompt(rubric_text), system_prompt(rubric_text, batch=True)
         self.phash, self.phash_batch = prompt_hash(self.system), prompt_hash(self.system_batch, BATCH_SCHEMA)
@@ -269,7 +274,7 @@ class Judge:
             try:
                 data, usage = request_json(client=self.client, model=self.model, name=name, schema=schema,
                                            system=system, payload=payload, reasoning_effort=self.reasoning_effort,
-                                           return_usage=True)
+                                           return_usage=True, provider=self.provider)
                 self.pacer.adjust(usage.get("total_tokens"))
                 return check(data), usage, attempt + 1, round(time.monotonic() - t, 2)
             except LLMAPIError as e:
@@ -285,7 +290,7 @@ class Judge:
 
     def _base(self, row, phash, batch_size, batch_id=None):
         return {"query_id": row["query_id"], "gmap_id": row["gmap_id"], "prompt_sha256": phash,
-                "model": self.model, "reasoning_effort": self.reasoning_effort,
+                "provider": self.provider, "model": self.model, "reasoning_effort": self.reasoning_effort,
                 "batch_size": batch_size, "batch_id": batch_id}
 
     def _error(self, row, phash, batch_size, e, batch_id=None):
@@ -401,7 +406,8 @@ def main(argv=None, client=None):
     ap.add_argument("--errors", type=Path, default=ERRORS_PATH)
     ap.add_argument("--sample", action="store_true", help="only the human-sample pairs (see --sample-key)")
     ap.add_argument("--sample-key", type=Path, default=SAMPLE_KEY_PATH)
-    ap.add_argument("--model", default=None, help="override GROQ_MODEL")
+    ap.add_argument("--provider", choices=PROVIDERS, default="groq", help="LLM provider (default groq)")
+    ap.add_argument("--model", default=None, help="override GROQ_MODEL / OPENROUTER_MODEL")
     ap.add_argument("--reasoning-effort", choices=REASONING_EFFORTS, default="low",
                     help="gpt-oss reasoning effort (default low; ignored by other models)")
     ap.add_argument("--batch-size", type=int, default=1, help="restaurants per call, same query (default 1)")
@@ -447,24 +453,27 @@ def main(argv=None, client=None):
 
     if client is None:
         ensure_env_ignored()
+    from src.llm import groq_client, openrouter_client
+    backend = openrouter_client if args.provider == "openrouter" else groq_client
     try:
-        model = resolve_model(args.model)
+        model = backend.resolve_model(args.model)
     except LLMConfigurationError as e:
         sys.exit(f"{e} (code {e.code})")
-    note = larger_model_note(model)
+    note = larger_model_note(model) if args.provider == "groq" else None  # the allow-list is Groq's
     if note:
         print(note)
     if not supports_reasoning_effort(model):
         print(f"Note: {model} does not take reasoning_effort; it is not sent.")
+    print(f"Provider: {args.provider}; model: {model}")
     if client is None and call_rows:
-        from src.llm.groq_client import get_client
         try:
-            client = get_client()
+            client = backend.get_client()
         except LLMConfigurationError as e:
             sys.exit(f"{e} (code {e.code})")
 
     judge = Judge(client=client, model=model, rubric_text=rubric, max_retries=args.max_retries,
-                  pacer=Pacer(args.rpm, args.tpm), reasoning_effort=args.reasoning_effort, seed=args.seed)
+                  pacer=Pacer(args.rpm, args.tpm), reasoning_effort=args.reasoning_effort, seed=args.seed,
+                  provider=args.provider)
     ok = failed = streak = 0
     for row in rule_rows:
         append_jsonl(args.out, judge.rule_record(row))
