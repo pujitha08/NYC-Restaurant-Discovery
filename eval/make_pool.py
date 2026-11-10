@@ -5,8 +5,8 @@ For every query in queries_draft.csv, take the top 10 restaurants of each system
 `label` column for the judges (see RUBRIC.md). The system that found a restaurant is not
 recorded in the file, so judges are not biased by it.
 
-Systems: doc TF-IDF, chunk TF-IDF, and a placeholder for the semantic retriever. A system
-that is not built yet is skipped; add it to `SYSTEMS` when it exists.
+Systems: doc TF-IDF, chunk TF-IDF and the semantic (embedding) retriever. The semantic
+system is skipped if its index has not been built (python -m src.retrieval.semantic --build).
 
 Run from the repo root:
     python -m eval.make_pool
@@ -36,9 +36,16 @@ def load_chunk_tfidf():
 
 
 def load_semantic():
-    """Placeholder for the sentence-embedding retriever; return an object with
-    search(query, boroughs, top_k) and info(gmap_id) once it exists."""
-    return None
+    """The sentence-embedding retriever, or None if its index has not been built.
+
+    A stale index (chunks/docs changed since the build) raises CacheMismatchError rather than
+    being skipped, so a pool is never built from mismatched embeddings.
+    """
+    from src.retrieval.semantic import SemanticRetriever  # needs sentence-transformers
+    if not SemanticRetriever.exists():
+        print("Semantic index not built; run: python -m src.retrieval.semantic --build")
+        return None
+    return SemanticRetriever.load()
 
 
 # Name -> loader. Snippets come from the first system that has any for a restaurant, so the

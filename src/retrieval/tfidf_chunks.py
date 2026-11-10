@@ -43,6 +43,50 @@ DENSITY_CAP = 0.2  # ceiling of the bonus in "capped" mode
 DENSITY_MODES = ("log", "none", "capped")
 
 
+# ---- chunk -> restaurant aggregation, shared with the semantic retriever ------------------
+def density_bonus(matching, density_mode):
+    """Bonus for `matching` (number of matching chunks per restaurant); see DENSITY_MODES."""
+    bonus = DENSITY_WEIGHT * np.log1p(matching)
+    if density_mode == "none":
+        return np.zeros_like(bonus)
+    if density_mode == "capped":
+        return np.minimum(bonus, DENSITY_CAP)
+    return bonus
+
+
+def aggregate_chunks(chunk_scores, owner, n_restaurants, density_mode, hit_threshold=0.0,
+                     density_threshold=DENSITY_THRESHOLD):
+    """Per-restaurant score = sum of its top-3 hit chunk scores + density bonus.
+
+    A hit is a chunk scoring above `hit_threshold`; the density bonus counts hits above
+    `density_threshold`. Returns (scores per restaurant, hit chunk ids sorted by
+    (restaurant, -score), the restaurant of each of those chunks).
+    """
+    hit = np.flatnonzero(chunk_scores > hit_threshold)
+    owners, scores = owner[hit], chunk_scores[hit]
+    order = np.lexsort((-scores, owners))  # by restaurant, then best chunk first
+    hit, owners, scores = hit[order], owners[order], scores[order]
+
+    first = np.searchsorted(owners, owners, side="left")  # start of each restaurant's run
+    rank_in_restaurant = np.arange(len(owners)) - first
+    top = rank_in_restaurant < TOP_CHUNKS
+    total = np.bincount(owners[top], weights=scores[top], minlength=n_restaurants)
+    matching = np.bincount(owners[scores > density_threshold], minlength=n_restaurants)
+    return total + density_bonus(matching, density_mode), hit, owners
+
+
+def restaurant_chunks(hit, owners, row, k=TOP_CHUNKS):
+    """The best (at most k) hit chunks of restaurant `row`, from aggregate_chunks' sorted output.
+
+    owners is sorted, so the restaurant's chunks are hit[start:end], best first. The slice is
+    bounded to that run: a restaurant with fewer than k hits must not pick up the next
+    restaurant's chunks as evidence.
+    """
+    start = np.searchsorted(owners, row, side="left")
+    end = np.searchsorted(owners, row, side="right")
+    return hit[start:min(start + k, end)]
+
+
 class ChunkTfidfRetriever:
     def __init__(self, vectorizer, matrix, offsets, owner, meta, chunks_path=CHUNKS_PATH,
                  reviews_path=REVIEWS_PATH, density_mode="log"):
@@ -117,27 +161,11 @@ class ChunkTfidfRetriever:
         Returns (scores per restaurant, chunk ids sorted by (restaurant, -score), their restaurants).
         """
         chunk_scores = (self.matrix @ q.T).toarray().ravel()
-        hit = np.flatnonzero(chunk_scores > 0)
-        owners, scores = self.owner[hit], chunk_scores[hit]
-        order = np.lexsort((-scores, owners))  # by restaurant, then best chunk first
-        hit, owners, scores = hit[order], owners[order], scores[order]
-
-        n = len(self.meta)
-        first = np.searchsorted(owners, owners, side="left")  # start of each restaurant's run
-        rank_in_restaurant = np.arange(len(owners)) - first
-        top = rank_in_restaurant < TOP_CHUNKS
-        total = np.bincount(owners[top], weights=scores[top], minlength=n)
-        matching = np.bincount(owners[scores > DENSITY_THRESHOLD], minlength=n)
-        return total + self._density_bonus(matching, density_mode), hit, owners
+        return aggregate_chunks(chunk_scores, self.owner, len(self.meta), density_mode)
 
     @staticmethod
     def _density_bonus(matching, density_mode):
-        bonus = DENSITY_WEIGHT * np.log1p(matching)
-        if density_mode == "none":
-            return np.zeros_like(bonus)
-        if density_mode == "capped":
-            return np.minimum(bonus, DENSITY_CAP)
-        return bonus
+        return density_bonus(matching, density_mode)
 
     def _mode(self, density_mode):
         density_mode = density_mode or self.density_mode
@@ -179,12 +207,7 @@ class ChunkTfidfRetriever:
         for i in best:
             if scores[i] <= 0:
                 continue
-            # owners is sorted (see _aggregate), so restaurant i's chunks are hit[start:end], best first.
-            # Bound the slice to that run: a restaurant with fewer than TOP_CHUNKS matching chunks
-            # must not pick up the next restaurant's chunks as evidence.
-            start = np.searchsorted(owners, i, side="left")
-            end = np.searchsorted(owners, i, side="right")
-            chunk_ids = hit[start:min(start + TOP_CHUNKS, end)]
+            chunk_ids = restaurant_chunks(hit, owners, i)
             results.append(RetrievalResult(gmap_id=self.meta[i]["gmap_id"], score=float(scores[i]),
                                            method=METHOD, evidence_snippets=self._evidence(chunk_ids, q, requirements)))
         return results
