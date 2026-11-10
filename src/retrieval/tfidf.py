@@ -61,6 +61,7 @@ class TfidfRetriever:
         self.store = ReviewStore(reviews_path)
         self._boroughs = np.array([m["borough"].lower() for m in meta])
         self._low_evidence = np.array([m["low_evidence"] for m in meta])
+        self._by_id = {m["gmap_id"]: i for i, m in enumerate(meta)}
 
     # ---- build / save / load -------------------------------------------
     @classmethod
@@ -130,8 +131,19 @@ class TfidfRetriever:
         return best_reviews(self.vectorizer, q, self.store.read_span(m["review_offset"], m["review_count"]),
                             n, requirements)
 
+    def evidence_for(self, gmap_id, query_terms, n=N_SNIPPETS):
+        """Up to n of this restaurant's reviews that contain the query's requirement terms, best match first.
+
+        Searches all of the restaurant's clean reviews (not only retrieved chunks), with the same
+        requirement_terms filter and best_reviews ranking as search(). Empty if none match.
+        """
+        q = self.vectorizer.transform([query_terms])
+        if q.nnz == 0 or gmap_id not in self._by_id:
+            return []
+        return self.snippets(self._by_id[gmap_id], q, n, requirement_terms(self.vectorizer, q))
+
     def info(self, gmap_id):
-        return next(m for m in self.meta if m["gmap_id"] == gmap_id)
+        return self.meta[self._by_id[gmap_id]]
 
 
 def format_snippet(snippet, width=240):

@@ -35,3 +35,5 @@ reports/eda/*.csv
 # (runs.csv names the system behind each result; keep it away from the judges)
 eval/pool.csv
 eval/runs.csv
+# LLM judge failures (retried on the next run); eval/llm_labels.jsonl itself is kept
+eval/llm_judge_errors.jsonl

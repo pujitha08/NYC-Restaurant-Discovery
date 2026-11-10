@@ -1,9 +1,10 @@
 # Relevance rubric
 
 Each row of `pool.csv` is one restaurant for one query. Fill the `label` column with 0, 1 or 2.
-Judge the restaurant for the **need in the query**, using the three snippets and, when they are not
-enough, the restaurant's reviews on Google Maps. Judge the evidence about the need, not how good the
-restaurant is overall.
+Judge the restaurant for the **need in the query**, using only the reviews shown in the row (up to six,
+in `evidence_1` to `evidence_6`). Do not look the restaurant up elsewhere: the LLM judge sees exactly
+the same reviews, and its labels are validated against yours. Judge the evidence about the need, not
+how good the restaurant is overall.
 
 | Label | Meaning |
 |---|---|
@@ -12,6 +13,11 @@ restaurant is overall.
 | 0 | Not relevant: no evidence for the need, or evidence against it. |
 
 ## General rules
+- **No evidence found = 0.** If none of the shown reviews says anything about the need, label 0 and write
+  "no evidence found" in the note. This includes rows with `evidence_status` = `none` (no reviews shown) and
+  rows whose reviews are all off-topic (for example, only about service or price). A review that names the
+  cuisine or a dish without saying anything about the diet or allergy ("best Chinese food" for a halal query,
+  "great lobster roll" for a shellfish-allergy query) is not evidence.
 - **Several needs** (mixed group, diet plus filter): 2 only if all parts are covered. One part covered = 1.
 - **Borough or category filters** in the query (`borough`, "bakery", "pizza"): a restaurant that fails the filter is 0.
 - **One passing mention of a dish** (a vegan side, one gluten-free pasta) is 1 at most. A menu section, a dedicated
