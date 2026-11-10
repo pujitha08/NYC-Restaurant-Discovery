@@ -135,18 +135,46 @@ def _invalid_constant(value):
     raise LLMResponseError("Nonstandard JSON numeric constant.")
 
 
-def request_json(*, client, model, name, schema, system, payload):
+REASONING_EFFORTS = ("low", "medium", "high")
+
+
+def supports_reasoning_effort(model):
+    """Groq documents reasoning_effort low/medium/high for the gpt-oss models."""
+    return model.startswith("openai/gpt-oss-")
+
+
+def _usage(response):
+    """Token counts from a response, as plain ints (None when not reported); nothing else is copied."""
+    usage = getattr(response, "usage", None)
+
+    def count(obj, name):
+        value = getattr(obj, name, None)
+        return value if type(value) is int and value >= 0 else None
+
+    details = getattr(usage, "completion_tokens_details", None)
+    return {"prompt_tokens": count(usage, "prompt_tokens"), "completion_tokens": count(usage, "completion_tokens"),
+            "reasoning_tokens": count(details, "reasoning_tokens"), "total_tokens": count(usage, "total_tokens")}
+
+
+def request_json(*, client, model, name, schema, system, payload, reasoning_effort=None, return_usage=False):
     """Request schema-constrained JSON; injected clients must be offline fakes or GroqCloud clients.
 
     SDK retries are disabled for clients we create. Injected clients own their policy.
+    reasoning_effort ("low", "medium", "high") is sent only for models that support it (gpt-oss);
+    other models ignore it. With return_usage=True, returns (parsed JSON, usage dict with
+    prompt/completion/reasoning/total token counts, None where the provider does not report them).
     """
     model = resolve_model(model)
     if model not in SCHEMA_MODELS:
         raise LLMConfigurationError(
             "Model is not in the documented Groq JSON Schema support list; review model support first.",
             code="unsupported_model")
+    if reasoning_effort is not None and reasoning_effort not in REASONING_EFFORTS:
+        raise LLMConfigurationError(f"reasoning_effort must be one of {REASONING_EFFORTS}.",
+                                    code="invalid_reasoning_effort")
     if client is None:
         client = get_client()
+    extra = {"reasoning_effort": reasoning_effort} if reasoning_effort and supports_reasoning_effort(model) else {}
     failure = None
     try:
         response = client.chat.completions.create(
@@ -155,6 +183,7 @@ def request_json(*, client, model, name, schema, system, payload):
                       {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
             response_format={"type": "json_schema", "json_schema": {
                 "name": name, "strict": model in STRICT_MODELS, "schema": schema}},
+            **extra,
         )
     except Exception as exc:
         failure = _safe_api_error(exc)
@@ -172,8 +201,9 @@ def request_json(*, client, model, name, schema, system, payload):
         content = choice.message.content
         if not isinstance(content, str):
             raise LLMResponseError("Expected JSON text.")
-        return json.loads(content, object_pairs_hook=_unique_object,
+        data = json.loads(content, object_pairs_hook=_unique_object,
                           parse_constant=_invalid_constant)
+        return (data, _usage(response)) if return_usage else data
     except LLMResponseError as exc:
         failure = exc
     except (AttributeError, TypeError, ValueError, IndexError):
