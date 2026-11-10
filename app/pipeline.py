@@ -32,7 +32,7 @@ from types import SimpleNamespace
 from eval.make_pool import RETRIEVERS, SYSTEMS
 from src.config import BOROUGHS
 from src.llm import evidence_summarizer, query_parser
-from src.llm.evidence_summarizer import summarize_evidence
+from src.llm.evidence_summarizer import MAX_USER_REQUEST, summarize_evidence
 from src.llm.groq_client import LLMConfigurationError, LLMError, _usage, resolve_model
 from src.llm.query_parser import parse_query
 from src.schemas import ParsedQuery, RetrievalResult
@@ -262,14 +262,15 @@ def to_summary(raw, view, guarded=False):
                    ALLERGY_NOTE if guarded else None)
 
 
-def summarize(view, result, context, client, model, guarded=False):
+def summarize(view, result, context, client, model, guarded=False, user_request=None):
     """Fill view.summary or view.summary_error. Returns the error dict (or None)."""
     if not result.evidence_snippets:
         view.summary = Summary(STATUS_INSUFFICIENT, [], ["No review excerpts were retrieved for this restaurant."],
                                guarded, ALLERGY_NOTE if guarded else None)
         return None
     try:
-        raw = summarize_evidence(context, result, client=client, model=model, reasoning_effort=LLM_REASONING_EFFORT)
+        raw = summarize_evidence(context, result, client=client, model=model, reasoning_effort=LLM_REASONING_EFFORT,
+                                 user_request=user_request)
         view.summary = to_summary(raw, view, guarded)
         view.summary_error = None
         return None
@@ -321,7 +322,8 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
         elif stop:
             view.summary_skipped = stop
         else:
-            error = summarize(view, result, outcome.summary_context, client, model, outcome.allergy_sensitive)
+            error = summarize(view, result, outcome.summary_context, client, model, outcome.allergy_sensitive,
+                              outcome.query[:MAX_USER_REQUEST])
             if error and error["category"] in ("rate_limit", "configuration", "authentication", "billing"):
                 stop = error["message"]  # do not keep calling; show excerpts for the rest
     outcome.timings["summarize_s"] = round(time.monotonic() - t, 3)
@@ -341,7 +343,8 @@ def explain(outcome, raw, gmap_id, *, client, model, log_path=_DEFAULT_LOG):
     if client is None:
         view.summary_error = outcome.setup_error or error_info(LLMConfigurationError("not configured"))
     else:
-        summarize(view, raw[index], outcome.summary_context, client, model, outcome.allergy_sensitive)
+        summarize(view, raw[index], outcome.summary_context, client, model, outcome.allergy_sensitive,
+                  outcome.query[:MAX_USER_REQUEST])
         view.summary_skipped = None
     elapsed = round(time.monotonic() - t, 3)
     calls = client.take() if isinstance(client, UsageRecorder) else []
