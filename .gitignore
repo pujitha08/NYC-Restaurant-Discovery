@@ -31,5 +31,7 @@ reports/eda/*.csv
 .idea/
 .vscode/
 
-# Judging pool: regenerate with `python -m eval.make_pool` (rebuilt once the semantic retriever exists)
+# Judging pool and per-system runs: regenerate with `python -m eval.make_pool`
+# (runs.csv names the system behind each result; keep it away from the judges)
 eval/pool.csv
+eval/runs.csv

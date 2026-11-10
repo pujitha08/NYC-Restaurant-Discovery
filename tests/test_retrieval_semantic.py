@@ -252,7 +252,10 @@ class MakePoolWiringTests(unittest.TestCase):
         from eval import make_pool
         with patch.object(SemanticRetriever, "exists", return_value=False):
             self.assertIsNone(make_pool.load_semantic())
-        self.assertIs(make_pool.SYSTEMS["semantic"], make_pool.load_semantic)
+        self.assertIs(make_pool.RETRIEVERS["semantic"], make_pool.load_semantic)
+        semantic_systems = {name: kwargs for name, rname, kwargs in make_pool.SYSTEMS if rname == "semantic"}
+        self.assertEqual(semantic_systems, {"semantic_log": {"density_mode": "log"},
+                                            "semantic_capped": {"density_mode": "capped"}})
 
 
 if __name__ == "__main__":
