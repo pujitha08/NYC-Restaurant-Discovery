@@ -22,6 +22,7 @@ STATUS_TEXT = {
     pipeline.STATUS_MIXED: "Evidence: **mixed** ⚠ some reviews contradict others",
     pipeline.STATUS_INSUFFICIENT: "Evidence: **insufficient**: the reviews shown don't establish this",
     pipeline.STATUS_NEUTRAL: f"Evidence: **{pipeline.STATUS_NEUTRAL}**",
+    pipeline.STATUS_PROBLEMS: f"⚠ Evidence: **{pipeline.STATUS_PROBLEMS}**: reviewers warn about this need",
 }
 CLAIM_MARK = {"support": "✓ Supports", "contradiction": "⚠ **Contradicts**", "uncertainty": "? Unclear"}
 # Allergy-sensitive queries: no check marks; a "support" claim is shown as a neutral reviewer report.
@@ -55,7 +56,10 @@ def show_excerpts(view, title="Review excerpts"):
 
 def show_summary(view):
     s = view.summary
-    st.markdown(STATUS_TEXT[s.status])
+    if s.status == pipeline.STATUS_PROBLEMS:
+        st.warning(STATUS_TEXT[s.status])  # warning style: reviewers report problems
+    else:
+        st.markdown(STATUS_TEXT[s.status])
     if s.note:
         st.warning(s.note)
     marks = GUARDED_CLAIM_MARK if s.guarded else CLAIM_MARK

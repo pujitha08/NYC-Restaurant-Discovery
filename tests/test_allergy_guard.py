@@ -38,6 +38,13 @@ MISSION_SUMMARY = {"status": "evidence_found", "claims": [
     "limitations": ["The excerpts do not mention peanuts specifically; conclusions are based on general allergy warnings."]}
 SUPPORT_ONLY = {"status": "evidence_found", "claims": [
     {"text": "One reviewer reported vegan options.", "review_ids": [1576831], "label": "support"}], "limitations": []}
+# Mission as labeled by the summarizer with the user's need (fix/summarizer-user-need live run): two contradictions.
+MISSION_CONTRADICTIONS = {"status": "evidence_found", "claims": [
+    {"text": "One reviewer reported that the restaurant staff were inattentive to food allergies, advising people "
+             "with allergies to avoid the venue.", "review_ids": [1576831], "label": "contradiction"},
+    {"text": "Another reviewer described a similar experience, noting that the waitress offered no reassurance after "
+             "being told about a nut allergy and recommending the restaurant be avoided.",
+     "review_ids": [1576786], "label": "contradiction"}], "limitations": []}
 MIXED = {"status": "evidence_found", "claims": [
     {"text": "One reviewer reported accommodation.", "review_ids": [1576831], "label": "support"},
     {"text": "Another reviewer reported a reaction.", "review_ids": [1576786], "label": "contradiction"}], "limitations": []}
@@ -77,7 +84,9 @@ def parsed(**kw):
     return {**base, **kw}
 
 
-class GuardTests(unittest.TestCase):
+class SearchCase(unittest.TestCase):
+    """Shared setup: run one search over the Mission fixture with scripted parser/summarizer answers."""
+
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
@@ -89,6 +98,8 @@ class GuardTests(unittest.TestCase):
                                      client=pipeline.UsageRecorder(self.client), model=MODEL, log_path=self.log)
         return out
 
+
+class GuardTests(SearchCase):
     def test_mission_regression_is_never_supported(self):
         out = self.search(Q20, parsed(allergens=["peanut"]), MISSION_SUMMARY)  # parsed exactly as in the live run
         self.assertTrue(out.allergy_sensitive)
@@ -143,6 +154,36 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(pipeline.is_allergy_sensitive("Coeliac friendly", ParsedQuery()))
 
 
+class ProblemsStatusTests(SearchCase):
+    def test_mission_contradiction_only_reports_problems(self):
+        out = self.search(Q20, parsed(allergens=["peanut"]), MISSION_CONTRADICTIONS)
+        s = out.results[0].summary
+        self.assertEqual(s.status, pipeline.STATUS_PROBLEMS)
+        self.assertEqual(s.status, "Reviews report problems")
+        self.assertEqual(s.note, pipeline.ALLERGY_NOTE)  # the guard note stays
+        self.assertEqual([c.label for c in s.claims], ["contradiction", "contradiction"])
+
+    def test_problems_without_the_guard(self):
+        out = self.search("vegan options for a group", parsed(dietary_restrictions=["vegan"]), MISSION_CONTRADICTIONS)
+        self.assertFalse(out.allergy_sensitive)
+        self.assertEqual(out.results[0].summary.status, pipeline.STATUS_PROBLEMS)
+
+    def test_status_rules(self):
+        s = lambda *labels: SimpleNamespace(status="evidence_found", claims=[SimpleNamespace(label=l) for l in labels])
+        for labels, guarded, want in [
+            (("contradiction",), False, pipeline.STATUS_PROBLEMS),
+            (("contradiction", "contradiction"), True, pipeline.STATUS_PROBLEMS),
+            (("contradiction", "uncertainty"), False, pipeline.STATUS_PROBLEMS),  # no support claim
+            (("support", "contradiction"), False, pipeline.STATUS_MIXED),
+            (("support", "contradiction"), True, pipeline.STATUS_MIXED),
+            (("support",), False, pipeline.STATUS_SUPPORTED),
+            (("support",), True, pipeline.STATUS_NEUTRAL),
+            (("uncertainty",), False, pipeline.STATUS_INSUFFICIENT),
+        ]:
+            with self.subTest(labels=labels, guarded=guarded):
+                self.assertEqual(pipeline.display_status(s(*labels), guarded), want)
+
+
 class ReasoningEffortTests(unittest.TestCase):
     def test_app_sends_low_effort_for_parser_and_summarizer(self):
         client = Client(parsed(allergens=["peanut"]), MISSION_SUMMARY)
@@ -172,6 +213,30 @@ except ImportError:
 
 @unittest.skipIf(AppTest is None, "streamlit not installed")
 class GuardUiTests(unittest.TestCase):
+    def run_app(self, summary):
+        st.cache_resource.clear()
+        self.addCleanup(st.cache_resource.clear)
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        llm = (pipeline.UsageRecorder(Client(parsed(allergens=["peanut"]), summary)), MODEL, None)
+        with patch.object(pipeline, "LOG_PATH", Path(tmp.name) / "log.jsonl"), \
+                patch.object(pipeline, "load_retriever", lambda name: MissionRetriever()), \
+                patch.object(pipeline, "make_llm_client", lambda: llm):
+            at = AppTest.from_file(str(Path(pipeline.REPO) / "app" / "streamlit_app.py"), default_timeout=30)
+            at.run()
+            at.text_input[0].input(Q20)
+            at.button[0].click()
+            at.run()
+        self.assertFalse(at.exception, at.exception)
+        return at
+
+    def test_problems_status_uses_warning_style(self):
+        at = self.run_app(MISSION_CONTRADICTIONS)
+        warnings = [w.value for w in at.warning]
+        self.assertTrue(any("Reviews report problems" in w for w in warnings), warnings)
+        self.assertNotIn("Reviews report problems", " ".join(m.value for m in at.markdown))  # not plain text
+        self.assertIn("⚠ **Contradicts**", " ".join(m.value for m in at.markdown))
+
     def test_mission_shows_no_check_marks_or_supported(self):
         st.cache_resource.clear()
         self.addCleanup(st.cache_resource.clear)

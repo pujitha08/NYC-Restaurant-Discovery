@@ -54,6 +54,8 @@ STATUS_SUPPORTED, STATUS_MIXED, STATUS_INSUFFICIENT = "supported", "mixed", "ins
 # Allergy guard: for allergy-sensitive queries "supported" is never shown (reviews cannot establish allergy
 # suitability, and the summarizer's "support" can mean "on topic", e.g. two "avoid" warnings for Q20).
 STATUS_NEUTRAL = "Reviews discuss this — read each claim"
+# Contradiction claims and no support claim (uncertainty claims may be present): reviewers report problems.
+STATUS_PROBLEMS = "Reviews report problems"
 ALLERGY_NOTE = ("Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, "
                 "preparation and cross-contact before ordering.")
 ALLERGY_TERMS = re.compile(
@@ -93,7 +95,7 @@ class Claim:
 
 @dataclass
 class Summary:
-    status: str  # supported / mixed / insufficient evidence / STATUS_NEUTRAL (allergy guard)
+    status: str  # supported / mixed / STATUS_PROBLEMS / insufficient evidence / STATUS_NEUTRAL (allergy guard)
     claims: List[Claim]
     limitations: List[str]
     guarded: bool = False  # allergy-sensitive query: no "supported" status and no support check marks
@@ -247,7 +249,7 @@ def display_status(summary, guarded=False):
         return STATUS_INSUFFICIENT
     labels = {c.label for c in summary.claims}
     if "contradiction" in labels:
-        return STATUS_MIXED
+        return STATUS_MIXED if "support" in labels else STATUS_PROBLEMS
     if "support" not in labels:
         return STATUS_INSUFFICIENT
     return STATUS_NEUTRAL if guarded else STATUS_SUPPORTED
