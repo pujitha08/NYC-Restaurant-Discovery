@@ -1,4 +1,4 @@
-# Retrieval failure examples (smoke queries, before judging)
+# Retrieval and app failure examples (smoke queries, before judging)
 
 Found while comparing doc TF-IDF (`src/retrieval/tfidf.py`), chunk TF-IDF (`src/retrieval/tfidf_chunks.py`, density `log`)
 and semantic retrieval (`src/retrieval/semantic.py`, all-MiniLM-L6-v2, density `log`) on five smoke queries,
@@ -29,6 +29,7 @@ system returned them (excerpts are cut to about 60 words, `…` marks a cut). Re
 | 6 | Q22: Lilli and Loo, conflicting evidence differing by system | all three | Mixed evidence; snippet choice drives the label |
 | 7 | Q29: ranked on "chinese food", no snippet | chunk and doc TF-IDF | Ranking and evidence filter disagree |
 | 8 | Semantic always returns at least one snippet, even off-topic | semantic | Off-topic evidence shown to judges |
+| 9 | Q20 app: Mission's allergy warnings summarized as "supported" | app (parser + evidence summarizer) | Unjustified allergy-safety signal (before fix) |
 
 ---
 
@@ -221,6 +222,57 @@ only by semantic, these are the snippets judges will see.
 
 **Rubric.** "Judge the evidence about the need, not how good the restaurant is overall." An off-topic snippet is not
 evidence; judges should treat it like an empty snippet and check the reviews.
+
+## 9. Q20 app: Mission's allergy warnings summarized as "supported" (before fix)
+
+**Query:** Q20 "restaurant careful about peanut allergies", borough "Both". **System:** the Streamlit app pipeline
+(`app/pipeline.py`, commit 6e9130d): `semantic_capped` retrieval, then the GroqCloud query parser and evidence summarizer
+(`openai/gpt-oss-120b`; parser prompt sha256 `0b012c779582…`, summarizer `e8cd25bed1c1…`). Live run 2026-11-10 23:44 UTC.
+**Rank:** 2.
+
+**Parsed query** (the summarizer receives only this, not the user's words):
+
+```json
+{"location": null, "dietary_restrictions": [], "allergens": ["peanut"], "group_needs": [], "preferences": []}
+```
+
+"careful about" is gone: the parser kept the allergen but not the need (accommodation), the same loss reported in
+`docs/llm_challenge_results.md` (Q1, sesame).
+
+**Mission** (396 reviews). The two retrieved reviews:
+
+> [review 1576831, 2017-08] If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …
+
+> [review 1576786, 2017-07] If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …
+
+**Summary claims, as labeled by the summarizer:**
+
+| Label | Claim | Cites |
+|---|---|---|
+| support | One reviewer reported that the restaurant's staff were inattentive to food allergies, advising those with allergies to avoid the venue. | 1576831 |
+| support | Another reviewer warned that the restaurant is not suitable for diners with food allergies, noting a lack of concern from staff despite being informed of nut and wheat allergies. | 1576786 |
+| uncertainty | Both reviewers mentioned nut allergies but did not specifically reference peanuts, leaving uncertainty about the restaurant's safety for peanut‑allergic patrons. | 1576831, 1576786 |
+
+Limitations returned: "The excerpts do not mention peanuts specifically; conclusions are based on general allergy
+warnings." · "Only two reviews are provided, which may not reflect broader experiences or current policies." · plus the
+fixed "do not establish allergen safety" limitation.
+
+**Status shown in the app:** "Evidence: **supported** by reviewers (not a safety guarantee)", with both warnings marked
+"✓ Supports". The app derives "supported" from at least one `support` claim and no `contradiction`.
+
+**Why it is a failure.** The paraphrases are faithful: each claim correctly says the reviewer warned against the
+restaurant. The labels are wrong for the user's need. With only `allergens: ["peanut"]` as context, the summarizer
+appears to use `support` to mean "supports a statement about peanut/nut allergy" rather than "supports that this
+restaurant meets the need". Warnings and refusals should be `contradiction`. The app then turns two warnings into a green
+"supported" status and ✓ marks. Under the proposal's LLM evaluation, this is an **unjustified allergy-safety signal**:
+the interface signals suitability for an allergy that the cited evidence argues against. The fixed limitation ("do not
+establish allergen safety") is shown, but it does not offset a "supported" headline over two "avoid" reviews.
+
+**Rubric.** For retrieval relevance, *Allergy queries*: "Negative or unrelated mention = 0"; both reviews are warnings, so
+Mission is 0 for Q20. For the summary, a warning or refusal relative to the need is a contradiction, never support.
+
+**Status:** recorded before the fix. Follow-ups: an app guard that never shows "supported" for allergy queries; low
+reasoning effort; and a summarizer change, so that `support` means "supports the user's stated need".
 
 ---
 

@@ -40,15 +40,16 @@ Retain ambiguity rather than resolving it by guessing. Do not assert allergen sa
 """
 
 
-def parse_query(text, *, client=None, model=None) -> ParsedQuery:
+def parse_query(text, *, client=None, model=None, reasoning_effort=None) -> ParsedQuery:
     """Parse nonblank text, strictly validate JSON, and return the shared dataclass.
 
     Semantic extraction is model-dependent; validation checks shape, not meaning.
+    reasoning_effort (optional) is passed through to request_json; the prompt is unchanged.
     """
     if not isinstance(text, str) or not text.strip():
         raise ValueError("Query must be a nonempty string.")
     data = request_json(client=client, model=model, name="parsed_query", schema=QUERY_SCHEMA,
-                        system=SYSTEM, payload={"query_text": text})
+                        system=SYSTEM, payload={"query_text": text}, reasoning_effort=reasoning_effort)
     exact_object(data, ["location", *LIST_FIELDS])
     if data["location"] is not None:
         nonempty_string(data["location"])

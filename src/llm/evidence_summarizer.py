@@ -59,8 +59,11 @@ otherwise use evidence_found with at least one cited claim. List limitations.
 """
 
 
-def summarize_evidence(query, result, *, client=None, model=None) -> EvidenceSummary:
-    """Return cited claims; citation membership does not prove semantic truth."""
+def summarize_evidence(query, result, *, client=None, model=None, reasoning_effort=None) -> EvidenceSummary:
+    """Return cited claims; citation membership does not prove semantic truth.
+
+    reasoning_effort (optional) is passed through to request_json; the prompt is unchanged.
+    """
     if not isinstance(query, ParsedQuery) or not isinstance(result, RetrievalResult):
         raise TypeError("Expected ParsedQuery and RetrievalResult.")
     if not isinstance(result.evidence_snippets, list):
@@ -76,7 +79,8 @@ def summarize_evidence(query, result, *, client=None, model=None) -> EvidenceSum
             raise ValueError("Invalid source snippet.")
     data = request_json(client=client, model=model, name="evidence_summary", schema=SUMMARY_SCHEMA,
                         system=SYSTEM, payload={"query": asdict(query),
-                            "snippets": [asdict(s) for s in snippets]})
+                            "snippets": [asdict(s) for s in snippets]},
+                        reasoning_effort=reasoning_effort)
     exact_object(data, ["status", "claims", "limitations"])
     if data["status"] not in ("evidence_found", "insufficient_evidence"):
         raise LLMResponseError("Unknown summary status.")
