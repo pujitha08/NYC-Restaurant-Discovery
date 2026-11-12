@@ -24,7 +24,7 @@ density modes. The semantic systems are skipped if its index has not been built
 (python -m src.retrieval.semantic --build).
 
 Run from the repo root:
-    python -m eval.make_pool [--queries eval/queries_draft.csv] [--pool eval/pool.csv] [--runs eval/runs.csv]
+    python -m eval.make_pool [--queries eval/queries_final.csv] [--pool eval/pool.csv] [--runs eval/runs.csv]
 """
 
 import argparse
@@ -37,7 +37,7 @@ from pathlib import Path
 from src.retrieval.tfidf import format_snippet
 
 EVAL_DIR = Path(__file__).parent
-QUERIES_PATH = EVAL_DIR / "queries_draft.csv"
+QUERIES_PATH = EVAL_DIR / "queries_final.csv"  # frozen set (PR #2); queries_draft.csv is kept as history
 POOL_PATH = EVAL_DIR / "pool.csv"
 RUNS_PATH = EVAL_DIR / "runs.csv"
 TOP_K = 10

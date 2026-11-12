@@ -4,7 +4,7 @@ Inputs
   --runs     eval/runs.csv from make_pool.py (query_id, system, rank, gmap_id, score)
   --labels   eval/llm_labels.jsonl (llm_judge.py) or a CSV with query_id, gmap_id and
              adjudicated_label (agreement.py's template, filled) or label. Labels are 0/1/2.
-  --queries  query file for categories (default eval/queries_draft.csv)
+  --queries  query file for categories (default eval/queries_final.csv, the frozen set)
 
 Metrics per system and query (then averaged over queries, macro):
   P@5, P@10       relevant results in the top k divided by k (k fixed even if a system returns
@@ -45,7 +45,7 @@ from pathlib import Path
 EVAL_DIR = Path(__file__).parent
 REPO = EVAL_DIR.parent
 RUNS_PATH = EVAL_DIR / "runs.csv"
-QUERIES_PATH = EVAL_DIR / "queries_draft.csv"
+QUERIES_PATH = EVAL_DIR / "queries_final.csv"  # frozen set (PR #2); queries_draft.csv is kept as history
 OUT_DIR = REPO / "reports"
 K = 10
 GAIN_FORMULA = "gain = label (0, 1, 2); DCG@10 = sum_{i=1..10} gain_i / log2(i + 1); NDCG@10 = DCG@10 / IDCG@10"

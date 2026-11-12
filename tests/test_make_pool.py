@@ -247,7 +247,7 @@ class MainTests(unittest.TestCase):
             self.run_main()
 
     def test_default_paths(self):
-        self.assertEqual(make_pool.QUERIES_PATH.name, "queries_draft.csv")
+        self.assertEqual(make_pool.QUERIES_PATH.name, "queries_final.csv")
         self.assertEqual(make_pool.POOL_PATH.name, "pool.csv")
         self.assertEqual(make_pool.RUNS_PATH.name, "runs.csv")
 
