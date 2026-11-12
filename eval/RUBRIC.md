@@ -19,6 +19,10 @@ how good the restaurant is overall.
   cuisine or a dish without saying anything about the diet or allergy ("best Chinese food" for a halal query,
   "great lobster roll" for a shellfish-allergy query) is not evidence.
 - **Several needs** (mixed group, diet plus filter): 2 only if all parts are covered. One part covered = 1.
+  - **Mixed groups where one person eats meat** ("vegan but my friends eat meat"): the need is met if both can eat
+    happily. Either the menu has dishes for both (e.g. vegan options and meat dishes), or reviews show meat-eaters
+    enjoyed the food (e.g. an all-vegan restaurant that non-vegan friends loved). Evidence for only the diet, with
+    nothing about the meat-eaters, covers one part (1).
 - **Borough or category filters** in the query (`borough`, "bakery", "pizza"): a restaurant that fails the filter is 0.
 - **One passing mention of a dish** (a vegan side, one gluten-free pasta) is 1 at most. A menu section, a dedicated
   option list, or several reviewers saying so is 2.

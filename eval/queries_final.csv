@@ -1,0 +1,36 @@
+query_id,query,category,borough,paraphrase_group,notes
+Q01,vegan food,single_diet,,P01,Plain keyword; easy for BoW.
+Q02,plant-based restaurant,single_diet,,P01,[hard-bow] Same need as Q01 with no shared keyword; reviews say 'vegan'.
+Q03,gluten-free options,single_diet,,P02,Keyword query; easy.
+Q04,somewhere I can eat with no gluten at all,single_diet,,P02,[hard-bow] Negation phrasing; 'gluten' also matches 'contains gluten'. Reworded for freeze (was: 'restaurants that serve no gluten').
+Q05,halal restaurant,single_diet,,P03,Keyword query; easy.
+Q06,restaurants that serve halal meat,single_diet,,P03,Intent paraphrase of Q05; 'meat' pulls in steakhouses. Reworded for freeze (was: 'where to find halal meat'; ambiguous with butchers/groceries).
+Q07,kosher restaurant,single_diet,,,Reviews also say 'kosher salt' and 'kosher-style deli' (noisy term).
+Q08,vegetarian friendly menu,single_diet,,,'Vegetarian' is a noisy term (Week 1 findings); mentions of one veggie dish are weak evidence.
+Q09,dairy-free options,single_diet,,P04,'Dairy-free' often appears as 'non-dairy milk' in coffee shops.
+Q10,good for lactose intolerant people,single_diet,,P04,[hard-bow] Paraphrase of Q09; reviews rarely say 'lactose intolerant'.
+Q11,pescatarian seafood restaurant,single_diet,,,'Pescatarian' is rare; seafood dominates the match.
+Q12,keto friendly restaurant,single_diet,,,[hard-bow] Rare vocabulary; keto mentions are sparse. Reworded for freeze (was: 'low carb keto friendly'; keyword string).
+Q13,vegan but my friends eat meat,mixed_group,,P05,"[hard-bow] Needs food both the vegan and the meat-eaters enjoy (menu for both, or meat-eaters enjoyed it; see RUBRIC mixed-group rule); BoW rewards either side. Note updated for freeze (was: 'Needs both a vegan menu and meat dishes')."
+Q14,"group dinner with a vegetarian, a halal eater and a gluten-free guest",mixed_group,,,[hard-bow] Three constraints at once; no single review covers all.
+Q15,place where vegans and meat lovers can both eat,mixed_group,,P05,[hard-bow] Paraphrase of Q13.
+Q16,kosher family dinner with kids,mixed_group,,,"Kosher plus a group need ('family', 'kids')."
+Q17,birthday dinner for 8 with vegan and gluten-free guests,mixed_group,,,[hard-bow] Party size and two diets; 'birthday' pulls in unrelated reviews.
+Q18,"date night, one of us is vegetarian and the other loves steak",mixed_group,,,[hard-bow] Needs a steak place with a real vegetarian entree.
+Q19,which restaurants are safe if I'm allergic to peanuts,allergy,,P06,Peanut dishes match as well as peanut safety (known false positive). Reworded for freeze (was: 'peanut allergy safe').
+Q20,restaurant careful about peanut allergies,allergy,,P06,[hard-bow] Paraphrase of Q19; 'careful' is the signal.
+Q21,celiac safe,allergy,,P07,Keyword query; negative reviews ('NOT celiac safe') also match.
+Q22,"safe for celiac disease, no cross contamination",allergy,,P07,[hard-bow] Requires cross-contact language and negation handling.
+Q23,"nut-free bakery, no peanuts or tree nuts",allergy,,P08,Category plus requirement; 'nut' also matches 'Cro-nut'. Reworded for freeze (was: 'nut-free bakery'): 'nut-free' made explicit as peanuts AND tree nuts.
+Q24,bakery safe for tree nut allergy,allergy,,P08,[hard-bow] Paraphrase of Q23; reviews say 'nut free' not 'tree nut allergy'.
+Q25,places safe for someone with a shellfish allergy,allergy,,,"Sparse in reviews; mostly warnings, not accommodation. Reworded for freeze (was: 'shellfish allergy'; did not state the need)."
+Q26,dedicated gluten-free fryer,allergy,,,"[hard-bow] Cross-contact detail ('separate fryer', 'own fryer') phrased many ways."
+Q27,vegan brunch,diet_plus_filter,Brooklyn,,Diet plus meal-type filter plus borough.
+Q28,gluten-free pizza,diet_plus_filter,Manhattan,,Diet plus dish category; 'pizza' dominates the TF-IDF match.
+Q29,halal chinese food,diet_plus_filter,Manhattan,,Diet plus cuisine; few matches expected.
+Q30,kosher bakery,diet_plus_filter,Brooklyn,,Diet plus venue category; 'bakery' dominates the match.
+Q31,"nut-free brunch in brooklyn, one of our friends is vegan",mixed_group,Brooklyn,,"New for freeze: mixed group plus allergy plus borough (the README's headline example). 'nut-free' read as peanuts and tree nuts, as in Q23."
+Q32,"dinner in manhattan where my vegan girlfriend and i can both eat, i eat meat",mixed_group,Manhattan,,New for freeze: mixed group with borough; see the RUBRIC rule for mixed groups with a meat-eater.
+Q33,"i have a real dairy allergy not just lactose intolerance, who takes that seriously",allergy,,,New for freeze: milk allergy distinct from lactose intolerance (FDA milk); expect sparse evidence.
+Q34,celiac friendly italian place in brooklyn with a separate prep area,allergy,Brooklyn,,New for freeze: cross-contact plus cuisine plus borough.
+Q35,"my son has a sesame allergy, any places in brooklyn that are careful about it?",allergy,Brooklyn,,New for freeze: sesame (FDA allergen not covered before); expect very sparse evidence.
