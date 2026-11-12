@@ -169,6 +169,21 @@ class MainTests(unittest.TestCase):
             self.assertIn("PROVISIONAL", stdout.getvalue())
             self.assertTrue((out / "metrics_ndcg_p10.png").exists())
 
+    def test_label_sources(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "llm.jsonl"
+            recs = [{"query_id": "Q", "gmap_id": "A", "label": 1, "source": "llm", "provider": "openrouter",
+                     "openrouter_upstream": "crusoe"},
+                    {"query_id": "Q", "gmap_id": "B", "label": 0, "source": "rule", "provider": "openrouter"},
+                    {"query_id": "Q", "gmap_id": "C", "label": 2, "source": "llm", "provider": "groq"},
+                    {"query_id": "Q", "gmap_id": "D", "label": 2, "source": "llm", "provider": "groq"},
+                    {"query_id": "Q", "gmap_id": "A", "label": 2, "source": "llm", "provider": "groq"}]  # A relabeled
+            p.write_text("\n".join(json.dumps(r) for r in recs) + "\n")
+            self.assertEqual(metrics.label_sources(p), {"groq": 3, "rule": 1})
+            c = Path(d) / "adjudicated.csv"
+            c.write_text("query_id,gmap_id,adjudicated_label\nQ,A,2\nQ,B,\n")
+            self.assertEqual(metrics.label_sources(c), {"human": 1})
+
     def test_complete_only_drops_queries_with_unjudged_results(self):
         rows, _ = metrics.evaluate(RUNS, LABELS, CATEGORIES)
         kept, queries, dropped = metrics.complete_only(rows)

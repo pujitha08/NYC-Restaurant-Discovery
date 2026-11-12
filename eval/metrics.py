@@ -97,6 +97,35 @@ def read_labels(path):
     return labels
 
 
+def label_sources(path):
+    """Where the labels in use came from: {"openrouter/crusoe": n, "groq": n, "rule": n, ...} ("human" for CSV).
+
+    For JSONL, the last record of a pair wins (as in read_labels); rule-labeled pairs (no evidence shown)
+    count as "rule" whatever provider ran them.
+    """
+    path = Path(path)
+    if path.suffix != ".jsonl":
+        return {"human": len(read_labels(path))}
+    last = {}
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if r.get("source") == "rule":
+                src = "rule"
+            else:
+                src = r.get("provider") or "unknown"
+                if r.get("openrouter_upstream"):
+                    src += f"/{r['openrouter_upstream']}"
+            last[(r["query_id"], r["gmap_id"])] = src
+    counts = {}
+    for src in last.values():
+        counts[src] = counts.get(src, 0) + 1
+    return dict(sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])))
+
+
 def read_categories(path):
     with open(path, newline="", encoding="utf-8") as f:
         return {r["query_id"]: r.get("category", "") for r in csv.DictReader(f)}
@@ -284,7 +313,10 @@ def write_summary(path, *, args, labels, rows, queries, summary, cis, comparison
     L = ["# Retrieval metrics" + (" (PROVISIONAL)" if provisional else ""), ""]
     if provisional:
         L += [f"> **PROVISIONAL:** {provisional}", ""]
+    sources = label_sources(args.labels)
     L += [f"- Runs: `{args.runs}`; labels: `{args.labels}` ({len(labels)} labeled pairs); queries: `{args.queries}`",
+          "- Labels by source: " + ", ".join(f"{s} {n}" for s, n in sources.items())
+          + " (rule = no evidence shown, labeled 0 without a model call)",
          f"- {len(queries)} queries, {len(systems)} systems, top {K} per system; macro averages over queries",
          f"- Relevance: strict = label 2, lenient = label ≥ 1",
          f"- NDCG: {GAIN_FORMULA}; IDCG from the best ordering of the query's judged pool",
@@ -391,7 +423,8 @@ def main(argv=None):
     total_unjudged = sum(s["unjudged"] for s in summary.values())
     if args.provisional:
         print(f"PROVISIONAL: {args.provisional}")
-    print(f"{len(queries)} queries, {len(summary)} systems, {len(labels)} labeled pairs")
+    print(f"{len(queries)} queries, {len(summary)} systems, {len(labels)} labeled pairs; by source: "
+          + ", ".join(f"{s} {n}" for s, n in label_sources(args.labels).items()))
     for s, m in summary.items():
         print(f"  {s:20} NDCG@10 {f3(m['NDCG10'])}  P@10 lenient {f3(m['P10_lenient'])}  unjudged {m['unjudged']}")
     if total_unjudged:
