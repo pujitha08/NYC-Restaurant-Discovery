@@ -65,6 +65,13 @@ ALLERGY_NOTE = ("Allergy suitability can't be confirmed from reviews. Ask the re
 ALLERGY_TERMS = re.compile(
     r"\b(allerg\w*|celiac\w*|coeliac\w*|anaphyla\w*|epi-?pens?|cross[- ]?(?:contact|contaminat\w*)"
     r"|(?:tree[- ]?)?nut[- ]free|peanut[- ]free|gluten[- ]intoleran\w*)\b", re.IGNORECASE)
+# FDA major allergens and common synonyms. A request naming one is guarded even without allergy wording
+# ("no peanuts please", "sesame-free"); this is deliberately over-cautious ("peanut noodles" is guarded too).
+# "gluten-free" alone is treated as a diet; celiac wording is caught by ALLERGY_TERMS.
+ALLERGEN_NAMES = re.compile(
+    r"\b(peanuts?|tree[- ]?nuts?|almonds?|cashews?|walnuts?|pecans?|pistachios?|hazelnuts?|macadamias?"
+    r"|shellfish|shrimps?|crabs?|lobsters?|prawns?|crawfish|sesame|tahini|soy|soya|soybeans?"
+    r"|eggs?|fish|milk|dairy|wheat)\b", re.IGNORECASE)
 LLM_REASONING_EFFORT = "low"  # parser and summarizer calls (gpt-oss); fewer reasoning tokens per search
 
 # docs/llm.md "Safe error contract and UI handling": category -> what the user is told.
@@ -244,8 +251,10 @@ def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_eviden
 
 
 def is_allergy_sensitive(query, parsed):
-    """True if parsed allergens are non-empty, parsing failed (parsed is None) or the text names allergy terms."""
-    return parsed is None or bool(parsed.allergens) or bool(ALLERGY_TERMS.search(query))
+    """True if parsed allergens are non-empty, parsing failed (parsed is None), or the text uses allergy wording
+    or names an FDA major allergen (the parser can miss allergens, e.g. gpt-oss-20b on Q20)."""
+    return (parsed is None or bool(parsed.allergens) or bool(ALLERGY_TERMS.search(query))
+            or bool(ALLERGEN_NAMES.search(query)))
 
 
 def display_status(summary, guarded=False):

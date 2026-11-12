@@ -123,6 +123,13 @@ class GuardTests(SearchCase):
             "raw text: celiac": ("safe for celiac disease", parsed(dietary_restrictions=["gluten-free"])),
             "raw text: cross contact": ("no cross-contact please", parsed()),
             "raw text: nut-free": ("nut-free bakery", parsed(preferences=["bakery"])),
+            # Allergen names without allergy wording, with a parser that missed the allergen field
+            "allergen name: no peanuts please": ("no peanuts please", parsed(preferences=["no peanuts"])),
+            "allergen name: sesame-free": ("sesame-free dinner in Brooklyn", parsed(location="Brooklyn")),
+            "allergen name: shrimp": ("somewhere without shrimp in the kitchen", parsed()),
+            "allergen name: tahini": ("falafel but no tahini", parsed(preferences=["falafel"])),
+            "allergen name: dairy": ("dairy-free brunch", parsed(dietary_restrictions=["dairy-free"])),
+            "over-cautious: peanut noodles": ("peanut noodles", parsed(preferences=["peanut noodles"])),
             "parse failed": ("vegan brunch", None),
         }
         for name, (query, body) in cases.items():
@@ -130,6 +137,19 @@ class GuardTests(SearchCase):
                 out = self.search(query, body, SUPPORT_ONLY)
                 self.assertTrue(out.allergy_sensitive)
                 self.assertEqual(out.results[0].summary.status, pipeline.STATUS_NEUTRAL)
+
+    def test_non_allergy_queries_stay_unguarded(self):
+        for query in ("vegan options for a group", "halal chinese food in Manhattan", "gluten-free pizza",
+                      "kosher bakery", "best donut shop", "nutritious bowls", "eggplant parm", "pescatarian seafood"):
+            with self.subTest(query=query):
+                self.assertFalse(pipeline.is_allergy_sensitive(query, ParsedQuery(dietary_restrictions=["vegan"])))
+
+    def test_allergen_names_trigger_without_allergy_wording(self):
+        for query in ("no peanuts please", "sesame-free", "almond croissant", "cashew chicken", "walnut salad",
+                      "lobster roll", "crab cakes", "soy sauce free", "egg sandwich", "fish tacos", "milk tea",
+                      "whole wheat bagels", "tree nut free cookies"):
+            with self.subTest(query=query):
+                self.assertTrue(pipeline.is_allergy_sensitive(query, ParsedQuery()))
 
     def test_non_allergy_query_keeps_supported(self):
         out = self.search("vegan options for a group", parsed(dietary_restrictions=["vegan"]), SUPPORT_ONLY)
