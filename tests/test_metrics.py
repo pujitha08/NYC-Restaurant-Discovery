@@ -137,6 +137,45 @@ class LabelInputTests(unittest.TestCase):
 
 
 class MainTests(unittest.TestCase):
+    def test_provisional_marks_every_output(self):
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            with open(d / "runs.csv", "w", newline="") as f:
+                w = csv.writer(f)
+                w.writerow(["query_id", "system", "rank", "gmap_id", "score"])
+                for q, gids in RUNS["s1"].items():
+                    for rank, g in enumerate(gids, 1):
+                        w.writerow([q, "semantic_log", rank, g, 1.0])
+            with open(d / "labels.jsonl", "w") as f:
+                for (q, g), l in LABELS.items():
+                    f.write(json.dumps({"query_id": q, "gmap_id": g, "label": l}) + "\n")
+            with open(d / "queries.csv", "w", newline="") as f:
+                w = csv.writer(f)
+                w.writerow(["query_id", "query", "category", "borough"])
+                w.writerows([[q, q, c, ""] for q, c in CATEGORIES.items()])
+            out = d / "reports"
+            reason = "LLM labels pending validation against human labels"
+            with redirect_stdout(io.StringIO()) as stdout:
+                metrics.main(["--runs", str(d / "runs.csv"), "--labels", str(d / "labels.jsonl"),
+                              "--queries", str(d / "queries.csv"), "--out-dir", str(out), "--resamples", "200",
+                              "--provisional", reason])
+            summary = (out / "metrics_summary.md").read_text()
+            self.assertTrue(summary.startswith("# Retrieval metrics (PROVISIONAL)"))
+            self.assertIn(f"> **PROVISIONAL:** {reason}", summary)
+            self.assertIn("P@10 lenient [95% CI]", summary)
+            with open(out / "metrics_per_query.csv", newline="") as f:
+                rows = list(csv.DictReader(f))
+            self.assertEqual({r["status"] for r in rows}, {"PROVISIONAL"})
+            self.assertIn("PROVISIONAL", stdout.getvalue())
+            self.assertTrue((out / "metrics_ndcg_p10.png").exists())
+
+    def test_complete_only_drops_queries_with_unjudged_results(self):
+        rows, _ = metrics.evaluate(RUNS, LABELS, CATEGORIES)
+        kept, queries, dropped = metrics.complete_only(rows)
+        self.assertEqual(dropped, ["Q1"])  # s1 has unjudged Z in Q1
+        self.assertEqual(queries, ["Q2", "Q3"])
+        self.assertTrue(all(r["unjudged"] == 0 for r in kept))
+
     def test_outputs(self):
         with tempfile.TemporaryDirectory() as d:
             d = Path(d)

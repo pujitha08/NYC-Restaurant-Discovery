@@ -44,7 +44,11 @@ ENV_PATH = REPO / ".env"
 
 # The evaluated systems (eval/make_pool.py SYSTEMS): name -> (retriever, extra search arguments).
 METHODS = {name: (retriever, kwargs) for name, retriever, kwargs in SYSTEMS}
-DEFAULT_METHOD = "semantic_capped"  # update after the metrics are in
+# PROVISIONAL (2026-11-12): semantic_capped had the highest NDCG@10 (0.777) and P@10 (0.872) in
+# reports/metrics_summary.md, but on LLM-judge labels not yet validated against human labels, only the 18
+# fully judged queries (single diet and mixed group; no allergy or diet-plus-filter queries), and no
+# difference between systems is significant (Holm-adjusted p >= 0.93). Revisit after the full pool is judged.
+DEFAULT_METHOD = "semantic_capped"
 BOROUGH_CHOICES = ["Both", *BOROUGHS]
 TOP_K = 10
 AUTO_SUMMARIES = 3  # summarize the top results automatically; the rest on request ("Explain")

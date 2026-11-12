@@ -142,6 +142,13 @@ def evaluate(runs, labels, categories):
     return rows, queries
 
 
+def complete_only(rows):
+    """Keep queries where no system has an unjudged top-10 result. Returns (rows, queries, dropped queries)."""
+    incomplete = sorted({r["query_id"] for r in rows if r["unjudged"]})
+    kept = [r for r in rows if r["query_id"] not in incomplete]
+    return kept, sorted({r["query_id"] for r in kept}), incomplete
+
+
 def mean(values):
     vals = [v for v in values if v is not None]
     return sum(vals) / len(vals) if vals else None
@@ -220,18 +227,19 @@ def f3(x):
     return "n/a" if x is None else f"{x:.3f}"
 
 
-def write_per_query(rows, path):
-    cols = ["query_id", "category", "system"] + METRICS + ["n_results", "unjudged", "pool_judged",
-                                                           "pool_rel_strict", "pool_rel_lenient"]
+def write_per_query(rows, path, provisional=None):
+    cols = ["status", "query_id", "category", "system"] + METRICS + ["n_results", "unjudged", "pool_judged",
+                                                                     "pool_rel_strict", "pool_rel_lenient"]
+    status = "PROVISIONAL" if provisional else "final"
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
         w.writeheader()
         for r in sorted(rows, key=lambda r: (r["query_id"], r["system"])):
-            w.writerow({k: ("" if r[k] is None else (round(r[k], 6) if isinstance(r[k], float) else r[k]))
-                        for k in cols})
+            w.writerow({"status": status, **{k: ("" if r[k] is None else (round(r[k], 6) if isinstance(r[k], float) else r[k]))
+                                             for k in cols[1:]}})
 
 
-def plot(summary, cis, path):
+def plot(summary, cis, path, provisional=None):
     """NDCG@10 and lenient P@10 by system, bootstrap 95% CI error bars; one panel per metric."""
     import matplotlib
     matplotlib.use("Agg")
@@ -259,7 +267,11 @@ def plot(summary, cis, path):
         ax.spines["bottom"].set_color(grid)
     fig.text(0.01, 0.01, "Bars: mean over queries. Error bars: bootstrap 95% CI (queries resampled).",
              color=ink2, fontsize=8)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    top = 1.0
+    if provisional:
+        fig.suptitle(f"PROVISIONAL: {provisional}", color=ink, fontsize=10, x=0.01, ha="left")
+        top = 0.92
+    fig.tight_layout(rect=(0, 0.04, 1, top))
     fig.savefig(path, dpi=150, facecolor=surface)
     plt.close(fig)
 
@@ -268,8 +280,11 @@ def write_summary(path, *, args, labels, rows, queries, summary, cis, comparison
     systems = list(summary)
     undefined = sorted({r["query_id"] for r in rows if r["NDCG10"] is None})
     unjudged = {s: summary[s]["unjudged"] for s in systems}
-    L = [f"# Retrieval metrics", "",
-         f"- Runs: `{args.runs}`; labels: `{args.labels}` ({len(labels)} labeled pairs); queries: `{args.queries}`",
+    provisional = getattr(args, "provisional", None)
+    L = ["# Retrieval metrics" + (" (PROVISIONAL)" if provisional else ""), ""]
+    if provisional:
+        L += [f"> **PROVISIONAL:** {provisional}", ""]
+    L += [f"- Runs: `{args.runs}`; labels: `{args.labels}` ({len(labels)} labeled pairs); queries: `{args.queries}`",
          f"- {len(queries)} queries, {len(systems)} systems, top {K} per system; macro averages over queries",
          f"- Relevance: strict = label 2, lenient = label ≥ 1",
          f"- NDCG: {GAIN_FORMULA}; IDCG from the best ordering of the query's judged pool",
@@ -281,15 +296,20 @@ def write_summary(path, *, args, labels, rows, queries, summary, cis, comparison
               + ". Metrics are biased low; label the full pool.", ""]
     else:
         L += ["Every top-10 result is judged (0 unjudged).", ""]
+    dropped = getattr(args, "dropped_queries", None)
+    if dropped:
+        L += [f"> **Partial: {len(dropped)} queries left out** because some top-10 results are not judged yet "
+              f"(--complete-only): {', '.join(dropped)}. Category tables cover only the remaining queries.", ""]
     if undefined:
         L += [f"Queries with no relevant pair in the pool (left out of NDCG@10 and R@10): {', '.join(undefined)}", ""]
 
     L += ["## By system", "",
-          "| System | P@5 strict | P@5 lenient | P@10 strict | P@10 lenient | NDCG@10 [95% CI] | R@10 strict | R@10 lenient | Unjudged |",
+          "| System | P@5 strict | P@5 lenient | P@10 strict | P@10 lenient [95% CI] | NDCG@10 [95% CI] | R@10 strict | R@10 lenient | Unjudged |",
           "|---|---|---|---|---|---|---|---|---|"]
     for s in systems:
-        m, lo_hi = summary[s], cis[s]["NDCG10"]
-        L.append(f"| {s} | {f3(m['P5_strict'])} | {f3(m['P5_lenient'])} | {f3(m['P10_strict'])} | {f3(m['P10_lenient'])} | "
+        m, lo_hi, p_ci = summary[s], cis[s]["NDCG10"], cis[s]["P10_lenient"]
+        L.append(f"| {s} | {f3(m['P5_strict'])} | {f3(m['P5_lenient'])} | {f3(m['P10_strict'])} | "
+                 f"{f3(m['P10_lenient'])} [{f3(p_ci[0])}, {f3(p_ci[1])}] | "
                  f"{f3(m['NDCG10'])} [{f3(lo_hi[0])}, {f3(lo_hi[1])}] | {f3(m['R10_strict'])} | {f3(m['R10_lenient'])} | "
                  f"{m['unjudged']} |")
 
@@ -337,6 +357,10 @@ def main(argv=None):
     ap.add_argument("--resamples", type=int, default=N_RESAMPLES)
     ap.add_argument("--seed", type=int, default=SEED)
     ap.add_argument("--no-plot", action="store_true")
+    ap.add_argument("--complete-only", action="store_true",
+                    help="score only queries where every system's top-10 results are all judged (others are listed)")
+    ap.add_argument("--provisional", metavar="REASON", default=None,
+                    help="mark every output PROVISIONAL with this reason (e.g. labels not yet validated)")
     args = ap.parse_args(argv)
     for p in (args.runs, args.labels, args.queries):
         if not p.exists():
@@ -344,6 +368,10 @@ def main(argv=None):
 
     runs, labels, categories = read_runs(args.runs), read_labels(args.labels), read_categories(args.queries)
     rows, queries = evaluate(runs, labels, categories)
+    if args.complete_only:
+        rows, queries, args.dropped_queries = complete_only(rows)
+        if not queries:
+            sys.exit("No query has every top-10 result judged.")
     summary = summarize(rows)
     cis = {s: {m: bootstrap_ci([r[m] for r in rows if r["system"] == s], args.resamples, args.seed)
                for m in ("NDCG10", "P10_lenient")} for s in summary}
@@ -354,13 +382,15 @@ def main(argv=None):
                for a, b in DENSITY_PAIRS]
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    write_per_query(rows, args.out_dir / "metrics_per_query.csv")
+    write_per_query(rows, args.out_dir / "metrics_per_query.csv", args.provisional)
     write_summary(args.out_dir / "metrics_summary.md", args=args, labels=labels, rows=rows, queries=queries,
                   summary=summary, cis=cis, comparisons=comparisons, density=density, categories=categories)
     if not args.no_plot:
-        plot(summary, cis, args.out_dir / "metrics_ndcg_p10.png")
+        plot(summary, cis, args.out_dir / "metrics_ndcg_p10.png", args.provisional)
 
     total_unjudged = sum(s["unjudged"] for s in summary.values())
+    if args.provisional:
+        print(f"PROVISIONAL: {args.provisional}")
     print(f"{len(queries)} queries, {len(summary)} systems, {len(labels)} labeled pairs")
     for s, m in summary.items():
         print(f"  {s:20} NDCG@10 {f3(m['NDCG10'])}  P@10 lenient {f3(m['P10_lenient'])}  unjudged {m['unjudged']}")
