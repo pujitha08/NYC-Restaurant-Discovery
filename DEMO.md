@@ -9,8 +9,12 @@ source ~/tf-env/bin/activate        # or your venv with requirements.txt install
 streamlit run app/streamlit_app.py  # opens http://localhost:8501
 ```
 
-Needs `data/processed/` (with the `semantic/` index) and a `.env` with `GROQ_API_KEY` and `GROQ_MODEL`
-(`openai/gpt-oss-120b`). Without a key the app still searches, without parsing or summaries.
+Needs `data/processed/` (with the `semantic/` index) and a `.env` with `GROQ_API_KEY` and `GROQ_MODEL`.
+Without a key the app still searches, without parsing or summaries.
+
+**The demo runs on `openai/gpt-oss-20b`** (`GROQ_MODEL=openai/gpt-oss-20b` in `.env`) to keep the
+`gpt-oss-120b` daily quota for the LLM judge, which passes `--model openai/gpt-oss-120b` explicitly and
+ignores `GROQ_MODEL`. Groq limits are per model, so the two don't compete.
 
 ## Warm up first (2 minutes before the demo)
 
@@ -30,7 +34,10 @@ Use the default method (`semantic_capped`) unless noted.
      both reviews say to avoid it if you have food allergies.
    - *Now*: Mission shows **"Reviews report problems"** (warning box) with the warnings marked
      "⚠ Contradicts", plus the note that allergy suitability can't be confirmed from reviews. Pig and Khao shows
-     **mixed** (a manager's reassurance, then a reaction). No allergy query ever shows "supported".
+     **mixed** or **"Reviews report problems"** depending on the model run (a manager's reassurance, then a
+     reaction). No allergy query ever shows "supported". (Checked live on gpt-oss-20b: Mission and Pig and Khao
+     both "Reviews report problems". The 20b parser can miss the allergen field, but the guard still applies
+     because the request text mentions allergies.)
 3. **"safe for celiac disease, no cross contamination"**, borough **Both**. Expected: Senza Gluten and
    Friedman's near the top with the neutral status "Reviews discuss this — read each claim"; Lilli and Loo shows
    **mixed** (one 2018 report of a celiac diner given the wrong soup, plus positive reviews), which is the
