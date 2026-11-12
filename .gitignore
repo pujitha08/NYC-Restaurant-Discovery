@@ -35,8 +35,17 @@ reports/eda/*.csv
 # (runs.csv names the system behind each result; keep it away from the judges)
 eval/pool.csv
 eval/runs.csv
-# LLM judge failures (retried on the next run); eval/llm_labels.jsonl itself is kept
+# LLM judge failures (retried on the next run)
 eval/llm_judge_errors.jsonl
+
+# Labels and rater material: judges must not see each other's files, the key files reveal systems or
+# versions, and the LLM labels must stay unseen while humans label the same pairs. Share files directly.
+# The two labeling guides stay tracked.
+eval/labels/*
+!eval/labels/LABELING_GUIDE.md
+!eval/labels/SENTENCE_LABELING_GUIDE.md
+eval/answer_eval/
+eval/llm_labels*.jsonl
 
 # App request logs (queries, results, timings; never keys)
 logs/
