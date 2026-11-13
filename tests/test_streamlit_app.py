@@ -56,21 +56,79 @@ class AppSmokeTests(unittest.TestCase):
         self.assertEqual(at.radio[0].options, ["Both", "Manhattan", "Brooklyn"])
         self.assertEqual(len(at.error), 0)
 
-    def test_search_shows_results_summaries_and_explain(self):
+    @staticmethod
+    def results(at):
+        """Result expanders (labels start with the rank), in order."""
+        return [e for e in at.expander if e.label[:1].isdigit()]
+
+    @staticmethod
+    def text(block):
+        return " ".join(m.value for m in block.markdown)
+
+    def test_results_render_collapsed_with_header(self):
         at = self.search(self.start())
-        text = " ".join(m.value for m in at.markdown)
-        self.assertIn("1. Place 1", text)
-        self.assertIn("supported", text)
-        self.assertIn("One reviewer reported vegan options for a group.", text)
-        self.assertIn("Review from 2019-01", text)
+        results = self.results(at)
+        self.assertEqual(len(results), 4)
+        self.assertEqual([e.proto.expanded for e in results], [False] * 4)
+        self.assertRegex(results[0].label, r"^1\. Place 1 — (Brooklyn|Manhattan) · (★ \d\.\d|no rating) · ✓ Supported")
+        self.assertIn("Not summarized yet", results[3].label)  # rank 4: not summarized automatically
+        self.assertNotIn("✓", results[3].label)
+        self.assertEqual(at.subheader[0].value, "4 restaurants")
+        self.assertTrue(any(c.value.startswith("Method ") for c in at.caption))  # timings above the list
+
+    def test_guarded_allergy_header_has_no_check_mark(self):
+        at = self.search(self.start(), "peanut allergy friendly dinner")
+        for e in self.results(at):
+            self.assertNotIn("✓", e.label)
+            self.assertNotIn("Supported", e.label)
+        self.assertIn(f"ℹ {pipeline.STATUS_NEUTRAL}", self.results(at)[0].label)
+        self.assertIn(pipeline.ALLERGY_NOTE, " ".join(w.value for w in self.results(at)[0].warning))
+
+    def test_expanding_shows_summary(self):
+        at = self.search(self.start())
+        outcome, _ = at.session_state["last_search"]
+        at.session_state[f"open_{outcome.request_id}_{outcome.results[0].gmap_id}"] = True  # what a header click does
+        at.run()
+        first = self.results(at)[0]
+        self.assertTrue(first.proto.expanded)
+        self.assertFalse(any(e.proto.expanded for e in self.results(at)[1:]))
+        body = self.text(first)
+        self.assertIn("supported", body)
+        self.assertIn("One reviewer reported vegan options for a group.", body)
+        self.assertIn("Review from 2019-01", body)
+        self.assertIn("All retrieved excerpts (2)", body)
+
+    def test_explain_keeps_result_open(self):
+        at = self.search(self.start())
         explain = [b for b in at.button if b.label == "Explain"]
         self.assertEqual(len(explain), 1)  # rank 4 only; top 3 summarized automatically
         explain[0].click()
         at.run()
         self.assertFalse(at.exception, at.exception)
+        results = self.results(at)
+        self.assertEqual([e.proto.expanded for e in results], [False, False, False, True])
+        self.assertNotIn("Not summarized yet", results[3].label)
+        self.assertIn("One reviewer reported", self.text(results[3]))
         self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
+        at.run()  # an unrelated rerun keeps it open
+        self.assertTrue(self.results(at)[3].proto.expanded)
         events = [line.split('"event": "')[1].split('"')[0] for line in self.log_path.read_text().splitlines()]
         self.assertEqual(events, ["search", "explain"])  # both logged to the temp file
+
+    def test_expand_all_collapse_all_and_new_search_resets(self):
+        at = self.search(self.start())
+        next(b for b in at.button if b.label == "Expand all").click()
+        at.run()
+        self.assertEqual([e.proto.expanded for e in self.results(at)], [True] * 4)
+        at.run()
+        self.assertEqual([e.proto.expanded for e in self.results(at)], [True] * 4)  # survives reruns
+        next(b for b in at.button if b.label == "Collapse all").click()
+        at.run()
+        self.assertEqual([e.proto.expanded for e in self.results(at)], [False] * 4)
+        next(b for b in at.button if b.label == "Expand all").click()
+        at.run()
+        self.search(at, "vegan brunch")  # a new search starts collapsed
+        self.assertEqual([e.proto.expanded for e in self.results(at)], [False] * 4)
 
     def test_missing_key_shows_setup_message_and_still_searches(self):
         setup = {"category": "configuration", "code": "invalid_api_key_configuration",
@@ -78,7 +136,8 @@ class AppSmokeTests(unittest.TestCase):
         at = self.search(self.start(client=None, setup_error=setup))
         self.assertIn("GROQ_API_KEY", at.error[0].value)
         self.assertIn("Search still works", at.error[0].value)
-        self.assertIn("1. Place 1", " ".join(m.value for m in at.markdown))
+        self.assertTrue(self.results(at)[0].label.startswith("1. Place 1"))
+        self.assertIn("Not summarized yet", self.results(at)[0].label)
 
     def test_empty_query_and_markdown_escaping(self):
         at = self.start()
