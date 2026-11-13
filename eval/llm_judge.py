@@ -29,7 +29,9 @@ to --tpm tokens and --rpm requests per minute (estimates, corrected with the rep
 After --max-rate-limited consecutive failed calls on rate limits (e.g. the daily quota is used
 up) the run stops; rerun later to resume.
 
-Providers (--provider, recorded in every record): groq (default; GROQ_API_KEY, GROQ_MODEL) or
+Providers (--provider, recorded in every record): groq (default; GROQ_API_KEY, GROQ_MODEL), nvidia
+(NVIDIA_API_KEY, NVIDIA_MODEL, default openai/gpt-oss-120b; build.nvidia.com API catalog, strict json_schema,
+top-level reasoning_effort) or
 openrouter (OPENROUTER_API_KEY, OPENROUTER_MODEL, default openai/gpt-oss-120b; strict json_schema
 with provider.require_parameters, so only upstreams that support it are used; the upstream that
 served each call is logged as usage.served_by). --openrouter-upstream SLUG pins OpenRouter to one
@@ -38,7 +40,8 @@ as openrouter_upstream in every record. This script (only) loads the git-ignored
 .env with python-dotenv, and refuses if .env is not git-ignored.
 
 Pacing defaults depend on the provider (PACING_DEFAULTS; --rpm/--tpm override): Groq 25 RPM and
-7,000 TPM (its gpt-oss base limits are 30 RPM / 8K TPM); OpenRouter 60 RPM and 100,000 TPM.
+7,000 TPM (its gpt-oss base limits are 30 RPM / 8K TPM); OpenRouter 60 RPM and 100,000 TPM; NVIDIA 30 RPM
+and 60,000 TPM (the build.nvidia.com trial limits are not published; about 40 RPM is commonly reported).
 OpenRouter documents no platform-level request cap for paid models: the practical limits are the
 credit balance, an in-flight spending budget, and the upstream's own limits (429s, retried with
 backoff). Calls are sequential (about 1 s each), so 60 RPM is roughly the natural pace, and
@@ -83,7 +86,8 @@ BACKOFF_BASE, BACKOFF_CAP = 2.0, 120.0
 OUTPUT_TOKEN_ALLOWANCE = 400  # first restaurant of a call: reasoning + JSON
 OUTPUT_TOKENS_PER_EXTRA = 150  # each further restaurant in a batch
 SEED = 6165
-PACING_DEFAULTS = {"groq": {"rpm": 25, "tpm": 7000}, "openrouter": {"rpm": 60, "tpm": 100_000}}
+PACING_DEFAULTS = {"groq": {"rpm": 25, "tpm": 7000}, "openrouter": {"rpm": 60, "tpm": 100_000},
+                   "nvidia": {"rpm": 30, "tpm": 60_000}}
 NO_EVIDENCE_REASON = "No reviews were shown for this restaurant, so there is no evidence for the need."
 USAGE_KEYS = ("prompt_tokens", "completion_tokens", "reasoning_tokens", "total_tokens")
 
@@ -428,9 +432,9 @@ def main(argv=None, client=None):
     ap.add_argument("--seed", type=int, default=SEED, help="seed for the order of restaurants within a batch")
     ap.add_argument("--limit", type=int, default=None, help="label at most this many new pairs")
     ap.add_argument("--rpm", type=int, default=None,
-                    help="max requests per minute (default: groq 25, openrouter 60)")
+                    help="max requests per minute (default: groq 25, openrouter 60, nvidia 30)")
     ap.add_argument("--tpm", type=int, default=None,
-                    help="max tokens per minute, and per call (default: groq 7000, openrouter 100000)")
+                    help="max tokens per minute, and per call (default: groq 7000, openrouter 100000, nvidia 60000)")
     ap.add_argument("--openrouter-upstream", default=None, metavar="SLUG",
                     help="pin OpenRouter to one upstream provider slug (e.g. crusoe); no fallbacks")
     ap.add_argument("--max-retries", type=int, default=5)
@@ -484,8 +488,8 @@ def main(argv=None, client=None):
 
     if client is None:
         ensure_env_ignored()
-    from src.llm import groq_client, openrouter_client
-    backend = openrouter_client if args.provider == "openrouter" else groq_client
+    from src.llm import groq_client, nvidia_client, openrouter_client
+    backend = {"groq": groq_client, "openrouter": openrouter_client, "nvidia": nvidia_client}[args.provider]
     try:
         model = backend.resolve_model(args.model)
     except LLMConfigurationError as e:

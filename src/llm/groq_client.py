@@ -159,7 +159,7 @@ def _usage(response):
             "reasoning_tokens": count(details, "reasoning_tokens"), "total_tokens": count(usage, "total_tokens")}
 
 
-PROVIDERS = ("groq", "openrouter")
+PROVIDERS = ("groq", "openrouter", "nvidia")
 _SERVED_BY = re.compile(r"^[\w .()/-]{1,64}$")
 _UPSTREAM_SLUG = re.compile(r"^[a-z0-9][a-z0-9._-]{0,63}(/[a-z0-9._-]{1,32})?$")
 
@@ -196,6 +196,8 @@ def request_json(*, client, model, name, schema, system, payload, reasoning_effo
     openrouter_upstream (OpenRouter only): pin routing to that provider slug with
     provider={"require_parameters": true, "order": [slug], "allow_fallbacks": false}; the request
     fails rather than going to another upstream.
+    provider="nvidia" (src.llm.nvidia_client; judge only) requests strict json_schema and sends the
+    top-level reasoning_effort, as NVIDIA's gpt-oss-120b API reference documents.
     """
     if provider not in PROVIDERS:
         raise LLMConfigurationError(f"provider must be one of {PROVIDERS}.", code="invalid_provider")
@@ -217,6 +219,14 @@ def request_json(*, client, model, name, schema, system, payload, reasoning_effo
         extra = {"extra_body": body}
         if client is None:
             client = openrouter_client.get_client()
+    elif provider == "nvidia":
+        from src.llm import nvidia_client
+        model = nvidia_client.resolve_model(model)
+        provider_name, strict = nvidia_client.PROVIDER_NAME, True
+        # NVIDIA's API reference: top-level reasoning_effort for gpt-oss (low/medium/high).
+        extra = {"reasoning_effort": reasoning_effort} if reasoning_effort and supports_reasoning_effort(model) else {}
+        if client is None:
+            client = nvidia_client.get_client()
     else:
         model = resolve_model(model)
         if model not in SCHEMA_MODELS:
