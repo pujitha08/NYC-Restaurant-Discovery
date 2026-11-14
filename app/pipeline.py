@@ -30,6 +30,7 @@ from typing import Dict, List, Optional
 from types import SimpleNamespace
 
 from eval.make_pool import RETRIEVERS, SYSTEMS
+from src.allergy import ALLERGEN_NAMES, ALLERGY_TERMS  # noqa: F401 (re-exported)
 from src.config import BOROUGHS
 from src.llm import evidence_summarizer, query_parser
 from src.llm.evidence_summarizer import MAX_USER_REQUEST, summarize_evidence
@@ -44,6 +45,7 @@ ENV_PATH = REPO / ".env"
 
 # The evaluated systems (eval/make_pool.py SYSTEMS): name -> (retriever, extra search arguments).
 METHODS = {name: (retriever, kwargs) for name, retriever, kwargs in SYSTEMS}
+STANCE_METHOD, STANCE_FALLBACK = "semantic_capped_stance", "semantic_capped"
 # PROVISIONAL: on all 35 queries (reports/metrics_summary.md) semantic_capped has the highest NDCG@10 (0.708
 # [0.631, 0.785]; doc_tfidf 0.612, semantic_log 0.616, chunk_tfidf 0.603) and P@10 lenient (0.666). Only the gain over
 # semantic_log survives Holm correction (p 0.024); vs doc_tfidf the unadjusted p is 0.053 and the Holm-adjusted
@@ -63,16 +65,6 @@ STATUS_NEUTRAL = "Reviews discuss this — read each claim"
 STATUS_PROBLEMS = "Reviews report problems"
 ALLERGY_NOTE = ("Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, "
                 "preparation and cross-contact before ordering.")
-ALLERGY_TERMS = re.compile(
-    r"\b(allerg\w*|celiac\w*|coeliac\w*|anaphyla\w*|epi-?pens?|cross[- ]?(?:contact|contaminat\w*)"
-    r"|(?:tree[- ]?)?nut[- ]free|peanut[- ]free|gluten[- ]intoleran\w*)\b", re.IGNORECASE)
-# FDA major allergens and common synonyms. A request naming one is guarded even without allergy wording
-# ("no peanuts please", "sesame-free"); this is deliberately over-cautious ("peanut noodles" is guarded too).
-# "gluten-free" alone is treated as a diet; celiac wording is caught by ALLERGY_TERMS.
-ALLERGEN_NAMES = re.compile(
-    r"\b(peanuts?|tree[- ]?nuts?|almonds?|cashews?|walnuts?|pecans?|pistachios?|hazelnuts?|macadamias?"
-    r"|shellfish|shrimps?|crabs?|lobsters?|prawns?|crawfish|sesame|tahini|soy|soya|soybeans?"
-    r"|eggs?|fish|milk|dairy|wheat)\b", re.IGNORECASE)
 LLM_REASONING_EFFORT = "low"  # parser and summarizer calls (gpt-oss); fewer reasoning tokens per search
 
 # docs/llm.md "Safe error contract and UI handling": category -> what the user is told.
@@ -324,7 +316,16 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
     if notice:
         outcome.notices.append(notice)
     t = time.monotonic()
-    outcome.results, raw = retrieve(query, retriever, method, outcome.boroughs, top_k, include_low_evidence)
+    try:
+        outcome.results, raw = retrieve(query, retriever, method, outcome.boroughs, top_k, include_low_evidence)
+    except LLMError as e:  # the re-ranker labels sentences with the LLM; without it, show the base ranking
+        if method != STANCE_METHOD:
+            raise
+        outcome.notices.append(f"Could not label the review sentences ({error_info(e)['message']}) "
+                               f"Showing the {STANCE_FALLBACK} ranking instead.")
+        base_retriever = load_fallback(retriever)
+        outcome.results, raw = retrieve(query, base_retriever, STANCE_FALLBACK, outcome.boroughs, top_k,
+                                        include_low_evidence)
     outcome.timings["retrieve_s"] = round(time.monotonic() - t, 3)
     if not outcome.results:
         outcome.notices.append("No restaurants matched. Try fewer or different words, or another borough.")
@@ -413,6 +414,11 @@ def log_event(path, kind, outcome, extra=None):
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(log_record(kind, outcome, extra), ensure_ascii=False) + "\n")
+
+
+def load_fallback(retriever):
+    """The base retriever under a re-ranker (it has a .base), or the retriever itself."""
+    return getattr(retriever, "base", retriever)
 
 
 def load_retriever(name):
