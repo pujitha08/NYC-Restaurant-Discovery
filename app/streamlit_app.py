@@ -254,7 +254,8 @@ def show_sidebar():
 
 
 def main():
-    st.set_page_config(page_title="NYC Restaurant Discovery", page_icon="🍽️")
+    st.set_page_config(page_title="NYC Restaurant Discovery", page_icon="🍽️", layout="wide",
+                       initial_sidebar_state="collapsed")
     st.title("NYC Restaurant Discovery")
     st.warning(CAVEAT)
     show_sidebar()
