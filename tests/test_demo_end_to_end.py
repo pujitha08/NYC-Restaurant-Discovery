@@ -73,12 +73,18 @@ class ExampleButtonsInDemoModeTests(unittest.TestCase):
                 self.assertEqual(len(cards), 10)
                 self.assertEqual([c.proto.expanded for c in cards], [True] + [False] * 9)  # the top card is open
                 self.assertEqual(at.status[0].label, "Showing a saved demo result")
-                notices = [i.value for i in at.info if "cached demo result" in i.value]
-                self.assertEqual(len(notices), 1)
+                notices = [m.value for m in at.markdown if 'class="notice-cache"' in m.value]
+                self.assertEqual(len(notices), 1)  # one notice, neutral style, with the saved date
                 self.assertRegex(notices[0], r"\(saved \d{4}-\d{2}-\d{2}\), not a live search")
+                self.assertFalse(any("cached demo result" in i.value for i in at.info))
                 self.assertFalse(any("cached demo result" in w.value.lower() for w in at.warning))
                 chips = next(m.value for m in at.markdown if 'class="chips"' in m.value)
-                self.assertIn("10 restaurants", chips)
+                self.assertNotIn("restaurants", chips)  # no count chip ...
+                self.assertEqual(at.subheader[0].value, "10 restaurants")  # ... the heading carries the count
+                for card in cards:
+                    self.assertLessEqual(card.label.count("★"), 1)
+                    if card.caption:
+                        self.assertNotIn("★", card.caption[0].value)  # the rating appears once per card
                 self.assertNotIn("Explain", [b.label for b in at.button])  # cached ranks 4+ have no live Explain
 
     def test_allergy_examples_keep_the_guard_and_the_full_caveat(self):

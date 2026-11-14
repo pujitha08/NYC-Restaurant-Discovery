@@ -44,6 +44,8 @@ CSS = """
 [class*="st-key-example_"] button { border-radius: 999px; padding: 0.15rem 0.9rem; border: 1px solid #C2410C;
   color: #9A3412; background: #FFFFFF; font-weight: 600; }
 [class*="st-key-example_"] button:hover { background: #FAF3EA; border-color: #9A3412; }
+.notice-cache { background: #F5F5F4; border: 1px solid #D6D3D1; border-left: 5px solid #C2410C; border-radius: 8px;
+  padding: 0.6rem 0.9rem; margin: 0.5rem 0; color: #1C1917; font-size: 0.95rem; }
 .claim { border-left: 6px solid #475569; background: #F8FAFC; padding: 0.55rem 0.9rem; margin: 0.6rem 0;
   border-radius: 0 8px 8px 0; }
 .claim-warning { border-left-color: #B91C1C; background: #FEF2F2; }
@@ -235,8 +237,8 @@ def show_result(view, outcome, raw, client, model):
     # and Explain / Expand all / Collapse all can set it. on_change="rerun" keeps that state in sync. The restaurant
     # name appears once, in this label; the card body shows rating, review count and address only.
     with st.expander(result_header(view), key=key, on_change="rerun"):
-        rating = f"★ {view.avg_rating:.1f}" if isinstance(view.avg_rating, (int, float)) else "no rating"
-        st.caption(f"{rating} · {view.num_reviews:,} reviews · {md(view.address)}")
+        # The rating is in the card title only; the address is shown without the restaurant name the title already has.
+        st.caption(f"{view.num_reviews:,} reviews · {md(clean_address(view.name, view.address))}")
         if view.low_evidence:
             st.caption("⚠ Low evidence: fewer than 5 usable reviews.")
         show_stance(view)
@@ -269,8 +271,7 @@ def compare_row(view, change=None):
 
 
 def show_compare(cmp):
-    for notice in cmp.notices:
-        st.info(notice)
+    show_notices(cmp.notices, cmp.base.cached)
     left, right = st.columns(2)
     left.markdown(f"**{compare.BASE_METHOD}**")
     for view in cmp.base.results:
@@ -292,8 +293,25 @@ def set_all_expanded(keys, value):
         st.session_state[key] = value
 
 
+def show_notices(notices, cached):
+    """Notices as info boxes, except the cached-demo notice (always first on a cached result): a neutral grey box with an
+    accent edge, so a saved result is not mistaken for a live status message."""
+    for i, notice in enumerate(notices):
+        if cached and i == 0:
+            st.markdown(f'<div class="notice-cache">📦 {html_text(squash(notice))}</div>', unsafe_allow_html=True)
+        else:
+            st.info(notice)
+
+
+def clean_address(name, address):
+    """The address without a leading "<restaurant name>, " (the data repeats the name there; the card title has it)."""
+    address = " ".join((address or "").split())
+    prefix = " ".join((name or "").split()).casefold() + ","
+    return address[len(prefix):].lstrip() if prefix != "," and address.casefold().startswith(prefix) else address
+
+
 def show_request_chips(outcome):
-    st.markdown(chips.CSS + chips.chips_html(chips.request_chips(outcome.parsed, outcome.boroughs, len(outcome.results))),
+    st.markdown(chips.CSS + chips.chips_html(chips.request_chips(outcome.parsed, outcome.boroughs)),
                 unsafe_allow_html=True)
 
 
@@ -468,8 +486,7 @@ def main():
         outcome, raw = st.session_state["last_search"]
         if outcome.allergy_sensitive:
             st.warning(CAVEAT)  # full strength only where the need is an allergy
-        for notice in outcome.notices:
-            st.info(notice)
+        show_notices(outcome.notices, outcome.cached)
         show_request_chips(outcome)
         show_parsed(outcome)
         if outcome.results:

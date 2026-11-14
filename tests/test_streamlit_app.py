@@ -112,7 +112,9 @@ class AppSmokeTests(unittest.TestCase):
         self.assertIn("One reviewer reported vegan options for a group.", body)
         self.assertIn("Review from 2019-01", body)
         self.assertNotIn("Place 1", body)  # the restaurant name is in the card label only, not repeated in the body
-        self.assertRegex(first.caption[0].value, r"^★ \d\.\d · \d+ reviews · 1 Main St")
+        self.assertRegex(first.caption[0].value, r"^\d+ reviews · 1 Main St")
+        self.assertNotIn("★", first.caption[0].value)  # the rating is in the card title only, not repeated in the body
+        self.assertEqual(first.label.count("★"), 1)
 
     def test_claim_html_escapes_model_and_review_text_and_labels_by_icon_text_and_color(self):
         from app.streamlit_app import claim_html, ordered_claims, quote_html
@@ -150,6 +152,32 @@ class AppSmokeTests(unittest.TestCase):
         card = pipeline.Claim("Staff took my  peanut\nallergy seriously", "support", [excerpt])
         from app.streamlit_app import claim_html
         self.assertIn("Staff took my peanut allergy seriously", claim_html(card, ["peanut"], guarded=True))
+
+    def test_clean_address_drops_only_a_leading_restaurant_name(self):
+        from app.streamlit_app import clean_address
+        self.assertEqual(clean_address("Pig and Khao", "Pig and Khao, 68 Clinton St, New York, NY 10002"), "68 Clinton St, New York, NY 10002")
+        self.assertEqual(clean_address("Pig and Khao", "pig  and khao, 68 Clinton St"), "68 Clinton St")  # case and spaces
+        self.assertEqual(clean_address("Mission", "1 Main St, Mission Hills"), "1 Main St, Mission Hills")  # not a prefix
+        self.assertEqual(clean_address("Mission", "Mission Chinese Food, 171 E Broadway"), "Mission Chinese Food, 171 E Broadway")
+        self.assertEqual(clean_address("", "1 Main St"), "1 Main St")
+        self.assertEqual(clean_address("X", None), "")
+
+    def test_card_body_does_not_repeat_the_restaurant_name_from_the_address(self):
+        class Named(FakeRetriever):
+            def info(self, gid):
+                m = dict(super().info(gid))
+                m["address"] = f"{m['name']}, 1 Main St, New York, NY"
+                return m
+        at = self.search(self.start(retrievers={"semantic": Named()}))
+        first = self.results(at)[0]
+        self.assertNotIn("Place 1", first.caption[0].value)
+        self.assertIn("1 Main St", first.caption[0].value)
+
+    def test_cache_notice_is_neutral_grey_with_an_accent_not_streamlit_blue(self):
+        from app.streamlit_app import CSS
+        rule = CSS[CSS.index(".notice-cache"):].split("}")[0]
+        self.assertIn("#F5F5F4", rule)  # neutral grey
+        self.assertIn("border-left: 5px solid #C2410C", rule)  # the app's accent
 
     def test_show_all_evidence_expander_holds_the_remaining_evidence(self):
         at = self.search(self.start(FakeClient(location=None, summary="mixed")))
@@ -210,9 +238,10 @@ class AppSmokeTests(unittest.TestCase):
                 next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
                 self.search(at)
                 self.assertEqual(client.calls, [])  # no model call
-                notices = [i.value for i in at.info if "cached demo result" in i.value]
-                self.assertEqual(len(notices), 1)  # one notice, with the saved date
+                notices = [m.value for m in at.markdown if 'class="notice-cache"' in m.value]
+                self.assertEqual(len(notices), 1)  # one notice, with the saved date, in the neutral style (not st.info blue)
                 self.assertRegex(notices[0], r"saved \d{4}-\d{2}-\d{2}")
+                self.assertFalse(any("cached demo result" in i.value for i in at.info))
                 self.assertFalse(any("cached demo result" in w.value.lower() for w in at.warning))
                 self.assertTrue(any(c.value.endswith("cached demo result") for c in at.caption))
                 self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
@@ -378,7 +407,8 @@ class AppSmokeTests(unittest.TestCase):
                 self.search(at)
         self.assertEqual(at.status[0].label, "Showing a saved demo result")
         self.assertIn("Loading the saved demo result: done", self.text(at.status[0]))
-        self.assertEqual(len([i for i in at.info if "cached demo result" in i.value]), 1)
+        self.assertEqual(len([m for m in at.markdown if 'class="notice-cache"' in m.value]), 1)
+        self.assertEqual(len([i for i in at.info if "cached demo result" in i.value]), 0)
 
     def test_full_caveat_only_above_allergy_results(self):
         plain = self.search(self.start(), "vegan options for a group")
@@ -400,7 +430,8 @@ class AppSmokeTests(unittest.TestCase):
         self.assertIn("chip-diet", chip_block)
         self.assertIn("vegan", chip_block)
         self.assertIn("Manhattan + Brooklyn", chip_block)
-        self.assertIn("4 restaurants", chip_block)
+        self.assertNotIn("restaurants", chip_block)  # the count is the heading, not a chip
+        self.assertEqual(at.subheader[0].value, "4 restaurants")
 
     def test_chips_show_a_named_borough_scope(self):
         at = self.search(self.start(FakeClient(location="Brooklyn")), "vegan options for a group in Brooklyn")
