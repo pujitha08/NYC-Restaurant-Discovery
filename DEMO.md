@@ -24,14 +24,22 @@ uses about 3.5-4K Groq tokens (parse plus 3 summaries) and Groq allows 8K tokens
 
 ## Reading the results
 
-Results are a compact list: each one is a collapsed row such as
-"1. Champs Diner — Brooklyn · ★ 4.5 · ✓ Supported". The badge is the evidence status (✓ Supported, ◐ Mixed
-evidence, ⚠ Reviews report problems, ○ Insufficient evidence, ℹ Reviews discuss this — read each claim, or
-"… Not summarized yet"), followed by "Low evidence" when it applies. Allergy queries never show ✓ or "Supported".
-Click a row to open it: address, review count, the summary with each claim and its cited excerpt and date,
-limitations, the allergy note and all retrieved excerpts. **Expand all** / **Collapse all** sit above the list.
-Results 4-10 say "Not summarized yet"; open one and click **Explain** (it stays open). A new search starts
-collapsed.
+The first screen is a title, a one-line value proposition, the search box with the four example chips right under it,
+borough pills, **Compare rankings** and **Demo mode** toggles, and a collapsed **Advanced settings** expander (retrieval
+method, "fewer than 5 reviews"). A slim note says reviews are historical and anecdotal; the full-strength warning
+appears only above allergy results.
+
+After a search, a staged progress box ("Understanding your request", "Searching 605K review passages", "Reading
+reviews", "Summarizing") collapses to one line, then chips show the parsed request (diets, allergens, borough, result
+count). Results are cards: the title row is "1. Champs Diner — Brooklyn · ★ 4.5 · ✓ Supported" (the badge is the
+evidence status: ✓ Supported, ◐ Mixed evidence, ⚠ Reviews report problems, ○ Insufficient evidence, ℹ Reviews discuss
+this — read each claim, or "… Not summarized yet"). The top card starts open. Inside a card: rating, review count and
+address; ONE status row (the verdict plus, for allergy requests, the allergy reminder); the top claim as a block with a
+colored left border and a plain label (Warning / Positive / Mention) and its best quote with the review date; and
+**Show all evidence** for the other claims and every retrieved excerpt. Warnings are ordered first, so the claim shown by
+default is never milder than a hidden one. Allergy requests never show "Supported" or "Positive": a supporting claim there
+is only a "Mention". Results 4-10 say "Not summarized yet"; open one and click **Explain**. **Expand all** / **Collapse
+all** sit above the list.
 
 ## Four demo queries
 
