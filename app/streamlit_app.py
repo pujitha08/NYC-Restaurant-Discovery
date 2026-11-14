@@ -52,9 +52,12 @@ CSS = """
 .claim-warning .claim-label { color: #991B1B; }
 .claim-positive .claim-label { color: #14532D; }
 .claim-text { color: #1C1917; font-size: 1rem; margin: 0.15rem 0 0.35rem 0; }
-.quote { margin: 0.35rem 0 0.1rem 0; padding: 0.1rem 0 0.1rem 0.75rem; border-left: 2px solid #A8A29E;
-  color: #1C1917; font-size: 0.95rem; }
-.quote-date { display: block; color: #44403C; font-size: 0.8rem; margin-top: 0.1rem; }
+/* Streamlit styles every blockquote with opacity 0.6, which fades dark text to grey (about 4:1 on the red claim background).
+   The selector below is more specific than Streamlit's and sets opacity and color explicitly. */
+.stApp blockquote.quote { margin: 0.35rem 0 0.1rem 0; padding: 0.1rem 0 0.1rem 0.75rem; border-left: 2px solid #A8A29E;
+  color: #1C1917 !important; opacity: 1 !important; font-size: 0.95rem; }
+.stApp blockquote.quote .quote-date { display: block; color: #44403C !important; opacity: 1 !important; font-size: 0.8rem;
+  margin-top: 0.1rem; }
 </style>
 """
 
