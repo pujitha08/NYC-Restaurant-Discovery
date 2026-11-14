@@ -13,7 +13,7 @@ stop and resume anywhere. This script is the budgeted driver for a rate-limited 
 - Dates in --blackout (default 2026-11-17 and 2026-11-18, demo days) are refused for the demo model.
 - Provider: NVIDIA or OpenRouter if their key is set in .env (much higher limits), else Groq.
 
-    python -m eval.label_stance [--chunk-tokens 100000] [--daily-limit 200000] [--dry-run]
+    python -m eval.label_stance [--dev-only] [--chunk-tokens 100000] [--daily-limit 200000] [--dry-run]
 """
 
 import argparse
@@ -123,6 +123,8 @@ def main(argv=None):
     ap.add_argument("--daily-limit", type=int, default=DAILY_TOKEN_LIMIT)
     ap.add_argument("--stop-fraction", type=float, default=STOP_FRACTION)
     ap.add_argument("--blackout", nargs="*", default=list(BLACKOUT), help="YYYY-MM-DD dates on which to refuse to run")
+    ap.add_argument("--dev-only", action="store_true",
+                    help="label only the 20 dev queries (keeps the test queries untouched until the weights are frozen)")
     ap.add_argument("--dry-run", action="store_true", help="only count the unlabeled sentences per query")
     args = ap.parse_args(argv)
 
@@ -144,13 +146,14 @@ def main(argv=None):
         sys.exit("The trained stance classifier exists, so no LLM labeling is needed.")
     queries = read_queries(args.queries)
     dev, test = split_queries([q["query_id"] for q in queries])
-    result = run(reranker, queries, dev + test, Ledger(), daily_limit=args.daily_limit, chunk=args.chunk_tokens,
+    order = dev if args.dev_only else dev + test
+    result = run(reranker, queries, order, Ledger(), daily_limit=args.daily_limit, chunk=args.chunk_tokens,
                  stop_fraction=args.stop_fraction, dry_run=args.dry_run)
-    done = [q for q in dev + test if result["status"].get(q) == 0]
+    done = [q for q in order if result["status"].get(q) == 0]
     left = sum(n for n in result["status"].values())
     print(f"This run: {result['calls']} calls, {result['sentences']:,} sentences, {result['tokens']:,} tokens"
           + (f"; stopped: {result['stopped']}" if result["stopped"] else ""))
-    print(f"Queries fully labeled so far: {len(done)} of {len(dev) + len(test)}; sentences still unlabeled "
+    print(f"Queries fully labeled so far: {len(done)} of {len(order)}; sentences still unlabeled "
           f"(in the queries visited): {left:,}")
 
 
