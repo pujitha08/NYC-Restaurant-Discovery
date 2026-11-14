@@ -12,7 +12,7 @@ import streamlit as st
 # Streamlit puts app/ on sys.path, not the repo root, so add it for `app`, `src` and `eval` imports.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import compare, demo_cache, pipeline  # noqa: E402
+from app import chips, compare, demo_cache, pipeline  # noqa: E402
 from src.config import STANCE_RERANK  # noqa: E402
 from app.highlight import highlight, highlight_terms, md  # noqa: E402,F401 (md is used by the tests)
 
@@ -228,6 +228,11 @@ def set_all_expanded(keys, value):
         st.session_state[key] = value
 
 
+def show_request_chips(outcome):
+    st.markdown(chips.CSS + chips.chips_html(chips.request_chips(outcome.parsed, outcome.boroughs, len(outcome.results))),
+                unsafe_allow_html=True)
+
+
 def show_parsed(outcome):
     with st.expander("How your request was understood"):
         p = outcome.parsed
@@ -341,6 +346,7 @@ def main():
         comparison = st.session_state["last_compare"]
         if comparison.base.allergy_sensitive:
             st.warning(CAVEAT)
+        show_request_chips(comparison.base)
         show_parsed(comparison.base)
         st.subheader("Compare rankings")
         show_compare(comparison)
@@ -351,6 +357,7 @@ def main():
             st.warning(CAVEAT)  # full strength only where the need is an allergy
         for notice in outcome.notices:
             st.info(notice)
+        show_request_chips(outcome)
         show_parsed(outcome)
         if outcome.results:
             st.subheader(f"{len(outcome.results)} restaurants")

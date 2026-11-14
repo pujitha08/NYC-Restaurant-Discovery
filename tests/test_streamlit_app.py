@@ -286,6 +286,20 @@ class AppSmokeTests(unittest.TestCase):
         self.assertEqual(labels[:5], ["Search", "Vegan group", "Peanut allergy", "Celiac safe", "Halal Chinese"])
         self.assertEqual(at.pills[0].label, "Borough")
 
+    def test_request_chips_appear_above_the_results(self):
+        at = self.search(self.start(), "vegan options for a group")
+        chip_block = next(m.value for m in at.markdown if 'class="chips"' in m.value)
+        self.assertIn("chip-diet", chip_block)
+        self.assertIn("vegan", chip_block)
+        self.assertIn("Manhattan + Brooklyn", chip_block)
+        self.assertIn("4 restaurants", chip_block)
+
+    def test_chips_show_a_named_borough_scope(self):
+        at = self.search(self.start(FakeClient(location="Brooklyn")), "vegan options for a group in Brooklyn")
+        block = next(m.value for m in at.markdown if 'class="chips"' in m.value)
+        self.assertIn("📍 Brooklyn</span>", block)
+        self.assertNotIn("Manhattan + Brooklyn", block)
+
     def test_borough_pill_filters_and_deselecting_means_both(self):
         retriever = FakeRetriever()
         at = self.start(retrievers={"semantic": retriever})
