@@ -4,7 +4,7 @@ No API calls were made and no label was modified. Baseline labels are the first 
 
 ## Summary
 
-- **Cause (best supported):** the judge saw the evidence. 29 of 29 flagged sampled calls have a prompt size matching the sheet's evidence (not an empty prompt). The wording comes from the rubric, which prescribes "no evidence found" for label 0 when the shown reviews are off-topic; the judge also applied the rubric's filter rule (e.g. 'bakery', 'brunch') more strictly than the human did.
+- **Cause (best supported):** the judge saw the evidence. 29 of 29 flagged sampled calls have a prompt size matching the sheet's evidence (not an empty prompt). The wording comes from the rubric, which prescribes "no evidence found" for label 0 when the shown reviews are off-topic; the five large disagreements plausibly reflect the judge applying the rubric's category-filter rule (e.g. 'bakery', 'brunch') or its strict allergy rule more strictly than the human did (a hypothesis: the reasons do not say).
 - **Size:** 274 of 883 model calls in the original 964 labels (31%), all labeled 0.
 - **Effect:** see section 4; semantic_capped vs doc_tfidf NDCG@10 difference: baseline: +0.097 (p 0.053, Holm 0.368); human labels override LLM on the sample: +0.076 (p 0.145, Holm 1.000); flagged no-evidence pairs dropped: +0.104 (p 0.046, Holm 0.323).
 
@@ -16,6 +16,15 @@ Of 964 labeled pairs, 883 are model calls and 81 are the no-evidence rule (no re
 |---|---|---|---|
 | groq | 174 | 324 | 54% |
 | openrouter/crusoe | 100 | 559 | 18% |
+
+Provider and category are confounded (each provider judged a different mix of queries), so the provider gap above is also shown within each category (flagged / model calls):
+
+| Category | groq | openrouter/crusoe |
+|---|---|---|
+| single_diet | — | 40 / 331 |
+| mixed_group | 19 / 44 | 39 / 185 |
+| allergy | 121 / 202 | 17 / 32 |
+| diet_plus_filter | 34 / 78 | 4 / 11 |
 
 | Query category | Flagged | Model calls | Share |
 |---|---|---|---|
@@ -45,7 +54,7 @@ Local files: `eval/pool.csv` is the **old-format file (Nov 3, columns `best_snip
 
 For all 29 of the 29 flagged calls the reported prompt size is closer to the prompt rebuilt with the sheet's evidence than to the same prompt with no reviews, and the ratio is the same as for calls that did cite reviews. A prompt without the reviews would be about 12-14% smaller than the one reported. So **the judge was shown evidence of the size on your sheet for every flagged call**; it did not receive empty evidence.
 
-Sheet provenance: all 119/119 of the sheet's query texts equal `eval/queries_final.csv` (the frozen set), the sheet uses the `evidence_status` / `evidence_1..6` layout of `eval/make_pool.py` after commit 4bf191e (2026-11-10), and the sheet's 'none' rows (13) are exactly the rule-labeled calls (13 rule), while no row with evidence is rule-labeled (0). The judge ran 2026-11-12 20:14 UTC to 2026-11-13. `eval/make_sample.py` reads `--pool eval/pool.csv` (default); the exact pool file it read is not recorded in the sample, so its date and checksum could not be determined.
+Sheet provenance: 119 of 119 of the sheet's query texts equal `eval/queries_final.csv` (the frozen set), the sheet uses the `evidence_status` / `evidence_1..6` layout of `eval/make_pool.py` after commit 4bf191e (2026-11-10), and the sheet's 'none' rows (13) are exactly the rule-labeled calls (13 rule), while no row with evidence is rule-labeled (0). The judge ran 2026-11-12 20:14 UTC to 2026-11-13. `eval/make_sample.py` reads `--pool eval/pool.csv` (default); the exact pool file it read is not recorded in the sample, so its date and checksum could not be determined.
 
 ## 3. The 29 flagged pairs on your sheet
 
@@ -85,7 +94,7 @@ Sheet provenance: all 119/119 of the sheet's query texts equal `eval/queries_fin
 
 ## 4. Sensitivity of NDCG@10
 
-Rankings: rebuilt from the local indexes; against the published `reports/metrics_per_query.csv` the baseline per-query NDCG@10 differs by at most 0.0000 over 175 (system, query) values (the baseline reproduces the published numbers).
+Rankings: from eval/runs.csv; against the published `reports/metrics_per_query.csv` the baseline per-query NDCG@10 differs by at most 0.0000 over 175 (system, query) values (the baseline reproduces the published numbers).
 
 Human override changes the label of 30 of 119 sampled pairs. Dropping removes 274 flagged pairs from the rankings (renumbering the ranks below them); since all flagged labels are 0, this changes NDCG only by moving later results up. Treating them as unjudged instead would leave NDCG unchanged (a missing label counts as 0).
 

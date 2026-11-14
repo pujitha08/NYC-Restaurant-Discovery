@@ -200,7 +200,7 @@ def write_report(path, *, info):
           "`evidence_status` / `evidence_1..6` layout of `eval/make_pool.py` after commit 4bf191e (2026-11-10), and "
           f"{info['sheet_rule_note']} The judge ran 2026-11-12 20:14 UTC to 2026-11-13. `eval/make_sample.py` reads `--pool eval/pool.csv` (default); "
           "the exact pool file it read is not recorded in the sample, so its date and checksum could not be determined.", "",
-          "## 3. The 29 flagged pairs on your sheet", "", info["cross": cross_tab(original, categories), "flagged_table_intro"], "",
+          "## 3. The 29 flagged pairs on your sheet", "", info["flagged_table_intro"], "",
           "| Sample | Query (category) | Restaurant | Human | LLM | Your note |", "|---|---|---|---|---|---|"]
     L += info["flagged_rows"]
     L += ["", "## 4. Sensitivity of NDCG@10", "",
@@ -292,6 +292,7 @@ def main(argv=None):
         "sheet_query_match": f"{sum(p['query_id'] in categories for p in matched)} of {len(matched)}",
         "n_override": len(human), "n_override_changed": sum(finals[k]["label"] != v for k, v in human.items()),
         "n_dropped": len(cen["keys"]),
+        "cross": cross_tab(original, categories),
         "flagged_table_intro": (f"{len(flagged_pairs)} sampled pairs; your label vs the LLM's: agree {gap[0]}, one step apart {gap[1]}, two steps apart {gap[2]} "
                                 f"(your labels: {dict(Counter(p['human'] for p in flagged_pairs))})."),
         "flagged_rows": [f"| {p['sample_id']} | {p['query']} ({cat.get(p['query_id'], '?')}) | {vr.cell(p['name'])} | {p['human']} | {p['llm']} | {vr.cell(p.get('note')) or '—'} |"
