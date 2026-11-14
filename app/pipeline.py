@@ -44,10 +44,11 @@ ENV_PATH = REPO / ".env"
 
 # The evaluated systems (eval/make_pool.py SYSTEMS): name -> (retriever, extra search arguments).
 METHODS = {name: (retriever, kwargs) for name, retriever, kwargs in SYSTEMS}
-# PROVISIONAL (2026-11-12): semantic_capped had the highest NDCG@10 (0.777) and P@10 (0.872) in
-# reports/metrics_summary.md, but on LLM-judge labels not yet validated against human labels, only the 18
-# fully judged queries (single diet and mixed group; no allergy or diet-plus-filter queries), and no
-# difference between systems is significant (Holm-adjusted p >= 0.93). Revisit after the full pool is judged.
+# PROVISIONAL: on all 35 queries (reports/metrics_summary.md) semantic_capped has the highest NDCG@10 (0.708
+# [0.631, 0.785]; doc_tfidf 0.612, semantic_log 0.616, chunk_tfidf 0.603) and P@10 lenient (0.666). Only the gain over
+# semantic_log survives Holm correction (p 0.024); vs doc_tfidf the unadjusted p is 0.053 and the Holm-adjusted
+# p 0.368, so it is NOT significantly better than doc_tfidf. Labels are LLM-judge labels not yet validated against
+# human labels, and this default was chosen using the same 35 queries it is scored on (no held-out set).
 DEFAULT_METHOD = "semantic_capped"
 BOROUGH_CHOICES = ["Both", *BOROUGHS]
 TOP_K = 10
