@@ -30,6 +30,16 @@ GUARDED_CLAIM_MARK = {**CLAIM_MARK, "support": "• Reviewer report"}
 _MD_SPECIAL = re.compile(r"([\\`*_{}\[\]<>#|$~])")
 
 
+# One-click examples: the four DEMO.md queries (query and borough from app/demo_cache.py), with a short button label.
+EXAMPLE_LABELS = ["Vegan group", "Peanut allergy", "Celiac safe", "Halal Chinese"]
+EXAMPLES = [(label, query, borough) for label, (query, borough, _) in zip(EXAMPLE_LABELS, demo_cache.DEMO_QUERIES)]
+
+
+def pick_example(query, borough):
+    """Button callback: fill the form and ask main() to run the search on the next run."""
+    st.session_state.update(query=query, borough=borough, run_example=True)
+
+
 def md(text):
     """Escape untrusted review/model text for st.markdown (e.g. '$3' would otherwise start LaTeX)."""
     return _MD_SPECIAL.sub(r"\\\1", text)
@@ -164,10 +174,14 @@ def main():
                  "then restart the app.")
 
     methods = list(pipeline.METHODS)
+    st.caption("Try an example:")
+    for col, (label, example, example_borough) in zip(st.columns(len(EXAMPLES)), EXAMPLES):
+        col.button(label, key=f"example_{label}", help=f"{example} ({example_borough})", use_container_width=True,
+                   on_click=pick_example, args=(example, example_borough))
     with st.form("search"):
-        query = st.text_input("What are you looking for?",
+        query = st.text_input("What are you looking for?", key="query",
                               placeholder="e.g. nut-free brunch in Brooklyn for a group with a vegan friend")
-        borough = st.radio("Borough", pipeline.BOROUGH_CHOICES, horizontal=True)
+        borough = st.radio("Borough", pipeline.BOROUGH_CHOICES, horizontal=True, key="borough")
         method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
         include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
         demo_mode = st.checkbox("Demo mode (serve saved results for the demo queries)",
@@ -175,7 +189,7 @@ def main():
                                      "without calling the language model. Other queries run live.")
         submitted = st.form_submit_button("Search")
 
-    if submitted:
+    if submitted or st.session_state.pop("run_example", False):
         if not query.strip():
             st.warning("Type what you are looking for first.")
         else:

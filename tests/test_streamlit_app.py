@@ -40,9 +40,13 @@ class AppSmokeTests(unittest.TestCase):
         self.assertFalse(at.exception, at.exception)
         return at
 
+    @staticmethod
+    def button(at, label):
+        return next(b for b in at.button if b.label == label)
+
     def search(self, at, query="vegan options for a group"):
         at.text_input[0].input(query)
-        at.button[0].click()  # the form's Search button
+        self.button(at, "Search").click()
         at.run()
         self.assertFalse(at.exception, at.exception)
         return at
@@ -147,6 +151,26 @@ class AppSmokeTests(unittest.TestCase):
                 self.assertTrue(any(c.value.endswith("cached demo result") for c in at.caption))
                 self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
 
+    def test_example_buttons_fill_the_form_and_run_the_search(self):
+        client = FakeClient(location=None)
+        at = self.start(client)
+        labels = [b.label for b in at.button if b.label != "Search"]
+        self.assertEqual(labels[:4], ["Vegan group", "Peanut allergy", "Celiac safe", "Halal Chinese"])
+        self.button(at, "Peanut allergy").click()
+        at.run()
+        self.assertFalse(at.exception, at.exception)
+        self.assertEqual(at.text_input[0].value, "restaurant careful about peanut allergies")
+        self.assertEqual(at.radio[0].value, "Both")
+        self.assertEqual(len(self.results(at)), 4)  # the search ran without pressing Search
+        self.assertEqual(client.calls[0], "parsed_query")
+        self.button(at, "Halal Chinese").click()
+        at.run()
+        self.assertEqual((at.text_input[0].value, at.radio[0].value), ("halal chinese food", "Manhattan"))
+
+    def test_examples_are_the_demo_queries(self):
+        from app.streamlit_app import EXAMPLES
+        self.assertEqual([(q, b) for _, q, b in EXAMPLES], [(q, b) for q, b, _ in demo_cache.DEMO_QUERIES[:4]])
+
     def test_missing_key_shows_setup_message_and_still_searches(self):
         setup = {"category": "configuration", "code": "invalid_api_key_configuration",
                  "message": pipeline.ERROR_MESSAGES["configuration"]}
@@ -158,7 +182,7 @@ class AppSmokeTests(unittest.TestCase):
 
     def test_empty_query_and_markdown_escaping(self):
         at = self.start()
-        at.button[0].click()
+        self.button(at, "Search").click()
         at.run()
         self.assertIn("Type what you are looking for", " ".join(w.value for w in at.warning))
         from app.streamlit_app import md  # noqa: imported after AppTest so st is configured
