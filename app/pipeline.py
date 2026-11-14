@@ -453,6 +453,26 @@ def log_event(path, kind, outcome, extra=None):
         f.write(json.dumps(log_record(kind, outcome, extra), ensure_ascii=False) + "\n")
 
 
+def data_stats(processed_dir=None):
+    """Data scale for the sidebar, read from data/processed (missing files are simply left out).
+
+    Keys: restaurants, reviews (clean reviews kept), chunks (semantic index), index_built (date).
+    """
+    base = Path(processed_dir) if processed_dir else REPO / "data" / "processed"
+    stats = {}
+    for name, keys in (("cleaning_stats.json", {"restaurants": "restaurants", "reviews": "kept"}),
+                       ("semantic/info.json", {"chunks": "chunk_count", "index_built": "build_date"})):
+        try:
+            raw = json.loads((base / name).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for out_key, key in keys.items():
+            value = raw.get(key) if isinstance(raw, dict) else None
+            if isinstance(value, (int, str)) and not isinstance(value, bool):
+                stats[out_key] = value[:10] if out_key == "index_built" else value
+    return stats
+
+
 def load_fallback(retriever):
     """The base retriever under a re-ranker (it has a .base), or the retriever itself."""
     return getattr(retriever, "base", retriever)

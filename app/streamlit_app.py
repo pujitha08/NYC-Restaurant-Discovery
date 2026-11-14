@@ -57,6 +57,25 @@ STATUS_BADGE = {
     pipeline.STATUS_INSUFFICIENT: "○ Insufficient evidence",
     pipeline.STATUS_NEUTRAL: f"ℹ {pipeline.STATUS_NEUTRAL}",
 }
+BADGE_LEGEND = [
+    (STATUS_BADGE[pipeline.STATUS_SUPPORTED], "the reviews shown back up your request (never shown for allergy requests)"),
+    (STATUS_BADGE[pipeline.STATUS_MIXED], "some reviews support your request and others contradict it"),
+    (STATUS_BADGE[pipeline.STATUS_PROBLEMS], "reviewers warn about this need; read the warnings"),
+    (STATUS_BADGE[pipeline.STATUS_INSUFFICIENT], "the reviews shown don't establish it either way"),
+    (STATUS_BADGE[pipeline.STATUS_NEUTRAL], "used for allergy requests: reviews mention the topic, so read each claim"),
+    ("… Not summarized yet", "open the result and click Explain"),
+    ("Low evidence", "fewer than 5 usable reviews for this restaurant"),
+]
+PIPELINE_STAGES = [
+    ("Understand", "a language model turns your request into diets, allergens and group needs."),
+    ("Retrieve", "your words are matched to review passages by meaning (sentence embeddings); restaurants are "
+                 "ranked by their best matching passages."),
+    ("Re-rank (optional)", "the *stance* method reads the evidence sentences and moves restaurants whose "
+                           "reviews warn down and those that accommodate up."),
+    ("Summarize", "the model summarizes what the retrieved reviews say, citing each review."),
+]
+ANECDOTE_NOTE = ("Review text is anecdotal, and allergy suitability cannot be confirmed from reviews. "
+                 "Always ask the restaurant.")
 BADGE_NOT_SUMMARIZED = "… Not summarized yet"
 BADGE_UNAVAILABLE = "Summary unavailable"
 PENDING_OPEN = "pending_open"  # expander key to open on the next run (set after Explain, before st.rerun)
@@ -205,10 +224,39 @@ def show_parsed(outcome):
         st.caption("Diets and allergens guide the summaries; they are not hard filters on the results.")
 
 
+@st.cache_data
+def get_data_stats():
+    return pipeline.data_stats()
+
+
+def show_sidebar():
+    with st.sidebar:
+        st.header("How it works")
+        for n, (name, text) in enumerate(PIPELINE_STAGES, 1):
+            st.markdown(f"**{n}. {name}:** {text}")
+        stats = get_data_stats()
+        parts = []
+        if "restaurants" in stats:
+            parts.append(f"{stats['restaurants']:,} restaurants in Manhattan and Brooklyn")
+        if "reviews" in stats:
+            parts.append(f"{stats['reviews']:,} cleaned Google reviews through {pipeline.DATA_THROUGH}")
+        if "chunks" in stats:
+            parts.append(f"{stats['chunks']:,} review passages in the search index")
+        if parts:
+            st.markdown("**The data:** " + "; ".join(parts) + ".")
+        st.subheader("Reading the badges")
+        for badge, meaning in BADGE_LEGEND:
+            st.markdown(f"**{badge}**: {meaning}")
+        st.markdown("**🟩🟥🟨⬜ bar**: review sentences that accommodate the need, warn about it, mention it, "
+                    "or aren't about it.")
+        st.info(ANECDOTE_NOTE)
+
+
 def main():
     st.set_page_config(page_title="NYC Restaurant Discovery", page_icon="🍽️")
     st.title("NYC Restaurant Discovery")
     st.warning(CAVEAT)
+    show_sidebar()
 
     client, model, setup_error = get_llm()
     if setup_error:

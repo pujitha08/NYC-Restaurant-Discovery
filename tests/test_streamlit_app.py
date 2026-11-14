@@ -29,6 +29,8 @@ class AppSmokeTests(unittest.TestCase):
         log.start()
         self.addCleanup(log.stop)
         self.addCleanup(st.cache_resource.clear)
+        st.cache_data.clear()  # the sidebar's data stats are cached
+        self.addCleanup(st.cache_data.clear)
 
     def start(self, client=FakeClient(location=None), setup_error=None, retrievers=None):
         llm = (pipeline.UsageRecorder(client), "openai/gpt-oss-20b", None) if client else (None, None, setup_error)
@@ -248,6 +250,23 @@ class AppSmokeTests(unittest.TestCase):
         at.run()
         self.assertNotIn("accommodate", self.text(self.results(at)[0]))
         self.assertFalse(any("Strongest warning" in w.value for w in at.warning))
+
+    def test_sidebar_explains_stages_data_badges_and_the_anecdote_note(self):
+        with patch.object(pipeline, "data_stats", lambda: {"restaurants": 15447, "reviews": 2156429, "chunks": 605540}):
+            at = self.start()
+        side = " ".join(m.value for m in at.sidebar.markdown) + " " + " ".join(i.value for i in at.sidebar.info)
+        for needle in ("1. Understand", "2. Retrieve", "3. Re-rank (optional)", "4. Summarize", "15,447 restaurants",
+                       "2,156,429 cleaned Google reviews", "605,540 review passages", "✓ Supported", "◐ Mixed evidence",
+                       "⚠ Reviews report problems", "○ Insufficient evidence", "Low evidence",
+                       "Review text is anecdotal", "allergy suitability cannot be confirmed from reviews"):
+            self.assertIn(needle, side)
+
+    def test_sidebar_without_data_files_still_renders(self):
+        with patch.object(pipeline, "data_stats", lambda: {}):
+            at = self.start()
+        side = " ".join(m.value for m in at.sidebar.markdown)
+        self.assertIn("How it works", " ".join(h.value for h in at.sidebar.header))
+        self.assertNotIn("The data:", side)
 
     def test_examples_are_the_demo_queries(self):
         from app.streamlit_app import EXAMPLES

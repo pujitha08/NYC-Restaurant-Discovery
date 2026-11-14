@@ -61,6 +61,17 @@ Use the default method (`semantic_capped`) unless noted.
 Point out the caveat at the top (reviews end September 2021; not safety guarantees) and that rankings reflect review
 relevance, not safety.
 
+## Page features
+
+- **Try an example**: four buttons (the queries below) fill the box and borough and run the search.
+- **Compare rankings** (tick in the form): `semantic_capped` and `semantic_capped_stance` side by side, with
+  ▲/▼/new marks on the stance column and a "🟩 accommodate / 🟥 warns / 🟨 mention" bar per restaurant. The stance
+  column labels review sentences with the model on first use for a query (about 5 Groq calls, about a minute);
+  with **Demo mode** on it uses only labels already saved on disk and otherwise shows the base ranking alone.
+  No summaries in this view.
+- **Evidence bar**: results ranked by `semantic_capped_stance` show the same bar and the strongest warning sentence.
+- Query terms are highlighted in the review excerpts; the sidebar explains the stages, the data size and the badges.
+
 ## Cached demo results (offline / rate-limit fallback)
 
 The four queries above (and `halal chinese food` with `semantic_log`) are saved in `data/demo_cache/*.json`

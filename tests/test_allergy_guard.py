@@ -254,8 +254,8 @@ class GuardUiTests(unittest.TestCase):
         at = self.run_app(MISSION_CONTRADICTIONS)
         warnings = [w.value for w in at.warning]
         self.assertTrue(any("Reviews report problems" in w for w in warnings), warnings)
-        self.assertNotIn("Reviews report problems", " ".join(m.value for m in at.markdown))  # not plain text
-        self.assertIn("⚠ **Contradicts**", " ".join(m.value for m in at.markdown))
+        self.assertNotIn("Reviews report problems", " ".join(m.value for m in at.main.markdown))  # not plain text
+        self.assertIn("⚠ **Contradicts**", " ".join(m.value for m in at.main.markdown))
 
     def test_mission_shows_no_check_marks_or_supported(self):
         st.cache_resource.clear()
@@ -272,7 +272,7 @@ class GuardUiTests(unittest.TestCase):
             at.button[0].click()
             at.run()
         self.assertFalse(at.exception, at.exception)
-        text = " ".join(m.value for m in at.markdown)
+        text = " ".join(m.value for m in at.main.markdown)
         self.assertIn("Reviews discuss this — read each claim", text)
         self.assertNotIn("✓", text)
         self.assertNotIn("**supported**", text)

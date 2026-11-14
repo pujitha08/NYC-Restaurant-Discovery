@@ -248,3 +248,22 @@ class BoroughTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DataStatsTests(unittest.TestCase):
+    def test_reads_cleaning_stats_and_semantic_info(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            (base / "semantic").mkdir()
+            (base / "cleaning_stats.json").write_text(json.dumps({"restaurants": 15447, "kept": 2156429}))
+            (base / "semantic" / "info.json").write_text(json.dumps({"chunk_count": 605540, "build_date": "2026-11-14T01:56:05+00:00"}))
+            self.assertEqual(pipeline.data_stats(base), {"restaurants": 15447, "reviews": 2156429, "chunks": 605540,
+                                                         "index_built": "2026-11-14"})
+
+    def test_missing_or_broken_files_are_left_out(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(pipeline.data_stats(tmp), {})
+            (Path(tmp) / "cleaning_stats.json").write_text("{broken")
+            (Path(tmp) / "semantic").mkdir()
+            (Path(tmp) / "semantic" / "info.json").write_text(json.dumps({"chunk_count": "many", "other": 1}))
+            self.assertEqual(pipeline.data_stats(tmp), {"chunks": "many"})  # no crash on odd values
