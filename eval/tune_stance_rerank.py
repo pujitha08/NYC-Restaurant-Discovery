@@ -153,6 +153,16 @@ def example_section(features, labels, queries, weights, info, qid_by_text):
     return L
 
 
+DEV_TITLE = "Dev split (weights were tuned here: optimistic)"
+
+
+def sections(dev, test):
+    """(title, query ids) to report. With no test queries (dev-only run) the test split is not touched at all."""
+    if not test:
+        return [(DEV_TITLE, dev)]
+    return [("Held-out test split", test), (DEV_TITLE, dev), ("All 35 queries (includes the dev queries: optimistic)", dev + test)]
+
+
 def write_report(path, *, args, dev, test, tuned, grid_results, tbl, features, labels, categories, info, qid_by_text,
                  new_pairs, labeler_id):
     cat_n = lambda ids: ", ".join(f"{c} {sum(categories.get(q) == c for q in ids)}" for c in CATEGORY_ORDER)
@@ -160,15 +170,16 @@ def write_report(path, *, args, dev, test, tuned, grid_results, tbl, features, l
          "> **PROVISIONAL:** relevance labels are LLM-judge labels, not yet validated against human labels; stance labels "
          f"come from `{labeler_id}` and are not validated either.", "",
          f"- Labels: `{rel(args.labels)}` ({len(labels)} labeled pairs); queries: `{rel(args.queries)}`",
-         f"- Split (seed {args.seed}): {len(dev)} dev queries ({cat_n(dev)}) and {len(test)} test queries ({cat_n(test)})",
+         (f"- Split (seed {args.seed}): {len(dev)} dev queries ({cat_n(dev)}) and {len(test)} test queries ({cat_n(test)})"
+          if test else f"- **DEV-ONLY RUN:** {len(dev)} of {args.n_dev_total} dev queries had cached stance labels ({cat_n(dev)}); "
+                       f"{len(args.unlabeled_dev)} dev queries still unlabeled. The test queries were not labeled, scored or used."),
          f"- Weights were tuned on the dev queries only (grid of {len(grid_results)} settings, objective: mean dev NDCG@10). "
-         f"Chosen: w_pos {tuned['w_pos']}, w_neg {tuned['w_neg']}, w_strong_neg {tuned['w_strong_neg']}. "
+         f"Chosen{' (PARTIAL dev set: do not adopt)' if args.partial else ''}: w_pos {tuned['w_pos']}, w_neg {tuned['w_neg']}, w_strong_neg {tuned['w_strong_neg']}. "
          f"Starting weights (untuned): {INITIAL}.",
          f"- Re-ranks the top {args.top_n} of semantic_capped; per restaurant, its evidence sentences are labeled "
          "accommodation / mention / negative / not_about_allergy toward the query (`src/retrieval/stance_rerank.py`).",
          "- Unjudged top-10 results count as 0 (not relevant), for every system.", ""]
-    for title, ids in (("Held-out test split", test), ("Dev split (weights were tuned here: optimistic)", dev),
-                       ("All 35 queries (includes the dev queries: optimistic)", dev + test)):
+    for title, ids in sections(dev, test):
         L += [f"## {title} (n={len(ids)})", ""] + table(tbl[title]) + [""]
         L += ["NDCG@10 by category (tuned weights):", ""] + category_table(tbl[title][f"{STANCE}"]) + [""]
     L += ["## Before / after examples", "", f"Tuned weights; top 5 on the full query (all-35 view).", ""]
@@ -203,6 +214,9 @@ def main(argv=None):
     ap.add_argument("--seed", type=int, default=SEED)
     ap.add_argument("--resamples", type=int, default=N_RESAMPLES)
     ap.add_argument("--top-n", type=int, default=None)
+    ap.add_argument("--dev-only", action="store_true", help="use only the dev queries; the test split is never labeled or scored")
+    ap.add_argument("--cache-only", action="store_true",
+                    help="never call the labeler: skip queries whose sentence labels are not all cached")
     args = ap.parse_args(argv)
     for p in (args.labels, args.queries):
         if not p.exists():
@@ -217,21 +231,34 @@ def main(argv=None):
         sys.exit("The semantic index is not built; run: python -m src.retrieval.semantic --build")
     reranker = StanceReranker.from_defaults(semantic, top_n=args.top_n)
     queries, labels, categories = read_queries(args.queries), read_labels(args.labels), read_categories(args.queries)
-    features = {}
+    from src.retrieval.stance_rerank import LabelsUnavailable
+    all_dev, all_test = split_queries([q["query_id"] for q in queries], args.seed)
+    wanted = set(all_dev) if args.dev_only else set(all_dev) | set(all_test)
+    features, unlabeled = {}, []
     for q in queries:
+        if q["query_id"] not in wanted:
+            continue
         boroughs = [q["borough"].strip()] if q.get("borough", "").strip() else None
-        features[q["query_id"]] = (reranker.candidates(q["query"], boroughs), is_allergy_text(q["query"]))
+        try:
+            features[q["query_id"]] = (reranker.candidates(q["query"], boroughs, cache_only=args.cache_only),
+                                       is_allergy_text(q["query"]))
+        except LabelsUnavailable:
+            unlabeled.append(q["query_id"])
+            continue
         print(f"{q['query_id']}: {len(features[q['query_id']][0])} candidates labeled", flush=True)
 
-    dev, test = split_queries(features, args.seed)
+    dev = [q for q in all_dev if q in features]
+    test = [] if args.dev_only else [q for q in all_test if q in features]
+    args.partial = bool(unlabeled)
+    args.unlabeled_dev = [q for q in unlabeled if q in all_dev]
+    args.n_dev_total = len(all_dev)
+    if not dev:
+        sys.exit("No dev query has all its sentence labels cached; run python -m eval.label_stance first.")
     tuned, grid_results = grid_search(features, labels, dev, categories)
-    weights = {STANCE: tuned, "initial_weights": INITIAL}
     tbl = {}
-    for title, ids in (("Held-out test split", test), ("Dev split (weights were tuned here: optimistic)", dev),
-                       ("All 35 queries (includes the dev queries: optimistic)", dev + test)):
-        t = split_table(features, labels, ids, {STANCE: tuned, "stance_initial_weights": INITIAL}, categories,
-                        args.seed, args.resamples)
-        tbl[title] = t
+    for title, ids in sections(dev, test):
+        tbl[title] = split_table(features, labels, ids, {STANCE: tuned, "stance_initial_weights": INITIAL}, categories,
+                                 args.seed, args.resamples)
     unjudged = lambda ids: sum(g not in {gg for (qq, gg) in labels if qq == q}
                                for q in ids for g in top_ids(features[q][0], tuned, features[q][1]))
     new_pairs = {"dev": unjudged(dev), "test": unjudged(test), "all": unjudged(dev + test)}
@@ -240,6 +267,7 @@ def main(argv=None):
                  features=features, labels=labels, categories=categories, info=semantic.info, qid_by_text=qid_by_text,
                  new_pairs=new_pairs, labeler_id=reranker.labeler.id)
     args.weights_out.write_text(json.dumps({"weights": tuned, "dev": dev, "test": test, "seed": args.seed,
+                                            "partial_dev": args.partial,
                                             "unjudged_new_pairs": new_pairs}, indent=1))
     print(f"Tuned on {len(dev)} dev queries: {tuned}; new unjudged pairs in top-10: {new_pairs}")
     print(f"Wrote {args.out} and {args.weights_out}")

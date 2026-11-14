@@ -141,6 +141,7 @@ class LLMLabeler:
         self.batch_size, self.reasoning_effort, self.max_retries = batch_size, reasoning_effort, max_retries
         self.rpm, self.tpm, self._pacer = rpm, tpm, pacer
         self.calls = 0
+        self.tokens_used = 0  # reported total_tokens of the calls made through this labeler
 
     @property
     def model(self):
@@ -169,6 +170,7 @@ class LLMLabeler:
                                            reasoning_effort=self.reasoning_effort, return_usage=True)
                 self._pacer.adjust(usage.get("total_tokens"))
                 self.calls += 1
+                self.tokens_used += usage.get("total_tokens") or 0
                 return validate_labels(data, len(batch))
             except LLMResponseError as e:
                 last = e  # invalid answer: retry
@@ -178,6 +180,10 @@ class LLMLabeler:
                 last = e
             judge.sleep(judge.backoff_seconds(attempt))
         raise last
+
+    def label_batch(self, need, batch):
+        """One call for up to batch_size sentences (callers that budget tokens drive this directly)."""
+        return self._call(need, list(batch))
 
     def label(self, need, sentences):
         out = []

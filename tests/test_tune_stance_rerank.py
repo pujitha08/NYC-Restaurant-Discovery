@@ -98,7 +98,7 @@ class ReportTests(unittest.TestCase):
                 ("Held-out test split", test), ("Dev split (weights were tuned here: optimistic)", dev),
                 ("All 35 queries (includes the dev queries: optimistic)", qids))}
             tune.write_report(out, args=Namespace(labels=Path("eval/llm_labels.jsonl"), queries=Path("eval/queries_final.csv"),
-                                                  seed=6165, top_n=30), dev=dev, test=test, tuned=tuned,
+                                                  seed=6165, top_n=30, partial=False, n_dev_total=4, unlabeled_dev=[]), dev=dev, test=test, tuned=tuned,
                               grid_results=[0] * 144, tbl=full, features=f, labels=lab, categories=cats,
                               info=lambda g: {"name": g}, qid_by_text={"halal chinese food": "Q01"},
                               new_pairs={"dev": 0, "test": 0, "all": 0}, labeler_id="llm:test")
@@ -106,6 +106,27 @@ class ReportTests(unittest.TestCase):
         for needle in ("Held-out test split", "Limitations", "PROVISIONAL", "New pairs needing judge labels", "halal chinese food",
                        "Weights were tuned on the dev queries only"):
             self.assertIn(needle, text)
+
+    def test_dev_only_report_never_mentions_or_scores_test_queries(self):
+        f = features(6)
+        dev = list(f)[:4]
+        cats = {q: "allergy" for q in f}
+        lab = labels(list(f))
+        self.assertEqual([t for t, _ in tune.sections(dev, [])], [tune.DEV_TITLE])
+        tuned = {"w_pos": 0.3, "w_neg": 0.9, "w_strong_neg": 0.1}
+        tbl = {tune.DEV_TITLE: tune.split_table(f, lab, dev, {tune.STANCE: tuned}, cats, n=100)}
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "r.md"
+            tune.write_report(out, args=Namespace(labels=Path("l.jsonl"), queries=Path("q.csv"), seed=6165, top_n=30,
+                                                  partial=True, n_dev_total=20, unlabeled_dev=["Q09"] * 16),
+                              dev=dev, test=[], tuned=tuned, grid_results=[0] * 10, tbl=tbl, features=f, labels=lab,
+                              categories=cats, info=lambda g: {"name": g}, qid_by_text={},
+                              new_pairs={"dev": 1, "test": 0, "all": 1}, labeler_id="llm:test")
+            text = out.read_text()
+        self.assertIn("DEV-ONLY RUN", text)
+        self.assertIn("4 of 20 dev queries", text)
+        self.assertIn("PARTIAL dev set: do not adopt", text)
+        self.assertNotIn("Held-out test split (n=", text)
 
 
 if __name__ == "__main__":
