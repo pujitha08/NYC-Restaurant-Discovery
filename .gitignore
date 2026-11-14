@@ -51,3 +51,5 @@ eval/llm_labels*.jsonl
 
 # App request logs (queries, results, timings; never keys)
 logs/
+
+eval/pool_extended.csv
