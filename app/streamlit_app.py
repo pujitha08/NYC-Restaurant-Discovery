@@ -23,10 +23,22 @@ CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUG
           "guarantees. **For allergies, always confirm with the restaurant before you order.**")
 # Page styling: system fonts only (no web fonts, no external requests), a narrower reading column inside the wide layout,
 # and pill-shaped example buttons. Static text; nothing from users or reviews goes into it.
+#
+# The system font is applied to an explicit list of TEXT elements, never to a blanket or class-substring selector:
+# Streamlit draws its icons (sidebar toggle, expander arrows, ...) as text in the "Material Symbols" icon font, so any
+# rule that also reaches those spans turns the icons into raw words like "arrow_right". Icon elements are not in the list
+# and every selector in it also carries ICON_GUARD, so they stay excluded even if a text tag ever wraps one.
+SYSTEM_FONT = ('-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif')
+ICON_GUARD = (':not([data-testid="stIconMaterial"]):not(.material-symbols-rounded):not(.material-icons)'
+              ':not([class*="material" i])')
+TEXT_ELEMENTS = ("p", "h1", "h2", "h3", "h4", "h5", "h6", "li", "label", "a", "button", "input", "textarea", "select",
+                 "summary", "blockquote", "th", "td", "caption")
+TEXT_CONTAINERS = ('[data-testid="stMarkdownContainer"]', '[data-testid="stCaptionContainer"]')
+FONT_SELECTORS = (["html", "body"] + [f".stApp {tag}{ICON_GUARD}" for tag in TEXT_ELEMENTS]
+                  + [f".stApp {container}{ICON_GUARD}" for container in TEXT_CONTAINERS])
 CSS = """
 <style>
-html, body, [class*="st-"], button, input, textarea { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-  "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+""" + ",\n".join(FONT_SELECTORS) + " { font-family: " + SYSTEM_FONT + "; }" + """
 .block-container { max-width: 1100px; padding-top: 2rem; }
 .tagline { font-size: 1.15rem; color: #1C1917; margin: -0.5rem 0 0.25rem 0; }
 [class*="st-key-example_"] button { border-radius: 999px; padding: 0.15rem 0.9rem; border: 1px solid #C2410C;
