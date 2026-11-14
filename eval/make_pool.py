@@ -20,7 +20,8 @@ several systems appears once per query) and write:
 Both files are git-ignored.
 
 Systems (SYSTEMS): doc TF-IDF; chunk TF-IDF and semantic, each with the "log" and "capped"
-density modes. The semantic systems are skipped if its index has not been built
+density modes; and semantic_capped_stance (semantic_capped re-ranked by sentence stance, which calls
+the LLM labeler for sentences not yet in its on-disk cache). The semantic systems are skipped if its index has not been built
 (python -m src.retrieval.semantic --build).
 
 Run from the repo root:
@@ -61,6 +62,9 @@ def load_chunk_tfidf():
     return ChunkTfidfRetriever.load()
 
 
+_SEMANTIC = []  # the one loaded semantic retriever, shared by semantic and semantic_stance
+
+
 def load_semantic():
     """The sentence-embedding retriever, or None if its index has not been built.
 
@@ -71,11 +75,26 @@ def load_semantic():
     if not SemanticRetriever.exists():
         print("Semantic index not built; run: python -m src.retrieval.semantic --build")
         return None
-    return SemanticRetriever.load()
+    if not _SEMANTIC:
+        _SEMANTIC.append(SemanticRetriever.load())
+    return _SEMANTIC[0]
+
+
+def load_semantic_stance():
+    """semantic_capped re-ranked by sentence stance (src/retrieval/stance_rerank.py); None without the index."""
+    semantic = load_semantic()
+    if semantic is None:
+        return None
+    from src.retrieval.stance_rerank import StanceReranker
+    return StanceReranker.from_defaults(semantic)
 
 
 # Retriever name -> loader; each is loaded once and shared by its systems.
-RETRIEVERS = {"chunk_tfidf": load_chunk_tfidf, "doc_tfidf": load_doc_tfidf, "semantic": load_semantic}
+RETRIEVERS = {"chunk_tfidf": load_chunk_tfidf, "doc_tfidf": load_doc_tfidf, "semantic": load_semantic,
+              "semantic_stance": load_semantic_stance}
+# A retriever that re-ranks another one returns that one's evidence, so it counts as the same retriever when
+# pooled evidence is ordered by how many retrievers returned a review.
+EVIDENCE_FAMILY = {"semantic_stance": "semantic"}
 
 # (system name, retriever name, extra search() arguments). Order is the last tie-breaker for
 # pooled evidence, and decides which excerpt of a review is shown when retrievers cut it
@@ -86,6 +105,7 @@ SYSTEMS = [
     ("doc_tfidf", "doc_tfidf", {}),
     ("semantic_log", "semantic", {"density_mode": "log"}),
     ("semantic_capped", "semantic", {"density_mode": "capped"}),
+    ("semantic_capped_stance", "semantic_stance", {"density_mode": "capped"}),
 ]
 
 
@@ -148,7 +168,7 @@ def build_pool(queries, retrievers, systems=SYSTEMS, top_k=TOP_K, fallback=None)
                 if res.gmap_id not in found:
                     info = r.info(res.gmap_id)
                     found[res.gmap_id] = {"info": (info["name"], info["borough"]), "hits": []}
-                found[res.gmap_id]["hits"].append((rname, i, res.evidence_snippets))
+                found[res.gmap_id]["hits"].append((EVIDENCE_FAMILY.get(rname, rname), i, res.evidence_snippets))
         for gid in sorted(found, key=lambda g: shuffle_key(qid, g)):
             name, borough = found[gid]["info"]
             evidence, status = pool_evidence(found[gid]["hits"]), EVIDENCE_RETRIEVED

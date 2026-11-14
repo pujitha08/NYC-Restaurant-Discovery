@@ -85,7 +85,7 @@ def fixture():
         "capped": {"vegan": [result("G7", 1.8, [(701, "dense G7")]), result("G8", 1.7, [(801, "dense G8")])],
                    "celiac": [result("G9", 1.0, [(901, "dense G9")])]},
     })
-    return {"chunk_tfidf": chunk, "doc_tfidf": doc, "semantic": sem}
+    return {"chunk_tfidf": chunk, "doc_tfidf": doc, "semantic": sem, "semantic_stance": None}  # stance: see StanceTests
 
 
 class BuildPoolTests(unittest.TestCase):
@@ -170,7 +170,17 @@ class BuildPoolTests(unittest.TestCase):
         self.assertEqual(by_system[("Q1", "chunk_tfidf_log")], [(1, "G1", 0.9), (2, "G2", 0.8), (3, "G3", 0.7)])
         self.assertEqual(by_system[("Q1", "semantic_capped")], [(1, "G7", 1.8), (2, "G8", 1.7)])
         self.assertNotIn(("Q2", "semantic_log"), by_system)  # no results -> no rows
-        self.assertEqual({s for _, s in by_system}, {n for n, _, _ in make_pool.SYSTEMS})
+        self.assertEqual({s for _, s in by_system}, {n for n, _, _ in make_pool.SYSTEMS} - {"semantic_capped_stance"})
+
+    def test_stance_system_shares_the_semantic_evidence_family(self):
+        retrievers = fixture()
+        retrievers["semantic_stance"] = retrievers["semantic"]  # a re-ranker returns the base retriever's snippets
+        pool, runs, _ = make_pool.build_pool(QUERIES[:1], retrievers)
+        row = next(r for r in pool if r[COL["gmap_id"]] == "G7")
+        self.assertEqual(row[COL["evidence_review_ids"]], "701")  # not counted as a second retriever
+        self.assertIn("semantic_capped_stance", {r[1] for r in runs})
+        hits = [("semantic", 3, [snip(1, "a")]), (make_pool.EVIDENCE_FAMILY["semantic_stance"], 4, [snip(2, "b"), snip(1, "a")])]
+        self.assertEqual([s.review_id for s in make_pool.pool_evidence(hits)], [1, 2])
 
     def test_scores_round_trip_exactly(self):
         score = 0.1 + 0.2  # 0.30000000000000004
@@ -182,7 +192,7 @@ class BuildPoolTests(unittest.TestCase):
         self.assertEqual([c["density_mode"] for c in self.retrievers["chunk_tfidf"].calls], ["log", "capped"] * 2)
         self.assertEqual([c["density_mode"] for c in self.retrievers["semantic"].calls], ["log", "capped"] * 2)
         self.assertEqual(len(self.retrievers["doc_tfidf"].calls), 2)  # called without density_mode
-        for r in self.retrievers.values():
+        for r in filter(None, self.retrievers.values()):
             self.assertEqual([c["boroughs"] for c in r.calls][::len(r.calls) // 2], [["Brooklyn"], None])
             self.assertTrue(all(c["top_k"] == make_pool.TOP_K for c in r.calls))
 

@@ -51,7 +51,8 @@ K = 10
 GAIN_FORMULA = "gain = label (0, 1, 2); DCG@10 = sum_{i=1..10} gain_i / log2(i + 1); NDCG@10 = DCG@10 / IDCG@10"
 DENSITY_PAIRS = [("chunk_tfidf_log", "chunk_tfidf_capped"), ("semantic_log", "semantic_capped")]
 CATEGORY_ORDER = ["single_diet", "mixed_group", "allergy", "diet_plus_filter"]
-SYSTEM_ORDER = ["doc_tfidf", "chunk_tfidf_log", "chunk_tfidf_capped", "semantic_log", "semantic_capped"]
+SYSTEM_ORDER = ["doc_tfidf", "chunk_tfidf_log", "chunk_tfidf_capped", "semantic_log", "semantic_capped",
+                "semantic_capped_stance"]
 METRICS = ["P5_strict", "P5_lenient", "P10_strict", "P10_lenient", "NDCG10", "R10_strict", "R10_lenient"]
 N_RESAMPLES = 10_000
 SEED = 6165
