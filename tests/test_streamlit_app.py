@@ -204,6 +204,33 @@ class AppSmokeTests(unittest.TestCase):
         self.assertNotIn("last_compare", at.session_state)
         self.assertEqual(len(self.results(at)), 4)
 
+    def test_evidence_bar_in_an_opened_stance_result_keeps_the_allergy_guard(self):
+        at = self.start(FakeClient(location=None), retrievers={"semantic_stance": FakeStance()})
+        at.selectbox[0].select("semantic_capped_stance")
+        self.search(at, "peanut allergy friendly dinner")
+        self.assertFalse(at.exception, at.exception)
+        outcome, _ = at.session_state["last_search"]
+        for v in outcome.results:
+            at.session_state[f"open_{outcome.request_id}_{v.gmap_id}"] = True
+        at.run()
+        first = self.results(at)[0]
+        body = self.text(first)
+        self.assertIn("2 accommodate / 1 warns / 1 mention", body)
+        self.assertIn("🟩🟩🟥🟨", body)
+        self.assertTrue(any("Strongest warning" in w.value and "Staff were not careful." in w.value for w in first.warning))
+        self.assertIn(pipeline.ALLERGY_NOTE, " ".join(w.value for w in first.warning))  # allergy note unchanged
+        for e in self.results(at):
+            self.assertNotIn("Supported", e.label)
+            self.assertNotIn("✓", e.label)
+
+    def test_no_evidence_bar_without_stance_labels(self):
+        at = self.search(self.start())
+        outcome, _ = at.session_state["last_search"]
+        at.session_state[f"open_{outcome.request_id}_{outcome.results[0].gmap_id}"] = True
+        at.run()
+        self.assertNotIn("accommodate", self.text(self.results(at)[0]))
+        self.assertFalse(any("Strongest warning" in w.value for w in at.warning))
+
     def test_examples_are_the_demo_queries(self):
         from app.streamlit_app import EXAMPLES
         self.assertEqual([(q, b) for _, q, b in EXAMPLES], [(q, b) for q, b, _ in demo_cache.DEMO_QUERIES[:4]])

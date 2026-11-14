@@ -253,6 +253,23 @@ def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_eviden
     return views, results
 
 
+def stance_bar(view):
+    """The evidence bar of a result from its stance labels, or None when it has none.
+
+    {"accommodate", "warns", "mention", "other" (not about the need), "bar" (emoji squares), "text", "warning"}.
+    "warning" is the strongest warning sentence: the first negative one, in evidence order (evidence is ordered
+    by how well its review matched the query). These are sentence labels from a model, not a safety verdict.
+    """
+    counts = view.stance_counts
+    if not counts or not sum(counts.values()):
+        return None
+    a, w, m = (counts.get(k, 0) for k in ("accommodation", "negative", "mention"))
+    warning = next((x["text"] for x in view.stance_sentences or [] if x["stance"] == "negative"), None)
+    return {"accommodate": a, "warns": w, "mention": m, "other": counts.get("not_about_allergy", 0),
+            "bar": "🟩" * a + "🟥" * w + "🟨" * m + "⬜" * counts.get("not_about_allergy", 0),
+            "text": f"{a} accommodate / {w} warns / {m} mention", "warning": warning}
+
+
 def is_allergy_sensitive(query, parsed):
     """True if parsed allergens are non-empty, parsing failed (parsed is None), or the text uses allergy wording
     or names an FDA major allergen (the parser can miss allergens, e.g. gpt-oss-20b on Q20)."""

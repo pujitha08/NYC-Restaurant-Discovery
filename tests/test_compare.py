@@ -48,6 +48,38 @@ class RankChangeTests(unittest.TestCase):
         self.assertEqual(changes["C"], (compare.UP, 2))
 
 
+class StanceBarTests(unittest.TestCase):
+    def labeled(self, counts, sentences=()):
+        v = view("A", 1)
+        v.stance_counts, v.stance_sentences = counts, list(sentences)
+        return v
+
+    def test_counts_text_bar_and_first_warning(self):
+        v = self.labeled({"accommodation": 7, "mention": 4, "negative": 1, "not_about_allergy": 2},
+                         [{"text": "Great.", "stance": "accommodation", "review_id": 1},
+                          {"text": "Got sick here.", "stance": "negative", "review_id": 2},
+                          {"text": "Also bad.", "stance": "negative", "review_id": 3}])
+        bar = pipeline.stance_bar(v)
+        self.assertEqual(bar["text"], "7 accommodate / 1 warns / 4 mention")
+        self.assertEqual(bar["warning"], "Got sick here.")
+        self.assertEqual(bar["bar"], "🟩" * 7 + "🟥" + "🟨" * 4 + "⬜" * 2)
+
+    def test_no_warning_sentence_when_nothing_is_negative(self):
+        bar = pipeline.stance_bar(self.labeled({"accommodation": 1, "negative": 0}, [{"text": "Fine.", "stance": "accommodation", "review_id": 1}]))
+        self.assertIsNone(bar["warning"])
+
+    def test_nothing_without_labels(self):
+        self.assertIsNone(pipeline.stance_bar(view("A", 1)))
+        self.assertIsNone(pipeline.stance_bar(self.labeled({})))
+        self.assertIsNone(pipeline.stance_bar(self.labeled({"mention": 0, "negative": 0})))
+
+    def test_cached_outcome_round_trip_keeps_stance_fields(self):
+        out = pipeline.SearchOutcome("r", "q", "Both", "semantic_capped_stance", None, pipeline.ParsedQuery(), None,
+                                     [self.labeled({"negative": 1}, [{"text": "No.", "stance": "negative", "review_id": 1}])])
+        back = demo_cache.outcome_from_dict(demo_cache.outcome_to_dict(out))
+        self.assertEqual(back.results[0].stance_sentences[0]["text"], "No.")
+
+
 class RunCompareTests(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()

@@ -90,6 +90,18 @@ def result_header(view):
     return " · ".join(parts)
 
 
+def show_stance(view):
+    """Evidence bar and the strongest warning sentence, if the ranking labeled this result's sentences."""
+    bar = pipeline.stance_bar(view)
+    if bar is None:
+        return
+    st.markdown(f"**Review sentences:** {bar['bar']} {bar['text']}")
+    st.caption("🟩 accommodate · 🟥 warns · 🟨 mention · ⬜ not about this. Labels come from a model reading single "
+               "sentences; they are not a safety verdict.")
+    if bar["warning"]:
+        st.warning(f"**Strongest warning:** “{md(bar['warning'])}”")
+
+
 def show_excerpts(view, title="Review excerpts"):
     if not view.excerpts:
         st.caption("No review excerpts were retrieved for this restaurant.")
@@ -124,6 +136,7 @@ def show_result(view, outcome, raw, client, model):
         st.caption(f"{view.num_reviews:,} reviews · {md(view.address)}")
         if view.low_evidence:
             st.caption("⚠ Low evidence: fewer than 5 usable reviews.")
+        show_stance(view)
         if view.summary:
             show_summary(view)
             show_excerpts(view, "All retrieved excerpts")
@@ -149,7 +162,8 @@ CHANGE_MARK = {compare.UP: ":green[▲ {n}]", compare.DOWN: ":red[▼ {n}]", com
 def compare_row(view, change=None):
     rating = f"★ {view.avg_rating:.1f}" if isinstance(view.avg_rating, (int, float)) else "no rating"
     mark = CHANGE_MARK[change[0]].format(n=change[1]) + " " if change else ""
-    return f"{mark}**{view.rank}.** {md(view.name)} — {view.borough} · {rating}"
+    bar = pipeline.stance_bar(view)
+    return f"{mark}**{view.rank}.** {md(view.name)} — {view.borough} · {rating}" + (f"  \n{bar['bar']} {bar['text']}" if bar else "")
 
 
 def show_compare(cmp):
