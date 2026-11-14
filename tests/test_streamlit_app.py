@@ -268,6 +268,25 @@ class AppSmokeTests(unittest.TestCase):
         self.assertIn("How it works", " ".join(h.value for h in at.sidebar.header))
         self.assertNotIn("The data:", side)
 
+    def test_advanced_settings_expander_holds_method_and_low_evidence(self):
+        at = self.start()
+        advanced = next(e for e in at.expander if e.label == "Advanced settings")
+        self.assertFalse(advanced.proto.expanded)
+        self.assertEqual([w.label for w in advanced.selectbox], ["Retrieval method"])
+        self.assertEqual([w.label for w in advanced.checkbox], ["Include restaurants with fewer than 5 reviews"])
+        self.assertEqual((advanced.selectbox[0].value, advanced.checkbox[0].value), (pipeline.DEFAULT_METHOD, False))
+        main_checkboxes = [c.label for c in at.checkbox if c not in advanced.checkbox]
+        self.assertEqual(main_checkboxes[0], "Compare rankings")
+        self.assertTrue(main_checkboxes[1].startswith("Demo mode"))
+        self.assertEqual([r for r in self.results(at)], [])  # the expander is not mistaken for a result
+
+    def test_settings_inside_advanced_still_apply(self):
+        retriever = FakeRetriever(gids=("G1", "G2", "G3", "G4", "G5", "G6"))
+        at = self.start(retrievers={"semantic": retriever})
+        next(c for c in at.checkbox if c.label.startswith("Include restaurants")).check()
+        self.search(at)
+        self.assertTrue(retriever.calls[-1]["include_low_evidence"])
+
     def test_examples_are_the_demo_queries(self):
         from app.streamlit_app import EXAMPLES
         self.assertEqual([(q, b) for _, q, b in EXAMPLES], [(q, b) for q, b, _ in demo_cache.DEMO_QUERIES[:4]])

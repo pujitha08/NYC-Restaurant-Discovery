@@ -273,14 +273,15 @@ def main():
         query = st.text_input("What are you looking for?", key="query",
                               placeholder="e.g. nut-free brunch in Brooklyn for a group with a vegan friend")
         borough = st.radio("Borough", pipeline.BOROUGH_CHOICES, horizontal=True, key="borough")
-        method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
-        include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
         compare_mode = st.checkbox("Compare rankings", key="compare_mode",
                                    help="Show semantic_capped and semantic_capped_stance side by side for this query "
                                         "(the method selector is ignored; no summaries).")
         demo_mode = st.checkbox("Demo mode (serve saved results for the demo queries)",
                                 help="For the presentation: an exact demo query is answered from data/demo_cache "
                                      "without calling the language model. Other queries run live.")
+        with st.expander("Advanced settings"):  # collapsed by default
+            method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
+            include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
         submitted = st.form_submit_button("Search")
 
     if submitted or st.session_state.pop("run_example", False):
