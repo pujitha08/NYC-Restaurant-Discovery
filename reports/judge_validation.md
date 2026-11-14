@@ -65,9 +65,8 @@ Cells with few queries are noisy; read the category rows as descriptions of this
 
 - **One rater.** No human-human agreement can be computed, so these numbers measure agreement with one person's reading of the rubric, not with a consensus; that person's own consistency is unknown.
 - **n = 119** matched pairs. The CIs above are wide; per-category cells (4 to 11 queries) and the confusion-matrix cells are small, and the kappa values depend heavily on a few pairs.
-- **A subset of the pool.** The rater labeled one sample of the judged pairs (stratified by `eval/make_sample.py`), not all of them, so errors in the unsampled pairs are unmeasured.
+- **A sample, not the pool.** The rater labeled a stratified sample of 119 of the 1,074 judged pairs (about 11%; drawn by `eval/make_sample.py`), so errors in the unsampled pairs are unmeasured.
 - **The sample predates the new labels.** It was drawn from the earlier judging pool; the pairs added later for the stance re-ranker (top-20 candidates, a single provider: Groq, `gpt-oss-120b`) are not validated here, and provider-specific behaviour is only visible through the 'by source' table above.
 - **Same judge model throughout.** All LLM labels use one model family and one prompt, so shared blind spots (for example, treating a mention of the topic as support) would not show up as disagreement between LLM sources.
 - **The rater saw the evidence shown to the judge**, not the full review text of each restaurant; both are limited to what retrieval returned, so agreement says nothing about whether the shown reviews were representative.
 - Matching rows to restaurants relies on the review ids cited in the evidence; rows without evidence are matched by name and borough only when that is unambiguous.
-- **Text encoding:** the CSV is valid UTF-8, but 3 of its 119 restaurant names show text that was earlier decoded as Mac Roman and re-saved (for example "Kest√©" for "Kesté"; the evidence text has the same damage). Names were repaired for matching only; if the rater read the garbled evidence, that is a small additional noise source.

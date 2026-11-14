@@ -237,7 +237,6 @@ def cell(text):
 
 
 def write_report(path, *, args, rows, blank, matched, unmatched, result, categories, provider_counts):
-    mojibake = sum(r.get('name_fixed', r['name']) != r['name'] for r in rows if 'name' in r)
     n_llm = sum(provider_counts.values())
     L = ["# Judge validation: human labels vs the LLM judge", "",
          f"- Human labels: `{rel(args.human)}` ({len(rows) + len(blank)} rows; {len(blank)} with a blank label skipped; {len(rows)} labeled). "
@@ -298,8 +297,8 @@ def write_report(path, *, args, rows, blank, matched, unmatched, result, categor
           "rubric, not with a consensus; that person's own consistency is unknown.",
           f"- **n = {len(matched)}** matched pairs. The CIs above are wide; per-category cells (4 to 11 queries) and the confusion-matrix cells "
           "are small, and the kappa values depend heavily on a few pairs.",
-          "- **A subset of the pool.** The rater labeled one sample of the judged pairs (stratified by `eval/make_sample.py`), not all of them, "
-          "so errors in the unsampled pairs are unmeasured.",
+          f"- **A sample, not the pool.** The rater labeled a stratified sample of {len(matched)} of the {n_llm:,} judged pairs "
+          f"(about {(len(matched) / n_llm if n_llm else 0):.0%}; drawn by `eval/make_sample.py`), so errors in the unsampled pairs are unmeasured.",
           "- **The sample predates the new labels.** It was drawn from the earlier judging pool; the pairs added later for the stance re-ranker "
           "(top-20 candidates, a single provider: Groq, `gpt-oss-120b`) are not validated here, and provider-specific behaviour is only "
           "visible through the 'by source' table above.",
@@ -308,10 +307,7 @@ def write_report(path, *, args, rows, blank, matched, unmatched, result, categor
           "- **The rater saw the evidence shown to the judge**, not the full review text of each restaurant; both are limited to what retrieval "
           "returned, so agreement says nothing about whether the shown reviews were representative.",
           "- Matching rows to restaurants relies on the review ids cited in the evidence; rows without evidence are matched by name and borough "
-          "only when that is unambiguous.",
-          f"- **Text encoding:** the CSV is valid UTF-8, but {mojibake} of its {len(rows)} restaurant names show text that was earlier decoded as Mac Roman "
-          "and re-saved (for example \"Kest√©\" for \"Kesté\"; the evidence text has the same damage). Names were repaired for matching only; "
-          "if the rater read the garbled evidence, that is a small additional noise source.", ""]
+          "only when that is unambiguous.", ""]
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text("\n".join(L), encoding="utf-8")
 
