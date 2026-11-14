@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from src.allergy import is_allergy_text
-from src.config import DATA_DIR, STANCE_RERANK
+from src.config import DATA_DIR, PROJECT_ROOT, STANCE_RERANK
 from src.llm.groq_client import LLMResponseError, request_json, resolve_model
 from src.schemas import RetrievalResult
 
@@ -138,6 +138,7 @@ class LLMLabeler:
     @property
     def model(self):
         if self._model is None:
+            _load_env()  # GROQ_MODEL (not the key) is needed for the cache id, even when every label is cached
             self._model = resolve_model(None)
         return self._model
 
@@ -312,9 +313,12 @@ class StanceReranker:
                 for c in ranked[:top_k]]
 
 
-def _groq_client():
+def _load_env():
     from dotenv import load_dotenv
-    from src.config import PROJECT_ROOT
-    from src.llm.groq_client import get_client
     load_dotenv(PROJECT_ROOT / ".env", override=False)
+
+
+def _groq_client():
+    from src.llm.groq_client import get_client
+    _load_env()
     return get_client()
