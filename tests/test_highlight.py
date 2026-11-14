@@ -3,7 +3,7 @@
 import re
 import unittest
 
-from app.highlight import MARK, escape, highlight, highlight_html, highlight_terms, html_text, md, term_pattern
+from app.highlight import MARK, escape, highlight, highlight_html, highlight_terms, html_text, md, squash, term_pattern
 from src.schemas import ParsedQuery
 
 
@@ -80,6 +80,45 @@ class HighlightTests(unittest.TestCase):
         self.assertEqual(escape("a<b"), r"a&lt;b")
 
 
+SENTENCE = "I have a severe allergy to peanuts and it is not a problem"
+TAGS = re.compile(r"<[^>]+>")
+
+
+class SpacingAroundMarksTests(unittest.TestCase):
+    """Regression: html_text used to strip each segment, giving "severeallergytopeanuts" around the marks."""
+
+    def check(self, rendered, expected_visible=SENTENCE):
+        self.assertEqual(TAGS.sub("", rendered), expected_visible)  # tags removed -> the exact original text, single spaces
+        self.assertNotRegex(rendered, r"[A-Za-z]<mark")  # a letter never touches an opening mark
+        self.assertNotRegex(rendered, r"</mark>[A-Za-z]")  # nor a closing one
+        self.assertEqual(rendered.count("  "), 0)
+
+    def test_html_variant_keeps_one_space_on_both_sides_of_each_mark(self):
+        out = highlight_html(SENTENCE, ["allergy", "peanuts"])
+        self.check(out)
+        self.assertRegex(out, r"severe <mark[^>]*>allergy</mark> to <mark[^>]*>peanuts</mark> and")
+        self.assertEqual(marks(out), ["allergy", "peanuts"])
+
+    def test_markdown_variant_keeps_the_spaces_too(self):
+        self.check(highlight(SENTENCE, ["allergy", "peanuts"]))
+
+    def test_adjacent_and_edge_terms(self):
+        out = highlight_html("peanuts, peanuts and tree nuts", ["peanuts", "nuts"])
+        self.assertEqual(TAGS.sub("", out), "peanuts, peanuts and tree nuts")
+        self.assertTrue(out.startswith("<mark"))
+        self.assertRegex(out, r"</mark>, <mark")
+
+    def test_messy_whitespace_is_collapsed_once_not_removed(self):
+        out = highlight_html("  severe \n allergy\t\tto   peanuts  ", ["allergy", "peanuts"])
+        self.assertEqual(TAGS.sub("", out), "severe allergy to peanuts")
+
+    def test_escaping_is_still_applied_next_to_marks(self):
+        out = highlight_html("a <b>peanuts</b> & more", ["peanuts"])
+        self.assertEqual(TAGS.sub("", out.replace("&lt;", "‹").replace("&gt;", "›").replace("&amp;", "&")), "a ‹b›peanuts‹/b› & more")
+        self.assertNotIn("<b>", out)
+        self.assertIn("&lt;b&gt;", out)
+
+
 class HtmlVariantTests(unittest.TestCase):
     """highlight_html is for raw HTML blocks: entities only (no Markdown escapes), the same <mark> markup."""
 
@@ -100,6 +139,8 @@ class HtmlVariantTests(unittest.TestCase):
         self.assertEqual(highlight_html("a\n\n b", []), "a b")
         self.assertEqual(highlight_html(None, ["x"]), "")
         self.assertEqual(html_text('<b>"&'), "&lt;b&gt;&quot;&amp;")
+        self.assertEqual(html_text(" a "), " a ")  # a segment keeps its edge spaces
+        self.assertEqual(squash(" a \n b  "), "a b")
 
 
 if __name__ == "__main__":

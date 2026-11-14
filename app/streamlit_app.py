@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import chips, compare, demo_cache, pipeline  # noqa: E402
 from src.config import STANCE_RERANK  # noqa: E402
-from app.highlight import highlight_html, highlight_terms, html_text, md  # noqa: E402,F401 (md is used by the tests)
+from app.highlight import highlight_html, highlight_terms, html_text, md, squash  # noqa: E402,F401 (md is used by the tests)
 
 TAGLINE = "Ask in plain English. Get NYC restaurants backed by review evidence."
 # The slim note is always shown; the full-strength caveat only above allergy results.
@@ -156,14 +156,14 @@ SHOW_ALL = "Show all evidence"
 def quote_html(excerpt, terms):
     """A review excerpt as a dark, readable quote with its date; query terms highlighted, everything escaped first."""
     return (f'<blockquote class="quote">{highlight_html(excerpt.text, terms)}'
-            f'<span class="quote-date">Review from {html_text(excerpt.date)}</span></blockquote>')
+            f'<span class="quote-date">Review from {html_text(squash(excerpt.date))}</span></blockquote>')
 
 
 def claim_html(claim, terms, guarded, max_quotes=None):
     css, icon, word = (GUARDED_CLAIM_STYLE if guarded else CLAIM_STYLE).get(claim.label, CLAIM_STYLE["uncertainty"])
     quotes = "".join(quote_html(e, terms) for e in (claim.excerpts[:max_quotes] if max_quotes else claim.excerpts))
     return (f'<div class="claim claim-{css}"><div class="claim-label">{icon} {word}</div>'
-            f'<div class="claim-text">{html_text(claim.text)}</div>{quotes}</div>')
+            f'<div class="claim-text">{html_text(squash(claim.text))}</div>{quotes}</div>')
 
 
 def ordered_claims(summary):

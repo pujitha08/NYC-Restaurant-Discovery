@@ -72,14 +72,22 @@ def highlight(text, terms) -> str:
     return "".join(out)
 
 
+def squash(text) -> str:
+    """Collapse whitespace runs to single spaces and trim the ends (apply to a whole text, never to a segment of it)."""
+    return " ".join((text or "").split())
+
+
 def html_text(text) -> str:
-    """Plain text -> HTML-safe text for a raw HTML block (entities only: a raw block is not Markdown-processed)."""
-    return html.escape(" ".join((text or "").split()), quote=True)
+    """Plain text -> HTML-safe text for a raw HTML block (entities only: a raw block is not Markdown-processed).
+
+    Whitespace is left as given, so the spaces around a highlighted term survive; callers squash() the whole text first.
+    """
+    return html.escape(text or "", quote=True)
 
 
 def highlight_html(text, terms) -> str:
     """Like highlight(), for use inside a raw HTML block: every segment is HTML-escaped, matches get the <mark> tag."""
-    text = " ".join((text or "").split())
+    text = squash(text)
     pattern = term_pattern(terms)
     if pattern is None:
         return html_text(text)

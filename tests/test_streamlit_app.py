@@ -142,6 +142,15 @@ class AppSmokeTests(unittest.TestCase):
         summary = pipeline.Summary("mixed", [support, pipeline.Claim("w", "contradiction", []), doubt], [])
         self.assertEqual([c.label for c in ordered_claims(summary)], ["contradiction", "support", "uncertainty"])
 
+    def test_rendered_quote_keeps_the_spaces_around_highlighted_terms(self):
+        from app.streamlit_app import quote_html
+        excerpt = pipeline.Excerpt(1, "2020-05", "I have a severe allergy to peanuts and it is not a problem")
+        html = quote_html(excerpt, ["allergy", "peanuts"])
+        self.assertRegex(html, r"severe <mark[^>]*>allergy</mark> to <mark[^>]*>peanuts</mark> and it is not a problem")
+        card = pipeline.Claim("Staff took my  peanut\nallergy seriously", "support", [excerpt])
+        from app.streamlit_app import claim_html
+        self.assertIn("Staff took my peanut allergy seriously", claim_html(card, ["peanut"], guarded=True))
+
     def test_show_all_evidence_expander_holds_the_remaining_evidence(self):
         at = self.search(self.start(FakeClient(location=None, summary="mixed")))
         first = self.results(at)[0]
