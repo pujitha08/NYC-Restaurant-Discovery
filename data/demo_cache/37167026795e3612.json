@@ -1,0 +1,463 @@
+{
+ "cached_at": "2026-11-13",
+ "outcome": {
+  "request_id": "",
+  "query": "safe for celiac disease, no cross contamination",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "gluten-free"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "no cross contamination"
+   ]
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "gluten-free"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "no cross contamination"
+   ]
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+    "name": "Senza Gluten",
+    "borough": "Manhattan",
+    "address": "Senza Gluten, 206 Sullivan St, New York, NY 10012",
+    "avg_rating": 4.5,
+    "num_reviews": 429,
+    "low_evidence": false,
+    "score": 2.063162994384766,
+    "excerpts": [
+     {
+      "review_id": 1065666,
+      "date": "2018-10",
+      "text": "Celiacs can eat without concern for cross contamination. Really good food for all!"
+     },
+     {
+      "review_id": 1065429,
+      "date": "2019-04",
+      "text": "I heard of Senza Gluten in a Facebook celiac disease support group I’m on. It came highly recommend by many people. They were so good! It was nice to go somewhere and order food without worrying about getting sick. …"
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported that celiacs can eat without concern for cross contamination.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1065666,
+         "date": "2018-10",
+         "text": "Celiacs can eat without concern for cross contamination. Really good food for all!"
+        }
+       ]
+      },
+      {
+       "text": "One reviewer reported that they could order food without worrying about getting sick.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1065429,
+         "date": "2019-04",
+         "text": "I heard of Senza Gluten in a Facebook celiac disease support group I’m on. It came highly recommend by many people. They were so good! It was nice to go somewhere and order food without worrying about getting sick. …"
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c259af22fb0c51:0x6b78c8ca952665f4",
+    "name": "Friedman's Herald Square",
+    "borough": "Manhattan",
+    "address": "Friedman's Herald Square, 132 W 31st St, New York, NY 10001",
+    "avg_rating": 4.3,
+    "num_reviews": 1081,
+    "low_evidence": false,
+    "score": 2.0373576998710634,
+    "excerpts": [
+     {
+      "review_id": 1393491,
+      "date": "2015-11",
+      "text": "… (Only in certain areas really) This place has such an awesome atmosphere, great service, and delicious food! Can't get enough on the taste and I RARELY go out to eat. This gives me a good indication of what establishments are truly Celiac friendly. So far been no bathroom issues, no breakouts and my blood is healthy! …"
+     },
+     {
+      "review_id": 1393539,
+      "date": "2017-04",
+      "text": "Great gluten free options. It's one of the few places that is consistently safe for those with Celiac Disease."
+     },
+     {
+      "review_id": 1393548,
+      "date": "2015-04",
+      "text": "While many restaurants have gluten free items on their menus, most fail to recognize that celiac disease isn't a fad, and cross contamination is a real danger to those of us who have it. That's not an issue here. I've been here twice, and although it's a bit pricy on first glance, it's actually a bargain in reality. …"
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported no gluten‑related symptoms and healthy blood after dining at the restaurant, indicating gluten‑free safety.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1393491,
+         "date": "2015-11",
+         "text": "… (Only in certain areas really) This place has such an awesome atmosphere, great service, and delicious food! Can't get enough on the taste and I RARELY go out to eat. This gives me a good indication of what establishments are truly Celiac friendly. So far been no bathroom issues, no breakouts and my blood is healthy! …"
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the restaurant as consistently safe for those with Celiac Disease.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1393539,
+         "date": "2017-04",
+         "text": "Great gluten free options. It's one of the few places that is consistently safe for those with Celiac Disease."
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted that cross‑contamination was not an issue during multiple visits, affirming gluten‑free suitability.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1393548,
+         "date": "2015-04",
+         "text": "While many restaurants have gluten free items on their menus, most fail to recognize that celiac disease isn't a fad, and cross contamination is a real danger to those of us who have it. That's not an issue here. I've been here twice, and although it's a bit pricy on first glance, it's actually a bargain in reality. …"
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c258ef6b70b8ed:0x63df3a29b0ab6a71",
+    "name": "Lilli and Loo",
+    "borough": "Manhattan",
+    "address": "Lilli and Loo, 1026 3rd Ave, New York, NY 10065",
+    "avg_rating": 4.1,
+    "num_reviews": 236,
+    "low_evidence": false,
+    "score": 1.7656207375961137,
+    "excerpts": [
+     {
+      "review_id": 2070193,
+      "date": "2018-01",
+      "text": "I have celiac disease and unfortunately this place is not careful anymoreI ordered an egg drop soup explain to the waitress that I had celiac disease they gave me a totally different soup on the table had I not been there before I would not have know I'm better I would have been deathly ill this place the claims to …"
+     },
+     {
+      "review_id": 2070194,
+      "date": "2018-06",
+      "text": "Tasty food and good for celiac/gluten free"
+     },
+     {
+      "review_id": 2070173,
+      "date": "2018-04",
+      "text": "Solid Asian fusion with a nice gluten free menu. I've had Celiac's disease for over ten years and it is wonderful to have access to do many old favorites (sushi, fried rice, dumplings, General Tso's Chicken, etc)."
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant was not careful with gluten, resulting in a different soup and potential illness for someone with celiac disease.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2070193,
+         "date": "2018-01",
+         "text": "I have celiac disease and unfortunately this place is not careful anymoreI ordered an egg drop soup explain to the waitress that I had celiac disease they gave me a totally different soup on the table had I not been there before I would not have know I'm better I would have been deathly ill this place the claims to …"
+        }
+       ]
+      },
+      {
+       "text": "One reviewer reported that the restaurant offers gluten‑free options, suitable for those with celiac disease.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2070194,
+         "date": "2018-06",
+         "text": "Tasty food and good for celiac/gluten free"
+        }
+       ]
+      },
+      {
+       "text": "One reviewer reported that the restaurant has a nice gluten‑free menu, making it convenient for someone with celiac disease.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2070173,
+         "date": "2018-04",
+         "text": "Solid Asian fusion with a nice gluten free menu. I've had Celiac's disease for over ten years and it is wonderful to have access to do many old favorites (sushi, fried rice, dumplings, General Tso's Chicken, etc)."
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "There are conflicting reports about the restaurant’s gluten‑free safety; some reviewers report issues while others report adequate accommodations.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c258a253c5fb3b:0xebc60d483b19dd72",
+    "name": "Noglu",
+    "borough": "Manhattan",
+    "address": "Noglu, 1266 Madison Ave, New York, NY 10128",
+    "avg_rating": 4.4,
+    "num_reviews": 156,
+    "low_evidence": false,
+    "score": 1.7078248679637908,
+    "excerpts": [
+     {
+      "review_id": 1222985,
+      "date": "2017-03",
+      "text": "Only place completely gluten free in New York that I know. The caprese with bacon is a party. If you are celiac and walk on the upper east side, stick around."
+     },
+     {
+      "review_id": 1222983,
+      "date": "2018-07",
+      "text": "Very good. Ideal for celiacs. Small and cozy."
+     },
+     {
+      "review_id": 1222911,
+      "date": "2019-04",
+      "text": "GLUTEN FREE EVERYTHING. We just found out our son is GF and this place is saving our lives."
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c259b6c048de33:0x8695535f055a98a5",
+    "name": "Senza Gluten Cafe & Bakery",
+    "borough": "Manhattan",
+    "address": "Senza Gluten Cafe & Bakery, 171 Sullivan St, New York, NY 10012",
+    "avg_rating": 4.8,
+    "num_reviews": 60,
+    "low_evidence": false,
+    "score": 1.6969022870063781,
+    "excerpts": [
+     {
+      "review_id": 1875141,
+      "date": "2019-05",
+      "text": "The atmosphere here is much more casual than that of the Senza Gluten restaurant. I HIGHLY RECOMMEND the chicken panini. This place is COMPLETELY SAFE for those with Celiac Disease and is very catering to many other common food allergies."
+     },
+     {
+      "review_id": 1875139,
+      "date": "2019-08",
+      "text": "So delicious and celiac safe - morning with gluten goes into this space. So many options of sweets, breads and food that are a perfect texture and flavor!"
+     },
+     {
+      "review_id": 1875169,
+      "date": "2018-12",
+      "text": "A paradise for celiacs. They have a lot of variety of products and everything is delicious! The bread they make is impressive. Their sandwiches are great and the portions huge !!!!! They have a great variety of cakes, cakes and cookies .... Do not forget to try the chocolate cake, it is delicious! 100% gluten free so 100% safe!"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c259a72f4245fd:0xda9f11b04f4cdb9e",
+    "name": "Little Beet Table",
+    "borough": "Manhattan",
+    "address": "Little Beet Table, 333 Park Ave South, New York, NY 10010",
+    "avg_rating": 4.5,
+    "num_reviews": 270,
+    "low_evidence": false,
+    "score": 1.6708505868911743,
+    "excerpts": [
+     {
+      "review_id": 1956475,
+      "date": "2017-12",
+      "text": "I have Celiac Disease and I’m so grateful to have found The Little Beet Table in NYC. The food is amazing. I had the Squash Cavatelli pasta and it was truly incredible. The pasta was delightful and the sauce was smooth and creamy. We’re going back again before we leave the city!"
+     },
+     {
+      "review_id": 1956490,
+      "date": "2019-09",
+      "text": "Excellent food and service! Their whole menu is gluten free, so if you have a sensitivity or celiac’s this place is a dream! Our food was amazing and came promptly and tasted amazing. Would highly recommend for those looking for a healthier option in the city!"
+     },
+     {
+      "review_id": 1956496,
+      "date": "2018-10",
+      "text": "As someone who developed celiac in their twenties, I know what I'm missing when I eat gluten free versions of things. Pasta is one of those things which I have come to accept will never really be quite as tasty in it's GF version...so when I had the Rigatoni at the Little Beet, my mind was a bit blown. …"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c258866f3c3587:0x8c871eb338f684ef",
+    "name": "Cafe Eighty Two",
+    "borough": "Manhattan",
+    "address": "Cafe Eighty Two, 2282 Broadway, New York, NY 10024",
+    "avg_rating": 4.2,
+    "num_reviews": 174,
+    "low_evidence": false,
+    "score": 1.553681656691408,
+    "excerpts": [
+     {
+      "review_id": 1303951,
+      "date": "2020-05",
+      "text": "One of the last places to get gluten free diner food in all of NYC, this place is amazing! I have celiac & always feel safe coming here."
+     },
+     {
+      "review_id": 1304045,
+      "date": "2018-08",
+      "text": "Happy and grateful for delicious gluten free menu! Both kids have celiac disease and we will definitely be back!"
+     },
+     {
+      "review_id": 1304118,
+      "date": "2019-02",
+      "text": "This dinner has a Gluten-free Card. On this card are breakfast dishes, lunch dishes and dinner dishes. The restaurant participates in the Gluten Free Awareness program for Celiac Disease. They are well aware of safe gluten-free preparation and look out for cross-contamination. We had breakfast here twice and both times we received generous portions. …"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c259b305765bf5:0xdf80dfab963e08e7",
+    "name": "Friedman's Hell's Kitchen",
+    "borough": "Manhattan",
+    "address": "Friedman's Hell's Kitchen, 450 10th Ave, New York, NY 10018",
+    "avg_rating": 4.4,
+    "num_reviews": 700,
+    "low_evidence": false,
+    "score": 1.5313598807817126,
+    "excerpts": [
+     {
+      "review_id": 2391615,
+      "date": "2019-06",
+      "text": "… maybe 4 square meters in which 4 chefs became angry, embodying everything. I had already figured out on the fly how I would spend the afternoon. I've been on the toilet all afternoon. We are not really there. Rejected. Oh I forgot. Waiters pissed off to say the least. Stay away from here celiac people!"
+     },
+     {
+      "review_id": 2391358,
+      "date": "2018-02",
+      "text": "Amazing place! Having Celiac disease makes dining out hard, but pretty much everytg5on the menu can be made gluten free!"
+     },
+     {
+      "review_id": 2391291,
+      "date": "2018-12",
+      "text": "Awesome food anytime of day they are Gluten Free for real. I’m a full blown Celiac I never get sick at any of their locations."
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c25908538632bd:0xc1c8c73450bff681",
+    "name": "Bistango",
+    "borough": "Manhattan",
+    "address": "Bistango, 415 3rd Avenue AT, E 29th St, New York, NY 10016",
+    "avg_rating": 4.4,
+    "num_reviews": 172,
+    "low_evidence": false,
+    "score": 1.504134640070772,
+    "excerpts": [
+     {
+      "review_id": 530210,
+      "date": "2019-11",
+      "text": "Great options for those with celiacs & without!!"
+     },
+     {
+      "review_id": 530196,
+      "date": "2012-09",
+      "text": "They have a way of making a gluten free (celiac) feel safe. The food is outstanding and the service was amazing. The entire experience from calling to make a reservation, to dinner, to leaving and being greeted by the manager was perfect. …"
+     },
+     {
+      "review_id": 530208,
+      "date": "2019-01",
+      "text": "Food allergies?? BEWARE!!! My daughter ate here on New Year's Eve which resulted in her falling ill due to a severe allergic reaction caused by eating gluten. She was then taken by ambulance to Mount Sinai emergency department for urgent medical treatment. Despite the good reviews and reassurances by staff that her food would be gluten-free it clearly was not. …"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c2599caf02086d:0x48e592c13b676906",
+    "name": "Risotteria Melotti NYC",
+    "borough": "Manhattan",
+    "address": "Risotteria Melotti NYC, 309 E 5th St, New York, NY 10003",
+    "avg_rating": 4.6,
+    "num_reviews": 224,
+    "low_evidence": false,
+    "score": 1.4851575940578936,
+    "excerpts": [
+     {
+      "review_id": 1359282,
+      "date": "2019-02",
+      "text": "Awful. BAD PLACE FOR CELIAC. The chef refused to talk to us, even after repeat requests to talk about specific allergies. The waitstaff did not care or understand my allergies, and after repeat instructions willing dismissed them to bring out my food dangerous. DO NOT COME HERE. …"
+     },
+     {
+      "review_id": 1359204,
+      "date": "2019-10",
+      "text": "Wow! Loved this place. I have Celiac disease and everything is gluten free. So rare to find. I had the carbonara risotto and it was amazing. The ambiance was warm and inviting. For dessert I had the profiteroles and again was blown away. Great service as well. Will return."
+     },
+     {
+      "review_id": 1359174,
+      "date": "2019-12",
+      "text": "… Even as California wine lovers, we were in love with the wine we enjoyed with our dinner. For anyone, literally anyone, you will enjoy this wonderful restaurant. For anyone with Celiac or gluten intolerance, you will LOVE this restaurant!"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": true,
+  "cached": false
+ }
+}

@@ -11,7 +11,7 @@ try:
 except ImportError:  # streamlit is optional for the rest of the suite
     AppTest = None
 
-from app import pipeline
+from app import demo_cache, pipeline
 from tests.test_app_pipeline import FakeClient, FakeRetriever
 
 APP = str(Path(__file__).resolve().parent.parent / "app" / "streamlit_app.py")
@@ -129,6 +129,23 @@ class AppSmokeTests(unittest.TestCase):
         at.run()
         self.search(at, "vegan brunch")  # a new search starts collapsed
         self.assertEqual([e.proto.expanded for e in self.results(at)], [False] * 4)
+
+    def test_demo_mode_serves_a_labeled_cached_result(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            outcome, _ = pipeline.run_search("vegan options for a group", "Both", "semantic_capped",
+                                             retriever=FakeRetriever(), client=pipeline.UsageRecorder(FakeClient()),
+                                             model="openai/gpt-oss-20b", log_path=None)
+            demo_cache.save_outcome(outcome, tmp)
+            real = demo_cache.CACHE_DIR
+            with patch.object(demo_cache, "CACHE_DIR", Path(tmp)):
+                client = FakeClient()
+                at = self.start(client)
+                at.checkbox[1].check()  # "Demo mode"
+                self.search(at)
+                self.assertEqual(client.calls, [])  # no model call
+                self.assertTrue(any("Cached demo result" in w.value for w in at.warning))
+                self.assertTrue(any(c.value.endswith("cached demo result") for c in at.caption))
+                self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
 
     def test_missing_key_shows_setup_message_and_still_searches(self):
         setup = {"category": "configuration", "code": "invalid_api_key_configuration",

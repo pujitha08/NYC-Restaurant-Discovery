@@ -61,6 +61,20 @@ Use the default method (`semantic_capped`) unless noted.
 Point out the caveat at the top (reviews end September 2021; not safety guarantees) and that rankings reflect review
 relevance, not safety.
 
+## Cached demo results (offline / rate-limit fallback)
+
+The four queries above (and `halal chinese food` with `semantic_log`) are saved in `data/demo_cache/*.json`
+(public review text already shown in the app; no keys). Tick **Demo mode** in the search form to answer an exact
+match (same query text, borough and method) from the cache without calling the language model. The app also
+falls back to the cache by itself when a live search hits a rate-limit, timeout or network error and the query
+matches. Cached results are always labeled **"cached demo result"**; results past the top 3 have no Explain.
+Other queries run live. The cached summaries come from one earlier live run, so wording and a few statuses can
+differ from the descriptions above (in the saved run Pig and Khao is "Reviews report problems" and Mission
+"Insufficient evidence").
+
+Regenerate (needs the semantic index and a working Groq key; takes about 4 minutes):
+`python -m app.demo_cache --build`.
+
 ## If something goes wrong
 
 - **"The language model's rate limit was reached"** or "Some summaries are unavailable": the results and review
@@ -68,5 +82,5 @@ relevance, not safety.
   repeatedly; each click uses tokens.
 - **Slow first search**: that is the warm-up; it is fast afterwards.
 - **No summaries at all / setup message**: check `.env` (key and model) and restart Streamlit.
-- **Fallback**: `reports/failure_examples.md` (case 9) and `reports/metrics_summary.md` (provisional metrics)
+- **Fallback**: tick **Demo mode** (see above), or `reports/failure_examples.md` (case 9) and `reports/metrics_summary.md` (provisional metrics)
   tell the before/after and results story without the live app.

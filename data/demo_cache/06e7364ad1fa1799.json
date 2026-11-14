@@ -1,0 +1,481 @@
+{
+ "cached_at": "2026-11-13",
+ "outcome": {
+  "request_id": "",
+  "query": "vegan options for a group",
+  "borough_choice": "Brooklyn",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "vegan"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "vegan options"
+   ]
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "vegan"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "vegan options"
+   ]
+  },
+  "boroughs": [
+   "Brooklyn"
+  ],
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c2595780ce7183:0x78708c4fd2e5970a",
+    "name": "Champs Diner",
+    "borough": "Brooklyn",
+    "address": "Champs Diner, 197 Meserole St, Brooklyn, NY 11206, United States",
+    "avg_rating": 4.5,
+    "num_reviews": 1230,
+    "low_evidence": false,
+    "score": 1.9323108315467834,
+    "excerpts": [
+     {
+      "review_id": 431224,
+      "date": "2016-08",
+      "text": "First time eating vegan food and although the food was good the service wasn't. We just stumbled along this place and thought we should try it out. I had the Mexican bean salad is what I think it was called and it was very good. My other friend's only complaint was the french fries tasted way too salty. …"
+     },
+     {
+      "review_id": 431096,
+      "date": "2018-06",
+      "text": "A rare extensive menu vegan-compliant. Service is absolutely lovely. Food is good. Try their cookie milkshake, it’s to die for!"
+     },
+     {
+      "review_id": 431060,
+      "date": "2019-06",
+      "text": "I'm not vegan but they can definitely turn anyone into a vegan. Food is awesomeness. My fav is anything with tots💭"
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported a good vegan option in the Mexican bean salad.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 431224,
+         "date": "2016-08",
+         "text": "First time eating vegan food and although the food was good the service wasn't. We just stumbled along this place and thought we should try it out. I had the Mexican bean salad is what I think it was called and it was very good. My other friend's only complaint was the french fries tasted way too salty. …"
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described a large vegan‑compliant menu with positive feedback on the food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 431096,
+         "date": "2018-06",
+         "text": "A rare extensive menu vegan-compliant. Service is absolutely lovely. Food is good. Try their cookie milkshake, it’s to die for!"
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted that the restaurant can provide vegan meals for non‑vegans.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 431060,
+         "date": "2019-06",
+         "text": "I'm not vegan but they can definitely turn anyone into a vegan. Food is awesomeness. My fav is anything with tots💭"
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "No mention of specific menu items for group ordering or confirmation of consistent availability; service quality varied across reviewers.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c25a491f17ec49:0x42743c91880aed77",
+    "name": "Perelandra Natural Food Center",
+    "borough": "Brooklyn",
+    "address": "Perelandra Natural Food Center, 175 Remsen St, Brooklyn, NY 11201",
+    "avg_rating": 4.6,
+    "num_reviews": 280,
+    "low_evidence": false,
+    "score": 1.914370846748352,
+    "excerpts": [
+     {
+      "review_id": 827660,
+      "date": "2019-11",
+      "text": "My very favorite market for vegan choices ..."
+     },
+     {
+      "review_id": 827594,
+      "date": "2018-10",
+      "text": "I don’t do the bulk of my grocery shopping here but go here for specialty items. Lots of great vegan and organic options. Staff is extremely friendly and helpful. Only downside is that the market is a bit pricey, but I think they have to be in order to survive."
+     },
+     {
+      "review_id": 827682,
+      "date": "2017-12",
+      "text": "Great selection of prepared foods. The vegan selections are delicious.A restaurant would be very nice."
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported a market with many vegan choices.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 827660,
+         "date": "2019-11",
+         "text": "My very favorite market for vegan choices ..."
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described a place offering many great vegan and organic options.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 827594,
+         "date": "2018-10",
+         "text": "I don’t do the bulk of my grocery shopping here but go here for specialty items. Lots of great vegan and organic options. Staff is extremely friendly and helpful. Only downside is that the market is a bit pricey, but I think they have to be in order to survive."
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted a great selection of prepared foods with delicious vegan selections.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 827682,
+         "date": "2017-12",
+         "text": "Great selection of prepared foods. The vegan selections are delicious.A restaurant would be very nice."
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c25babad18d59f:0x863991745baa27c9",
+    "name": "The VSPOT",
+    "borough": "Brooklyn",
+    "address": "The VSPOT, 156 5th Ave, Brooklyn, NY 11217",
+    "avg_rating": 4.4,
+    "num_reviews": 476,
+    "low_evidence": false,
+    "score": 1.9006759643554687,
+    "excerpts": [
+     {
+      "review_id": 826860,
+      "date": "2018-05",
+      "text": "Good selection of vegan food. The smaller course meals are the better buy here."
+     },
+     {
+      "review_id": 826859,
+      "date": "2018-03",
+      "text": "Vegan fare with latin American flavors, simply the best."
+     },
+     {
+      "review_id": 826559,
+      "date": "2020-01",
+      "text": "This is one of the best vegan restaurants I have tried! Everything we ordered from the buffalo strips to the cheese steak were amazing!"
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "Good selection of vegan food. The smaller course meals are the better buy here.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 826860,
+         "date": "2018-05",
+         "text": "Good selection of vegan food. The smaller course meals are the better buy here."
+        }
+       ]
+      },
+      {
+       "text": "Vegan fare with latin American flavors, simply the best.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 826859,
+         "date": "2018-03",
+         "text": "Vegan fare with latin American flavors, simply the best."
+        }
+       ]
+      },
+      {
+       "text": "This is one of the best vegan restaurants I have tried! Everything we ordered from the buffalo strips to the cheese steak were amazing!",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 826559,
+         "date": "2020-01",
+         "text": "This is one of the best vegan restaurants I have tried! Everything we ordered from the buffalo strips to the cheese steak were amazing!"
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c259542fd1a179:0x7a29310b9aa40392",
+    "name": "Loving Hut",
+    "borough": "Brooklyn",
+    "address": "Loving Hut, 76 Bushwick Ave, Brooklyn, NY 11211",
+    "avg_rating": 4.2,
+    "num_reviews": 231,
+    "low_evidence": false,
+    "score": 1.8919657588005065,
+    "excerpts": [
+     {
+      "review_id": 1344497,
+      "date": "2017-09",
+      "text": "Been vegan for two weeks and was looking for something good to eat other than my own meals. This place is amazing. Good prices. Large Portions."
+     },
+     {
+      "review_id": 1344596,
+      "date": "2017-10",
+      "text": "Chill vegan spot with great food that's affordable and served up by good people."
+     },
+     {
+      "review_id": 1344528,
+      "date": "2019-02",
+      "text": "I used to eat here about once a week. The menu is extensive, there is wifi and typically enough space to spread out. This place is ideal for vegans and non-vegans, even picky eaters prone to complaining about vegan food :-D The food is memorably good! My favorite thing is the stuffed eggplant. …"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c25d9f184c2559:0xbf02d68764eab1d7",
+    "name": "Hartbreakers",
+    "borough": "Brooklyn",
+    "address": "Hartbreakers, 820 Hart St, Brooklyn, NY 11237",
+    "avg_rating": 4.7,
+    "num_reviews": 106,
+    "low_evidence": false,
+    "score": 1.8833855509757995,
+    "excerpts": [
+     {
+      "review_id": 932246,
+      "date": "2018-12",
+      "text": "Great vegan options. Fast service."
+     },
+     {
+      "review_id": 932207,
+      "date": "2020-02",
+      "text": "I am not vegan, but I really enjoyed this place. The food came out quick, a little on the $ side but very much worth it. I had the thunderbird sandwhich, with fries and a fried beet salad (unexpectedly delicious) it came covered in a jalapeño aioli but i didn't think I would enjoy it as much as I did. …"
+     },
+     {
+      "review_id": 932210,
+      "date": "2019-12",
+      "text": "Amazing vegan food. The firebird, thunderbird, and picnic basket are personal favorites. Tenders and waffle fries are also great to share."
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c25c6d4ec3b545:0x90c4e9894d526f96",
+    "name": "Toad Style",
+    "borough": "Brooklyn",
+    "address": "Toad Style, 93 Ralph Ave, Brooklyn, NY 11221",
+    "avg_rating": 4.4,
+    "num_reviews": 340,
+    "low_evidence": false,
+    "score": 1.8739433407783508,
+    "excerpts": [
+     {
+      "review_id": 592178,
+      "date": "2016-10",
+      "text": "Everything is vegan, but you wouldn't think it. Try the pizza fries."
+     },
+     {
+      "review_id": 591881,
+      "date": "2018-12",
+      "text": "I'm not vegan but I love this place, the Sunshine Burger and Mac&Cheez balls are the best. The food is amazing, some of the best take out in the area. …"
+     },
+     {
+      "review_id": 591945,
+      "date": "2018-01",
+      "text": "This place serves great vegan food. I’ve ordered delivery once before, but this past Saturday I visited the shop hoping to dine in. It was pretty crowded. The space is very small, only a few tables that go quick on a Saturday night. The lady at the counter could not be less pleased to help us. …"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c25b9b19609085:0x2edf34cdae7d8666",
+    "name": "Wholesome Farms Market",
+    "borough": "Brooklyn",
+    "address": "Wholesome Farms Market, 1306 Atlantic Ave, Brooklyn, NY 11216",
+    "avg_rating": 4.4,
+    "num_reviews": 178,
+    "low_evidence": false,
+    "score": 1.8721663802593707,
+    "excerpts": [
+     {
+      "review_id": 1372001,
+      "date": "2019-07",
+      "text": "The grocery has everything from vegan options to regular stuff."
+     },
+     {
+      "review_id": 1371915,
+      "date": "2019-02",
+      "text": "there's a variety of vegan options and gourmet snacks, and the produce always seems fresh! i saw some mold on a package of cheese though so watch out for that."
+     },
+     {
+      "review_id": 1371884,
+      "date": "2019-02",
+      "text": "Super clean place inside and in there food. There is a great variety of food option from vegan to locally sourced. I loved this place. The salad bar and food ordering us very appealing. This looks like where the locals go. You are better off taking other transportation because parking is not ideal here. …"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c25be25d7f1f9b:0xcb0c4d4d93c99d5d",
+    "name": "Modern Love",
+    "borough": "Brooklyn",
+    "address": "Modern Love, 317 Union Ave, Brooklyn, NY 11211",
+    "avg_rating": 4.6,
+    "num_reviews": 442,
+    "low_evidence": false,
+    "score": 1.865873885154724,
+    "excerpts": [
+     {
+      "review_id": 435842,
+      "date": "2018-12",
+      "text": "Great vegan food even for those who aren't vegan"
+     },
+     {
+      "review_id": 435838,
+      "date": "2018-10",
+      "text": "A dream menu for Vegans - food is outstanding. Make sure to secure a reservation or you will be waiting for 45+ minutes during weekend nights."
+     },
+     {
+      "review_id": 435526,
+      "date": "2019-01",
+      "text": "Solid comfort vegan food. It gets busy fast so call ahead. Food is priced well and tasted great. Service kept up with everything we needed and we left very full after a delicious dessert."
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c25b0136acd7db:0x52b8df26407b37df",
+    "name": "Bareburger",
+    "borough": "Brooklyn",
+    "address": "Bareburger, 170 7th Ave, Brooklyn, NY 11215",
+    "avg_rating": 4.4,
+    "num_reviews": 350,
+    "low_evidence": false,
+    "score": 1.8484503746032714,
+    "excerpts": [
+     {
+      "review_id": 2697018,
+      "date": "2019-02",
+      "text": "The exterior drew me in! I was immediately greeted upon entering the establishment. Individual and group seating is available. The menu is diverse yet to the point. Vegan options are in abundance! I ordered an impossible burger, small fries, and a small Cococado! The portion sizing was great and there was a short wait time. Everything is in eco-friendly packaging. …"
+     },
+     {
+      "review_id": 2697059,
+      "date": "2019-04",
+      "text": "Good burgers great selection of vegan stuff..they have the incredible Burger"
+     },
+     {
+      "review_id": 2697178,
+      "date": "2018-07",
+      "text": "Big portions, ORGANIC, healthy, lots of vegan and vegetarian options. They have the vegan Impossible burger and also my favoriteeeee which I think is better than Impossible, the Beyond Burger. It's deeeeeelicious and has great texture and taste. Satisfies my burger craving without comprising my vegan/seagan diet. Yummy salads. Great organic beer and wine selection. …"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c25baebb8fcda9:0xc0b693d248568c15",
+    "name": "Sun In Bloom",
+    "borough": "Brooklyn",
+    "address": "Sun In Bloom, 460 Bergen St #4046, Brooklyn, NY 11217",
+    "avg_rating": 4.1,
+    "num_reviews": 117,
+    "low_evidence": false,
+    "score": 1.8474629044532775,
+    "excerpts": [
+     {
+      "review_id": 717287,
+      "date": "2017-06",
+      "text": "Basic vegan and raw foods. Decent in a pinch but the food needs more seasoning. The place is also overpriced."
+     },
+     {
+      "review_id": 717290,
+      "date": "2017-01",
+      "text": "Great food, doesn't feel like a compromise for anyone dragged along with a vegan."
+     },
+     {
+      "review_id": 717205,
+      "date": "2017-10",
+      "text": "As a plant-based vegan, this place has some delicious, healthy options. It's slightly on the expensive side, but I do recommend it overall. Great sandwiches and the brunch menu is highly recommended!"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": false,
+  "cached": false
+ }
+}

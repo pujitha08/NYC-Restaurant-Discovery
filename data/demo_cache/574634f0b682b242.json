@@ -1,0 +1,381 @@
+{
+ "cached_at": "2026-11-13",
+ "outcome": {
+  "request_id": "",
+  "query": "halal chinese food",
+  "borough_choice": "Manhattan",
+  "method": "semantic_log",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "halal"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "chinese food"
+   ]
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "halal"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "chinese food"
+   ]
+  },
+  "boroughs": [
+   "Manhattan"
+  ],
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c25900adca7485:0x1d4ea398ad50e0c",
+    "name": "Café China 倾城",
+    "borough": "Manhattan",
+    "address": "Café China 倾城, 13 E 37th St, New York, NY 10016",
+    "avg_rating": 4.3,
+    "num_reviews": 895,
+    "low_evidence": false,
+    "score": 2.5418129855103944,
+    "excerpts": [
+     {
+      "review_id": 2112190,
+      "date": "2019-05",
+      "text": "Best Chinese food I've ever had and the first time I've liked Chinese food as much in the US as at restaurants in China. …"
+     },
+     {
+      "review_id": 2112819,
+      "date": "2013-12",
+      "text": "Actually, exactly the worst chinese food ive actually, exactly ever had. B-b-b-bye"
+     },
+     {
+      "review_id": 2112438,
+      "date": "2018-08",
+      "text": "Amazing authentic Chinese cuisine... just be sure to beat the lunch time rush. Gets crowded (for good reason)"
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The supplied review excerpts do not mention halal certification or any discussion of halal food availability. No evidence is found to support or contradict the presence of halal options.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c25bf26cccf805:0x422cf585e503c4ad",
+    "name": "Wo Hop",
+    "borough": "Manhattan",
+    "address": "Wo Hop, 17 Mott St, New York, NY 10013",
+    "avg_rating": 4.4,
+    "num_reviews": 1237,
+    "low_evidence": false,
+    "score": 2.515433184528832,
+    "excerpts": [
+     {
+      "review_id": 1548403,
+      "date": "2018-12",
+      "text": "Can honestly say its the best chinese food I have ever eaten! We have the chicken fried rice, pork fried Dumplings and General Tso Chicken. Nice staff and great table service. Would highly recomend."
+     },
+     {
+      "review_id": 1548404,
+      "date": "2016-12",
+      "text": "Authentic Chinese food without breaking the bank. Try the shrimp ding. Mad good sauce. Mad fresh ingredients. Always had a full cup of water and a full glass of tea. Friendly staff, good eats, what else can you ask for? Nothing - that's what."
+     },
+     {
+      "review_id": 1548406,
+      "date": "2019-07",
+      "text": "This place is amazing! This is the typical Cantonese style Chinese food! If you looking for traditional chinese food, not the americanized food this is the place! One of the best things you can order is the Shrimp with the Lobster sauce, it's just WOW! Wo hop never dissapoints!"
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "No excerpts mention halal compliance, availability, or refusal.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c25a26f81872d9:0x1ce6a514c42345a2",
+    "name": "Joe's Shanghai",
+    "borough": "Manhattan",
+    "address": "Joe's Shanghai, 46 Bowery, New York, NY 10013",
+    "avg_rating": 4.3,
+    "num_reviews": 1553,
+    "low_evidence": false,
+    "score": 2.5051078577634636,
+    "excerpts": [
+     {
+      "review_id": 2238815,
+      "date": "2020-03",
+      "text": "Reasonably priced delicious Chinese food with compromised service. The Xiao long bao (soup dumplings) is amazing here. Beside coming in large size, the soup is very tasteful. Thanks to the thin wrap, each piece doesn't feel too heavy. I love how the soy vinegar for Xiao long bao came with thinly sliced ginger. …"
+     },
+     {
+      "review_id": 2239208,
+      "date": "2018-06",
+      "text": "Order 3 items. Normally can't miss at most Chinese place. Two were chicken items and they were fine. The sesame beef however was terrible. So chewy you could not break off a bite. You needed a knife. First time I actually tasted flour in my food. You know it is there but normally you don't taste it"
+     },
+     {
+      "review_id": 2240497,
+      "date": "2019-02",
+      "text": "Excellent place to eat truly Chinese food you have to make a line to wait to enter but once inside it is worth it"
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The supplied review excerpts do not mention halal certification, halal menu items, or any related dietary accommodations.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c25a26942e76c3:0x279e9cecc8191e1a",
+    "name": "The Original Buddha Bodai Kosher Vegetarian Restaurant 🥬 佛菩提",
+    "borough": "Manhattan",
+    "address": "The Original Buddha Bodai Kosher Vegetarian Restaurant 🥬 佛菩提, 5 Mott St, New York, NY 10013, United States",
+    "avg_rating": 4.4,
+    "num_reviews": 576,
+    "low_evidence": false,
+    "score": 2.4806064054934622,
+    "excerpts": [
+     {
+      "review_id": 72979,
+      "date": "2016-11",
+      "text": "The best Chinese food I have ever had, and it is kosher! Halleluyah."
+     },
+     {
+      "review_id": 73027,
+      "date": "2018-06",
+      "text": "Very tasty vegetarian Chinese food with a large selection. Most dishes are vegan, if not it is declared on the menu (dairy, with egg). Meat eaters are used by e.g. Be impressed by the meatless \"Lemon Chicken\", it tastes just like baked chicken."
+     },
+     {
+      "review_id": 72480,
+      "date": "2018-04",
+      "text": "If there was 6 a star rating available or more, Buddha Bodai would receive it! Best Chinese food hands down outside of China itself, and Kosher Dim Sum. Mock meat and mock seafood taste just like the real thing #bestchinesefood #vegan #dimsum #kosher #llamaste"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c25987185dccc7:0x337115f296625e4f",
+    "name": "Congee Village",
+    "borough": "Manhattan",
+    "address": "Congee Village, 100 Allen St, New York, NY 10002",
+    "avg_rating": 4,
+    "num_reviews": 547,
+    "low_evidence": false,
+    "score": 2.473872359615505,
+    "excerpts": [
+     {
+      "review_id": 2115254,
+      "date": "2018-12",
+      "text": "Used when staying in Lower East in 2006. Basically Chinese porridge main Chinese restaurant for Chinese people by Chinese, but the menu is complete as it is. Beijing style pork chops and two types of porridge (seafood and scalloped) were tried. …"
+     },
+     {
+      "review_id": 2114964,
+      "date": "2016-08",
+      "text": "Great place for Chinese food. Salad prawn with candied walnuts. Pork congee is also super cheap and fantastic"
+     },
+     {
+      "review_id": 2115022,
+      "date": "2011-02",
+      "text": "Consistently delicious Chinese food on the cheap. Good congee (obviously), but definitely branch out and try their other dishes, b/c they're great too. Garlic chicken is mouth-wateringly delicious with perfect crispy skin."
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c258fa158b95bf:0x11808533a3f1b3b3",
+    "name": "Joe's Shanghai",
+    "borough": "Manhattan",
+    "address": "Joe's Shanghai, 24 W 56th St, New York, NY 10019",
+    "avg_rating": 4.1,
+    "num_reviews": 636,
+    "low_evidence": false,
+    "score": 2.4667715158816605,
+    "excerpts": [
+     {
+      "review_id": 1608540,
+      "date": "2017-08",
+      "text": "Inauthentic Chinese food (but I still consider it tasty; well-suited for my sweet tooth). This place is a typical \"American Chinese restaurant\". Most of the meat dishes our group ordered were covered with a sweet and usually fatty sauce. The soup dumplings, brewed tea and table service were good though. Food overall was ok ($200+ for 5 people)"
+     },
+     {
+      "review_id": 1609112,
+      "date": "2015-11",
+      "text": "There are \"chinese food\" restaurants on nearly every block it seems, but this place serves some actual Chinese dishes."
+     },
+     {
+      "review_id": 1608441,
+      "date": "2019-04",
+      "text": "Szechuan beef noodle soup is another filling dish from this reataurant where everybody seems to only vouch for it's steamed dumplings. The beef is just melting in your mouth. Entree taste is pretty standard for Chinese food. Tiny soup. Fast service buy way too pricey for Chinese food. $85 for 4 dishes plus tips."
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c25a26eeb4514d:0xe2a674b5f65754ea",
+    "name": "Hop Kee Restaurant",
+    "borough": "Manhattan",
+    "address": "Hop Kee Restaurant, 21 Mott St, New York, NY 10013",
+    "avg_rating": 4.3,
+    "num_reviews": 375,
+    "low_evidence": false,
+    "score": 2.4531262360076713,
+    "excerpts": [
+     {
+      "review_id": 904722,
+      "date": "2016-06",
+      "text": "Can't go wrong with some real Chinese food. Order the spring chicken, seafood pan-fried noodles, salt and pepper porkchop and squid and some kang kong! Mmmm"
+     },
+     {
+      "review_id": 904649,
+      "date": "2018-09",
+      "text": "Salty but tasty Chinese food, good portion for reasonable price."
+     },
+     {
+      "review_id": 904724,
+      "date": "2017-04",
+      "text": "Big portions, so good for large groups, no lunch specials though - I don't know much about Chinese cuisine but I liked it. Very clean though!!!!"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c258ffc89d0d8d:0x79fa6bef40a685a5",
+    "name": "Xi'an Famous Foods 西安名吃",
+    "borough": "Manhattan",
+    "address": "Xi'an Famous Foods 西安名吃, 37 W 43rd St, New York, NY 10036",
+    "avg_rating": 4.4,
+    "num_reviews": 794,
+    "low_evidence": false,
+    "score": 2.4242260835284224,
+    "excerpts": [
+     {
+      "review_id": 2585670,
+      "date": "2017-09",
+      "text": "Very tasty Chinese food at affordable prices. Recommended!"
+     },
+     {
+      "review_id": 2585411,
+      "date": "2017-03",
+      "text": "Fantastic Chinese food. The original flavor of China"
+     },
+     {
+      "review_id": 2585673,
+      "date": "2017-06",
+      "text": "Very authentic Chinese snacks that can satisfy the Chinese stomach"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c25888e4c60405:0x657fa3ef7636e022",
+    "name": "The Cottage",
+    "borough": "Manhattan",
+    "address": "The Cottage, 360 Amsterdam Ave, New York, NY 10024",
+    "avg_rating": 4.2,
+    "num_reviews": 216,
+    "low_evidence": false,
+    "score": 2.4194602183890797,
+    "excerpts": [
+     {
+      "review_id": 1234843,
+      "date": "2018-03",
+      "text": "Local Chinese food. Greasy & good"
+     },
+     {
+      "review_id": 1234745,
+      "date": "2016-10",
+      "text": "The absolute worst Chinese food I have ever had. Loaded with MSG. Dry Stir Fried String Beans were old and oily and had an unpleasant taste Prawn in chili sauce-Shrimp were not properly cleaned, sweet sauce with lots of onions. Dumplings in chili sauce were a mess of noodles with a strong taste of peanut butter sauce. …"
+     },
+     {
+      "review_id": 1234845,
+      "date": "2016-07",
+      "text": "Want gourmet delicious Chinese food with free wine?.. This is it! 😘"
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c25a26531815c7:0x2ac264f74bc5f997",
+    "name": "Great NY Noodletown",
+    "borough": "Manhattan",
+    "address": "Great NY Noodletown, 28 Bowery, New York, NY 10013",
+    "avg_rating": 4.2,
+    "num_reviews": 810,
+    "low_evidence": false,
+    "score": 2.4040253599627137,
+    "excerpts": [
+     {
+      "review_id": 2195488,
+      "date": "2020-02",
+      "text": "The fastest, most authentic, and stomach-friendly Chinese food I've ever eaten."
+     },
+     {
+      "review_id": 2196033,
+      "date": "2018-11",
+      "text": "Cheap and authentic Chinese food... try the soup with dumplings in it"
+     },
+     {
+      "review_id": 2195750,
+      "date": "2019-03",
+      "text": "Great spot for Chinese barbeque over rice or in noodle soup."
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result"
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": false,
+  "cached": false
+ }
+}

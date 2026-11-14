@@ -148,6 +148,7 @@ class SearchOutcome:
     llm_calls: List[Dict] = field(default_factory=list)
     model: Optional[str] = None
     allergy_sensitive: bool = False
+    cached: bool = False  # served from data/demo_cache (app/demo_cache.py), not a live search
 
 
 # ---- LLM client ---------------------------------------------------------------
@@ -382,7 +383,7 @@ def log_record(kind, outcome, extra=None):
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "event": kind, "request_id": outcome.request_id, "query": outcome.query,
         "borough_choice": outcome.borough_choice, "boroughs": outcome.boroughs, "method": outcome.method,
-        "allergy_sensitive": outcome.allergy_sensitive, "reasoning_effort": LLM_REASONING_EFFORT,
+        "allergy_sensitive": outcome.allergy_sensitive, "cached": outcome.cached, "reasoning_effort": LLM_REASONING_EFFORT,
         "parsed": asdict(outcome.parsed) if outcome.parsed else None,
         "model": outcome.model, "prompt_sha256": prompt_hashes(),
         "errors": {"setup": _code(outcome.setup_error), "parse": _code(outcome.parse_error),

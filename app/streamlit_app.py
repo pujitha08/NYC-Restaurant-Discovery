@@ -13,7 +13,7 @@ import streamlit as st
 # Streamlit puts app/ on sys.path, not the repo root, so add it for `app`, `src` and `eval` imports.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import pipeline  # noqa: E402
+from app import demo_cache, pipeline  # noqa: E402
 
 CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUGH}) and are not safety "
           "guarantees. **For allergies, always confirm with the restaurant before you order.**")
@@ -170,6 +170,9 @@ def main():
         borough = st.radio("Borough", pipeline.BOROUGH_CHOICES, horizontal=True)
         method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
         include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
+        demo_mode = st.checkbox("Demo mode (serve saved results for the demo queries)",
+                                help="For the presentation: an exact demo query is answered from data/demo_cache "
+                                     "without calling the language model. Other queries run live.")
         submitted = st.form_submit_button("Search")
 
     if submitted:
@@ -183,13 +186,15 @@ def main():
                          "Run `python -m src.retrieval.semantic --build` and restart the app.")
             else:
                 with st.spinner("Searching and summarizing the top reviews…"):
-                    outcome, raw = pipeline.run_search(query, borough, method, retriever=retriever, client=client,
-                                                       model=model, setup_error=setup_error,
-                                                       include_low_evidence=include_low)
+                    outcome, raw = demo_cache.search_with_fallback(
+                        query, borough, method, demo_mode=demo_mode, retriever=retriever, client=client, model=model,
+                        setup_error=setup_error, include_low_evidence=include_low)
                 st.session_state["last_search"] = (outcome, raw)
 
     if "last_search" in st.session_state:
         outcome, raw = st.session_state["last_search"]
+        if outcome.cached:
+            st.warning(f"📦 **{demo_cache.CACHE_LABEL.capitalize()}**: saved from an earlier live run, not a live search.")
         for notice in outcome.notices:
             st.info(notice)
         show_parsed(outcome)
@@ -198,8 +203,11 @@ def main():
             st.caption(f"Top {pipeline.AUTO_SUMMARIES} are summarized automatically; open a result and use Explain "
                        "for the others. Ranking reflects review relevance, not safety.")
         t = outcome.timings
-        st.caption(f"Method {outcome.method} · parse {t.get('parse_s', 0):.1f}s · retrieve {t.get('retrieve_s', 0):.1f}s"
-                   f" · summarize {t.get('summarize_s', 0):.1f}s · total {t.get('total_s', 0):.1f}s")
+        if outcome.cached:
+            st.caption(f"Method {outcome.method} · {demo_cache.CACHE_LABEL}")
+        else:
+            st.caption(f"Method {outcome.method} · parse {t.get('parse_s', 0):.1f}s · retrieve {t.get('retrieve_s', 0):.1f}s"
+                       f" · summarize {t.get('summarize_s', 0):.1f}s · total {t.get('total_s', 0):.1f}s")
         if outcome.results:
             keys = [expander_key(outcome, v) for v in outcome.results]
             pending = st.session_state.pop(PENDING_OPEN, None)

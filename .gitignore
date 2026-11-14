@@ -14,6 +14,8 @@ venv/
 # Data (large; share via Drive/Hugging Face, not git)
 data/*
 !data/.gitkeep
+# Cached demo results (public review text already shown in the app): see app/demo_cache.py
+!data/demo_cache/
 
 # EDA outputs: keep EDA_SUMMARY.md and three key figures; the rest regenerates with
 # `python -m src.data.eda`
