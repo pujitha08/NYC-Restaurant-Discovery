@@ -255,7 +255,10 @@ class GuardUiTests(unittest.TestCase):
         warnings = [w.value for w in at.warning]
         self.assertTrue(any("Reviews report problems" in w for w in warnings), warnings)
         self.assertNotIn("Reviews report problems", " ".join(m.value for m in at.main.markdown))  # not plain text
-        self.assertIn("⚠ **Contradicts**", " ".join(m.value for m in at.main.markdown))
+        text = " ".join(m.value for m in at.main.markdown)
+        self.assertIn('claim-warning"><div class="claim-label">⚠ Warning</div>', text)
+        status_rows = [w for w in warnings if "Reviews report problems" in w]
+        self.assertTrue(all(pipeline.ALLERGY_NOTE in w for w in status_rows), status_rows)  # badge + reminder in one row
 
     def test_mission_shows_no_check_marks_or_supported(self):
         st.cache_resource.clear()
@@ -273,11 +276,14 @@ class GuardUiTests(unittest.TestCase):
             at.run()
         self.assertFalse(at.exception, at.exception)
         text = " ".join(m.value for m in at.main.markdown)
-        self.assertIn("Reviews discuss this — read each claim", text)
+        rows = [w.value for w in at.warning if "Reviews discuss this — read each claim" in w.value]
+        self.assertTrue(rows)
+        self.assertTrue(all(pipeline.ALLERGY_NOTE in w for w in rows))  # the verdict and the allergy note are ONE row
         self.assertNotIn("✓", text)
-        self.assertNotIn("**supported**", text)
-        self.assertIn("• Reviewer report", text)
-        self.assertIn(pipeline.ALLERGY_NOTE, " ".join(w.value for w in at.warning))
+        self.assertNotIn('class="claim claim-positive"', text)  # no "Positive" claim for an allergy request
+        self.assertNotIn("✓ Positive", text)
+        self.assertNotIn("upported", text + " ".join(rows))  # neither "Supported" nor "supported"
+        self.assertIn("ℹ Mention", text)
 
 
 if __name__ == "__main__":

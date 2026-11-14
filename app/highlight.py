@@ -70,3 +70,22 @@ def highlight(text, terms) -> str:
         pos = m.end()
     out.append(escape(text[pos:]))
     return "".join(out)
+
+
+def html_text(text) -> str:
+    """Plain text -> HTML-safe text for a raw HTML block (entities only: a raw block is not Markdown-processed)."""
+    return html.escape(" ".join((text or "").split()), quote=True)
+
+
+def highlight_html(text, terms) -> str:
+    """Like highlight(), for use inside a raw HTML block: every segment is HTML-escaped, matches get the <mark> tag."""
+    text = " ".join((text or "").split())
+    pattern = term_pattern(terms)
+    if pattern is None:
+        return html_text(text)
+    out, pos = [], 0
+    for m in pattern.finditer(text):
+        out += [html_text(text[pos:m.start()]), MARK.format(html_text(m.group()))]
+        pos = m.end()
+    out.append(html_text(text[pos:]))
+    return "".join(out)

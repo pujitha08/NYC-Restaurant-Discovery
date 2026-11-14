@@ -3,7 +3,7 @@
 import re
 import unittest
 
-from app.highlight import MARK, escape, highlight, highlight_terms, md, term_pattern
+from app.highlight import MARK, escape, highlight, highlight_html, highlight_terms, html_text, md, term_pattern
 from src.schemas import ParsedQuery
 
 
@@ -78,6 +78,28 @@ class HighlightTests(unittest.TestCase):
         self.assertEqual(MARK.count("{}"), 1)
         self.assertEqual(md("a_b"), r"a\_b")
         self.assertEqual(escape("a<b"), r"a&lt;b")
+
+
+class HtmlVariantTests(unittest.TestCase):
+    """highlight_html is for raw HTML blocks: entities only (no Markdown escapes), the same <mark> markup."""
+
+    def test_matches_are_marked_and_everything_else_is_entity_escaped(self):
+        out = highlight_html('<script>alert("x")</script> Great Peanut & more', ["peanut"])
+        self.assertNotIn("<script", out)
+        self.assertIn("&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;", out)
+        self.assertEqual(marks(out), ["Peanut"])
+        self.assertIn("&amp; more", out)
+        self.assertEqual(out.count("<"), out.count("<mark") + out.count("</mark>"))
+
+    def test_no_markdown_backslashes_inside_a_raw_html_block(self):
+        out = highlight_html("$3 *happy* hour_1 [x] #1", ["happy"])
+        self.assertNotIn("\\", out)
+        self.assertIn("$3 *", out)
+
+    def test_whitespace_collapsed_and_none_safe(self):
+        self.assertEqual(highlight_html("a\n\n b", []), "a b")
+        self.assertEqual(highlight_html(None, ["x"]), "")
+        self.assertEqual(html_text('<b>"&'), "&lt;b&gt;&quot;&amp;")
 
 
 if __name__ == "__main__":

@@ -75,11 +75,11 @@ class AppSmokeTests(unittest.TestCase):
     def text(block):
         return " ".join(m.value for m in block.markdown)
 
-    def test_results_render_collapsed_with_header(self):
+    def test_top_card_is_open_and_the_rest_collapsed_with_a_header(self):
         at = self.search(self.start())
         results = self.results(at)
         self.assertEqual(len(results), 4)
-        self.assertEqual([e.proto.expanded for e in results], [False] * 4)
+        self.assertEqual([e.proto.expanded for e in results], [True, False, False, False])
         self.assertRegex(results[0].label, r"^1\. Place 1 — (Brooklyn|Manhattan) · (★ \d\.\d|no rating) · ✓ Supported")
         self.assertIn("Not summarized yet", results[3].label)  # rank 4: not summarized automatically
         self.assertNotIn("✓", results[3].label)
@@ -92,21 +92,69 @@ class AppSmokeTests(unittest.TestCase):
             self.assertNotIn("✓", e.label)
             self.assertNotIn("Supported", e.label)
         self.assertIn(f"ℹ {pipeline.STATUS_NEUTRAL}", self.results(at)[0].label)
-        self.assertIn(pipeline.ALLERGY_NOTE, " ".join(w.value for w in self.results(at)[0].warning))
+        first = self.results(at)[0]
+        self.assertEqual(len(first.warning), 1)  # badge and allergy reminder share ONE row
+        self.assertIn(f"ℹ {pipeline.STATUS_NEUTRAL}", first.warning[0].value)
+        self.assertIn(pipeline.ALLERGY_NOTE, first.warning[0].value)
+        self.assertNotIn('class="claim claim-positive"', self.text(first))  # an allergy request never shows a "Positive" claim
+        self.assertIn("ℹ Mention", self.text(first))
 
-    def test_expanding_shows_summary(self):
+    def test_card_shows_one_status_row_the_top_claim_and_its_best_quote(self):
         at = self.search(self.start())
-        outcome, _ = at.session_state["last_search"]
-        at.session_state[f"open_{outcome.request_id}_{outcome.results[0].gmap_id}"] = True  # what a header click does
-        at.run()
         first = self.results(at)[0]
         self.assertTrue(first.proto.expanded)
         self.assertFalse(any(e.proto.expanded for e in self.results(at)[1:]))
+        self.assertEqual(len(first.success), 1)  # ONE status row (no separate banner and note)
+        self.assertIn("✓ Supported", first.success[0].value)
         body = self.text(first)
-        self.assertIn("supported", body)
+        self.assertEqual(body.count('class="claim '), 1)  # only the top claim by default
+        self.assertIn('claim-positive"><div class="claim-label">✓ Positive</div>', body)
         self.assertIn("One reviewer reported vegan options for a group.", body)
         self.assertIn("Review from 2019-01", body)
-        self.assertIn("All retrieved excerpts (2)", body)
+        self.assertNotIn("Place 1", body)  # the restaurant name is in the card label only, not repeated in the body
+        self.assertRegex(first.caption[0].value, r"^★ \d\.\d · \d+ reviews · 1 Main St")
+
+    def test_claim_html_escapes_model_and_review_text_and_labels_by_icon_text_and_color(self):
+        from app.streamlit_app import claim_html, ordered_claims, quote_html
+        evil = pipeline.Excerpt(1, "2020-05", '<img src=x onerror=alert(1)> peanut & "nuts"')
+        claim = pipeline.Claim("<b>bold</b> claim & more", "contradiction", [evil])
+        html = claim_html(claim, ["peanut"], guarded=True)
+        self.assertNotIn("<img", html)
+        self.assertNotIn("<b>", html)
+        self.assertIn("&lt;b&gt;bold&lt;/b&gt; claim &amp; more", html)
+        self.assertIn('class="claim claim-warning"', html)
+        self.assertIn("⚠ Warning", html)
+        self.assertIn(">peanut</mark>", html)
+        self.assertIn("Review from 2020-05", html)
+        self.assertNotIn("\n\n", html)  # one HTML block, so Markdown does not cut it
+        self.assertIn("blockquote", quote_html(evil, []))
+
+    def test_claim_labels_and_the_allergy_guarded_mapping(self):
+        from app.streamlit_app import claim_html, ordered_claims
+        support, doubt = pipeline.Claim("s", "support", []), pipeline.Claim("u", "uncertainty", [])
+        self.assertIn("✓ Positive", claim_html(support, [], guarded=False))
+        self.assertIn("claim-positive", claim_html(support, [], guarded=False))
+        guarded = claim_html(support, [], guarded=True)  # allergy request: a supporting claim is only a mention
+        self.assertIn("ℹ Mention", guarded)
+        self.assertNotIn("Positive", guarded)
+        self.assertNotIn("✓", guarded)
+        self.assertIn("• Mention", claim_html(doubt, [], guarded=False))
+        summary = pipeline.Summary("mixed", [support, pipeline.Claim("w", "contradiction", []), doubt], [])
+        self.assertEqual([c.label for c in ordered_claims(summary)], ["contradiction", "support", "uncertainty"])
+
+    def test_show_all_evidence_expander_holds_the_remaining_evidence(self):
+        at = self.search(self.start(FakeClient(location=None, summary="mixed")))
+        first = self.results(at)[0]
+        inner = next(e for e in first.expander if e.label.startswith("Show all evidence"))
+        self.assertFalse(inner.proto.expanded)
+        self.assertIn("(1 more claim · 2 excerpts)", inner.label)
+        # mixed evidence: the warning claim is the top claim and the positive one is under "Show all evidence"
+        self.assertEqual(self.text(first).count('class="claim '), 2)  # top claim outside + the other inside the expander
+        top_markdown = [m.value for m in first.markdown if 'class="claim ' in m.value]
+        self.assertIn("claim-warning", top_markdown[0])
+        self.assertIn("Show all evidence", " ".join(e.label for e in first.expander))
+        self.assertIn("All retrieved excerpts (2)", self.text(inner))
+        self.assertIn("claim-positive", self.text(inner))
 
     def test_explain_keeps_result_open(self):
         at = self.search(self.start())
@@ -116,7 +164,7 @@ class AppSmokeTests(unittest.TestCase):
         at.run()
         self.assertFalse(at.exception, at.exception)
         results = self.results(at)
-        self.assertEqual([e.proto.expanded for e in results], [False, False, False, True])
+        self.assertEqual([e.proto.expanded for e in results], [True, False, False, True])
         self.assertNotIn("Not summarized yet", results[3].label)
         self.assertIn("One reviewer reported", self.text(results[3]))
         self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
@@ -137,8 +185,8 @@ class AppSmokeTests(unittest.TestCase):
         self.assertEqual([e.proto.expanded for e in self.results(at)], [False] * 4)
         next(b for b in at.button if b.label == "Expand all").click()
         at.run()
-        self.search(at, "vegan brunch")  # a new search starts collapsed
-        self.assertEqual([e.proto.expanded for e in self.results(at)], [False] * 4)
+        self.search(at, "vegan brunch")  # a new search starts with only the top card open
+        self.assertEqual([e.proto.expanded for e in self.results(at)], [True, False, False, False])
 
     def test_demo_mode_serves_a_labeled_cached_result(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -14,25 +14,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import chips, compare, demo_cache, pipeline  # noqa: E402
 from src.config import STANCE_RERANK  # noqa: E402
-from app.highlight import highlight, highlight_terms, md  # noqa: E402,F401 (md is used by the tests)
+from app.highlight import highlight_html, highlight_terms, html_text, md  # noqa: E402,F401 (md is used by the tests)
 
 TAGLINE = "Ask in plain English. Get NYC restaurants backed by review evidence."
 # The slim note is always shown; the full-strength caveat only above allergy results.
 SLIM_NOTE = f"Reviews are historical (Google, through {pipeline.DATA_THROUGH}) and anecdotal, not safety guarantees."
 CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUGH}) and are not safety "
           "guarantees. **For allergies, always confirm with the restaurant before you order.**")
-STATUS_TEXT = {
-    pipeline.STATUS_SUPPORTED: "Evidence: **supported** by reviewers (not a safety guarantee)",
-    pipeline.STATUS_MIXED: "Evidence: **mixed** ⚠ some reviews contradict others",
-    pipeline.STATUS_INSUFFICIENT: "Evidence: **insufficient**: the reviews shown don't establish this",
-    pipeline.STATUS_NEUTRAL: f"Evidence: **{pipeline.STATUS_NEUTRAL}**",
-    pipeline.STATUS_PROBLEMS: f"⚠ Evidence: **{pipeline.STATUS_PROBLEMS}**: reviewers warn about this need",
-}
-CLAIM_MARK = {"support": "✓ Supports", "contradiction": "⚠ **Contradicts**", "uncertainty": "? Unclear"}
-# Allergy-sensitive queries: no check marks; a "support" claim is shown as a neutral reviewer report.
-GUARDED_CLAIM_MARK = {**CLAIM_MARK, "support": "• Reviewer report"}
-
-
 # Page styling: system fonts only (no web fonts, no external requests), a narrower reading column inside the wide layout,
 # and pill-shaped example buttons. Static text; nothing from users or reviews goes into it.
 CSS = """
@@ -44,6 +32,17 @@ html, body, [class*="st-"], button, input, textarea { font-family: -apple-system
 [class*="st-key-example_"] button { border-radius: 999px; padding: 0.15rem 0.9rem; border: 1px solid #C2410C;
   color: #9A3412; background: #FFFFFF; font-weight: 600; }
 [class*="st-key-example_"] button:hover { background: #FAF3EA; border-color: #9A3412; }
+.claim { border-left: 6px solid #475569; background: #F8FAFC; padding: 0.55rem 0.9rem; margin: 0.6rem 0;
+  border-radius: 0 8px 8px 0; }
+.claim-warning { border-left-color: #B91C1C; background: #FEF2F2; }
+.claim-positive { border-left-color: #15803D; background: #F0FDF4; }
+.claim-label { font-weight: 700; font-size: 0.85rem; letter-spacing: 0.02em; text-transform: uppercase; color: #334155; }
+.claim-warning .claim-label { color: #991B1B; }
+.claim-positive .claim-label { color: #14532D; }
+.claim-text { color: #1C1917; font-size: 1rem; margin: 0.15rem 0 0.35rem 0; }
+.quote { margin: 0.35rem 0 0.1rem 0; padding: 0.1rem 0 0.1rem 0.75rem; border-left: 2px solid #A8A29E;
+  color: #1C1917; font-size: 0.95rem; }
+.quote-date { display: block; color: #44403C; font-size: 0.8rem; margin-top: 0.1rem; }
 </style>
 """
 
@@ -134,50 +133,100 @@ def show_stance(view):
         st.warning(f"**Strongest warning:** “{md(bar['warning'])}”")
 
 
-def quote(excerpt, terms):
-    """A review excerpt as a block quote, with the query's requirement terms highlighted (text is escaped first)."""
-    st.markdown(f"> {highlight(excerpt.text, terms)}\n>\n> *Review from {excerpt.date}*", unsafe_allow_html=True)
+# Claim labels: icon + plain word + color (never color alone). Allergy-sensitive queries never show "Positive":
+# a supporting claim there is only a "Mention", so the guard holds in the card as well as in the status row.
+CLAIM_STYLE = {"contradiction": ("warning", "⚠", "Warning"), "support": ("positive", "✓", "Positive"),
+               "uncertainty": ("mention", "•", "Mention")}
+GUARDED_CLAIM_STYLE = {**CLAIM_STYLE, "support": ("mention", "ℹ", "Mention")}
+SHOW_ALL = "Show all evidence"
+
+
+def quote_html(excerpt, terms):
+    """A review excerpt as a dark, readable quote with its date; query terms highlighted, everything escaped first."""
+    return (f'<blockquote class="quote">{highlight_html(excerpt.text, terms)}'
+            f'<span class="quote-date">Review from {html_text(excerpt.date)}</span></blockquote>')
+
+
+def claim_html(claim, terms, guarded, max_quotes=None):
+    css, icon, word = (GUARDED_CLAIM_STYLE if guarded else CLAIM_STYLE).get(claim.label, CLAIM_STYLE["uncertainty"])
+    quotes = "".join(quote_html(e, terms) for e in (claim.excerpts[:max_quotes] if max_quotes else claim.excerpts))
+    return (f'<div class="claim claim-{css}"><div class="claim-label">{icon} {word}</div>'
+            f'<div class="claim-text">{html_text(claim.text)}</div>{quotes}</div>')
+
+
+def ordered_claims(summary):
+    """Warnings first (stable otherwise), so the claim shown by default is never milder than one that is hidden."""
+    return sorted(summary.claims, key=lambda c: c.label != "contradiction")
+
+
+def show_status_row(view):
+    """ONE compact row: the verdict badge plus, for allergy-sensitive queries, the allergy reminder."""
+    s = view.summary
+    text = f"**{status_badge(view)}**" + (f" · {s.note}" if s.note else "")
+    if s.guarded or s.status in (pipeline.STATUS_PROBLEMS, pipeline.STATUS_MIXED):
+        st.warning(text)  # allergy-sensitive results always get the cautious style
+    elif s.status == pipeline.STATUS_SUPPORTED:
+        st.success(text + " · not a safety guarantee")
+    else:
+        st.info(text)
+
+
+def show_more_evidence(view, outcome, terms, shown_claims):
+    """Everything not shown by default, under a "Show all evidence" expander (inside the card)."""
+    s = view.summary
+    claims = ordered_claims(s) if s else []
+    top_extra = claims[0].excerpts[1:] if claims else []
+    others = claims[1:]
+    n_more = len(others) + (1 if top_extra else 0) + (1 if view.excerpts else 0) + (1 if s and s.limitations else 0)
+    if not n_more:
+        return
+    label = f"{SHOW_ALL} ({max(len(others), 0)} more claim{'' if len(others) == 1 else 's'} · {len(view.excerpts)} excerpts)"
+    with st.expander(label, key=f"all_{outcome.request_id}_{view.gmap_id}"):
+        guarded = bool(s and s.guarded)
+        if top_extra:
+            st.markdown("".join(quote_html(e, terms) for e in top_extra), unsafe_allow_html=True)
+        for c in others:
+            st.markdown(claim_html(c, terms, guarded), unsafe_allow_html=True)
+        for limitation in (s.limitations if s else []):
+            st.caption(md(limitation))
+        if view.excerpts:
+            st.markdown(f"**All retrieved excerpts ({len(view.excerpts)})**")
+            st.markdown("".join(quote_html(e, terms) for e in view.excerpts), unsafe_allow_html=True)
+
+
+def show_summary(view, outcome, terms=()):
+    s = view.summary
+    show_status_row(view)
+    claims = ordered_claims(s)
+    if claims:  # the top claim and its best quote; the rest is under "Show all evidence"
+        st.markdown(claim_html(claims[0], terms, s.guarded, max_quotes=1), unsafe_allow_html=True)
+    show_more_evidence(view, outcome, terms, claims[:1])
 
 
 def show_excerpts(view, title="Review excerpts", terms=()):
     if not view.excerpts:
         st.caption("No review excerpts were retrieved for this restaurant.")
         return
-    st.markdown(f"**{title} ({len(view.excerpts)})**")  # plain heading: expanders can't be nested
-    for e in view.excerpts:
-        quote(e, terms)
-
-
-def show_summary(view, terms=()):
-    s = view.summary
-    if s.status == pipeline.STATUS_PROBLEMS:
-        st.warning(STATUS_TEXT[s.status])  # warning style: reviewers report problems
-    else:
-        st.markdown(STATUS_TEXT[s.status])
-    if s.note:
-        st.warning(s.note)
-    marks = GUARDED_CLAIM_MARK if s.guarded else CLAIM_MARK
-    for c in s.claims:
-        st.markdown(f"{marks.get(c.label, c.label)}: {md(c.text)}")
-        for e in c.excerpts:
-            quote(e, terms)
-    for limitation in s.limitations:
-        st.caption(md(limitation))
+    st.markdown(f"**{title} ({len(view.excerpts)})**")
+    st.markdown("".join(quote_html(e, terms) for e in view.excerpts), unsafe_allow_html=True)
 
 
 def show_result(view, outcome, raw, client, model):
     key = expander_key(outcome, view)
     terms = highlight_terms(outcome.query, outcome.parsed)
+    if key not in st.session_state:
+        st.session_state[key] = view.rank == 1  # the top card starts open; Expand/Collapse all and Explain change it
     # Stateful expander (Streamlit >= 1.5x): its open state lives in st.session_state[key], so it survives reruns
-    # and Explain / Expand all / Collapse all can set it. on_change="rerun" keeps that state in sync.
+    # and Explain / Expand all / Collapse all can set it. on_change="rerun" keeps that state in sync. The restaurant
+    # name appears once, in this label; the card body shows rating, review count and address only.
     with st.expander(result_header(view), key=key, on_change="rerun"):
-        st.caption(f"{view.num_reviews:,} reviews · {md(view.address)}")
+        rating = f"★ {view.avg_rating:.1f}" if isinstance(view.avg_rating, (int, float)) else "no rating"
+        st.caption(f"{rating} · {view.num_reviews:,} reviews · {md(view.address)}")
         if view.low_evidence:
             st.caption("⚠ Low evidence: fewer than 5 usable reviews.")
         show_stance(view)
         if view.summary:
-            show_summary(view, terms)
-            show_excerpts(view, "All retrieved excerpts", terms)
+            show_summary(view, outcome, terms)
         elif view.summary_error:
             st.warning(f"Summary unavailable: {view.summary_error['message']}")
             show_excerpts(view, terms=terms)
