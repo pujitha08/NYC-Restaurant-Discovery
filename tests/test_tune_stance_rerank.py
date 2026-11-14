@@ -21,6 +21,13 @@ def features(n_queries=6):
             for i in range(1, n_queries + 1)}
 
 
+def labels_file(dir_):
+    """A tiny llm_labels.jsonl (the report lists label sources)."""
+    path = Path(dir_) / "labels.jsonl"
+    path.write_text('{"query_id": "Q01", "gmap_id": "W", "label": 0, "provider": "groq", "source": "llm"}\n')
+    return path
+
+
 def labels(qids, w=0, g=2, m=1):
     return {(q, gid): lab for q in qids for gid, lab in (("W", w), ("G", g), ("M", m))}
 
@@ -97,14 +104,15 @@ class ReportTests(unittest.TestCase):
             full = {t: tune.split_table(f, lab, ids, {tune.STANCE: tuned}, cats, n=200) for t, ids in (
                 ("Held-out test split", test), ("Dev split (weights were tuned here: optimistic)", dev),
                 ("All 35 queries (includes the dev queries: optimistic)", qids))}
-            tune.write_report(out, args=Namespace(labels=Path("eval/llm_labels.jsonl"), queries=Path("eval/queries_final.csv"),
-                                                  seed=6165, top_n=30, partial=False, n_dev_total=4, unlabeled_dev=[]), dev=dev, test=test, tuned=tuned,
+            tune.write_report(out, args=Namespace(labels=labels_file(tmp), queries=Path("eval/queries_final.csv"),
+                                                  seed=6165, top_n=20, partial=False, n_dev_total=4, unlabeled_dev=[]), dev=dev, test=test, tuned=tuned,
                               grid_results=[0] * 144, tbl=full, features=f, labels=lab, categories=cats,
                               info=lambda g: {"name": g}, qid_by_text={"halal chinese food": "Q01"},
                               new_pairs={"dev": 0, "test": 0, "all": 0}, labeler_id="llm:test")
             text = out.read_text()
         for needle in ("Held-out test split", "Limitations", "PROVISIONAL", "New pairs needing judge labels", "halal chinese food",
-                       "Weights were tuned on the dev queries only"):
+                       "Weights were tuned on the dev queries only", "Pre-registered choices", "Candidate depth = 20",
+                       "single provider"):
             self.assertIn(needle, text)
 
     def test_dev_only_report_never_mentions_or_scores_test_queries(self):
@@ -117,7 +125,7 @@ class ReportTests(unittest.TestCase):
         tbl = {tune.DEV_TITLE: tune.split_table(f, lab, dev, {tune.STANCE: tuned}, cats, n=100)}
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "r.md"
-            tune.write_report(out, args=Namespace(labels=Path("l.jsonl"), queries=Path("q.csv"), seed=6165, top_n=30,
+            tune.write_report(out, args=Namespace(labels=labels_file(tmp), queries=Path("q.csv"), seed=6165, top_n=20,
                                                   partial=True, n_dev_total=20, unlabeled_dev=["Q09"] * 16),
                               dev=dev, test=[], tuned=tuned, grid_results=[0] * 10, tbl=tbl, features=f, labels=lab,
                               categories=cats, info=lambda g: {"name": g}, qid_by_text={},

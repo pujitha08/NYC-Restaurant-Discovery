@@ -13,6 +13,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import compare, demo_cache, pipeline  # noqa: E402
+from src.config import STANCE_RERANK  # noqa: E402
 from app.highlight import highlight, highlight_terms, md  # noqa: E402,F401 (md is used by the tests)
 
 CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUGH}) and are not safety "
@@ -200,7 +201,7 @@ def show_compare(cmp):
     if cmp.dropped:
         names = {v.gmap_id: v.name for v in cmp.base.results}
         right.caption("Dropped out of the top 10: " + "; ".join(md(names[g]) for g in cmp.dropped))
-    st.caption("Same query, same candidates: the right column re-ranks the left column's top 30 by what review "
+    st.caption(f"Same query, same candidates: the right column re-ranks the left column's top {STANCE_RERANK['top_n']} by what review "
                "sentences say about the need. Neither is a safety ranking.")
 
 

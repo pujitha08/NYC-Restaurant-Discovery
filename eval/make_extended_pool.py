@@ -1,11 +1,11 @@
-"""Judging pool for the stance re-ranker's full candidate set: the top-K of semantic_capped (default 30).
+"""Judging pool for the stance re-ranker's full candidate set: the top-K of semantic_capped (default: the pre-registered depth, 20).
 
-The re-ranker can only reorder the base top-30, so every weight setting should land on judged pairs. This builds
+The re-ranker can only reorder the base top-N (pre-registered N=20, src/config.py), so every weight setting should land on judged pairs. This builds
 the pool rows (same columns, evidence and blind ordering as eval/make_pool.py) for the top-K of semantic_capped on
 each query, and keeps only the pairs that have no label yet in --labels (the existing labels are never touched).
 Judge the result with the same prompt and settings as the existing labels:
 
-    python -m eval.make_extended_pool --top-k 30 [--queries-only Q02 Q03 ...]
+    python -m eval.make_extended_pool --dev-only [--top-k 20] [--queries-only Q02 Q03 ...]
     python -m eval.llm_judge --pool eval/pool_extended.csv --provider groq --model openai/gpt-oss-120b --dry-run
 
 Output (git-ignored): eval/pool_extended.csv. Judge labels are appended to the same eval/llm_labels.jsonl.
@@ -18,6 +18,7 @@ from pathlib import Path
 from eval import make_pool
 from eval.metrics import read_labels
 from eval.tune_stance_rerank import split_queries
+from src.config import STANCE_RERANK
 
 EVAL_DIR = Path(__file__).parent
 OUT_PATH = EVAL_DIR / "pool_extended.csv"
@@ -36,7 +37,7 @@ def main(argv=None):
     ap.add_argument("--queries", type=Path, default=make_pool.QUERIES_PATH)
     ap.add_argument("--labels", type=Path, default=LABELS_PATH)
     ap.add_argument("--out", type=Path, default=OUT_PATH)
-    ap.add_argument("--top-k", type=int, default=30)
+    ap.add_argument("--top-k", type=int, default=STANCE_RERANK["top_n"])
     ap.add_argument("--dev-only", action="store_true", help="only the 20 dev queries (split seed 6165)")
     ap.add_argument("--queries-only", nargs="*", default=None, help="only these query ids")
     args = ap.parse_args(argv)

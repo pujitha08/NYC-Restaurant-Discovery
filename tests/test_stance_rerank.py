@@ -58,7 +58,7 @@ class ScoringTests(unittest.TestCase):
 
     def test_config_weights_start_at_the_agreed_values(self):
         from src.config import STANCE_RERANK
-        self.assertEqual((STANCE_RERANK["w_pos"], STANCE_RERANK["w_neg"], STANCE_RERANK["top_n"]), (0.3, 0.6, 30))
+        self.assertEqual((STANCE_RERANK["w_pos"], STANCE_RERANK["w_neg"], STANCE_RERANK["top_n"]), (0.3, 0.6, 20))  # depth 20 is pre-registered
 
 
 class CacheTests(unittest.TestCase):

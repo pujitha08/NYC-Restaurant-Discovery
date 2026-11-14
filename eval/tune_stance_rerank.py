@@ -11,10 +11,11 @@ queries, with percentile bootstrap 95% CIs and a paired sign-flip test of NDCG@1
 (eval/metrics.py), overall and by query category. Results without a label count as 0 (not relevant) and are
 reported as unjudged; weights that surface unjudged results are penalized the same way.
 
-The base ranking's top-30 evidence sentences are labeled with the LLM (cached on disk), so a first run takes
+The evidence sentences of the base ranking's top-20 candidates are labeled with the LLM (cached on disk), so a first run takes
 a while; reruns are free. Run from the repo root:
     python -m eval.tune_stance_rerank --labels eval/llm_labels.jsonl
-Writes reports/stance_rerank.md and reports/stance_rerank_weights.json.
+The candidate depth (top 20) is pre-registered in src/config.py and is the same for tuning and the final test
+evaluation; there is deliberately no flag to change it. Writes reports/stance_rerank.md and reports/stance_rerank_weights.json.
 """
 
 import argparse
@@ -25,8 +26,8 @@ import sys
 from pathlib import Path
 
 from eval.make_pool import read_queries
-from eval.metrics import (CATEGORY_ORDER, N_RESAMPLES, SEED, bootstrap_ci, compare, f3, mean, query_metrics, read_categories,
-                          read_labels, rel)
+from eval.metrics import (CATEGORY_ORDER, N_RESAMPLES, SEED, bootstrap_ci, compare, f3, label_sources, mean, query_metrics,
+                          read_categories, read_labels, rel)
 from src.allergy import is_allergy_text
 from src.retrieval.stance_rerank import rescore, stance_score
 
@@ -178,7 +179,15 @@ def write_report(path, *, args, dev, test, tuned, grid_results, tbl, features, l
          f"Starting weights (untuned): {INITIAL}.",
          f"- Re-ranks the top {args.top_n} of semantic_capped; per restaurant, its evidence sentences are labeled "
          "accommodation / mention / negative / not_about_allergy toward the query (`src/retrieval/stance_rerank.py`).",
-         "- Unjudged top-10 results count as 0 (not relevant), for every system.", ""]
+         "- Unjudged top-10 results count as 0 (not relevant), for every system.",
+         f"- Labels by source: {', '.join(f'{k} {n}' for k, n in label_sources(args.labels).items())}", "",
+         "## Pre-registered choices", "",
+         f"- **Candidate depth = {args.top_n}** (the top {args.top_n} of semantic_capped are re-ranked), fixed in `src/config.py` "
+         "on 2026-11-13 before any test-split stance result existed, and used unchanged for tuning on the dev queries and for "
+         "the held-out test evaluation. It was chosen to bound judging cost, not tuned on any split.",
+         "- Dev/test split: 20/15 by seed 6165, fixed before tuning. Weights are tuned on dev only; the test queries are "
+         "judged and scored once, after the weights are frozen.",
+         "- Test-split pairs outside the existing labels are judged only after the weights are frozen.", ""]
     for title, ids in sections(dev, test):
         L += [f"## {title} (n={len(ids)})", ""] + table(tbl[title]) + [""]
         L += ["NDCG@10 by category (tuned weights):", ""] + category_table(tbl[title][f"{STANCE}"]) + [""]
@@ -191,13 +200,17 @@ def write_report(path, *, args, dev, test, tuned, grid_results, tbl, features, l
     L += ["## Limitations", "",
           "- **Same 35 queries for development and the final claim.** Only the dev/test split protects the test numbers, and 15 queries "
           "is a small test set: CIs are wide and per-category cells (4 to 11 queries) are too small for firm conclusions.",
+          "- **The labels added for this evaluation come from a single provider** (Groq, `gpt-oss-120b`, same prompt and "
+          "settings as before), whereas the original labels came from OpenRouter/Crusoe, Groq and a no-evidence rule; "
+          "provider-to-provider differences in labeling were not measured, so the new top-20 pairs and the old pairs may be "
+          "labeled slightly differently.",
           "- **Labels are LLM-judge labels**, not validated against humans, and the stance labeler is the same family of model; their "
           "errors can be correlated, which flatters the re-ranker.",
           "- **Unjudged results count as 0**, which penalizes any setting that surfaces restaurants outside the judged pool, "
           "and biases tuning toward the existing pool. The pool grows only after the new pairs above are labeled.",
           "- **Evidence is thin:** at most 3 reviews per restaurant from retrieval, 4 sentences kept; a restaurant with no allergy sentence "
           "gets no stance signal either way.",
-          "- **Candidate set is fixed:** only the base top-30 are re-ranked, so a restaurant the embedding missed cannot be recovered.",
+          "- **Candidate set is fixed:** only the base top-20 are re-ranked, so a restaurant the embedding missed cannot be recovered.",
           "- **Stance labels are not allergy-safety claims.** An accommodation sentence is one reviewer's statement; the app's allergy "
           "guard and note stay in force.",
           "- Weights are tuned for NDCG@10 on this label scheme; they may not transfer to other queries or boroughs.", ""]
@@ -213,7 +226,6 @@ def main(argv=None):
     ap.add_argument("--weights-out", type=Path, default=WEIGHTS_PATH)
     ap.add_argument("--seed", type=int, default=SEED)
     ap.add_argument("--resamples", type=int, default=N_RESAMPLES)
-    ap.add_argument("--top-n", type=int, default=None)
     ap.add_argument("--dev-only", action="store_true", help="use only the dev queries; the test split is never labeled or scored")
     ap.add_argument("--cache-only", action="store_true",
                     help="never call the labeler: skip queries whose sentence labels are not all cached")
@@ -225,7 +237,7 @@ def main(argv=None):
     from eval import make_pool
     from src.config import STANCE_RERANK
     from src.retrieval.stance_rerank import StanceReranker
-    args.top_n = args.top_n or STANCE_RERANK["top_n"]
+    args.top_n = STANCE_RERANK["top_n"]  # pre-registered, not a flag
     semantic = make_pool.load_semantic()
     if semantic is None:
         sys.exit("The semantic index is not built; run: python -m src.retrieval.semantic --build")
