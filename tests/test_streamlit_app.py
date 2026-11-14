@@ -58,10 +58,12 @@ class AppSmokeTests(unittest.TestCase):
     def test_initial_page(self):
         at = self.start()
         self.assertEqual(at.title[0].value, "NYC Restaurant Discovery")
-        self.assertIn("through September 2021", at.warning[0].value)
-        self.assertIn("always confirm with the restaurant", at.warning[0].value)
+        self.assertIn("Ask in plain English. Get NYC restaurants backed by review evidence.", " ".join(m.value for m in at.markdown))
+        self.assertEqual(len(at.warning), 0)  # only a slim note on the first screen, no full-strength warning
+        self.assertTrue(any("through September 2021" in c.value and "not safety guarantees" in c.value for c in at.caption))
         self.assertEqual(at.selectbox[0].value, pipeline.DEFAULT_METHOD)
-        self.assertEqual(at.radio[0].options, ["Both", "Manhattan", "Brooklyn"])
+        self.assertEqual(at.pills[0].options, ["Both", "Manhattan", "Brooklyn"])
+        self.assertEqual(at.pills[0].value, "Both")
         self.assertEqual(len(at.error), 0)
 
     @staticmethod
@@ -151,7 +153,10 @@ class AppSmokeTests(unittest.TestCase):
                 next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
                 self.search(at)
                 self.assertEqual(client.calls, [])  # no model call
-                self.assertTrue(any("Cached demo result" in w.value for w in at.warning))
+                notices = [i.value for i in at.info if "cached demo result" in i.value]
+                self.assertEqual(len(notices), 1)  # one notice, with the saved date
+                self.assertRegex(notices[0], r"saved \d{4}-\d{2}-\d{2}")
+                self.assertFalse(any("cached demo result" in w.value.lower() for w in at.warning))
                 self.assertTrue(any(c.value.endswith("cached demo result") for c in at.caption))
                 self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
 
@@ -164,12 +169,12 @@ class AppSmokeTests(unittest.TestCase):
         at.run()
         self.assertFalse(at.exception, at.exception)
         self.assertEqual(at.text_input[0].value, "restaurant careful about peanut allergies")
-        self.assertEqual(at.radio[0].value, "Both")
+        self.assertEqual(at.pills[0].value, "Both")
         self.assertEqual(len(self.results(at)), 4)  # the search ran without pressing Search
         self.assertEqual(client.calls[0], "parsed_query")
         self.button(at, "Halal Chinese").click()
         at.run()
-        self.assertEqual((at.text_input[0].value, at.radio[0].value), ("halal chinese food", "Manhattan"))
+        self.assertEqual((at.text_input[0].value, at.pills[0].value), ("halal chinese food", "Manhattan"))
 
     def test_compare_mode_shows_two_columns_with_rank_arrows(self):
         client = FakeClient(location=None)
@@ -178,7 +183,6 @@ class AppSmokeTests(unittest.TestCase):
         self.search(at)
         self.assertFalse(at.exception, at.exception)
         self.assertEqual(len(self.results(at)), 0)  # no result expanders: two plain columns
-        self.assertEqual(len(at.columns), 4 + 2)  # example buttons + the two comparison columns
         left, right = at.columns[-2], at.columns[-1]
         self.assertIn("semantic_capped", self.text(left))
         self.assertIn("semantic_capped_stance", self.text(right))
@@ -267,6 +271,30 @@ class AppSmokeTests(unittest.TestCase):
         side = " ".join(m.value for m in at.sidebar.markdown)
         self.assertIn("How it works", " ".join(h.value for h in at.sidebar.header))
         self.assertNotIn("The data:", side)
+
+    def test_full_caveat_only_above_allergy_results(self):
+        plain = self.search(self.start(), "vegan options for a group")
+        self.assertEqual([w.value for w in plain.warning], [])
+        allergy = self.search(self.start(), "peanut allergy friendly dinner")
+        caveat = [w.value for w in allergy.warning if "always confirm with the restaurant" in w.value]
+        self.assertEqual(len(caveat), 1)
+        self.assertIn("through September 2021", caveat[0])
+
+    def test_search_box_then_example_chips_then_borough_pills(self):
+        at = self.start()
+        labels = [b.label for b in at.button]
+        self.assertEqual(labels[:5], ["Search", "Vegan group", "Peanut allergy", "Celiac safe", "Halal Chinese"])
+        self.assertEqual(at.pills[0].label, "Borough")
+
+    def test_borough_pill_filters_and_deselecting_means_both(self):
+        retriever = FakeRetriever()
+        at = self.start(retrievers={"semantic": retriever})
+        at.pills[0].set_value("Brooklyn")
+        self.search(at)
+        self.assertEqual(retriever.calls[-1]["boroughs"], ["Brooklyn"])
+        at.pills[0].set_value(None)
+        self.search(at)
+        self.assertIsNone(retriever.calls[-1]["boroughs"])
 
     def test_advanced_settings_expander_holds_method_and_low_evidence(self):
         at = self.start()

@@ -16,6 +16,9 @@ from app import compare, demo_cache, pipeline  # noqa: E402
 from src.config import STANCE_RERANK  # noqa: E402
 from app.highlight import highlight, highlight_terms, md  # noqa: E402,F401 (md is used by the tests)
 
+TAGLINE = "Ask in plain English. Get NYC restaurants backed by review evidence."
+# The slim note is always shown; the full-strength caveat only above allergy results.
+SLIM_NOTE = f"Reviews are historical (Google, through {pipeline.DATA_THROUGH}) and anecdotal, not safety guarantees."
 CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUGH}) and are not safety "
           "guarantees. **For allergies, always confirm with the restaurant before you order.**")
 STATUS_TEXT = {
@@ -28,6 +31,21 @@ STATUS_TEXT = {
 CLAIM_MARK = {"support": "✓ Supports", "contradiction": "⚠ **Contradicts**", "uncertainty": "? Unclear"}
 # Allergy-sensitive queries: no check marks; a "support" claim is shown as a neutral reviewer report.
 GUARDED_CLAIM_MARK = {**CLAIM_MARK, "support": "• Reviewer report"}
+
+
+# Page styling: system fonts only (no web fonts, no external requests), a narrower reading column inside the wide layout,
+# and pill-shaped example buttons. Static text; nothing from users or reviews goes into it.
+CSS = """
+<style>
+html, body, [class*="st-"], button, input, textarea { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
+.block-container { max-width: 1100px; padding-top: 2rem; }
+.tagline { font-size: 1.15rem; color: #1C1917; margin: -0.5rem 0 0.25rem 0; }
+[class*="st-key-example_"] button { border-radius: 999px; padding: 0.15rem 0.9rem; border: 1px solid #C2410C;
+  color: #9A3412; background: #FFFFFF; font-weight: 600; }
+[class*="st-key-example_"] button:hover { background: #FAF3EA; border-color: #9A3412; }
+</style>
+"""
 
 
 # One-click examples: the four DEMO.md queries (query and borough from app/demo_cache.py), with a short button label.
@@ -256,8 +274,10 @@ def show_sidebar():
 def main():
     st.set_page_config(page_title="NYC Restaurant Discovery", page_icon="🍽️", layout="wide",
                        initial_sidebar_state="collapsed")
+    st.markdown(CSS, unsafe_allow_html=True)
     st.title("NYC Restaurant Discovery")
-    st.warning(CAVEAT)
+    st.markdown(f'<p class="tagline">{TAGLINE}</p>', unsafe_allow_html=True)
+    st.caption(SLIM_NOTE)
     show_sidebar()
 
     client, model, setup_error = get_llm()
@@ -267,24 +287,27 @@ def main():
                  "then restart the app.")
 
     methods = list(pipeline.METHODS)
-    st.caption("Try an example:")
-    for col, (label, example, example_borough) in zip(st.columns(len(EXAMPLES)), EXAMPLES):
+    with st.form("search", border=False):  # just the search box and button: Enter submits
+        box, button = st.columns([6, 1], vertical_alignment="bottom")
+        query = box.text_input("What are you looking for?", key="query",
+                               placeholder="e.g. nut-free brunch in Brooklyn for a group with a vegan friend")
+        submitted = button.form_submit_button("Search", type="primary", use_container_width=True)
+    for col, (label, example, example_borough) in zip(st.columns(len(EXAMPLES)), EXAMPLES):  # chips under the box
         col.button(label, key=f"example_{label}", help=f"{example} ({example_borough})", use_container_width=True,
                    on_click=pick_example, args=(example, example_borough))
-    with st.form("search"):
-        query = st.text_input("What are you looking for?", key="query",
-                              placeholder="e.g. nut-free brunch in Brooklyn for a group with a vegan friend")
-        borough = st.radio("Borough", pipeline.BOROUGH_CHOICES, horizontal=True, key="borough")
-        compare_mode = st.checkbox("Compare rankings", key="compare_mode",
-                                   help="Show semantic_capped and semantic_capped_stance side by side for this query "
-                                        "(the method selector is ignored; no summaries).")
-        demo_mode = st.checkbox("Demo mode (serve saved results for the demo queries)",
-                                help="For the presentation: an exact demo query is answered from data/demo_cache "
-                                     "without calling the language model. Other queries run live.")
-        with st.expander("Advanced settings"):  # collapsed by default
-            method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
-            include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
-        submitted = st.form_submit_button("Search")
+    st.session_state.setdefault("borough", pipeline.BOROUGH_CHOICES[0])
+    borough = st.pills("Borough", pipeline.BOROUGH_CHOICES, selection_mode="single", key="borough") \
+        or pipeline.BOROUGH_CHOICES[0]  # deselecting the pill means "Both"
+    left, right = st.columns(2)
+    compare_mode = left.checkbox("Compare rankings", key="compare_mode",
+                                 help="Show semantic_capped and semantic_capped_stance side by side for this query "
+                                      "(the method selector is ignored; no summaries).")
+    demo_mode = right.checkbox("Demo mode (serve saved results for the demo queries)",
+                               help="For the presentation: an exact demo query is answered from data/demo_cache "
+                                    "without calling the language model. Other queries run live.")
+    with st.expander("Advanced settings"):  # collapsed by default
+        method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
+        include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
 
     if submitted or st.session_state.pop("run_example", False):
         if not query.strip():
@@ -316,16 +339,16 @@ def main():
 
     if "last_compare" in st.session_state:
         comparison = st.session_state["last_compare"]
-        if comparison.base.cached:
-            st.warning(f"📦 **{demo_cache.CACHE_LABEL.capitalize()}** (left column): saved from an earlier live run.")
+        if comparison.base.allergy_sensitive:
+            st.warning(CAVEAT)
         show_parsed(comparison.base)
         st.subheader("Compare rankings")
         show_compare(comparison)
 
     elif "last_search" in st.session_state:
         outcome, raw = st.session_state["last_search"]
-        if outcome.cached:
-            st.warning(f"📦 **{demo_cache.CACHE_LABEL.capitalize()}**: saved from an earlier live run, not a live search.")
+        if outcome.allergy_sensitive:
+            st.warning(CAVEAT)  # full strength only where the need is an allergy
         for notice in outcome.notices:
             st.info(notice)
         show_parsed(outcome)
