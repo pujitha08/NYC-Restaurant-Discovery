@@ -7,12 +7,15 @@ backed by evidence from real reviews.
 
 ## Pipeline
 
-1. **Query parser** – GPT-4o-mini turns the free-text query into a structured `ParsedQuery`.
-2. **Retrieval** – compare a TF-IDF baseline against sentence-transformer embeddings.
-3. **Evidence summarizer** – GPT-4o-mini summarizes the supporting review snippets for each result.
+1. **Query parser** – a Groq-hosted LLM (`GROQ_MODEL`, default `openai/gpt-oss-20b`) turns the free-text query into a structured `ParsedQuery` (`src/llm/query_parser.py`).
+2. **Retrieval** – TF-IDF baselines (`doc_tfidf`, `chunk_tfidf_*`) and sentence-transformer retrieval over review chunks (`semantic_log`, `semantic_capped`; all-MiniLM-L6-v2). `semantic_capped` is the app default.
+3. **Evidence summarizer** – the same Groq model summarizes the retrieved review excerpts of the top results as support / contradiction / uncertainty claims, each citing a review (`src/llm/evidence_summarizer.py`). Allergy-sensitive queries never get a "Supported" status.
 
-An allergen classifier, trained on the HuggingFace `14-allergens-v2` dataset,
-supports allergen-aware matching.
+**Classifier lane:** `src/classifier/allergen_tagger.py` is a character n-gram TF-IDF + one-vs-rest logistic regression
+model that tags which FDA major allergens a text mentions; it is trained on the HuggingFace `14-allergens-v2` menu-item
+dataset, so it tags mentions, not safety. `src/classifier/stance.py` trains a logistic regression on
+all-MiniLM-L6-v2 sentence embeddings to label review sentences as `accommodation`, `mention`, `negative` or
+`not_about_allergy`, from hand-labeled sentence sheets (`eval/make_sentence_sheets.py`).
 
 **Data:** Google Local Reviews 2021 (McAuley Lab). Scope starts with Manhattan
 and Brooklyn; edit `BOROUGHS` in [src/config.py](src/config.py) to expand.
@@ -34,16 +37,37 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-cp .env.example .env   # then add your OPENAI_API_KEY
+cp .env.example .env   # then set GROQ_API_KEY (and GROQ_MODEL=openai/gpt-oss-20b)
+# Optional, LLM judge only: OPENROUTER_API_KEY / NVIDIA_API_KEY (see .env.example)
 ```
 
-Place downloaded datasets in `data/` (git-ignored).
+Place downloaded datasets in `data/` (git-ignored). Without a Groq key the app still searches, without parsing or summaries.
 
-Run the app from the repo root:
+## How to run
+
+From the repo root, after setup:
 
 ```bash
+# 1. Build the data (see "Data pipeline" below for the downloads); ends with restaurant docs and review chunks
+python -m src.data.build_docs
+
+# 2. Build the semantic index (slow; writes data/processed/semantic/)
+python -m src.retrieval.semantic --build
+
+# 3. Evaluation: build the judging pool and per-system runs, label pairs with the LLM judge, compute metrics
+python -m eval.make_pool
+python -m eval.llm_judge --batch-size 5          # resumable; needs a judge provider key
+python -m eval.metrics --labels eval/llm_labels.jsonl
+
+# 4. Run the app
 streamlit run app/streamlit_app.py
+
+# Tests
+python -m pytest -q
 ```
+
+The reported metrics use provisional LLM-judge labels that have not yet been validated against human labels (see
+[reports/metrics_summary.md](reports/metrics_summary.md)). [DEMO.md](DEMO.md) has the demo script.
 
 ## Data pipeline
 
@@ -157,9 +181,19 @@ Caveats:
 ## Layout
 
 ```
-src/        config, schemas, and pipeline modules (data, retrieval, classifier, llm)
-app/        Streamlit app
-eval/       evaluation scripts
-notebooks/  exploration
-data/       local datasets (git-ignored)
+app/          Streamlit app (streamlit_app.py) and its pipeline (pipeline.py: parse -> retrieve -> summarize)
+src/
+  config.py, schemas.py   settings and shared dataclasses
+  data/                   filtering, cleaning, EDA, restaurant docs and review chunks
+  retrieval/              tfidf.py, tfidf_chunks.py, semantic.py, evidence.py (snippet selection)
+  classifier/             allergen_tagger.py (FDA allergen mentions), stance.py (review-sentence stance)
+  llm/                    groq_client.py, nvidia_client.py, openrouter_client.py, query_parser.py, evidence_summarizer.py
+eval/         queries, judging pool, LLM judge, metrics, significance tests, agreement and validation scripts
+              (eval/labels/ holds rater material and is git-ignored except the labeling guides)
+reports/      metrics summary and figures, EDA, failure examples
+docs/         LLM integration notes
+examples/     LLM pipeline demo script
+tests/        pytest suite
+notebooks/    exploration
+data/         local datasets (git-ignored)
 ```
