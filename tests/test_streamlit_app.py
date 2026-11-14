@@ -13,6 +13,7 @@ except ImportError:  # streamlit is optional for the rest of the suite
 
 from app import demo_cache, pipeline
 from tests.test_app_pipeline import FakeClient, FakeRetriever
+from tests.test_compare import FakeStance
 
 APP = str(Path(__file__).resolve().parent.parent / "app" / "streamlit_app.py")
 
@@ -29,9 +30,10 @@ class AppSmokeTests(unittest.TestCase):
         self.addCleanup(log.stop)
         self.addCleanup(st.cache_resource.clear)
 
-    def start(self, client=FakeClient(location=None), setup_error=None):
+    def start(self, client=FakeClient(location=None), setup_error=None, retrievers=None):
         llm = (pipeline.UsageRecorder(client), "openai/gpt-oss-20b", None) if client else (None, None, setup_error)
-        for target, value in (("load_retriever", lambda name: FakeRetriever()), ("make_llm_client", lambda: llm)):
+        load = lambda name: (retrievers or {}).get(name) or FakeRetriever()
+        for target, value in (("load_retriever", load), ("make_llm_client", lambda: llm)):
             p = patch.object(pipeline, target, value)
             p.start()
             self.addCleanup(p.stop)
@@ -144,7 +146,7 @@ class AppSmokeTests(unittest.TestCase):
             with patch.object(demo_cache, "CACHE_DIR", Path(tmp)):
                 client = FakeClient()
                 at = self.start(client)
-                at.checkbox[1].check()  # "Demo mode"
+                next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
                 self.search(at)
                 self.assertEqual(client.calls, [])  # no model call
                 self.assertTrue(any("Cached demo result" in w.value for w in at.warning))
@@ -166,6 +168,41 @@ class AppSmokeTests(unittest.TestCase):
         self.button(at, "Halal Chinese").click()
         at.run()
         self.assertEqual((at.text_input[0].value, at.radio[0].value), ("halal chinese food", "Manhattan"))
+
+    def test_compare_mode_shows_two_columns_with_rank_arrows(self):
+        client = FakeClient(location=None)
+        at = self.start(client, retrievers={"semantic_stance": FakeStance()})
+        at.checkbox(key="compare_mode").check()
+        self.search(at)
+        self.assertFalse(at.exception, at.exception)
+        self.assertEqual(len(self.results(at)), 0)  # no result expanders: two plain columns
+        self.assertEqual(len(at.columns), 4 + 2)  # example buttons + the two comparison columns
+        left, right = at.columns[-2], at.columns[-1]
+        self.assertIn("semantic_capped", self.text(left))
+        self.assertIn("semantic_capped_stance", self.text(right))
+        self.assertIn(":green[▲ 3] **1.** Place 4", self.text(right))
+        self.assertIn(":red[▼ 3] **4.** Place 1", self.text(right))
+        self.assertNotIn("▲", self.text(left))
+        self.assertEqual(client.calls, ["parsed_query"])  # one parse, no summaries
+
+    def test_compare_mode_falls_back_to_the_base_ranking_with_a_notice(self):
+        from src.llm.groq_client import LLMAPIError
+        at = self.start(retrievers={"semantic_stance": FakeStance(fail=LLMAPIError("x", category="rate_limit"))})
+        at.checkbox(key="compare_mode").check()
+        self.search(at)
+        self.assertFalse(at.exception, at.exception)
+        self.assertTrue(any("stance ranking is unavailable" in i.value for i in at.info))
+        self.assertIn("Place 1", self.text(at.columns[-1]) + self.text(at.columns[-2]))
+
+    def test_normal_search_clears_a_previous_comparison(self):
+        at = self.start(retrievers={"semantic_stance": FakeStance()})
+        at.checkbox(key="compare_mode").check()
+        self.search(at)
+        self.assertIn("last_compare", at.session_state)
+        at.checkbox(key="compare_mode").uncheck()
+        self.search(at)
+        self.assertNotIn("last_compare", at.session_state)
+        self.assertEqual(len(self.results(at)), 4)
 
     def test_examples_are_the_demo_queries(self):
         from app.streamlit_app import EXAMPLES

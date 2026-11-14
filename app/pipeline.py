@@ -79,6 +79,7 @@ ERROR_MESSAGES = {
     "billing": "The language model provider requires payment or credits.",
     "provider": "The language model is temporarily unavailable.",
     "response": "The language model returned no usable structured answer.",
+    "labels_unavailable": "Stance labels for this query are not cached.",
 }
 
 
@@ -121,6 +122,10 @@ class ResultView:
     summary: Optional[Summary] = None
     summary_error: Optional[Dict] = None  # {"category", "code", "message"}
     summary_skipped: Optional[str] = None  # why no summary was requested
+    # Stance labels of the evidence sentences (semantic_capped_stance only; None when the ranking has none):
+    # counts by stance, and [{"text", "stance", "review_id"}] in evidence order.
+    stance_counts: Optional[Dict[str, int]] = None
+    stance_sentences: Optional[List[Dict]] = None
 
 
 @dataclass
@@ -141,6 +146,7 @@ class SearchOutcome:
     model: Optional[str] = None
     allergy_sensitive: bool = False
     cached: bool = False  # served from data/demo_cache (app/demo_cache.py), not a live search
+    ranking_fallback: bool = False  # stance re-ranking was unavailable; the base ranking is shown instead
 
 
 # ---- LLM client ---------------------------------------------------------------
@@ -229,10 +235,11 @@ def parse(query, client, model):
         return None, error_info(e)
 
 
-def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_evidence=False):
+def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_evidence=False, search_options=None):
     """Ranked ResultViews; the raw query text goes to the retriever."""
     _, kwargs = METHODS[method]
-    results = retriever.search(query, boroughs=boroughs, top_k=top_k, include_low_evidence=include_low_evidence, **kwargs)
+    results = retriever.search(query, boroughs=boroughs, top_k=top_k, include_low_evidence=include_low_evidence,
+                               **kwargs, **(search_options or {}))
     views = []
     for rank, r in enumerate(results, 1):
         m = retriever.info(r.gmap_id)
@@ -240,7 +247,9 @@ def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_eviden
             rank=rank, gmap_id=r.gmap_id, name=m["name"], borough=m["borough"], address=m.get("address", ""),
             avg_rating=m.get("avg_rating"), num_reviews=m.get("num_clean_reviews", 0),
             low_evidence=bool(m.get("low_evidence")), score=float(r.score),
-            excerpts=[Excerpt(s.review_id, month(s.time), s.text) for s in r.evidence_snippets]))
+            excerpts=[Excerpt(s.review_id, month(s.time), s.text) for s in r.evidence_snippets],
+            stance_counts=dict(r.stance_counts) if getattr(r, "stance_counts", None) else None,
+            stance_sentences=[dict(x) for x in r.sentences] if getattr(r, "sentences", None) else None))
     return views, results
 
 
@@ -288,8 +297,13 @@ def summarize(view, result, context, client, model, guarded=False, user_request=
 
 # ---- entry points -------------------------------------------------------------
 def run_search(query, borough_choice, method, *, retriever, client, model, setup_error=None,
-               auto_summaries=AUTO_SUMMARIES, top_k=TOP_K, include_low_evidence=False, log_path=_DEFAULT_LOG):
-    """Parse, retrieve and summarize the top results; returns (SearchOutcome, raw results)."""
+               auto_summaries=AUTO_SUMMARIES, top_k=TOP_K, include_low_evidence=False, log_path=_DEFAULT_LOG,
+               prior=None, search_options=None):
+    """Parse, retrieve and summarize the top results; returns (SearchOutcome, raw results).
+
+    prior: an earlier SearchOutcome for the same query; its parse result is reused instead of calling the parser
+    (compare mode). search_options: extra keyword arguments for the retriever's search (e.g. cache_only).
+    """
     if method not in METHODS:
         raise ValueError(f"unknown method {method!r}")
     query = (query or "").strip()
@@ -303,7 +317,10 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
         outcome.notices.append(setup_error["message"] + " Searching without query parsing or summaries.")
 
     t = time.monotonic()
-    outcome.parsed, outcome.parse_error = parse(query, client, model)
+    if prior is not None:
+        outcome.parsed, outcome.parse_error = prior.parsed, prior.parse_error
+    else:
+        outcome.parsed, outcome.parse_error = parse(query, client, model)
     outcome.timings["parse_s"] = round(time.monotonic() - t, 3)
     if outcome.parse_error:
         outcome.notices.append(f"Could not interpret the request ({outcome.parse_error['message']}) "
@@ -317,12 +334,14 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
         outcome.notices.append(notice)
     t = time.monotonic()
     try:
-        outcome.results, raw = retrieve(query, retriever, method, outcome.boroughs, top_k, include_low_evidence)
+        outcome.results, raw = retrieve(query, retriever, method, outcome.boroughs, top_k, include_low_evidence,
+                                        search_options)
     except LLMError as e:  # the re-ranker labels sentences with the LLM; without it, show the base ranking
         if method != STANCE_METHOD:
             raise
         outcome.notices.append(f"Could not label the review sentences ({error_info(e)['message']}) "
                                f"Showing the {STANCE_FALLBACK} ranking instead.")
+        outcome.ranking_fallback = True
         base_retriever = load_fallback(retriever)
         outcome.results, raw = retrieve(query, base_retriever, STANCE_FALLBACK, outcome.boroughs, top_k,
                                         include_low_evidence)
@@ -384,7 +403,8 @@ def log_record(kind, outcome, extra=None):
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "event": kind, "request_id": outcome.request_id, "query": outcome.query,
         "borough_choice": outcome.borough_choice, "boroughs": outcome.boroughs, "method": outcome.method,
-        "allergy_sensitive": outcome.allergy_sensitive, "cached": outcome.cached, "reasoning_effort": LLM_REASONING_EFFORT,
+        "allergy_sensitive": outcome.allergy_sensitive, "cached": outcome.cached,
+        "ranking_fallback": outcome.ranking_fallback, "reasoning_effort": LLM_REASONING_EFFORT,
         "parsed": asdict(outcome.parsed) if outcome.parsed else None,
         "model": outcome.model, "prompt_sha256": prompt_hashes(),
         "errors": {"setup": _code(outcome.setup_error), "parse": _code(outcome.parse_error),

@@ -29,7 +29,7 @@ from typing import Dict, List
 
 from src.allergy import is_allergy_text
 from src.config import DATA_DIR, PROJECT_ROOT, STANCE_RERANK
-from src.llm.groq_client import LLMResponseError, request_json, resolve_model
+from src.llm.groq_client import LLMError, LLMResponseError, request_json, resolve_model
 from src.schemas import RetrievalResult
 
 STANCES = ["accommodation", "mention", "negative", "not_about_allergy"]
@@ -68,6 +68,13 @@ def need_hash(need):
 
 def split_sentences(text):
     return [s.strip() for s in _SENTENCE_RE.split(text or "") if len(s.split()) >= MIN_WORDS]
+
+
+class LabelsUnavailable(LLMError):
+    """cache_only search needs labels that are not in the on-disk cache (no model call was made)."""
+
+    category = "labels_unavailable"
+    default_code = "labels_not_cached"
 
 
 # ---- label cache --------------------------------------------------------------
@@ -275,21 +282,26 @@ class StanceReranker:
         order = sorted(range(len(found)), key=lambda i: (-sims[i], i))[:self.per_restaurant]
         return [found[i] for i in sorted(order)]
 
-    def label_all(self, query, picks):
-        """Stance of every (text, review_id) in picks (a list per restaurant), using the cache first."""
+    def label_all(self, query, picks, cache_only=False):
+        """Stance of every (text, review_id) in picks (a list per restaurant), using the cache first.
+
+        cache_only: never call the labeler; raise LabelsUnavailable if a label is missing (demo mode, offline).
+        """
         todo = list(dict.fromkeys(t for ps in picks for t, _ in ps
                                   if self.cache.get(self.labeler.id, query, t) is None))
+        if todo and cache_only:
+            raise LabelsUnavailable(f"{len(todo)} sentence labels are not cached.")
         if todo:
             for text, stance in zip(todo, self.labeler.label(query, todo)):
                 self.cache.put(self.labeler.id, query, text, stance)
         return [[self.cache.get(self.labeler.id, query, t) for t, _ in ps] for ps in picks]
 
-    def candidates(self, query, boroughs=None, include_low_evidence=False, **base_kwargs):
+    def candidates(self, query, boroughs=None, include_low_evidence=False, cache_only=False, **base_kwargs):
         """Top-N base results with normalized base score and stance counts (weights not applied)."""
         results = self.base.search(query, boroughs=boroughs, top_k=self.top_n,
                                    include_low_evidence=include_low_evidence, **{**self.base_kwargs, **base_kwargs})
         picks = [self.pick_sentences(query, r) for r in results]
-        stances = self.label_all(query, picks)
+        stances = self.label_all(query, picks, cache_only)
         cands = []
         for r, base_norm, ps, st in zip(results, normalize_scores([r.score for r in results]), picks, stances):
             counts = {s: 0 for s in STANCES}
@@ -299,13 +311,14 @@ class StanceReranker:
                                                           for (t, rid), s in zip(ps, st)]))
         return cands
 
-    def search(self, query_terms, boroughs=None, top_k=10, include_low_evidence=False, density_mode=None, **weights):
+    def search(self, query_terms, boroughs=None, top_k=10, include_low_evidence=False, density_mode=None,
+               cache_only=False, **weights):
         """Re-ranked top_k (StanceResult list); weight keyword arguments override the configured weights."""
         if not isinstance(query_terms, str) or not query_terms.strip():
             return []
         w = {**self.weights, **weights}
         allergy = is_allergy_text(query_terms)
-        cands = self.candidates(query_terms, boroughs, include_low_evidence,
+        cands = self.candidates(query_terms, boroughs, include_low_evidence, cache_only,
                                 **({"density_mode": density_mode} if density_mode else {}))
         ranked = rescore(cands, w["w_pos"], w["w_neg"], w["w_strong_neg"], allergy)
         return [StanceResult(c.result.gmap_id, stance_score(c, w["w_pos"], w["w_neg"], w["w_strong_neg"], allergy),

@@ -13,7 +13,7 @@ import streamlit as st
 # Streamlit puts app/ on sys.path, not the repo root, so add it for `app`, `src` and `eval` imports.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import demo_cache, pipeline  # noqa: E402
+from app import compare, demo_cache, pipeline  # noqa: E402
 
 CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUGH}) and are not safety "
           "guarantees. **For allergies, always confirm with the restaurant before you order.**")
@@ -142,6 +142,35 @@ def show_result(view, outcome, raw, client, model):
             show_excerpts(view)
 
 
+CHANGE_MARK = {compare.UP: ":green[▲ {n}]", compare.DOWN: ":red[▼ {n}]", compare.SAME: ":gray[＝]",
+               compare.NEW: ":blue[● new]"}
+
+
+def compare_row(view, change=None):
+    rating = f"★ {view.avg_rating:.1f}" if isinstance(view.avg_rating, (int, float)) else "no rating"
+    mark = CHANGE_MARK[change[0]].format(n=change[1]) + " " if change else ""
+    return f"{mark}**{view.rank}.** {md(view.name)} — {view.borough} · {rating}"
+
+
+def show_compare(cmp):
+    for notice in cmp.notices:
+        st.info(notice)
+    left, right = st.columns(2)
+    left.markdown(f"**{compare.BASE_METHOD}**")
+    for view in cmp.base.results:
+        left.markdown(compare_row(view))
+    if cmp.stance is None:
+        return
+    right.markdown(f"**{compare.STANCE_METHOD}**  \n:gray[▲ up · ▼ down · new = not in the left top 10]")
+    for view in cmp.stance.results:
+        right.markdown(compare_row(view, cmp.changes[view.gmap_id]))
+    if cmp.dropped:
+        names = {v.gmap_id: v.name for v in cmp.base.results}
+        right.caption("Dropped out of the top 10: " + "; ".join(md(names[g]) for g in cmp.dropped))
+    st.caption("Same query, same candidates: the right column re-ranks the left column's top 30 by what review "
+               "sentences say about the need. Neither is a safety ranking.")
+
+
 def set_all_expanded(keys, value):
     for key in keys:
         st.session_state[key] = value
@@ -184,6 +213,9 @@ def main():
         borough = st.radio("Borough", pipeline.BOROUGH_CHOICES, horizontal=True, key="borough")
         method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
         include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
+        compare_mode = st.checkbox("Compare rankings", key="compare_mode",
+                                   help="Show semantic_capped and semantic_capped_stance side by side for this query "
+                                        "(the method selector is ignored; no summaries).")
         demo_mode = st.checkbox("Demo mode (serve saved results for the demo queries)",
                                 help="For the presentation: an exact demo query is answered from data/demo_cache "
                                      "without calling the language model. Other queries run live.")
@@ -198,14 +230,34 @@ def main():
             if retriever is None:
                 st.error(f"The {retriever_name} index is not built yet. "
                          "Run `python -m src.retrieval.semantic --build` and restart the app.")
+            elif compare_mode and (base_retriever := get_retriever(pipeline.METHODS[compare.BASE_METHOD][0])) is None:
+                st.error("The semantic index is not built yet. "
+                         "Run `python -m src.retrieval.semantic --build` and restart the app.")
+            elif compare_mode:
+                with st.spinner("Searching and re-ranking (labeling review sentences can take a minute)…"):
+                    comparison = compare.run_compare(
+                        query, borough, base_retriever=base_retriever,
+                        stance_retriever=get_retriever(pipeline.METHODS[compare.STANCE_METHOD][0]), client=client,
+                        model=model, setup_error=setup_error, include_low_evidence=include_low, demo_mode=demo_mode)
+                st.session_state["last_compare"] = comparison
+                st.session_state.pop("last_search", None)
             else:
                 with st.spinner("Searching and summarizing the top reviews…"):
                     outcome, raw = demo_cache.search_with_fallback(
                         query, borough, method, demo_mode=demo_mode, retriever=retriever, client=client, model=model,
                         setup_error=setup_error, include_low_evidence=include_low)
                 st.session_state["last_search"] = (outcome, raw)
+                st.session_state.pop("last_compare", None)
 
-    if "last_search" in st.session_state:
+    if "last_compare" in st.session_state:
+        comparison = st.session_state["last_compare"]
+        if comparison.base.cached:
+            st.warning(f"📦 **{demo_cache.CACHE_LABEL.capitalize()}** (left column): saved from an earlier live run.")
+        show_parsed(comparison.base)
+        st.subheader("Compare rankings")
+        show_compare(comparison)
+
+    elif "last_search" in st.session_state:
         outcome, raw = st.session_state["last_search"]
         if outcome.cached:
             st.warning(f"📦 **{demo_cache.CACHE_LABEL.capitalize()}**: saved from an earlier live run, not a live search.")
