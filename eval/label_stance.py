@@ -19,6 +19,7 @@ stop and resume anywhere. This script is the budgeted driver for a rate-limited 
 import argparse
 import datetime
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -129,7 +130,8 @@ def main(argv=None):
     from src.retrieval.stance_rerank import LLMLabeler, StanceReranker, _load_env
     _load_env()
     import os
-    if os.environ.get("NVIDIA_API_KEY", "").strip() or os.environ.get("OPENROUTER_API_KEY", "").strip():
+    real_key = lambda name: bool(os.environ.get(name, "").strip()) and not re.search(r"your-|replace_with", os.environ[name], re.I)
+    if real_key("NVIDIA_API_KEY") or real_key("OPENROUTER_API_KEY"):
         sys.exit("An NVIDIA or OpenRouter key is set: this driver only knows the Groq budget. Use the provider-specific "
                  "labeler instead (not implemented here) or remove the key for this run.")
     if not args.dry_run and blackout(now(), args.blackout):
