@@ -4,7 +4,6 @@ Run from the repo root:
     streamlit run app/streamlit_app.py
 """
 
-import re
 import sys
 from pathlib import Path
 
@@ -14,6 +13,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import compare, demo_cache, pipeline  # noqa: E402
+from app.highlight import highlight, highlight_terms, md  # noqa: E402,F401 (md is used by the tests)
 
 CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUGH}) and are not safety "
           "guarantees. **For allergies, always confirm with the restaurant before you order.**")
@@ -27,7 +27,6 @@ STATUS_TEXT = {
 CLAIM_MARK = {"support": "✓ Supports", "contradiction": "⚠ **Contradicts**", "uncertainty": "? Unclear"}
 # Allergy-sensitive queries: no check marks; a "support" claim is shown as a neutral reviewer report.
 GUARDED_CLAIM_MARK = {**CLAIM_MARK, "support": "• Reviewer report"}
-_MD_SPECIAL = re.compile(r"([\\`*_{}\[\]<>#|$~])")
 
 
 # One-click examples: the four DEMO.md queries (query and borough from app/demo_cache.py), with a short button label.
@@ -38,11 +37,6 @@ EXAMPLES = [(label, query, borough) for label, (query, borough, _) in zip(EXAMPL
 def pick_example(query, borough):
     """Button callback: fill the form and ask main() to run the search on the next run."""
     st.session_state.update(query=query, borough=borough, run_example=True)
-
-
-def md(text):
-    """Escape untrusted review/model text for st.markdown (e.g. '$3' would otherwise start LaTeX)."""
-    return _MD_SPECIAL.sub(r"\\\1", text)
 
 
 @st.cache_resource(show_spinner="Loading the search index…")
@@ -102,16 +96,21 @@ def show_stance(view):
         st.warning(f"**Strongest warning:** “{md(bar['warning'])}”")
 
 
-def show_excerpts(view, title="Review excerpts"):
+def quote(excerpt, terms):
+    """A review excerpt as a block quote, with the query's requirement terms highlighted (text is escaped first)."""
+    st.markdown(f"> {highlight(excerpt.text, terms)}\n>\n> *Review from {excerpt.date}*", unsafe_allow_html=True)
+
+
+def show_excerpts(view, title="Review excerpts", terms=()):
     if not view.excerpts:
         st.caption("No review excerpts were retrieved for this restaurant.")
         return
     st.markdown(f"**{title} ({len(view.excerpts)})**")  # plain heading: expanders can't be nested
     for e in view.excerpts:
-        st.markdown(f"> {md(e.text)}\n>\n> *Review from {e.date}*")
+        quote(e, terms)
 
 
-def show_summary(view):
+def show_summary(view, terms=()):
     s = view.summary
     if s.status == pipeline.STATUS_PROBLEMS:
         st.warning(STATUS_TEXT[s.status])  # warning style: reviewers report problems
@@ -123,13 +122,14 @@ def show_summary(view):
     for c in s.claims:
         st.markdown(f"{marks.get(c.label, c.label)}: {md(c.text)}")
         for e in c.excerpts:
-            st.markdown(f"> {md(e.text)}\n>\n> *Review from {e.date}*")
+            quote(e, terms)
     for limitation in s.limitations:
         st.caption(md(limitation))
 
 
 def show_result(view, outcome, raw, client, model):
     key = expander_key(outcome, view)
+    terms = highlight_terms(outcome.query, outcome.parsed)
     # Stateful expander (Streamlit >= 1.5x): its open state lives in st.session_state[key], so it survives reruns
     # and Explain / Expand all / Collapse all can set it. on_change="rerun" keeps that state in sync.
     with st.expander(result_header(view), key=key, on_change="rerun"):
@@ -138,11 +138,11 @@ def show_result(view, outcome, raw, client, model):
             st.caption("⚠ Low evidence: fewer than 5 usable reviews.")
         show_stance(view)
         if view.summary:
-            show_summary(view)
-            show_excerpts(view, "All retrieved excerpts")
+            show_summary(view, terms)
+            show_excerpts(view, "All retrieved excerpts", terms)
         elif view.summary_error:
             st.warning(f"Summary unavailable: {view.summary_error['message']}")
-            show_excerpts(view)
+            show_excerpts(view, terms=terms)
         else:
             if view.summary_skipped and view.summary_skipped != "not requested":
                 st.caption(f"No summary: {view.summary_skipped}")
@@ -152,7 +152,7 @@ def show_result(view, outcome, raw, client, model):
                     pipeline.explain(outcome, raw, view.gmap_id, client=client, model=model)
                 st.session_state[PENDING_OPEN] = key  # this expander already exists in this run; open it next run
                 st.rerun()
-            show_excerpts(view)
+            show_excerpts(view, terms=terms)
 
 
 CHANGE_MARK = {compare.UP: ":green[▲ {n}]", compare.DOWN: ":red[▼ {n}]", compare.SAME: ":gray[＝]",

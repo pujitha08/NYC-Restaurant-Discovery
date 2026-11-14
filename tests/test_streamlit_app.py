@@ -223,6 +223,24 @@ class AppSmokeTests(unittest.TestCase):
             self.assertNotIn("Supported", e.label)
             self.assertNotIn("✓", e.label)
 
+    def test_excerpts_highlight_query_terms_and_escape_review_html(self):
+        class Evil(FakeRetriever):
+            def search(self, *a, **kw):
+                out = super().search(*a, **kw)
+                for r in out:
+                    r.evidence_snippets[0].text = "<script>alert(1)</script> Great vegan options & more"
+                return out
+        at = self.start(retrievers={"semantic": Evil(), "semantic_stance": Evil()})
+        at = self.search(at)
+        outcome, _ = at.session_state["last_search"]
+        at.session_state[f"open_{outcome.request_id}_{outcome.results[0].gmap_id}"] = True
+        at.run()
+        body = self.text(self.results(at)[0])
+        self.assertIn('<mark style=', body)
+        self.assertRegex(body, r">vegan</mark>")
+        self.assertIn("&lt;script&gt;", body)
+        self.assertNotIn("<script", body)
+
     def test_no_evidence_bar_without_stance_labels(self):
         at = self.search(self.start())
         outcome, _ = at.session_state["last_search"]
