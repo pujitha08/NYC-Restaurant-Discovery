@@ -2,7 +2,7 @@
 
 > **PROVISIONAL:** LLM labels not yet validated against human labels; pairs judged on Groq and OpenRouter/Crusoe, same model gpt-oss-120b
 
-- Runs: `/Users/kang/Documents/GitHub/NYC-Restaurant-Discovery/eval/runs.csv`; labels: `eval/llm_labels.jsonl` (964 labeled pairs); queries: `eval/queries_final.csv`
+- Runs: `eval/runs.csv`; labels: `eval/llm_labels.jsonl` (964 labeled pairs); queries: `eval/queries_final.csv`
 - Labels by source: openrouter/crusoe 559, groq 324, rule 81 (rule = no evidence shown, labeled 0 without a model call)
 - 35 queries, 5 systems, top 10 per system; macro averages over queries
 - Relevance: strict = label 2, lenient = label ≥ 1

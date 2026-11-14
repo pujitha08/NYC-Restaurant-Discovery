@@ -305,6 +305,15 @@ def plot(summary, cis, path, provisional=None):
     plt.close(fig)
 
 
+def rel(path):
+    """Repo-relative path for reports (no machine-specific absolute paths); other paths are left as given."""
+    path = Path(path)
+    try:
+        return path.resolve().relative_to(REPO).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
 def write_summary(path, *, args, labels, rows, queries, summary, cis, comparisons, density, categories):
     systems = list(summary)
     undefined = sorted({r["query_id"] for r in rows if r["NDCG10"] is None})
@@ -314,7 +323,7 @@ def write_summary(path, *, args, labels, rows, queries, summary, cis, comparison
     if provisional:
         L += [f"> **PROVISIONAL:** {provisional}", ""]
     sources = label_sources(args.labels)
-    L += [f"- Runs: `{args.runs}`; labels: `{args.labels}` ({len(labels)} labeled pairs); queries: `{args.queries}`",
+    L += [f"- Runs: `{rel(args.runs)}`; labels: `{rel(args.labels)}` ({len(labels)} labeled pairs); queries: `{rel(args.queries)}`",
           "- Labels by source: " + ", ".join(f"{s} {n}" for s, n in sources.items())
           + " (rule = no evidence shown, labeled 0 without a model call)",
          f"- {len(queries)} queries, {len(systems)} systems, top {K} per system; macro averages over queries",
