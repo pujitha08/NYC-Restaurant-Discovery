@@ -2,10 +2,11 @@ pandas
 numpy
 scikit-learn
 sentence-transformers
-streamlit
-openai
+streamlit==1.67.0
+openai==3.46.0
 python-dotenv
 nltk
 tqdm
 jupyter
 matplotlib
+datasets==5.1.0

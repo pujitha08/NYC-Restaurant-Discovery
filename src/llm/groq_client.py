@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 
 
 # Documentation snapshot: https://console.groq.com/docs/structured-outputs (2026-11-05).
@@ -48,7 +49,7 @@ class LLMAPIError(LLMError, RuntimeError):
         self.category = category
 
 
-def _safe_api_error(exc):
+def _safe_api_error(exc, provider_name="GroqCloud"):
     """Classify supported SDK exceptions without copying provider text or arbitrary codes."""
     try:
         import openai
@@ -64,20 +65,22 @@ def _safe_api_error(exc):
     if is_sdk("APITimeoutError") or isinstance(exc, TimeoutError):
         category, code, message = "timeout", "request_timeout", "The model request timed out. Try again manually later."
     elif is_sdk("APIConnectionError") or isinstance(exc, ConnectionError):
-        category, code, message = "network", "connection_failed", "Could not reach GroqCloud. Check connectivity."
+        category, code, message = "network", "connection_failed", f"Could not reach {provider_name}. Check connectivity."
     elif is_sdk("AuthenticationError") or status == 401:
-        category, code, message = "authentication", "authentication_failed", "GroqCloud authentication failed. Check the local API key."
+        category, code, message = "authentication", "authentication_failed", f"{provider_name} authentication failed. Check the local API key."
+    elif status == 402:  # OpenRouter: insufficient credits
+        category, code, message = "billing", "payment_required", f"{provider_name} requires payment or credits for this request."
     elif is_sdk("PermissionDeniedError") or status == 403:
-        category, code, message = "permission", "permission_denied", "GroqCloud denied access. Check account and model permissions."
+        category, code, message = "permission", "permission_denied", f"{provider_name} denied access. Check account and model permissions."
     elif is_sdk("RateLimitError") or status == 429:
-        category, code, message = "rate_limit", "rate_limited", "GroqCloud rate limit reached. Wait before a manual retry and check quota."
+        category, code, message = "rate_limit", "rate_limited", f"{provider_name} rate limit reached. Wait before a manual retry and check quota."
     elif is_sdk("BadRequestError") or status == 400:
         category = "bad_request"
         # The SDK exposes parsed error codes. Only this known, non-sensitive value is retained.
         if getattr(exc, "code", None) == "output_parse_failed":
-            code, message = "output_parse_failed", "GroqCloud could not produce a parsable structured response. No result is available."
+            code, message = "output_parse_failed", f"{provider_name} could not produce a parsable structured response. No result is available."
         else:
-            code, message = "bad_request", "GroqCloud rejected the request. Check the model and structured-output configuration."
+            code, message = "bad_request", f"{provider_name} rejected the request. Check the model and structured-output configuration."
     else:
         category, code, message = "provider", "provider_failure", "The model request failed. No result is available."
     return LLMAPIError(message, category=category, code=code, http_status=status)
@@ -135,18 +138,105 @@ def _invalid_constant(value):
     raise LLMResponseError("Nonstandard JSON numeric constant.")
 
 
-def request_json(*, client, model, name, schema, system, payload):
-    """Request schema-constrained JSON; injected clients must be offline fakes or GroqCloud clients.
+REASONING_EFFORTS = ("low", "medium", "high")
+
+
+def supports_reasoning_effort(model):
+    """Groq documents reasoning_effort low/medium/high for the gpt-oss models."""
+    return model.startswith("openai/gpt-oss-")
+
+
+def _usage(response):
+    """Token counts from a response, as plain ints (None when not reported); nothing else is copied."""
+    usage = getattr(response, "usage", None)
+
+    def count(obj, name):
+        value = getattr(obj, name, None)
+        return value if type(value) is int and value >= 0 else None
+
+    details = getattr(usage, "completion_tokens_details", None)
+    return {"prompt_tokens": count(usage, "prompt_tokens"), "completion_tokens": count(usage, "completion_tokens"),
+            "reasoning_tokens": count(details, "reasoning_tokens"), "total_tokens": count(usage, "total_tokens")}
+
+
+PROVIDERS = ("groq", "openrouter", "nvidia")
+_SERVED_BY = re.compile(r"^[\w .()/-]{1,64}$")
+_UPSTREAM_SLUG = re.compile(r"^[a-z0-9][a-z0-9._-]{0,63}(/[a-z0-9._-]{1,32})?$")
+
+
+def normalize_upstream(slug):
+    """An OpenRouter provider slug (e.g. "crusoe", "deepinfra/turbo"), lowercased; raises if malformed."""
+    value = slug.strip().lower() if isinstance(slug, str) else ""
+    if not _UPSTREAM_SLUG.match(value):
+        raise LLMConfigurationError("OpenRouter upstream must be a provider slug such as 'crusoe' or 'deepinfra/turbo'.",
+                                    code="invalid_openrouter_upstream")
+    return value
+
+
+def _served_by(response):
+    """OpenRouter's top-level "provider" field (which upstream served the request), if it is a short name."""
+    value = getattr(response, "provider", None)
+    return value if isinstance(value, str) and _SERVED_BY.match(value) else None
+
+
+def request_json(*, client, model, name, schema, system, payload, reasoning_effort=None, return_usage=False,
+                 provider="groq", openrouter_upstream=None):
+    """Request schema-constrained JSON; injected clients must be offline fakes or clients for `provider`.
 
     SDK retries are disabled for clients we create. Injected clients own their policy.
+    reasoning_effort ("low", "medium", "high") is sent only for models that support it (gpt-oss);
+    other models ignore it. With return_usage=True, returns (parsed JSON, usage dict with
+    prompt/completion/reasoning/total token counts, None where the provider does not report them).
+
+    provider="groq" (default) is GroqCloud: the documented JSON Schema allow-list applies.
+    provider="openrouter" (src.llm.openrouter_client; used by the LLM judge only) always requests
+    strict json_schema and sends provider={"require_parameters": true}, so OpenRouter routes only
+    to upstreams that support every request parameter; reasoning effort is sent as
+    reasoning={"effort": ...}. Its usage dict also has "served_by" (the upstream, if reported).
+    openrouter_upstream (OpenRouter only): pin routing to that provider slug with
+    provider={"require_parameters": true, "order": [slug], "allow_fallbacks": false}; the request
+    fails rather than going to another upstream.
+    provider="nvidia" (src.llm.nvidia_client; judge only) requests strict json_schema and sends the
+    top-level reasoning_effort, as NVIDIA's gpt-oss-120b API reference documents.
     """
-    model = resolve_model(model)
-    if model not in SCHEMA_MODELS:
-        raise LLMConfigurationError(
-            "Model is not in the documented Groq JSON Schema support list; review model support first.",
-            code="unsupported_model")
-    if client is None:
-        client = get_client()
+    if provider not in PROVIDERS:
+        raise LLMConfigurationError(f"provider must be one of {PROVIDERS}.", code="invalid_provider")
+    if openrouter_upstream is not None and provider != "openrouter":
+        raise LLMConfigurationError("openrouter_upstream applies only to provider='openrouter'.",
+                                    code="invalid_openrouter_upstream")
+    if reasoning_effort is not None and reasoning_effort not in REASONING_EFFORTS:
+        raise LLMConfigurationError(f"reasoning_effort must be one of {REASONING_EFFORTS}.",
+                                    code="invalid_reasoning_effort")
+    if provider == "openrouter":
+        from src.llm import openrouter_client
+        model = openrouter_client.resolve_model(model)
+        provider_name, strict = openrouter_client.PROVIDER_NAME, True
+        body = {"provider": {"require_parameters": True}}
+        if openrouter_upstream is not None:
+            body["provider"].update(order=[normalize_upstream(openrouter_upstream)], allow_fallbacks=False)
+        if reasoning_effort and supports_reasoning_effort(model):
+            body["reasoning"] = {"effort": reasoning_effort}
+        extra = {"extra_body": body}
+        if client is None:
+            client = openrouter_client.get_client()
+    elif provider == "nvidia":
+        from src.llm import nvidia_client
+        model = nvidia_client.resolve_model(model)
+        provider_name, strict = nvidia_client.PROVIDER_NAME, True
+        # NVIDIA's API reference: top-level reasoning_effort for gpt-oss (low/medium/high).
+        extra = {"reasoning_effort": reasoning_effort} if reasoning_effort and supports_reasoning_effort(model) else {}
+        if client is None:
+            client = nvidia_client.get_client()
+    else:
+        model = resolve_model(model)
+        if model not in SCHEMA_MODELS:
+            raise LLMConfigurationError(
+                "Model is not in the documented Groq JSON Schema support list; review model support first.",
+                code="unsupported_model")
+        provider_name, strict = "GroqCloud", model in STRICT_MODELS
+        extra = {"reasoning_effort": reasoning_effort} if reasoning_effort and supports_reasoning_effort(model) else {}
+        if client is None:
+            client = get_client()
     failure = None
     try:
         response = client.chat.completions.create(
@@ -154,10 +244,11 @@ def request_json(*, client, model, name, schema, system, payload):
             messages=[{"role": "system", "content": system},
                       {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
             response_format={"type": "json_schema", "json_schema": {
-                "name": name, "strict": model in STRICT_MODELS, "schema": schema}},
+                "name": name, "strict": strict, "schema": schema}},
+            **extra,
         )
     except Exception as exc:
-        failure = _safe_api_error(exc)
+        failure = _safe_api_error(exc, provider_name)
     # Raise outside the handler so the public exception has no sensitive __context__.
     if failure is not None:
         raise failure from None
@@ -172,8 +263,14 @@ def request_json(*, client, model, name, schema, system, payload):
         content = choice.message.content
         if not isinstance(content, str):
             raise LLMResponseError("Expected JSON text.")
-        return json.loads(content, object_pairs_hook=_unique_object,
+        data = json.loads(content, object_pairs_hook=_unique_object,
                           parse_constant=_invalid_constant)
+        if not return_usage:
+            return data
+        usage = _usage(response)
+        if provider == "openrouter":
+            usage["served_by"] = _served_by(response)
+        return data, usage
     except LLMResponseError as exc:
         failure = exc
     except (AttributeError, TypeError, ValueError, IndexError):

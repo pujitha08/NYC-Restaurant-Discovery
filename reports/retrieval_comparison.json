@@ -1,0 +1,3222 @@
+{
+ "VEG": {
+  "query": "vegan options for a group",
+  "boroughs": [
+   "Brooklyn"
+  ],
+  "systems": {
+   "semantic": {
+    "time": 0.4022029170009773,
+    "results": [
+     {
+      "gmap_id": "0x89c2595780ce7183:0x78708c4fd2e5970a",
+      "name": "Champs Diner",
+      "borough": "Brooklyn",
+      "score": 2.2769846879227043,
+      "reviews": 1230,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 431224,
+        "text": "First time eating vegan food and although the food was good the service wasn't. We just stumbled along this place and thought we should try it out. I had the Mexican bean salad is what I think it was called and it was very good. My other friend's only complaint was the french fries tasted way too salty. …"
+       },
+       {
+        "id": 431096,
+        "text": "A rare extensive menu vegan-compliant. Service is absolutely lovely. Food is good. Try their cookie milkshake, it’s to die for!"
+       },
+       {
+        "id": 431060,
+        "text": "I'm not vegan but they can definitely turn anyone into a vegan. Food is awesomeness. My fav is anything with tots💭"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25babad18d59f:0x863991745baa27c9",
+      "name": "The VSPOT",
+      "borough": "Brooklyn",
+      "score": 2.1211454051085,
+      "reviews": 476,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 826860,
+        "text": "Good selection of vegan food. The smaller course meals are the better buy here."
+       },
+       {
+        "id": 826859,
+        "text": "Vegan fare with latin American flavors, simply the best."
+       },
+       {
+        "id": 826559,
+        "text": "This is one of the best vegan restaurants I have tried! Everything we ordered from the buffalo strips to the cheese steak were amazing!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25be25d7f1f9b:0xcb0c4d4d93c99d5d",
+      "name": "Modern Love",
+      "borough": "Brooklyn",
+      "score": 2.0949200676881423,
+      "reviews": 442,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 435842,
+        "text": "Great vegan food even for those who aren't vegan"
+       },
+       {
+        "id": 435838,
+        "text": "A dream menu for Vegans - food is outstanding. Make sure to secure a reservation or you will be waiting for 45+ minutes during weekend nights."
+       },
+       {
+        "id": 435526,
+        "text": "Solid comfort vegan food. It gets busy fast so call ahead. Food is priced well and tasted great. Service kept up with everything we needed and we left very full after a delicious dessert."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25c6d4ec3b545:0x90c4e9894d526f96",
+      "name": "Toad Style",
+      "borough": "Brooklyn",
+      "score": 2.061063620683074,
+      "reviews": 340,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 592178,
+        "text": "Everything is vegan, but you wouldn't think it. Try the pizza fries."
+       },
+       {
+        "id": 591881,
+        "text": "I'm not vegan but I love this place, the Sunshine Burger and Mac&Cheez balls are the best. The food is amazing, some of the best take out in the area. …"
+       },
+       {
+        "id": 591945,
+        "text": "This place serves great vegan food. I’ve ordered delivery once before, but this past Saturday I visited the shop hoping to dine in. It was pretty crowded. The space is very small, only a few tables that go quick on a Saturday night. The lady at the counter could not be less pleased to help us. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259542fd1a179:0x7a29310b9aa40392",
+      "name": "Loving Hut",
+      "borough": "Brooklyn",
+      "score": 2.028695639822378,
+      "reviews": 231,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1344497,
+        "text": "Been vegan for two weeks and was looking for something good to eat other than my own meals. This place is amazing. Good prices. Large Portions."
+       },
+       {
+        "id": 1344596,
+        "text": "Chill vegan spot with great food that's affordable and served up by good people."
+       },
+       {
+        "id": 1344528,
+        "text": "I used to eat here about once a week. The menu is extensive, there is wifi and typically enough space to spread out. This place is ideal for vegans and non-vegans, even picky eaters prone to complaining about vegan food :-D The food is memorably good! My favorite thing is the stuffed eggplant. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25945ab78c4f9:0xe6ca4ff741c13709",
+      "name": "Screamer's Pizzeria",
+      "borough": "Brooklyn",
+      "score": 2.0263611699436628,
+      "reviews": 504,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 819067,
+        "text": "I'm not a vegan, but I occasionally like to eat vegan food. This place is phenomenal. The white slice is amazing and definitely goes super quick. The food is fantastic and the employees are super nice, and they're funny. One time we went in and the girl behind the front desk was like \"Quick favorite movie\". …"
+       },
+       {
+        "id": 819187,
+        "text": "I am not vegan but I heard great things about this place and I decided to give it a chance and it is AMAZING! You really can't even tell the difference between regular pizza vs vegan pizza which is an incredible accomplishment. …"
+       },
+       {
+        "id": 818972,
+        "text": "Screamers has the BEST VEGAN CALZONES EVER! Make sure to give them a try on your visit."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a491f17ec49:0x42743c91880aed77",
+      "name": "Perelandra Natural Food Center",
+      "borough": "Brooklyn",
+      "score": 2.01394431252233,
+      "reviews": 280,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 827660,
+        "text": "My very favorite market for vegan choices ..."
+       },
+       {
+        "id": 827594,
+        "text": "I don’t do the bulk of my grocery shopping here but go here for specialty items. Lots of great vegan and organic options. Staff is extremely friendly and helpful. Only downside is that the market is a bit pricey, but I think they have to be in order to survive."
+       },
+       {
+        "id": 827682,
+        "text": "Great selection of prepared foods. The vegan selections are delicious.A restaurant would be very nice."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2595dac7b2b6d:0x2ed2aeb3c57e72ae",
+      "name": "Vinnie's",
+      "borough": "Brooklyn",
+      "score": 1.9992129348682712,
+      "reviews": 478,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1522142,
+        "text": "This place has some great vegan options."
+       },
+       {
+        "id": 1521762,
+        "text": "Lots of vegan options which was great. Pizza slices were very big so definitely getting your money's worth. Very tasty too, almost taste like the real thing. My only negative thing were the garlic knots weren't seasoned enough for my liking. …"
+       },
+       {
+        "id": 1522119,
+        "text": "… I started to take note of this place because of the internet fame they've been getting due to their custom drawings and themes for their specials board. Then I noticed they always had a vegan option. The outside looks like you stepped back in time to an old New York pizzeria. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25bb23e0eec35:0xe0bd1615104d7032",
+      "name": "Next Level Burger Brooklyn",
+      "borough": "Brooklyn",
+      "score": 1.9844695732606406,
+      "reviews": 277,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1755926,
+        "text": "It can be difficult to find an all vegan spot while on the go. I'm really glad this place exists. The food is really great! I can wait to come back!"
+       },
+       {
+        "id": 1755924,
+        "text": "I’m not vegan, but this place is truly amazing with all these delicious vegan burgers and shakes. Every burger is taste. Staff is friendly, they just need someone to bus tables, because when they are busy, it’s a lot of dirty trays with waste. Everything else is good"
+       },
+       {
+        "id": 1756111,
+        "text": "Friendly service, delicious vegan friendly options!!! Definitely plan on coming back (especially for the mushroom+tempeh bacon fries)"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25baebb8fcda9:0xc0b693d248568c15",
+      "name": "Sun In Bloom",
+      "borough": "Brooklyn",
+      "score": 1.9652685855112961,
+      "reviews": 117,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 717287,
+        "text": "Basic vegan and raw foods. Decent in a pinch but the food needs more seasoning. The place is also overpriced."
+       },
+       {
+        "id": 717290,
+        "text": "Great food, doesn't feel like a compromise for anyone dragged along with a vegan."
+       },
+       {
+        "id": 717205,
+        "text": "As a plant-based vegan, this place has some delicious, healthy options. It's slightly on the expensive side, but I do recommend it overall. Great sandwiches and the brunch menu is highly recommended!"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 30,
+    "flags": {
+     "group_snips": 2,
+     "neg_snips": 1,
+     "neg_top_snippet": 1,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 30,
+     "median_reviews": 442
+    }
+   },
+   "chunk_tfidf": {
+    "time": 0.11582208299660124,
+    "results": [
+     {
+      "gmap_id": "0x89c2595dac7b2b6d:0x2ed2aeb3c57e72ae",
+      "name": "Vinnie's",
+      "borough": "Brooklyn",
+      "score": 0.8281819925321096,
+      "reviews": 478,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1522142,
+        "text": "This place has some great vegan options."
+       },
+       {
+        "id": 1522113,
+        "text": "Was surprised by many vegan options"
+       },
+       {
+        "id": 1522114,
+        "text": "Best Pizza in Brooklyn. VEGAN options."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2595780ce7183:0x78708c4fd2e5970a",
+      "name": "Champs Diner",
+      "borough": "Brooklyn",
+      "score": 0.8184325622852366,
+      "reviews": 1230,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 431700,
+        "text": "So many vegan options! All great"
+       },
+       {
+        "id": 431836,
+        "text": "Expensive but really delicious vegan options"
+       },
+       {
+        "id": 431075,
+        "text": "This is a great place for great vegan food. However over the years the service has started to dwindle with entitled and not very helpful staff. Just seems like service is hit or miss and not consistent, yes the food is great but there are a lot of great vegan options in Brooklyn now"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25945ab78c4f9:0xe6ca4ff741c13709",
+      "name": "Screamer's Pizzeria",
+      "borough": "Brooklyn",
+      "score": 0.7424630973722497,
+      "reviews": 504,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 819152,
+        "text": "Amazing vegan options! Great location."
+       },
+       {
+        "id": 819356,
+        "text": "Tiny little place serving vegan pizza by the slice. Nice to have vegan options by the slice, but pizza itself wasn't anything special and there are so many other vegan options in Greenpoint."
+       },
+       {
+        "id": 819193,
+        "text": "Best pizza (vegan/non vegan)! So many options. Dare you to just eat 1 slice."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25b0024df8f43:0x81a70268bebad12d",
+      "name": "Two Boots Park Slope",
+      "borough": "Brooklyn",
+      "score": 0.6335205774731468,
+      "reviews": 134,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1545201,
+        "text": "Great pizza. Good Vegan options"
+       },
+       {
+        "id": 1545230,
+        "text": "Good beer and great pizza (with vegan options)!"
+       },
+       {
+        "id": 1545241,
+        "text": "Ridiculously expensive vegan options but EXCELLENT pizza. Excellent enough where I order from them all the time. Great service too and nice atmosphere."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a4fa5dbdd7d:0x9523879e95e6f569",
+      "name": "Bareburger",
+      "borough": "Brooklyn",
+      "score": 0.6119434750398302,
+      "reviews": 407,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1433923,
+        "text": "All of the vegan options"
+       },
+       {
+        "id": 1433629,
+        "text": "Tastes good but kind of expensive. I love the vegan options here. Very good"
+       },
+       {
+        "id": 1433617,
+        "text": "The vegan burger was EVERYTHING!! Love the atmosphere, the vibe that they've cultivated and the 100% vegan options!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25babad18d59f:0x863991745baa27c9",
+      "name": "The VSPOT",
+      "borough": "Brooklyn",
+      "score": 0.6042236827145864,
+      "reviews": 476,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 826915,
+        "text": "Great vegan options. Very friendly staff"
+       },
+       {
+        "id": 826866,
+        "text": "Great vegan options and friendly staff"
+       },
+       {
+        "id": 826524,
+        "text": "So many delicious and flavorful vegan options. Drinks were really strong too"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25b9d0f12e06d:0x8ceb424e26d22467",
+      "name": "Meme's Healthy Nibbles",
+      "borough": "Brooklyn",
+      "score": 0.5817554963442159,
+      "reviews": 169,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1371032,
+        "text": "Best. French fries. Ever. Really, check them out. All the vegan options are great! Love this place!"
+       },
+       {
+        "id": 1371164,
+        "text": "Lots of vegan options, very friendly, very tasty. There's a lot of room to sit,"
+       },
+       {
+        "id": 1371131,
+        "text": "Lots of vegan options, very friendly, very tasty. There's a lot of room to sit, you'll need to go up to the register to order and clear your own dishes (not a bad thing)."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25bab3df0280d:0x7706d0507aee9b72",
+      "name": "Ghenet",
+      "borough": "Brooklyn",
+      "score": 0.5624625308128667,
+      "reviews": 171,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1120802,
+        "text": "So many delicious vegan options!"
+       },
+       {
+        "id": 1120798,
+        "text": "Good Ethiopian food. Vegan options."
+       },
+       {
+        "id": 1120775,
+        "text": "Good food, lots of vegan options. Friendly, knowledgeable service."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25bb00aed4e0f:0x8e8e36217714b5a5",
+      "name": "Ramen Danbo",
+      "borough": "Brooklyn",
+      "score": 0.5594998219855762,
+      "reviews": 245,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 667055,
+        "text": "You know ramen is great when you feel like a warrior leaving the spot. Amazing vegan options."
+       },
+       {
+        "id": 666927,
+        "text": "Love love love the vegan ramen! So many vegan options and they’re all so delicious, different, and the broths are super rich. The takeout containers are awesome too."
+       },
+       {
+        "id": 667052,
+        "text": "They just updated their menu and made an already great menu better. Plenty of veg/vegan options. Great service."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25b0136acd7db:0x52b8df26407b37df",
+      "name": "Bareburger",
+      "borough": "Brooklyn",
+      "score": 0.5513214988323522,
+      "reviews": 350,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2697094,
+        "text": "I love this restaurant so much, I even downloaded their app, the food is SO FRESH and I love all the vegan options!"
+       },
+       {
+        "id": 2697095,
+        "text": "Amazing vegan options as always - love the Thai Chia burger!"
+       },
+       {
+        "id": 2697018,
+        "text": "The exterior drew me in! I was immediately greeted upon entering the establishment. Individual and group seating is available. The menu is diverse yet to the point. Vegan options are in abundance! I ordered an impossible burger, small fries, and a small Cococado! The portion sizing was great and there was a short wait time. Everything is in eco-friendly packaging. …"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 30,
+    "flags": {
+     "group_snips": 1,
+     "neg_snips": 1,
+     "neg_top_snippet": 0,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 30,
+     "median_reviews": 407
+    }
+   },
+   "doc_tfidf": {
+    "time": 0.07495450001442805,
+    "results": [
+     {
+      "gmap_id": "0x89c25bdd6e2b0dbb:0x6f4cf7b728cc6b50",
+      "name": "TACO ZONE",
+      "borough": "Brooklyn",
+      "score": 0.06604934483766556,
+      "reviews": 5,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 55800,
+        "text": "Not much for vegan options, beans/veg as a substitute does not cut it."
+       },
+       {
+        "id": 55802,
+        "text": "Delicious. Best chicken burrito I’ve ever had and the vegan chili was delicious"
+       },
+       {
+        "id": 55797,
+        "text": "Went here for the vegan food and loved it! Got the tofu chorizo burrito. It was humongous and yummy."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25b07a8cbaa8b:0xc2da87e7638f80e2",
+      "name": "Bklyn Wild",
+      "borough": "Brooklyn",
+      "score": 0.03978244215250015,
+      "reviews": 6,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 21519,
+        "text": "Delicious vegan Mac and cheese!!"
+       },
+       {
+        "id": 21518,
+        "text": "Great vegan food. Lots of spice and flavor."
+       },
+       {
+        "id": 21520,
+        "text": "Vegan chorizo mac and cheese. SO GOOD!!!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c24512e7f59acf:0x440a61918404ea34",
+      "name": "Bodai kosher vegetarian inc",
+      "borough": "Brooklyn",
+      "score": 0.03669361025094986,
+      "reviews": 23,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 275181,
+        "text": "Awesome dim sum and great food. Vegan options."
+       },
+       {
+        "id": 275176,
+        "text": "Good tasting even for a non vegan/vegetarian."
+       },
+       {
+        "id": 275161,
+        "text": "The vegetarian food here is excellent. The food tastes great, and there is protein in the non meat food items. I generally ordered the vegan options when I come, and I've been trying a different dish every visit. Great for Asian crowd having to make hospital visits!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25950377e99fb:0x3afaa42c161a102f",
+      "name": "Sizzle Pie",
+      "borough": "Brooklyn",
+      "score": 0.035298027098178864,
+      "reviews": 35,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 268247,
+        "text": "Amazing pizza! Go for the vegan options, stay for the $3 happy hour (4-7 daily)"
+       },
+       {
+        "id": 268279,
+        "text": "Great pizzas, with lots of vegetarian and vegan options. The small size (which costs about $ 18-19) is enough for 2 people. If you order it at the store, it takes about 20 minutes to prepare it."
+       },
+       {
+        "id": 268257,
+        "text": "Vegan pizza is -delicious-. Small place."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25ba5f25fcfaf:0x66f2674479aa7f57",
+      "name": "Natural Blend",
+      "borough": "Brooklyn",
+      "score": 0.035186659544706345,
+      "reviews": 22,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 32923,
+        "text": "Great vegan options and excellent customer service"
+       },
+       {
+        "id": 32915,
+        "text": "Wonderful staff, and excellent vegan food. Will definitely be back"
+       },
+       {
+        "id": 32900,
+        "text": "I went here for the first time recently and I was blown away! Very clean and inviting atmosphere. The menu has a variety of vegan options and they are all SO good! Simone (the chef I believe) was so delightful to speak with and let me try some samples. Also...the Mac and cheese omg so good! Give them a try."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25af63bf5ffc1:0xbee7ddd17726b0b",
+      "name": "Fare and Folk",
+      "borough": "Brooklyn",
+      "score": 0.0346495695412159,
+      "reviews": 16,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 232507,
+        "text": "Biggest selection of cookies, bars, dried fruit bars, cakes, yoghurt and hipster drinks. Amazing! Wish more were like this. Gluten free and vegan options. Coffee was ok. Small coffee shop"
+       },
+       {
+        "id": 232505,
+        "text": "I love supporting this little cafe! Delicious lattes and espresso. Great vegan options! I like that they support court street grocers by selling their yummy sandwiches (very expensive, unfortunately.) It’s definitely a splurge, but I still keep returning."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25c0e60aafc1f:0x225fc5c06dddc5c2",
+      "name": "Salt & Pepper Deli & Grill",
+      "borough": "Brooklyn",
+      "score": 0.03395113721489906,
+      "reviews": 27,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 202871,
+        "text": "I LOVED that there were so many vegan options. The Vegan Chopped Cheese was AMAZING!!"
+       },
+       {
+        "id": 202876,
+        "text": "Awesome vegan options. Fresh produce and a great selection of snacks and beverages."
+       },
+       {
+        "id": 202870,
+        "text": "Great selection of vegan sandwiches and options. I would highly recommend it"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2595668a9b8f1:0x44d3560c2f75707f",
+      "name": "Brooklyn Standard 2",
+      "borough": "Brooklyn",
+      "score": 0.0313483364880085,
+      "reviews": 62,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 930926,
+        "text": "Lots of great and delicious vegan options!"
+       },
+       {
+        "id": 930916,
+        "text": "Tasty clean. Good sandwiches. Vegetarian and vegan options"
+       },
+       {
+        "id": 930870,
+        "text": "Got a vegan breakfast sandwich here and it was pretty good. Love the selection and all of the vegan options. Definitely want to return. Good prices too!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25c12adaea1bf:0xd9b4145592f12d24",
+      "name": "Chez Alex",
+      "borough": "Brooklyn",
+      "score": 0.031004007905721664,
+      "reviews": 81,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 881657,
+        "text": "Such a cute spot, really great food. Vegan options! And LGTBQ+ friendly."
+       },
+       {
+        "id": 881690,
+        "text": "Good vegan and non vegan options, low key atmosphere, friendly staff and good music"
+       },
+       {
+        "id": 881729,
+        "text": "Amazing heathy sandwiches, breakfast and vegan options."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25bfa46faf9cf:0x2b7f43a195e79c3",
+      "name": "Rim Nam Thai Kitchen",
+      "borough": "Brooklyn",
+      "score": 0.029720405116677284,
+      "reviews": 7,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 3603,
+        "text": "… Limited seating, we sat outdoors where the tables are in the sidewalk. All the indoor seats were taken. Great selection of vegan options. We ordered the vegan pineapple fried 🌾, 🦆 with white rice, vegan pad see ew with 🐔 (no oyster sauce as one of us doesn't eat fish/seafood). All very tasty with good sized portions."
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 27,
+    "flags": {
+     "group_snips": 1,
+     "neg_snips": 2,
+     "neg_top_snippet": 2,
+     "shell_dish_no_allergy": 1,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 27,
+     "median_reviews": 23
+    }
+   }
+  },
+  "overlap": {
+   "sem&chunk": 4,
+   "sem&doc": 0,
+   "chunk&doc": 0,
+   "all3": 0,
+   "union": 26
+  }
+ },
+ "Q20": {
+  "query": "restaurant careful about peanut allergies",
+  "boroughs": null,
+  "systems": {
+   "semantic": {
+    "time": 0.26055775000713766,
+    "results": [
+     {
+      "gmap_id": "0x89c25981bc0101af:0x6f023e0cb73a8463",
+      "name": "Pig and Khao",
+      "borough": "Manhattan",
+      "score": 2.1464623548703456,
+      "reviews": 492,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2117639,
+        "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
+       },
+       {
+        "id": 2117626,
+        "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies."
+       },
+       {
+        "id": 2117781,
+        "text": "… To our surprise, we noticed an older couple sitting to our left side. We struck up a conversation and before you knew it...we found out they are Chef Leah's parents! (the foodie me was totally amazed!). So you never know who you will sit next to! Overall the food is reasonably priced and we left satisfied and full!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2598152ae11f1:0x778df2824b1172c1",
+      "name": "Mission",
+      "borough": "Manhattan",
+      "score": 2.132820170742972,
+      "reviews": 396,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1576831,
+        "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …"
+       },
+       {
+        "id": 1576786,
+        "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258fee3b0002d:0x855188bdd55b9877",
+      "name": "Five Guys",
+      "borough": "Manhattan",
+      "score": 1.9313498217017868,
+      "reviews": 605,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1869131,
+        "text": "For peanuts lovers ~ but table not cleaned regularly"
+       },
+       {
+        "id": 1869239,
+        "text": "The service was very slow we asked for the food for eat in and they gave it to us in a paper bag and the peanuts were empty which is one of the Staples of this restaurant"
+       },
+       {
+        "id": 1868818,
+        "text": "Great food ... Burgers made to order. Fries are delicious and plentiful ... Love the Cajun seasoning! I'm not a peanut lover, but my friends enjoyed the peanuts while waiting for the burgers."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2599d7acaa7db:0x15e363a022cdfcac",
+      "name": "Superiority Burger",
+      "borough": "Manhattan",
+      "score": 1.9064944677787614,
+      "reviews": 588,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1627793,
+        "text": "… I challenged him again. He assertively told me there are no nuts in the burger. As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2598f7ff4aa09:0x313547e757cb8cea",
+      "name": "Katz's Delicatessen",
+      "borough": "Manhattan",
+      "score": 1.9044355613499786,
+      "reviews": 7230,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 158039,
+        "text": "… I never ever have an issue finding a dish to eat. We came to Kat's because my husband wanted to try their pastrami. We waited in a long line. I saw that the menu had a cheese sandwich but with no other details. I didn't think anything of it and went ahead and order it. …"
+       },
+       {
+        "id": 161667,
+        "text": "… Ate half a 20$ sandwich. The sandwich was big and filled me up but did not taste fresh.......LATER THAT NIGHT- I wake up and I have to use the bathroom 4 times because my stomach hurts.......sorry kats, wont be coming back. Next time make sure all your meat is kosher (I'm sure it isnt btw)"
+       },
+       {
+        "id": 161669,
+        "text": "There are sandwiches, and then there is Moby Dick..."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a227d08fb89:0x58bcd65d91902053",
+      "name": "Denny's",
+      "borough": "Manhattan",
+      "score": 1.902974604798441,
+      "reviews": 367,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1315265,
+        "text": "… My friend is deathly allergic to peanut butter and there was never a mention of peanut butter in the description (ie: it shouldn't be there and thus they don't follow recipes and really can't be trusted to follow procedure). …"
+       },
+       {
+        "id": 1315448,
+        "text": "Terrible service , waiter forgot appetizer and wasn't giving no attention to all 3 tables he had. Never again."
+       },
+       {
+        "id": 1315444,
+        "text": "Why open a denny's in the city, it goes against all logic"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258fe9139b79f:0xde80ce51158407c9",
+      "name": "TGI Fridays",
+      "borough": "Manhattan",
+      "score": 1.8959318025552867,
+      "reviews": 622,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2096329,
+        "text": "food allergies are evidently not common or known at this place. food wasnt fresh. order wrong"
+       },
+       {
+        "id": 2096253,
+        "text": "… They rush me to make an order, then take half an hour or more to get it to you... after which you are greeted with child-size portions and ingredients you requested be left out... thank God I'm not allergic, just hate the taste of pickles in my food. Oh and these kiddie size meals cost upwards of $20 ... …"
+       },
+       {
+        "id": 2096171,
+        "text": "AVOID! AVOID!AVOID! The service is horrible! They can’t get the orders right. There’s especially one waitress with curly hair that is extremely rude. We had to call the manager because they kept on bringing the wrong food!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259bc576e6fdf:0xa6b40e37709dce7c",
+      "name": "Cafeteria",
+      "borough": "Manhattan",
+      "score": 1.8823344075631703,
+      "reviews": 1069,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 136010,
+        "text": "The food is pretty good. BUT. I ordered a Veggie Burger. I'm allergic to nuts. I didn't expect a veggie burger to have nuts in it. & the was nothing saying or indicating that on the menu at all. So after a couple bites, the person I went with went to get Benadryl at DuaneReade. …"
+       },
+       {
+        "id": 135512,
+        "text": "If you have food allergies - STAY AWAY! Went with my friends for dinner. After 35 minutes of waiting, we finally set and made an order. I informed the waitress about my food allergies and she confirmed that the food is gluten free. Well - I got back home really sick and vomited until 4am. …"
+       },
+       {
+        "id": 136005,
+        "text": "… We will not be back here due to this discourteous treatment. Read below: I wish i could have given Cafeteria a big fat zero but i had to pick a star. They made it clear today that they do not care at all about food allergies. My daughter has a dairy allergy and wanted scrambled eggs. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259762e26a813:0xf37426d261b7d2db",
+      "name": "Tompkins Square Bagels",
+      "borough": "Manhattan",
+      "score": 1.8822974696595278,
+      "reviews": 543,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2270530,
+        "text": "… Also getting it all over the cutting board.) They assured me it would change— nope. Good luck if you have a nut allergy. It is a shame that they can’t get their act together. The people are nice and the food is good— when your order is right."
+       },
+       {
+        "id": 2270456,
+        "text": "I can't emphasize my love for this place enough! The food is incredible, the service is phenomenal, and the prices are totally reasonable. A safe haven for anyone with gluten allergies!!"
+       },
+       {
+        "id": 2270434,
+        "text": "We were visiting the area to move my son to college and discovered this bagel shop down the street from the apartment we stayed at. So far I've gone twice. I'll start by saying that the flavors of bagels that are listed on their web site is not accurate. They do not have chocolate chip or garlic. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25cbc566d49c5:0xa91f660878bd457d",
+      "name": "Footprints Cafe",
+      "borough": "Brooklyn",
+      "score": 1.8775681334884384,
+      "reviews": 1291,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1624356,
+        "text": "I've ordered from here and told them that I have an allergy to specific foods; when the order came out it was exactly what I couldn't eat. The workers are always rude, terrible customer service and will never give you a correct order after waiting one to two hrs to get any type of food. …"
+       },
+       {
+        "id": 1624030,
+        "text": "Don't get me wrong, the stew chicken and Mac and cheese is good, but the lack of attention on the employees behalf is bad ..I specifically state on my Uber order allergy request notes that I am allergic to cabbage and yet they go out of their way to pile it on. …"
+       },
+       {
+        "id": 1624536,
+        "text": "… They must've been busy beyond belief. I found 4 shrimp in my jerk chicken pasta. Luckily I'm not allergic so I was blessed. I know its busy af over there but tighten up a system to get people in and out faster who aren't dining in and watch their orders not to negligently serving allergens."
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 27,
+    "flags": {
+     "group_snips": 8,
+     "neg_snips": 3,
+     "neg_top_snippet": 1,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 27,
+     "median_reviews": 605
+    }
+   },
+   "chunk_tfidf": {
+    "time": 0.1381252089922782,
+    "results": [
+     {
+      "gmap_id": "0x89c25987a0baabdd:0x2982dbd963919b46",
+      "name": "Shu Jiao Fu Zhou",
+      "borough": "Manhattan",
+      "score": 0.49906145705092436,
+      "reviews": 378,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1554354,
+        "text": "$3 peanut noodles are so good !!"
+       },
+       {
+        "id": 1554355,
+        "text": "Peanut butter noodle = heavenly"
+       },
+       {
+        "id": 1554394,
+        "text": "the peanut butter noodles is a must try"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25853e76f3785:0xc87f73e5e6745ded",
+      "name": "Bareburger",
+      "borough": "Manhattan",
+      "score": 0.38369507304483896,
+      "reviews": 933,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2718626,
+        "text": "An absolutely wonderful spot to get burgers! We had 4 people, 1 with gluten, dairy allergies and 1 with just dairy allergies. This was the most accommodating restaurant ever! Before we even ordered our server asked about any allergies and made sure to mark them down. …"
+       },
+       {
+        "id": 2718996,
+        "text": "… they gave me someone else's bacon cheeseburger on whole wheat. For a place that claims to be sensitive to allergies, they need to be more careful. That said, when I did get the correct meal it was freakin' awesome."
+       },
+       {
+        "id": 2719404,
+        "text": "… Gluten free burger! Delicious and plentiful, tasty and great! I am celiac and I was fine! On the menu you will find everything that can be done \"gf\" (= gluten free). Fast and young staff. They are very careful about allergies. Nice and easy-going place, nothing fancy, just for a big hamburger! Prices in the norm. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259b287d913a7:0x41ee1065aea8cee5",
+      "name": "Zoob Zib Thai Authentic Noodle Bar",
+      "borough": "Manhattan",
+      "score": 0.36208450074338455,
+      "reviews": 481,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2255050,
+        "text": "… The beer and wine list is decent and I loved what I ordered - BBQ Pork over rice with spicy peanut sauce (watch out if you have peanut allergies)!!"
+       },
+       {
+        "id": 2255446,
+        "text": "I love a good summer roll but these were not worth the price (very small) and the peanut sauce was too sweet that I had to add my own pb to the mix."
+       },
+       {
+        "id": 2255001,
+        "text": "… I've been here several times and the waitresses are always incredibly friendly and helpful. She recommended a Thai salad for lunch. I added some shrimp. It came out with lettuce, cucumber, eggs, tomatoes. It also had a peanut sauce that I really enjoyed and I don't normally like peanut sauce. I'd give the meal and the experience 4 stars"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258fee3b0002d:0x855188bdd55b9877",
+      "name": "Five Guys",
+      "borough": "Manhattan",
+      "score": 0.3378502803578331,
+      "reviews": 605,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1868833,
+        "text": "Excellent burgers, spectacular fries. Not for anyone with peanut allergies."
+       },
+       {
+        "id": 1868757,
+        "text": "Fast and friendly. Tasty too. Always be careful if you have a nut allergy as they cook their fries in peanut oil."
+       },
+       {
+        "id": 1869517,
+        "text": "Personally, the hamburger seemed too funny to me, the place was not very careful and the potatoes did not look good"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25981bc0101af:0x6f023e0cb73a8463",
+      "name": "Pig and Khao",
+      "borough": "Manhattan",
+      "score": 0.3282056062205984,
+      "reviews": 492,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2117639,
+        "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
+       },
+       {
+        "id": 2117626,
+        "text": "I have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
+       },
+       {
+        "id": 2117954,
+        "text": "… The poached egg on the side was a good touch. Cooked perfect. Khao Soi ($16): It tasted a lot like the asian peanut butter noodle, but the more you ate it, the better it got. It had a good spice to it. Halo- Halo ($8): Not as big as it looks in the picture, but it was really good. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259a25abeb56f:0x228abab3fa39b84",
+      "name": "Rosa Mexicano",
+      "borough": "Manhattan",
+      "score": 0.31539309564557794,
+      "reviews": 947,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1805882,
+        "text": "NOT SAFE FOR PEOPLE WITH PEANUT ALLERGIES. They use peanuts in the sauce. Food is also very mediocre, and overpriced. Worst cocktail I've ever had too (Mezcal-iso or smth)"
+       },
+       {
+        "id": 1805514,
+        "text": "… All their workers are happy to answer any questions about food ingredients/allergies and will find something it is they don't know the answer."
+       },
+       {
+        "id": 1805180,
+        "text": "I was not a fan of the food here. It was bland. The guacamole did not have much flavor. When asking the waiter about lack of flavor he did not offer a solution. He states they don’t put lime in the guacamole. Be careful wait staff will try to upsell you and make you order more food than necessary."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2598152ae11f1:0x778df2824b1172c1",
+      "name": "Mission",
+      "borough": "Manhattan",
+      "score": 0.312963977075162,
+      "reviews": 396,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1576831,
+        "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …"
+       },
+       {
+        "id": 1576786,
+        "text": "… Being the easygoing, understanding guys they are, our two with allergies insisted on powering through the rest of what we'd ordered and making the best of the night--because we'd all REALLY been looking forward to trying this place out, and it's not like one can reverse an allergic reaction like this once it's started. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2445522653dab:0xbd45b8d4c4d774c9",
+      "name": "L&B Spumoni Gardens",
+      "borough": "Brooklyn",
+      "score": 0.30485266472243805,
+      "reviews": 2558,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2279415,
+        "text": "Excellent, just excellent. Food...delicious, huge range from pizza to pasta to chicken, veal.... everything you could want in an Italian restaurant. Be careful with appetizers, forget the bread! Save room because the portions are large and you'll be taking your meal home instead of enjoying it at the table! …"
+       },
+       {
+        "id": 2279736,
+        "text": "After all these years...still a good place to grab a delicious square and a regular slice, sit outside and eat, then get some ice cream. Peanut butter fans should get the peanut butter swirl icecream here. …"
+       },
+       {
+        "id": 2280133,
+        "text": "I went there a second time. This time unlike the previous one, I was disappointed. My husband and I have chosen the chief’s menu. The salad was good appetizer also, but mean food was chicken steak. The meat was dry and too many onions although I warned about allergies."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25abf4200cd2d:0x6d68713e37fd0f2f",
+      "name": "Ejen",
+      "borough": "Brooklyn",
+      "score": 0.2912278266581607,
+      "reviews": 38,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 696741,
+        "text": "I absolutely love the food here. I only eat halal and though they are not a halal restaurant they are always very careful about the food that I do order (seafood). On top of that the staff is as kind as any group of people you can hope to encounter. Keep up the good work!"
+       },
+       {
+        "id": 696755,
+        "text": "Ordered the bibimbap. The sauce is NOT spicy and is amazing! Almost peanut sauce-seque."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25854e6657b87:0xed0e40a6b9508db5",
+      "name": "Hard Rock Cafe",
+      "borough": "Manhattan",
+      "score": 0.2844725700750305,
+      "reviews": 5832,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2667571,
+        "text": "Not the most accommodating with food allergies."
+       },
+       {
+        "id": 2670558,
+        "text": "Spectacular, nice place, delicious dishes and careful attention"
+       },
+       {
+        "id": 2665375,
+        "text": "Usually good experience, but the last time I went they were very ill-prepared to handle my and my friend’s nut allergies. She ordered a chicken sandwich and I ordered a burger, and we told our waitress about our allergies. …"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 28,
+    "flags": {
+     "group_snips": 7,
+     "neg_snips": 3,
+     "neg_top_snippet": 1,
+     "shell_dish_no_allergy": 1,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 28,
+     "median_reviews": 605
+    }
+   },
+   "doc_tfidf": {
+    "time": 0.07744199997978285,
+    "results": [
+     {
+      "gmap_id": "0x89c25c9972502351:0x6a3b1a4849fb836",
+      "name": "Hong Kuang Huang",
+      "borough": "Brooklyn",
+      "score": 0.06403243541717529,
+      "reviews": 15,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 471125,
+        "text": "Yuck I paid 5.50 for white rice and vegetables it was literally the worst food I ever had in my whole life .the rice was definitely not fully cooked . The vegetables definitely did not taste fresh either 🤢 save your money and time and don’t step foot in to this restaurant if you do be careful"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c244fd6bd9222f:0xaefd6e892432519",
+      "name": "Almaz",
+      "borough": "Brooklyn",
+      "score": 0.04314180091023445,
+      "reviews": 36,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1022534,
+        "text": "… All our guests were invited already and only 5 days left for our party (17 people) . I guess greediness wins in this restaurant. Be careful by picking this restaurant I highly recommend not to"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a26202d46cf:0x1f4406a43b6ac764",
+      "name": "Qq Café Usa Inc.",
+      "borough": "Manhattan",
+      "score": 0.038482390344142914,
+      "reviews": 7,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 45207,
+        "text": "Oh man, these were every bit as good as the YT-er we follow recommend they would be. These are the real noodles in peanut sauce, with perfectly cooked, still-with-a-bite noodles, and a warm salty/sweet peanut sauce. But not too much of it. And all less for $4!."
+       },
+       {
+        "id": 45211,
+        "text": "OMG try the #15... Yellow Noodle w/ Peanut Sauce. Mmmmmmmm"
+       },
+       {
+        "id": 45208,
+        "text": "Cheap good eats. I get the yellow noodles with peanut sauce and dumplings every time. $5.50 meal. Can't go wrong. I need to try other things on the menu, its just when you know you'll be satisfied with something it's hard to veer from it. I'll update this when I do though"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c244fcbf98cf31:0x2df0a072e3d806b6",
+      "name": "Emerald Fortune",
+      "borough": "Brooklyn",
+      "score": 0.03490511700510979,
+      "reviews": 24,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1879181,
+        "text": "Worst excuse for a Chinese restaurant. Be careful of the price gouging acts of this restaurant. As soon as you ask for something not on the price list shown in front of the register (Asian Sausage), the owner states an outrageous price and no heathy option of brown rice. Consumer Affairs needs to spot check this place ASAP."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2453549427de7:0xd28b743ab38b2b5c",
+      "name": "He Yi Xiaochi",
+      "borough": "Brooklyn",
+      "score": 0.0346672423183918,
+      "reviews": 5,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 14181,
+        "text": "Omg. best dumplings and peanut noodle in 8ave strip! Glad i take a chance on it! Will be my staple place!!!"
+       },
+       {
+        "id": 14180,
+        "text": "Noodles are sooooo fresh. Peanut noodles are crack! That soup broth is on point and dumplings are surprisingly well!"
+       },
+       {
+        "id": 14179,
+        "text": "… Our total order was $15 for 4 good-sized portions. The staff don't speak English, but there is an English menu. There are a few seats if you want to eat in, you can also do takeaway. We ordered the fried and steamed dumplings, peanut noodles and clam omelet on rice. The egg and fried dumplings were especially good!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25ba433d01aa9:0x43be46159049fa17",
+      "name": "Inaka Asian Cuisine",
+      "borough": "Brooklyn",
+      "score": 0.03422047570347786,
+      "reviews": 50,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 997870,
+        "text": "This is not a Japanese restaurant. Be careful."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a1836588cb3:0xf0b718e4e8d2dc4d",
+      "name": "The Great American Bagel",
+      "borough": "Manhattan",
+      "score": 0.03386891260743141,
+      "reviews": 85,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1988680,
+        "text": "… Is that a way to to send our visitors off? Luckily for this place, they have no competition. Thank god South West has peanuts and fingers crossed, there are no peanut allergies on this flight. I’m starving! Knew I should have just stuck to a cliff bar...."
+       },
+       {
+        "id": 1988642,
+        "text": "… All this time his emergency response was \"cero\" after I finished helping myself I said \"you guys have to be more careful\" and the employee dare to say to me \"it's your fault because you squeezed the cup!!!!\". OMG I couldn't believe him, I have never ever had this problem with my everyday cup of coffee at Starbucks! …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25abf4200cd2d:0x6d68713e37fd0f2f",
+      "name": "Ejen",
+      "borough": "Brooklyn",
+      "score": 0.03370831161737442,
+      "reviews": 38,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 696741,
+        "text": "I absolutely love the food here. I only eat halal and though they are not a halal restaurant they are always very careful about the food that I do order (seafood). On top of that the staff is as kind as any group of people you can hope to encounter. Keep up the good work!"
+       },
+       {
+        "id": 696755,
+        "text": "Ordered the bibimbap. The sauce is NOT spicy and is amazing! Almost peanut sauce-seque."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c245bf718c5897:0x25da8a0f788899c3",
+      "name": "China Long",
+      "borough": "Brooklyn",
+      "score": 0.028774304315447807,
+      "reviews": 7,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 27497,
+        "text": "I ordered a vegetable roll and they gave me a shrimp roll instead which sent me to the ER. I called to inform them and the young lady who answered the phone seem not to care. Be careful when ordering your food if you have any seafood allergies like myself. I personally won't be eating there again. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25acae7f5fd0f:0x2e633cf42539385a",
+      "name": "Hometown Cuisine Inc",
+      "borough": "Brooklyn",
+      "score": 0.026872258633375168,
+      "reviews": 6,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 13577,
+        "text": "I came here with a few friends on a weekend evening, and we shared the peanut noodles and a (stuffed) fish ball noodle. The peanut noodles were interesting, and they didn't use the normal wide wheat noodles. The peanut sauce was thick and a bit too salty too. …"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 16,
+    "flags": {
+     "group_snips": 3,
+     "neg_snips": 0,
+     "neg_top_snippet": 0,
+     "shell_dish_no_allergy": 1,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 16,
+     "median_reviews": 24
+    }
+   }
+  },
+  "overlap": {
+   "sem&chunk": 3,
+   "sem&doc": 0,
+   "chunk&doc": 1,
+   "all3": 0,
+   "union": 26
+  }
+ },
+ "Q22": {
+  "query": "safe for celiac disease, no cross contamination",
+  "boroughs": null,
+  "systems": {
+   "semantic": {
+    "time": 0.5987270420009736,
+    "results": [
+     {
+      "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+      "name": "Senza Gluten",
+      "borough": "Manhattan",
+      "score": 2.232050999400804,
+      "reviews": 429,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1065666,
+        "text": "Celiacs can eat without concern for cross contamination. Really good food for all!"
+       },
+       {
+        "id": 1065429,
+        "text": "I heard of Senza Gluten in a Facebook celiac disease support group I’m on. It came highly recommend by many people. They were so good! It was nice to go somewhere and order food without worrying about getting sick. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259af22fb0c51:0x6b78c8ca952665f4",
+      "name": "Friedman's Herald Square",
+      "borough": "Manhattan",
+      "score": 2.07714734636019,
+      "reviews": 1081,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1393491,
+        "text": "… (Only in certain areas really) This place has such an awesome atmosphere, great service, and delicious food! Can't get enough on the taste and I RARELY go out to eat. This gives me a good indication of what establishments are truly Celiac friendly. So far been no bathroom issues, no breakouts and my blood is healthy! …"
+       },
+       {
+        "id": 1393539,
+        "text": "Great gluten free options. It's one of the few places that is consistently safe for those with Celiac Disease."
+       },
+       {
+        "id": 1393548,
+        "text": "While many restaurants have gluten free items on their menus, most fail to recognize that celiac disease isn't a fad, and cross contamination is a real danger to those of us who have it. That's not an issue here. I've been here twice, and although it's a bit pricy on first glance, it's actually a bargain in reality. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258ef6b70b8ed:0x63df3a29b0ab6a71",
+      "name": "Lilli and Loo",
+      "borough": "Manhattan",
+      "score": 1.765620916410048,
+      "reviews": 236,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2070193,
+        "text": "I have celiac disease and unfortunately this place is not careful anymoreI ordered an egg drop soup explain to the waitress that I had celiac disease they gave me a totally different soup on the table had I not been there before I would not have know I'm better I would have been deathly ill this place the claims to …"
+       },
+       {
+        "id": 2070194,
+        "text": "Tasty food and good for celiac/gluten free"
+       },
+       {
+        "id": 2070173,
+        "text": "Solid Asian fusion with a nice gluten free menu. I've had Celiac's disease for over ten years and it is wonderful to have access to do many old favorites (sushi, fried rice, dumplings, General Tso's Chicken, etc)."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258a253c5fb3b:0xebc60d483b19dd72",
+      "name": "Noglu",
+      "borough": "Manhattan",
+      "score": 1.715769051934097,
+      "reviews": 156,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1222985,
+        "text": "Only place completely gluten free in New York that I know. The caprese with bacon is a party. If you are celiac and walk on the upper east side, stick around."
+       },
+       {
+        "id": 1222983,
+        "text": "Very good. Ideal for celiacs. Small and cozy."
+       },
+       {
+        "id": 1222911,
+        "text": "GLUTEN FREE EVERYTHING. We just found out our son is GF and this place is saving our lives."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259b6c048de33:0x8695535f055a98a5",
+      "name": "Senza Gluten Cafe & Bakery",
+      "borough": "Manhattan",
+      "score": 1.7048466199882961,
+      "reviews": 60,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1875141,
+        "text": "The atmosphere here is much more casual than that of the Senza Gluten restaurant. I HIGHLY RECOMMEND the chicken panini. This place is COMPLETELY SAFE for those with Celiac Disease and is very catering to many other common food allergies."
+       },
+       {
+        "id": 1875139,
+        "text": "So delicious and celiac safe - morning with gluten goes into this space. So many options of sweets, breads and food that are a perfect texture and flavor!"
+       },
+       {
+        "id": 1875169,
+        "text": "A paradise for celiacs. They have a lot of variety of products and everything is delicious! The bread they make is impressive. Their sandwiches are great and the portions huge !!!!! They have a great variety of cakes, cakes and cookies .... Do not forget to try the chocolate cake, it is delicious! 100% gluten free so 100% safe!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259a72f4245fd:0xda9f11b04f4cdb9e",
+      "name": "Little Beet Table",
+      "borough": "Manhattan",
+      "score": 1.6905730446247964,
+      "reviews": 270,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1956475,
+        "text": "I have Celiac Disease and I’m so grateful to have found The Little Beet Table in NYC. The food is amazing. I had the Squash Cavatelli pasta and it was truly incredible. The pasta was delightful and the sauce was smooth and creamy. We’re going back again before we leave the city!"
+       },
+       {
+        "id": 1956490,
+        "text": "Excellent food and service! Their whole menu is gluten free, so if you have a sensitivity or celiac’s this place is a dream! Our food was amazing and came promptly and tasted amazing. Would highly recommend for those looking for a healthier option in the city!"
+       },
+       {
+        "id": 1956496,
+        "text": "As someone who developed celiac in their twenties, I know what I'm missing when I eat gluten free versions of things. Pasta is one of those things which I have come to accept will never really be quite as tasty in it's GF version...so when I had the Rigatoni at the Little Beet, my mind was a bit blown. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258866f3c3587:0x8c871eb338f684ef",
+      "name": "Cafe Eighty Two",
+      "borough": "Manhattan",
+      "score": 1.5536817162960528,
+      "reviews": 174,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1303951,
+        "text": "One of the last places to get gluten free diner food in all of NYC, this place is amazing! I have celiac & always feel safe coming here."
+       },
+       {
+        "id": 1304045,
+        "text": "Happy and grateful for delicious gluten free menu! Both kids have celiac disease and we will definitely be back!"
+       },
+       {
+        "id": 1304118,
+        "text": "This dinner has a Gluten-free Card. On this card are breakfast dishes, lunch dishes and dinner dishes. The restaurant participates in the Gluten Free Awareness program for Celiac Disease. They are well aware of safe gluten-free preparation and look out for cross-contamination. We had breakfast here twice and both times we received generous portions. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259b305765bf5:0xdf80dfab963e08e7",
+      "name": "Friedman's Hell's Kitchen",
+      "borough": "Manhattan",
+      "score": 1.5313600297933245,
+      "reviews": 700,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2391615,
+        "text": "… maybe 4 square meters in which 4 chefs became angry, embodying everything. I had already figured out on the fly how I would spend the afternoon. I've been on the toilet all afternoon. We are not really there. Rejected. Oh I forgot. Waiters pissed off to say the least. Stay away from here celiac people!"
+       },
+       {
+        "id": 2391358,
+        "text": "Amazing place! Having Celiac disease makes dining out hard, but pretty much everytg5on the menu can be made gluten free!"
+       },
+       {
+        "id": 2391291,
+        "text": "Awesome food anytime of day they are Gluten Free for real. I’m a full blown Celiac I never get sick at any of their locations."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25908538632bd:0xc1c8c73450bff681",
+      "name": "Bistango",
+      "borough": "Manhattan",
+      "score": 1.5041346102684496,
+      "reviews": 172,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 530210,
+        "text": "Great options for those with celiacs & without!!"
+       },
+       {
+        "id": 530196,
+        "text": "They have a way of making a gluten free (celiac) feel safe. The food is outstanding and the service was amazing. The entire experience from calling to make a reservation, to dinner, to leaving and being greeted by the manager was perfect. …"
+       },
+       {
+        "id": 530208,
+        "text": "Food allergies?? BEWARE!!! My daughter ate here on New Year's Eve which resulted in her falling ill due to a severe allergic reaction caused by eating gluten. She was then taken by ambulance to Mount Sinai emergency department for urgent medical treatment. Despite the good reviews and reassurances by staff that her food would be gluten-free it clearly was not. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2599caf02086d:0x48e592c13b676906",
+      "name": "Risotteria Melotti NYC",
+      "borough": "Manhattan",
+      "score": 1.4851575940578936,
+      "reviews": 224,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1359282,
+        "text": "Awful. BAD PLACE FOR CELIAC. The chef refused to talk to us, even after repeat requests to talk about specific allergies. The waitstaff did not care or understand my allergies, and after repeat instructions willing dismissed them to bring out my food dangerous. DO NOT COME HERE. …"
+       },
+       {
+        "id": 1359204,
+        "text": "Wow! Loved this place. I have Celiac disease and everything is gluten free. So rare to find. I had the carbonara risotto and it was amazing. The ambiance was warm and inviting. For dessert I had the profiteroles and again was blown away. Great service as well. Will return."
+       },
+       {
+        "id": 1359174,
+        "text": "… Even as California wine lovers, we were in love with the wine we enjoyed with our dinner. For anyone, literally anyone, you will enjoy this wonderful restaurant. For anyone with Celiac or gluten intolerance, you will LOVE this restaurant!"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 29,
+    "flags": {
+     "group_snips": 3,
+     "neg_snips": 3,
+     "neg_top_snippet": 1,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 29,
+     "median_reviews": 236
+    }
+   },
+   "chunk_tfidf": {
+    "time": 0.09893720797845162,
+    "results": [
+     {
+      "gmap_id": "0x89c259af22fb0c51:0x6b78c8ca952665f4",
+      "name": "Friedman's Herald Square",
+      "borough": "Manhattan",
+      "score": 0.9932117903479076,
+      "reviews": 1081,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1393539,
+        "text": "Great gluten free options. It's one of the few places that is consistently safe for those with Celiac Disease."
+       },
+       {
+        "id": 1393345,
+        "text": "This place is incredible for people with celiac disease. Instead of having a gluten-free menu, their entire menu can be cooked with or without gluten. They are very careful about cross-contamination."
+       },
+       {
+        "id": 1393548,
+        "text": "While many restaurants have gluten free items on their menus, most fail to recognize that celiac disease isn't a fad, and cross contamination is a real danger to those of us who have it. That's not an issue here. I've been here twice, and although it's a bit pricy on first glance, it's actually a bargain in reality. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+      "name": "Senza Gluten",
+      "borough": "Manhattan",
+      "score": 0.9359952045402447,
+      "reviews": 429,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1065552,
+        "text": "Got recommended this by a friend..... and with a girlfriend with celiac disease....... she was in heaven 😊 really good food and service"
+       },
+       {
+        "id": 1065554,
+        "text": "Great gf food and you don't have to worry about cross contamination. Plus they have tiramisu, it has been 10 years since I had tiramisu, and it was exactly as I remembered!!"
+       },
+       {
+        "id": 1065429,
+        "text": "I heard of Senza Gluten in a Facebook celiac disease support group I’m on. It came highly recommend by many people. They were so good! It was nice to go somewhere and order food without worrying about getting sick. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258ef6b70b8ed:0x63df3a29b0ab6a71",
+      "name": "Lilli and Loo",
+      "borough": "Manhattan",
+      "score": 0.9018391599326042,
+      "reviews": 236,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2070140,
+        "text": "Great gluten free options! I have Celiac disease and am very sensitive to cross contamination. Lilli & Loo's staff has always been very knowledgeable about preventing cross contamination and I've never gotten sick. Honestly, it's the best tasting Asian food I've had since going gluten free. More pricey than ordering takeout in Queens, but pretty average in price for Midtown. …"
+       },
+       {
+        "id": 2070149,
+        "text": "The food is flavored and good for the price I had to give it 3 stars because of cross-contamination The water glass was dirty Other than that it’s 👍🏼"
+       },
+       {
+        "id": 2070193,
+        "text": "I have celiac disease and unfortunately this place is not careful anymoreI ordered an egg drop soup explain to the waitress that I had celiac disease they gave me a totally different soup on the table had I not been there before I would not have know I'm better I would have been deathly ill this place the claims to …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25994b4f25379:0xfc3ba7dd257e3760",
+      "name": "Wild",
+      "borough": "Manhattan",
+      "score": 0.8111483045535351,
+      "reviews": 238,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 342394,
+        "text": "Great gluten free pizza crust! I also tried the zucchini pasta and it was delicious! People with celiac disease can east here without worries of cross contamination. We will be back!"
+       },
+       {
+        "id": 342266,
+        "text": "I found gluten-free heaven ! So I recently found this place and i don’t know how I’ve just found out about it. Being celiac is hard since most places have cross contamination etc. Wild is a breath of fresh air 100% gluten free and everything we ordered was delicious. Also the desserts are not a joke ! …"
+       },
+       {
+        "id": 342309,
+        "text": "Honestly, some of the best gluten-free food I've ever eaten. I have Celiac disease and they're extremely careful about gluten. I've had dinner here, dessert here, breakfast here, and it's all incredible. The staff is also super friendly. It doesn't get better."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25888934d6635:0x645b7e7409c0df53",
+      "name": "Jing Fong",
+      "borough": "Manhattan",
+      "score": 0.6689866183283639,
+      "reviews": 163,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1453655,
+        "text": "I have celiac disease, and they were fantastic!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258a253c5fb3b:0xebc60d483b19dd72",
+      "name": "Noglu",
+      "borough": "Manhattan",
+      "score": 0.613635226703229,
+      "reviews": 156,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1222908,
+        "text": "100% gluten free bakery. Nice seating floor upstairs. I tried the pumpkin muffin and it was very good. Great place for the with celiac disease because you can eat here without worrying about cross contamination"
+       },
+       {
+        "id": 1222907,
+        "text": "Amazing!! Been dreaming about this place for months and couldn't be happier once it was finally a reality! Everything was delicious and I had no cross contamination concerns."
+       },
+       {
+        "id": 1222910,
+        "text": "A strong contender for best gluten free brunch in NYC. This was my first time but I'll post more as I have a delightful time getting to know the menu. For someone with Celiac's disease this place is an oasis and a must visit while you are in NYC."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258866f3c3587:0x8c871eb338f684ef",
+      "name": "Cafe Eighty Two",
+      "borough": "Manhattan",
+      "score": 0.5601537223821307,
+      "reviews": 174,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1304045,
+        "text": "Happy and grateful for delicious gluten free menu! Both kids have celiac disease and we will definitely be back!"
+       },
+       {
+        "id": 1304118,
+        "text": "This dinner has a Gluten-free Card. On this card are breakfast dishes, lunch dishes and dinner dishes. The restaurant participates in the Gluten Free Awareness program for Celiac Disease. They are well aware of safe gluten-free preparation and look out for cross-contamination. We had breakfast here twice and both times we received generous portions. …"
+       },
+       {
+        "id": 1303951,
+        "text": "One of the last places to get gluten free diner food in all of NYC, this place is amazing! I have celiac & always feel safe coming here."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2599caf02086d:0x48e592c13b676906",
+      "name": "Risotteria Melotti NYC",
+      "borough": "Manhattan",
+      "score": 0.5591594838218953,
+      "reviews": 224,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1359204,
+        "text": "Wow! Loved this place. I have Celiac disease and everything is gluten free. So rare to find. I had the carbonara risotto and it was amazing. The ambiance was warm and inviting. For dessert I had the profiteroles and again was blown away. Great service as well. Will return."
+       },
+       {
+        "id": 1359243,
+        "text": "We came to NYC for a day trip and were looking for somewhere that I could eat safely, as I have Celiac Disease. What a goldmine we found! Everything here is gluten free. Everything! It was like a dream come true. I had the mushroom risotto, which was absolutely delicious. …"
+       },
+       {
+        "id": 1359246,
+        "text": "Just a tremendous experience. The fact they are 100% gluten free, and I am celiac is wonderful. Talk about having zero worry about cross contamination and/or having to quiz down the waiter, chef, etc. Just a very stressfree experience. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259b305765bf5:0xdf80dfab963e08e7",
+      "name": "Friedman's Hell's Kitchen",
+      "borough": "Manhattan",
+      "score": 0.5493158393340897,
+      "reviews": 700,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2391358,
+        "text": "Amazing place! Having Celiac disease makes dining out hard, but pretty much everytg5on the menu can be made gluten free!"
+       },
+       {
+        "id": 2391431,
+        "text": "Fantastic service and absolutely delicious food. As a couple with and without celiac disease, I believe the expression was, \"I can't believe it's not gluten!\" All but the Matzoh ball soup is made gluten free or can be done with GF bread. …"
+       },
+       {
+        "id": 2390924,
+        "text": "Excellent breakfast one morning here. Much better than the other restaurant near times square. Staff were friendly and attentive. Restaurant was very clean and tidy, very busy, which is a good sign. We all enjoyed our breakfasts, they also have gluten free options with no cross contamination. Definitely recommend and worth a visit."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259b6c048de33:0x8695535f055a98a5",
+      "name": "Senza Gluten Cafe & Bakery",
+      "borough": "Manhattan",
+      "score": 0.5402223538523341,
+      "reviews": 60,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1875141,
+        "text": "The atmosphere here is much more casual than that of the Senza Gluten restaurant. I HIGHLY RECOMMEND the chicken panini. This place is COMPLETELY SAFE for those with Celiac Disease and is very catering to many other common food allergies."
+       },
+       {
+        "id": 1875136,
+        "text": "A Celiac's delight. The eclair made my Celiac lady cry. No tummy aches, just pleasure."
+       },
+       {
+        "id": 1875127,
+        "text": "Menu items were delicious, but this place really shined with their huge array of freshly made gluten-free baked goods. My girlfriend has celiac disease, so this was a great find for her, and it came highly recommended on Yelp. …"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 28,
+    "flags": {
+     "group_snips": 3,
+     "neg_snips": 12,
+     "neg_top_snippet": 3,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 28,
+     "median_reviews": 236
+    }
+   },
+   "doc_tfidf": {
+    "time": 0.10897412500344217,
+    "results": [
+     {
+      "gmap_id": "0x89c259b6c048de33:0x8695535f055a98a5",
+      "name": "Senza Gluten Cafe & Bakery",
+      "borough": "Manhattan",
+      "score": 0.09294449537992477,
+      "reviews": 60,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1875141,
+        "text": "The atmosphere here is much more casual than that of the Senza Gluten restaurant. I HIGHLY RECOMMEND the chicken panini. This place is COMPLETELY SAFE for those with Celiac Disease and is very catering to many other common food allergies."
+       },
+       {
+        "id": 1875136,
+        "text": "A Celiac's delight. The eclair made my Celiac lady cry. No tummy aches, just pleasure."
+       },
+       {
+        "id": 1875127,
+        "text": "Menu items were delicious, but this place really shined with their huge array of freshly made gluten-free baked goods. My girlfriend has celiac disease, so this was a great find for her, and it came highly recommended on Yelp. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258ef6b70b8ed:0x63df3a29b0ab6a71",
+      "name": "Lilli and Loo",
+      "borough": "Manhattan",
+      "score": 0.08219441026449203,
+      "reviews": 236,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2070140,
+        "text": "Great gluten free options! I have Celiac disease and am very sensitive to cross contamination. Lilli & Loo's staff has always been very knowledgeable about preventing cross contamination and I've never gotten sick. Honestly, it's the best tasting Asian food I've had since going gluten free. More pricey than ordering takeout in Queens, but pretty average in price for Midtown. …"
+       },
+       {
+        "id": 2070193,
+        "text": "I have celiac disease and unfortunately this place is not careful anymoreI ordered an egg drop soup explain to the waitress that I had celiac disease they gave me a totally different soup on the table had I not been there before I would not have know I'm better I would have been deathly ill this place the claims to …"
+       },
+       {
+        "id": 2070149,
+        "text": "The food is flavored and good for the price I had to give it 3 stars because of cross-contamination The water glass was dirty Other than that it’s 👍🏼"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+      "name": "Senza Gluten",
+      "borough": "Manhattan",
+      "score": 0.08083517849445343,
+      "reviews": 429,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1065730,
+        "text": "This place is so important for those with celiac disease and is still delicious for those without!"
+       },
+       {
+        "id": 1065552,
+        "text": "Got recommended this by a friend..... and with a girlfriend with celiac disease....... she was in heaven 😊 really good food and service"
+       },
+       {
+        "id": 1065666,
+        "text": "Celiacs can eat without concern for cross contamination. Really good food for all!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258a253c5fb3b:0xebc60d483b19dd72",
+      "name": "Noglu",
+      "borough": "Manhattan",
+      "score": 0.06737540662288666,
+      "reviews": 156,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1222908,
+        "text": "100% gluten free bakery. Nice seating floor upstairs. I tried the pumpkin muffin and it was very good. Great place for the with celiac disease because you can eat here without worrying about cross contamination"
+       },
+       {
+        "id": 1222907,
+        "text": "Amazing!! Been dreaming about this place for months and couldn't be happier once it was finally a reality! Everything was delicious and I had no cross contamination concerns."
+       },
+       {
+        "id": 1222910,
+        "text": "A strong contender for best gluten free brunch in NYC. This was my first time but I'll post more as I have a delightful time getting to know the menu. For someone with Celiac's disease this place is an oasis and a must visit while you are in NYC."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259a79d0d4a0b:0xfd4fcf88455dcc09",
+      "name": "Barney Brown",
+      "borough": "Manhattan",
+      "score": 0.05760093033313751,
+      "reviews": 9,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 12128,
+        "text": "First of all, delicious. Second of all, really easy to customize and get allergen free. I eat dairy and nut-free and it's really hard to find a good & affordable sandwich shop that can provide that without cross-contamination. Love Barney Brown!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2599caf02086d:0x48e592c13b676906",
+      "name": "Risotteria Melotti NYC",
+      "borough": "Manhattan",
+      "score": 0.0554366260766983,
+      "reviews": 224,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1359204,
+        "text": "Wow! Loved this place. I have Celiac disease and everything is gluten free. So rare to find. I had the carbonara risotto and it was amazing. The ambiance was warm and inviting. For dessert I had the profiteroles and again was blown away. Great service as well. Will return."
+       },
+       {
+        "id": 1359243,
+        "text": "We came to NYC for a day trip and were looking for somewhere that I could eat safely, as I have Celiac Disease. What a goldmine we found! Everything here is gluten free. Everything! It was like a dream come true. I had the mushroom risotto, which was absolutely delicious. …"
+       },
+       {
+        "id": 1359277,
+        "text": "Amazing!!!!! perfect date/ dinner/ celiac friendly place!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25909f1108ab9:0x6878490d513723e",
+      "name": "Lucky Louie's",
+      "borough": "Manhattan",
+      "score": 0.054429806768894196,
+      "reviews": 14,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 37405,
+        "text": "Food was good. Fries stood out from other places. Chicken cooked well. However the cooks here need a lesion in cross contamination. They need to also know when gloves should be changed."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25994b4f25379:0xfc3ba7dd257e3760",
+      "name": "Wild",
+      "borough": "Manhattan",
+      "score": 0.0541524812579155,
+      "reviews": 238,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 342394,
+        "text": "Great gluten free pizza crust! I also tried the zucchini pasta and it was delicious! People with celiac disease can east here without worries of cross contamination. We will be back!"
+       },
+       {
+        "id": 342309,
+        "text": "Honestly, some of the best gluten-free food I've ever eaten. I have Celiac disease and they're extremely careful about gluten. I've had dinner here, dessert here, breakfast here, and it's all incredible. The staff is also super friendly. It doesn't get better."
+       },
+       {
+        "id": 342292,
+        "text": "good pizza <3 kinda expensive but there aren’t many gluten free restaurants around. i’ll probably come here a lot bc i can’t eat anything with celiac disease. we need more gluten free restaurants !!!!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258866f3c3587:0x8c871eb338f684ef",
+      "name": "Cafe Eighty Two",
+      "borough": "Manhattan",
+      "score": 0.0528702549636364,
+      "reviews": 174,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1304045,
+        "text": "Happy and grateful for delicious gluten free menu! Both kids have celiac disease and we will definitely be back!"
+       },
+       {
+        "id": 1304118,
+        "text": "This dinner has a Gluten-free Card. On this card are breakfast dishes, lunch dishes and dinner dishes. The restaurant participates in the Gluten Free Awareness program for Celiac Disease. They are well aware of safe gluten-free preparation and look out for cross-contamination. We had breakfast here twice and both times we received generous portions. …"
+       },
+       {
+        "id": 1303951,
+        "text": "One of the last places to get gluten free diner food in all of NYC, this place is amazing! I have celiac & always feel safe coming here."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25c1c12dc8d7d:0x1e622beb369183e8",
+      "name": "Santa Ana Deli & Grocery",
+      "borough": "Brooklyn",
+      "score": 0.048833973705768585,
+      "reviews": 43,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 212366,
+        "text": "Great food especially for anyone who has celiac disease and needs something gluten free. They use big corn tortillas for the quesadillas."
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 24,
+    "flags": {
+     "group_snips": 1,
+     "neg_snips": 9,
+     "neg_top_snippet": 5,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 24,
+     "median_reviews": 174
+    }
+   }
+  },
+  "overlap": {
+   "sem&chunk": 8,
+   "sem&doc": 6,
+   "chunk&doc": 7,
+   "all3": 6,
+   "union": 15
+  }
+ },
+ "Q25": {
+  "query": "shellfish allergy",
+  "boroughs": null,
+  "systems": {
+   "semantic": {
+    "time": 0.3503595410147682,
+    "results": [
+     {
+      "gmap_id": "0x89c25854caae8773:0x8229337547ae079f",
+      "name": "Red Lobster",
+      "borough": "Manhattan",
+      "score": 2.0128797030647374,
+      "reviews": 2337,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 738786,
+        "text": "… . That is not even the worst part . I specifically told Adam I have a seafood allergy , for my chicken fingers and. Fries . He told me he spoke to the chef , and was told no seafood contimation will happen . …"
+       },
+       {
+        "id": 739842,
+        "text": "I would like to warn anyone with any allergies not to eat at the Red Lobster, even though it says you can eat glute / free, and even though they have a menu that you can choose from if you want something have allergies, the staff and the person in the kitchen ABSOLUTELY NOT TAKEN INTO ACCOUNT. …"
+       },
+       {
+        "id": 738174,
+        "text": "… All this in an hour for me to just pack the food to go and leave. I have a family member allergic to shellfish so I can’t even take the food home because of the cross contamination."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258f9c69e166d:0x86b0e5488151ce61",
+      "name": "Estiatorio Milos",
+      "borough": "Manhattan",
+      "score": 1.569015160176134,
+      "reviews": 557,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 402868,
+        "text": "… I pointed out the error prior to consumption and they immediately made me a new meal. Though I still had to wait for a new meal, nor did they remove it off of my bill which was disappointing. So if you have allergies be aware."
+       },
+       {
+        "id": 403213,
+        "text": "… Just check the fish market is still full if going late evening. Fish comes in daily from the Med, and late starters will have limited choice. Avoid the rush and go for lunch. Its around half of the cost of the same dishes in the evening, and leaves you feeling healthy all day."
+       },
+       {
+        "id": 402854,
+        "text": "Excellent Seafood Restaurant - delicious Greek specialties. All fish is super fresh and the grilled bread is excellent"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259be71dd4b21:0x3ea0f0d34fb62bab",
+      "name": "Hot n Juicy Crawfish",
+      "borough": "Manhattan",
+      "score": 1.5107727344995165,
+      "reviews": 387,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1145639,
+        "text": "… Got a combo, oysters, and blue crabs. The food was pretty good, but they messed up the spice level on the crabs. I got a medium combo and mild blue crabs, and somehow the crabs were spicier than the combo. They didn't give us a crab claw cracker, so we had to ask for one. …"
+       },
+       {
+        "id": 1145780,
+        "text": "… They clearly threw everything in the boiling water together which resulted in gross and mushy shrimp. Despite multiple promises of \"making things right\" from our server, we were still charged, paid, and tipped (only 15%) on the full price. Will never be back and suggest you find elsewhere for your shellfish boil craving."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25901805ed947:0x9c3d57c181395b6b",
+      "name": "Oyster",
+      "borough": "Manhattan",
+      "score": 1.4657847875603176,
+      "reviews": 1310,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1316591,
+        "text": "Great fresh shellfish... Just don't order the fish because the one I ordered was dry and not very flavourful"
+       },
+       {
+        "id": 1316357,
+        "text": "… Overall just barely lukewarm and soggy but on an exceedingly hot plate. I’m not eating the plate, it’s the fish that mattered. I had to cover the fish and the accompanying mushy veggies in salt before I can eat any of them. Suffice to say, I will not be back. Eat at your own risk."
+       },
+       {
+        "id": 1316350,
+        "text": "… It did not have any kind of seafood or vegetable stock taste to it at all. Unfortunately there was an absence of clams in the clam chowder. The seafood in our main meal was, apart from salty, quite bland tasting making the overall experience at the Oyster Bar memorable for all the wrong reasons. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259bf144c69c3:0x1b87c27e0d4a685e",
+      "name": "Lobster Place",
+      "borough": "Manhattan",
+      "score": 1.463059738251543,
+      "reviews": 711,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2090258,
+        "text": "Lots of choice from lobster to fish to shell fish"
+       },
+       {
+        "id": 2090152,
+        "text": "Update: Aug 2, 2012: Not knowing of an alternative fish market option in Chelsea, I thought I'd give Lobster Place another chance. I bought two pounds of wild shrimp and put it on ice. Upon getting home and opening the bag, a strong and pungent fishy odor hit me, nothing like any shrimp I have ever smelled before. …"
+       },
+       {
+        "id": 2090263,
+        "text": "Ohhhhh their lobster is the best!!!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259a27a3322f9:0xdf5dfcb6ced43271",
+      "name": "Tsurutontan Udon Noodle Brasserie",
+      "borough": "Manhattan",
+      "score": 1.4587504263883257,
+      "reviews": 738,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2458560,
+        "text": "… 5 tiny clams that we are almost 99.99% sure they added In The kitchen when the server took the plate. After we were done eating we told the server that the plate didn’t have any shrimp or any of the other sea food elements but he kept making excuses. …"
+       },
+       {
+        "id": 2458974,
+        "text": "… One of the most horrific tasting experiences in my life. SEAFOOD JJIGAE UDON - a dish that should not be on the menu. Fist, it is not a soup, but a bunch of grossly overcooked noodles in some nasty slime. It was disgusting and I am not a picky eater at all. …"
+       },
+       {
+        "id": 2458566,
+        "text": "We had a reservation. We had spicy tuna cone and Creamy Spicy Shrimp Tempura (appetizer) delicious! My biggest disappointment was my main dish, I ordered the Spicy Seafood Jjigae Udon and got a different dish. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c24383d25d296d:0xf54194da12dc521a",
+      "name": "Jordan's Lobster Dock",
+      "borough": "Brooklyn",
+      "score": 1.4394358434396055,
+      "reviews": 324,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 669659,
+        "text": "I want to love it, but I can't. I just can't ever get over the funky smell inside as if they wash the floor with dirty seafood water. Other than that it's okay, the food always seems fresh. I think it's better to just get steamed lobsters to go from the fresh seafood side. …"
+       },
+       {
+        "id": 669794,
+        "text": "The swordfish I ordered and tried to eat was rancid. I have never even left a review for food online but I just cant get over how old that fish they gave me must have been. I guess some places can stay in business purley on name recognition."
+       },
+       {
+        "id": 669940,
+        "text": "I want to try the lobsters they recommended it to me"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259864a48735d:0xf0e16bc0096c8569",
+      "name": "The Boil",
+      "borough": "Manhattan",
+      "score": 1.4191346913307665,
+      "reviews": 719,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1874452,
+        "text": "I apologize sammys I apologize Brooklyn crab...The Boil is phenomenal. Really good seafood..been 3x in 2 weeks excellent food. Take the family you won't be disappointed"
+       },
+       {
+        "id": 1875068,
+        "text": "Everything. The snow crab lungs in the butter garlic sauce to die for it was delishes. Going back soon"
+       },
+       {
+        "id": 1874449,
+        "text": "I fell in love with them instantly after trying their seafood boil. I had fire shrimp with the boil special and believe me it was fiiireee! The service is amazing, there’s a long wait unless you make a reservation online but it’s so worth the wait. Their raw oysters are the best, and they never disappoint. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25b9a68a2f197:0xbb2c7a894c79aee5",
+      "name": "Andrew Lee's Fish Market",
+      "borough": "Brooklyn",
+      "score": 1.4121819432740832,
+      "reviews": 146,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1648272,
+        "text": "Love this fish market travel a distance but its worth it.clean seafood good prices & never smell bad like some. Also you can buy cooked food also ."
+       },
+       {
+        "id": 1648334,
+        "text": "Really fresh and tasty seafood"
+       },
+       {
+        "id": 1648161,
+        "text": "I Love eating my seafood from here. Your allowed to season it anyway you please which makes it even better. The size of the seafood are perfect. Fish, Lobster, Crab and Shrimp... Love It"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2599a711f782d:0xfee4276c3b5e4edf",
+      "name": "The Boil",
+      "borough": "Manhattan",
+      "score": 1.3804349001413012,
+      "reviews": 612,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2113830,
+        "text": "One of the worst sea food in my life. Got the crawfish and lobster combo. Ingredients were stale and not fresh. First time in my life that lobster tasted like rubber. No taste. Crawfish even had a slight repulsive smell. Sauce was bland. The restaurant came highly recommended so I’m very surprised and disappointed. Worst food experience in New York."
+       },
+       {
+        "id": 2113787,
+        "text": "the days of having to run to City island to help fill that seafood craving are done. The boil has two locations that got you covered. Choose your shellfish, choose your sauce, choose a spiciness put on your gloves strap on your bed and get ready for pure bliss. Trust me you've got to try it at least once. …"
+       },
+       {
+        "id": 2114058,
+        "text": "This is a grave warning. Very very bad food poisoning, to second a Yelp reviewer. My son and his gf ate here in May. They had lobster, shrimp, and crab. They both felt ill afterwards and she had violent vomiting the whole night. But as it turns out, she was the luckier one. …"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 29,
+    "flags": {
+     "group_snips": 2,
+     "neg_snips": 7,
+     "neg_top_snippet": 3,
+     "shell_dish_no_allergy": 16,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 1,
+     "total_snips": 29,
+     "median_reviews": 711
+    }
+   },
+   "chunk_tfidf": {
+    "time": 0.09876970798359253,
+    "results": [
+     {
+      "gmap_id": "0x89c25854caae8773:0x8229337547ae079f",
+      "name": "Red Lobster",
+      "borough": "Manhattan",
+      "score": 0.6600854957055653,
+      "reviews": 2337,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 737572,
+        "text": "The wait to get food is a bit long even when it's not that busy, but the food is delicious and they made sure they cleaned the grill because of my shellfish allergy, so that could of been why, but I really appreciated that! Plus the drinks are good too, it's worth it in my opinion!"
+       },
+       {
+        "id": 740291,
+        "text": "Good place to eat shellfish"
+       },
+       {
+        "id": 739842,
+        "text": "… When I tasted the lobster and the rest of the dish, it turned out that there was really pepper and salt on it. So I was really so mad, they have no idea what they are doing to someone who is sick of what allergy he / she has done by not listening pff. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259bf3e57060b:0x4f1608274f5e6fe6",
+      "name": "Buddakan",
+      "borough": "Manhattan",
+      "score": 0.5692409500211238,
+      "reviews": 1205,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 79848,
+        "text": "I'm giving this 3 stars because the place was cool and the food was all pretty good, but be careful! I have a shellfish allergy and was unaware that they used Oyster Oil in MANY non-fish dishes. I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. …"
+       },
+       {
+        "id": 80054,
+        "text": "… My wife is allergic to mushrooms. She is very good at notifying the servers of this allergy when we go out to dinner, particularly if we are in a \"shared plate\" setting. In this case, she immediately notified the server of her mushroom allergy before being served. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25901805ed947:0x9c3d57c181395b6b",
+      "name": "Oyster",
+      "borough": "Manhattan",
+      "score": 0.5630651492030838,
+      "reviews": 1310,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1317373,
+        "text": "Love this place great selection of shellfish."
+       },
+       {
+        "id": 1317509,
+        "text": "Shellfish heaven, although a bit loud when crowded"
+       },
+       {
+        "id": 1317592,
+        "text": "Can't be beat for a really extensive menu and the tops in freash fish and shellfish. Hope it's around for another 100 years."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259a61019a6b1:0x34f7f76aeb0f124e",
+      "name": "KazuNori: The Original Hand Roll Bar",
+      "borough": "Manhattan",
+      "score": 0.545427218052721,
+      "reviews": 491,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1515960,
+        "text": "… Tge Salmon Sashimi was the best fish I've ever had on the east coast. The Toro is yummy, and their selection of saké is scrumptious. If you have a serious shellfish allergy, this place isn't for you because the establishment doesn't promise contamination free food. I'm allergic to shellfish and was fine, but I just had one experience. …"
+       },
+       {
+        "id": 1515605,
+        "text": "Awesome and affordable hand rolls! I prefer to swap out the mayo-based shellfish rolls for something different and they're great at accommodating this! Get the uni if it's on the menu. The line moves swiftly!"
+       },
+       {
+        "id": 1515680,
+        "text": "So simple yet so good. It's all about the ingredients and the simplicity. Never had such a fresh seaweeds in my life and the fish/shellfish melts in the mouth. Prices are very decent and includes the tip. Strongly recommend to go for the 6 combo"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259864a48735d:0xf0e16bc0096c8569",
+      "name": "The Boil",
+      "borough": "Manhattan",
+      "score": 0.446401275122974,
+      "reviews": 719,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1874529,
+        "text": "Amazing amazing amazing. if you love cracking open crawfish and crab legs with your bare hands, the taste of buttery, shellfish deliciousness, and a chic way to order your food by the pound this is it. Fresh, tasty, fun. Not for those who don't want to work for their food."
+       },
+       {
+        "id": 1874825,
+        "text": "… The other couples or singles were not so lucky. In addition, your hands are only equipped with their plastic gloves so be ready for crawfish legs or whatever shellfish that is going to pierce through the thin gloves and get your fingers dirty. Now, the downfall of long wait and dirty fingers is huge pile of delicious seasoned shellfish! …"
+       },
+       {
+        "id": 1874201,
+        "text": "… While the service and setup was excellent, we found the flavours for their special sauce (medium) rather mild. Crawdaddy on the other hand had an excellent sauce to go with their crawfish that seeped into the shellfish adding to the excellent taste. While both are excellent restaurants, sadly, I have a preference for the other instead."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c245602e1805d5:0xa6e74efaed04000f",
+      "name": "Arirang Hibachi Steakhouse",
+      "borough": "Brooklyn",
+      "score": 0.445893674898417,
+      "reviews": 405,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1227022,
+        "text": "The food was good but my server didnt listen to what I needed when ordering food. Also the cook at the station did something very, very BAD & DANGEROUS. We had a person with a severe/deadly shellfish allergy and he placed his spatula that contained Lobster dripping with sauce over the person's plate with the Shellfish allergy as a joke. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2598152ae11f1:0x778df2824b1172c1",
+      "name": "Mission",
+      "borough": "Manhattan",
+      "score": 0.43202368912396427,
+      "reviews": 396,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1576831,
+        "text": "… Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. The kitchen brought a cabbage salad with tahini, despite telling us that all of the dishes we ordered were safe for someone with a sesame allergy. …"
+       },
+       {
+        "id": 1576786,
+        "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25904658ea8dd:0x76c9c241a47938c9",
+      "name": "Tempura Matsui",
+      "borough": "Manhattan",
+      "score": 0.42400493870520134,
+      "reviews": 77,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1176648,
+        "text": "… The rest of us got the large tasting menu. All allergies and food preferences were taken care of superbly (although if you have a very sensitive shellfish allergy you should know that all the tempura is fried in the same oil). The food was all delicious, the service was excellent and we left feeling only slightly overfull. …"
+       },
+       {
+        "id": 1176631,
+        "text": "We had the tempura set lunch and the chef’s special set lunch, both as an omakase. They were very accommodating with my fish allergy and replaced it with vegetable and shellfish options. The food was delicate but delicious and visually beautiful. The restaurant had the perfect ambiance, a balance of elegant but comfortable. Service was impeccable."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c259bf144c69c3:0x1b87c27e0d4a685e",
+      "name": "Lobster Place",
+      "borough": "Manhattan",
+      "score": 0.4223780412204098,
+      "reviews": 711,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2090288,
+        "text": "In the heart of Chelsea market there is the lobster place, for all lovers of raw and shellfish it is the ideal place! Great butter sandwich with lobster, but the experience is absolutely to take a lobster just cooked put the gloves and eat it still hot on the tables inside the structure."
+       },
+       {
+        "id": 2090295,
+        "text": "If you want to taste steamed lobster with a delicate taste and without too many frills, this is the right place. Fresh fish from all over the world with particular attention to mussel and shellfish specialties. Prices in line with the quality of the products offered. Very informal but also very friendly like the whole Chelsea market in NYC."
+       },
+       {
+        "id": 2090299,
+        "text": "Why so delicious? Soups here. Manhattan Clam Chowder is very delicious because the dashi of the shellfish is heard. However, it is lobster bisque. It ’s best to eat it with a cracked cracker. Shrimp taste similar to creamy and rich crab. The hint of cheese is faint. . …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2593f67a219a5:0xb4f0560f2221dbb8",
+      "name": "Tacocina",
+      "borough": "Brooklyn",
+      "score": 0.4185338018420053,
+      "reviews": 111,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 612378,
+        "text": "We went on a busy Saturday, but the line moved relatively quickly and food came out in a reasonable amount of time. The food was all quite good and the location is fantastic. Why the restaurant is receiving only one star is because of the careless attitude they took towards my girlfriend's shellfish allergy. …"
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 23,
+    "flags": {
+     "group_snips": 3,
+     "neg_snips": 1,
+     "neg_top_snippet": 1,
+     "shell_dish_no_allergy": 12,
+     "fish_allergy_not_shellfish": 1,
+     "shellfish_allergy": 6,
+     "total_snips": 23,
+     "median_reviews": 711
+    }
+   },
+   "doc_tfidf": {
+    "time": 0.09514891699654981,
+    "results": [
+     {
+      "gmap_id": "0x89c259a7c44aacd1:0xe756c8359527229f",
+      "name": "Pescatore Seafood Co",
+      "borough": "Manhattan",
+      "score": 0.1033150851726532,
+      "reviews": 17,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 50275,
+        "text": "This food establishment hardly care about shellfish allergies and the way the staff handles the food. Most people may have a shellfish allergy but can still eat fish. The spring rolls are a hit and most people come to buy them for lunch or quick snack-. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2f684bac1692d:0xaebfd0bcdec2e3f6",
+      "name": "Las Palmas",
+      "borough": "Manhattan",
+      "score": 0.05816655606031418,
+      "reviews": 165,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 308367,
+        "text": "I have ordered from this restaurant multiple times and it was always good but the last time I ordered shrimp was mistakenly put in my food and I have a severe shellfish allergy. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2593f67a219a5:0xb4f0560f2221dbb8",
+      "name": "Tacocina",
+      "borough": "Brooklyn",
+      "score": 0.0563836432993412,
+      "reviews": 111,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 612378,
+        "text": "We went on a busy Saturday, but the line moved relatively quickly and food came out in a reasonable amount of time. The food was all quite good and the location is fantastic. Why the restaurant is receiving only one star is because of the careless attitude they took towards my girlfriend's shellfish allergy. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25984a2a21395:0xea2a25c2776f85af",
+      "name": "Terra Thai",
+      "borough": "Manhattan",
+      "score": 0.05115736648440361,
+      "reviews": 44,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 112345,
+        "text": "… Service was slow, which is why I took off one star, especially because we were the only ones there, but that also made it feel intimate and we were not rushed at all. They have off/menu shrimp which I didn’t order due to my shellfish allergy but I bet it would be good."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2f72d0ff91553:0xcb539c194bc00640",
+      "name": "The Row Harlem",
+      "borough": "Manhattan",
+      "score": 0.049087610095739365,
+      "reviews": 54,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1670347,
+        "text": "… I ordered the brunch burrito and couldn’t refrain from also ordering the Jerk Mac N Cheese. Both were extremely favorable and seasoned to perfection. The menu has tons of options and they were very attentive to my shellfish allergy. If you’re ever uptown and in search of a delicious meal with great service or even just drinks...... …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258e5395b58dd:0xe7c1226b40234f72",
+      "name": "Nare Sushi",
+      "borough": "Manhattan",
+      "score": 0.04587813839316368,
+      "reviews": 155,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 907530,
+        "text": "… The menu doesn't hint at it, and we didn't mention the allergy to our waiter, our bad. However, after sending the plate back (because of a shellfish allergy), they quickly sent the same plate back with the scallops replaced with another fish (salmon I think). …"
+       },
+       {
+        "id": 907570,
+        "text": "Especially good value high-end sushi that is easy to reserve on short notice. Unique in serving tempura as part of their set menu along with nigiri and rolls. Neta are great quality, with a focus on fish over shellfish which may please some diners. Offers an elegant dining environment particularly at night which is perfect for relaxed dining with groups. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c245602e1805d5:0xa6e74efaed04000f",
+      "name": "Arirang Hibachi Steakhouse",
+      "borough": "Brooklyn",
+      "score": 0.04541438817977905,
+      "reviews": 405,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1227022,
+        "text": "The food was good but my server didnt listen to what I needed when ordering food. Also the cook at the station did something very, very BAD & DANGEROUS. We had a person with a severe/deadly shellfish allergy and he placed his spatula that contained Lobster dripping with sauce over the person's plate with the Shellfish allergy as a joke. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2588448950ba1:0x2d0a6949239be6ba",
+      "name": "e's BAR",
+      "borough": "Manhattan",
+      "score": 0.04375869780778885,
+      "reviews": 229,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1159880,
+        "text": "… We had a severe shellfish allergy in the group and the waitress was so kind and accommodating.There were a few options for someone with a shellfish allergy. The drink selection aka cocktails, was slightly basic. I didnt notice specialty cocktails. The mac n cheese balls were great. They also had a large game selection. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2f60986821e4b:0x2d90f210720fc6d7",
+      "name": "THAI BKK",
+      "borough": "Manhattan",
+      "score": 0.04281120374798775,
+      "reviews": 67,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 680281,
+        "text": "… The chicken pad thai tasted very shrimpy, and then I found a shrimp tail in it. Thankfully I don’t have a shellfish allergy, but it appears they cooked one dish together with shrimp and then separated it into two bowls and tried to pick out the shrimp and add chicken to one. Additionally, neither had onions as requested. …"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25904658ea8dd:0x76c9c241a47938c9",
+      "name": "Tempura Matsui",
+      "borough": "Manhattan",
+      "score": 0.0421903021633625,
+      "reviews": 77,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1176648,
+        "text": "… The rest of us got the large tasting menu. All allergies and food preferences were taken care of superbly (although if you have a very sensitive shellfish allergy you should know that all the tempura is fried in the same oil). The food was all delicious, the service was excellent and we left feeling only slightly overfull. …"
+       },
+       {
+        "id": 1176631,
+        "text": "We had the tempura set lunch and the chef’s special set lunch, both as an omakase. They were very accommodating with my fish allergy and replaced it with vegetable and shellfish options. The food was delicate but delicious and visually beautiful. The restaurant had the perfect ambiance, a balance of elegant but comfortable. Service was impeccable."
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 12,
+    "flags": {
+     "group_snips": 4,
+     "neg_snips": 0,
+     "neg_top_snippet": 0,
+     "shell_dish_no_allergy": 1,
+     "fish_allergy_not_shellfish": 1,
+     "shellfish_allergy": 10,
+     "total_snips": 12,
+     "median_reviews": 111
+    }
+   }
+  },
+  "overlap": {
+   "sem&chunk": 4,
+   "sem&doc": 0,
+   "chunk&doc": 3,
+   "all3": 0,
+   "union": 23
+  }
+ },
+ "Q29": {
+  "query": "halal chinese food",
+  "boroughs": [
+   "Manhattan"
+  ],
+  "systems": {
+   "semantic": {
+    "time": 0.2178971669927705,
+    "results": [
+     {
+      "gmap_id": "0x89c25900adca7485:0x1d4ea398ad50e0c",
+      "name": "Café China 倾城",
+      "borough": "Manhattan",
+      "score": 2.5418127470918153,
+      "reviews": 895,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2112190,
+        "text": "Best Chinese food I've ever had and the first time I've liked Chinese food as much in the US as at restaurants in China. …"
+       },
+       {
+        "id": 2112819,
+        "text": "Actually, exactly the worst chinese food ive actually, exactly ever had. B-b-b-bye"
+       },
+       {
+        "id": 2112438,
+        "text": "Amazing authentic Chinese cuisine... just be sure to beat the lunch time rush. Gets crowded (for good reason)"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25bf26cccf805:0x422cf585e503c4ad",
+      "name": "Wo Hop",
+      "borough": "Manhattan",
+      "score": 2.515432886505608,
+      "reviews": 1237,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1548403,
+        "text": "Can honestly say its the best chinese food I have ever eaten! We have the chicken fried rice, pork fried Dumplings and General Tso Chicken. Nice staff and great table service. Would highly recomend."
+       },
+       {
+        "id": 1548404,
+        "text": "Authentic Chinese food without breaking the bank. Try the shrimp ding. Mad good sauce. Mad fresh ingredients. Always had a full cup of water and a full glass of tea. Friendly staff, good eats, what else can you ask for? Nothing - that's what."
+       },
+       {
+        "id": 1548406,
+        "text": "This place is amazing! This is the typical Cantonese style Chinese food! If you looking for traditional chinese food, not the americanized food this is the place! One of the best things you can order is the Shrimp with the Lobster sauce, it's just WOW! Wo hop never dissapoints!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a26f81872d9:0x1ce6a514c42345a2",
+      "name": "Joe's Shanghai",
+      "borough": "Manhattan",
+      "score": 2.5051076789495292,
+      "reviews": 1553,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2238815,
+        "text": "Reasonably priced delicious Chinese food with compromised service. The Xiao long bao (soup dumplings) is amazing here. Beside coming in large size, the soup is very tasteful. Thanks to the thin wrap, each piece doesn't feel too heavy. I love how the soy vinegar for Xiao long bao came with thinly sliced ginger. …"
+       },
+       {
+        "id": 2239208,
+        "text": "Order 3 items. Normally can't miss at most Chinese place. Two were chicken items and they were fine. The sesame beef however was terrible. So chewy you could not break off a bite. You needed a knife. First time I actually tasted flour in my food. You know it is there but normally you don't taste it"
+       },
+       {
+        "id": 2240497,
+        "text": "Excellent place to eat truly Chinese food you have to make a line to wait to enter but once inside it is worth it"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a26942e76c3:0x279e9cecc8191e1a",
+      "name": "The Original Buddha Bodai Kosher Vegetarian Restaurant 🥬 佛菩提",
+      "borough": "Manhattan",
+      "score": 2.4806062862841727,
+      "reviews": 576,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 72979,
+        "text": "The best Chinese food I have ever had, and it is kosher! Halleluyah."
+       },
+       {
+        "id": 73027,
+        "text": "Very tasty vegetarian Chinese food with a large selection. Most dishes are vegan, if not it is declared on the menu (dairy, with egg). Meat eaters are used by e.g. Be impressed by the meatless \"Lemon Chicken\", it tastes just like baked chicken."
+       },
+       {
+        "id": 72480,
+        "text": "If there was 6 a star rating available or more, Buddha Bodai would receive it! Best Chinese food hands down outside of China itself, and Kosher Dim Sum. Mock meat and mock seafood taste just like the real thing #bestchinesefood #vegan #dimsum #kosher #llamaste"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25987185dccc7:0x337115f296625e4f",
+      "name": "Congee Village",
+      "borough": "Manhattan",
+      "score": 2.473872121196926,
+      "reviews": 547,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2115254,
+        "text": "Used when staying in Lower East in 2006. Basically Chinese porridge main Chinese restaurant for Chinese people by Chinese, but the menu is complete as it is. Beijing style pork chops and two types of porridge (seafood and scalloped) were tried. …"
+       },
+       {
+        "id": 2114964,
+        "text": "Great place for Chinese food. Salad prawn with candied walnuts. Pork congee is also super cheap and fantastic"
+       },
+       {
+        "id": 2115022,
+        "text": "Consistently delicious Chinese food on the cheap. Good congee (obviously), but definitely branch out and try their other dishes, b/c they're great too. Garlic chicken is mouth-wateringly delicious with perfect crispy skin."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258fa158b95bf:0x11808533a3f1b3b3",
+      "name": "Joe's Shanghai",
+      "borough": "Manhattan",
+      "score": 2.4667714562770158,
+      "reviews": 636,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1608540,
+        "text": "Inauthentic Chinese food (but I still consider it tasty; well-suited for my sweet tooth). This place is a typical \"American Chinese restaurant\". Most of the meat dishes our group ordered were covered with a sweet and usually fatty sauce. The soup dumplings, brewed tea and table service were good though. Food overall was ok ($200+ for 5 people)"
+       },
+       {
+        "id": 1609112,
+        "text": "There are \"chinese food\" restaurants on nearly every block it seems, but this place serves some actual Chinese dishes."
+       },
+       {
+        "id": 1608441,
+        "text": "Szechuan beef noodle soup is another filling dish from this reataurant where everybody seems to only vouch for it's steamed dumplings. The beef is just melting in your mouth. Entree taste is pretty standard for Chinese food. Tiny soup. Fast service buy way too pricey for Chinese food. $85 for 4 dishes plus tips."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a26eeb4514d:0xe2a674b5f65754ea",
+      "name": "Hop Kee Restaurant",
+      "borough": "Manhattan",
+      "score": 2.4531258783798027,
+      "reviews": 375,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 904722,
+        "text": "Can't go wrong with some real Chinese food. Order the spring chicken, seafood pan-fried noodles, salt and pepper porkchop and squid and some kang kong! Mmmm"
+       },
+       {
+        "id": 904649,
+        "text": "Salty but tasty Chinese food, good portion for reasonable price."
+       },
+       {
+        "id": 904724,
+        "text": "Big portions, so good for large groups, no lunch specials though - I don't know much about Chinese cuisine but I liked it. Very clean though!!!!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258ffc89d0d8d:0x79fa6bef40a685a5",
+      "name": "Xi'an Famous Foods 西安名吃",
+      "borough": "Manhattan",
+      "score": 2.4242260835284224,
+      "reviews": 794,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2585670,
+        "text": "Very tasty Chinese food at affordable prices. Recommended!"
+       },
+       {
+        "id": 2585411,
+        "text": "Fantastic Chinese food. The original flavor of China"
+       },
+       {
+        "id": 2585673,
+        "text": "Very authentic Chinese snacks that can satisfy the Chinese stomach"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25888e4c60405:0x657fa3ef7636e022",
+      "name": "The Cottage",
+      "borough": "Manhattan",
+      "score": 2.4194600395751453,
+      "reviews": 216,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1234843,
+        "text": "Local Chinese food. Greasy & good"
+       },
+       {
+        "id": 1234745,
+        "text": "The absolute worst Chinese food I have ever had. Loaded with MSG. Dry Stir Fried String Beans were old and oily and had an unpleasant taste Prawn in chili sauce-Shrimp were not properly cleaned, sweet sauce with lots of onions. Dumplings in chili sauce were a mess of noodles with a strong taste of peanut butter sauce. …"
+       },
+       {
+        "id": 1234845,
+        "text": "Want gourmet delicious Chinese food with free wine?.. This is it! 😘"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25a26531815c7:0x2ac264f74bc5f997",
+      "name": "Great NY Noodletown",
+      "borough": "Manhattan",
+      "score": 2.40402506193949,
+      "reviews": 810,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 2195488,
+        "text": "The fastest, most authentic, and stomach-friendly Chinese food I've ever eaten."
+       },
+       {
+        "id": 2196033,
+        "text": "Cheap and authentic Chinese food... try the soup with dumplings in it"
+       },
+       {
+        "id": 2195750,
+        "text": "Great spot for Chinese barbeque over rice or in noodle soup."
+       }
+      ]
+     }
+    ],
+    "foreign": 0,
+    "snippets": 30,
+    "flags": {
+     "group_snips": 5,
+     "neg_snips": 0,
+     "neg_top_snippet": 0,
+     "shell_dish_no_allergy": 4,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 30,
+     "median_reviews": 794
+    }
+   },
+   "chunk_tfidf": {
+    "time": 0.11523241698159836,
+    "results": [
+     {
+      "gmap_id": "0x89c2f6014e589b27:0xf59ed6ba8f0cf9c1",
+      "name": "Halal Kitchen",
+      "borough": "Manhattan",
+      "score": 1.0564938521583656,
+      "reviews": 52,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 247150,
+        "text": "The best Halal Chinese restaurant in this area"
+       },
+       {
+        "id": 247156,
+        "text": "I love the food! It is Fresh! It taste better than any other Chinese food I ever tasted! I come all the way from the bronx(moshulu pkwy) for this halal Chinese food! Love it!"
+       },
+       {
+        "id": 247149,
+        "text": "My family has been ordering from Musa for the last 22 years.... its pure authentic Halal meat so you know that the food is fresh and real.... always has a pure taste compared to other non Halal chinese resturants. This is the best chinese spot hands down in NYC."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25bf26cccf805:0x422cf585e503c4ad",
+      "name": "Wo Hop",
+      "borough": "Manhattan",
+      "score": 1.0048367189911342,
+      "reviews": 1237,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c25852f5902f25:0xf1a0866eb413f4ab",
+      "name": "OLLIE'S SICHUAN 成都印象",
+      "borough": "Manhattan",
+      "score": 0.9248653335294643,
+      "reviews": 405,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c25bc75da461ff:0x89d633602e01b7d3",
+      "name": "Wo Hop Next Door",
+      "borough": "Manhattan",
+      "score": 0.9104365116617466,
+      "reviews": 200,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c258bb539a36c1:0xe2c877d0a50a8fee",
+      "name": "Wok 88",
+      "borough": "Manhattan",
+      "score": 0.905950739281113,
+      "reviews": 320,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c258f9088f4275:0x32defa75b3272c39",
+      "name": "The Halal Guys",
+      "borough": "Manhattan",
+      "score": 0.871099072992971,
+      "reviews": 1126,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1877470,
+        "text": "Some of the best halal food"
+       },
+       {
+        "id": 1877129,
+        "text": "Great halal food. Perfect for to go"
+       },
+       {
+        "id": 1877657,
+        "text": "THE halal spot in NY."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2598370c6cb5f:0x67da02a4f5cbf2bb",
+      "name": "New Double Dragon",
+      "borough": "Manhattan",
+      "score": 0.8468867757159065,
+      "reviews": 67,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1933229,
+        "text": "I'm requesting for Halal Chinese food Please!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25900adca7485:0x1d4ea398ad50e0c",
+      "name": "Café China 倾城",
+      "borough": "Manhattan",
+      "score": 0.846332568873353,
+      "reviews": 895,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c2f627e36ada8d:0x47a1a107d3c2a8f8",
+      "name": "The Halal Guys",
+      "borough": "Manhattan",
+      "score": 0.8125802801055746,
+      "reviews": 661,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1440021,
+        "text": "95 halal is the best halal."
+       },
+       {
+        "id": 1439916,
+        "text": "I want Halal food ...... NOT a Halal guys ???"
+       },
+       {
+        "id": 1440006,
+        "text": "The best halal food in NYC"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c25884183c446f:0x9d9f30b4a86b581d",
+      "name": "Han Dynasty",
+      "borough": "Manhattan",
+      "score": 0.8046473562180518,
+      "reviews": 332,
+      "foreign": 0,
+      "snippets": []
+     }
+    ],
+    "foreign": 0,
+    "snippets": 10,
+    "flags": {
+     "group_snips": 1,
+     "neg_snips": 0,
+     "neg_top_snippet": 0,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 10,
+     "median_reviews": 405
+    }
+   },
+   "doc_tfidf": {
+    "time": 0.08518970900331624,
+    "results": [
+     {
+      "gmap_id": "0x89c2f6014e589b27:0xf59ed6ba8f0cf9c1",
+      "name": "Halal Kitchen",
+      "borough": "Manhattan",
+      "score": 0.2085810899734497,
+      "reviews": 52,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 247150,
+        "text": "The best Halal Chinese restaurant in this area"
+       },
+       {
+        "id": 247156,
+        "text": "I love the food! It is Fresh! It taste better than any other Chinese food I ever tasted! I come all the way from the bronx(moshulu pkwy) for this halal Chinese food! Love it!"
+       },
+       {
+        "id": 247140,
+        "text": "This place is The Realest Halal Chinese Spot in NYC. Make sure to ask for hot sauce and substitute the white rice with Egg Fried Rice"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2f7b6253ec563:0x8f951cb4bef82ff6",
+      "name": "Tajeen Halal Food",
+      "borough": "Manhattan",
+      "score": 0.08503274619579315,
+      "reviews": 6,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 31179,
+        "text": "It’s the best halal food truck, the food is great"
+       },
+       {
+        "id": 31176,
+        "text": "Great customer service and tasty authentic Halal! Highly recommend."
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2599d08268d39:0x57d36a32f57515c3",
+      "name": "The China Star",
+      "borough": "Manhattan",
+      "score": 0.08150739222764969,
+      "reviews": 13,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c2598370c6cb5f:0x67da02a4f5cbf2bb",
+      "name": "New Double Dragon",
+      "borough": "Manhattan",
+      "score": 0.08118751645088196,
+      "reviews": 67,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 1933229,
+        "text": "I'm requesting for Halal Chinese food Please!"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c2f6791c555c37:0x9259648e45dc8690",
+      "name": "Ho Lee",
+      "borough": "Manhattan",
+      "score": 0.0713392049074173,
+      "reviews": 19,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c2f679ea60ffc5:0x38e70c66f303ea82",
+      "name": "Empire",
+      "borough": "Manhattan",
+      "score": 0.06865695118904114,
+      "reviews": 12,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c259771a76e40b:0xddc931c5895b2b59",
+      "name": "Mido’s",
+      "borough": "Manhattan",
+      "score": 0.06670302152633667,
+      "reviews": 10,
+      "foreign": 0,
+      "snippets": [
+       {
+        "id": 482757,
+        "text": "gross..who puts olives in halal...specially green ones. unfortunately he's the only halal truck around..."
+       },
+       {
+        "id": 482749,
+        "text": "In my opinion the best place to get halal food in the city. Trust me and go get some, don't forget to ask for spicy rice."
+       },
+       {
+        "id": 482747,
+        "text": "One of the best halal food in Manhattan.If you get the combo ask to add falafel too. They will charge $1 extra. But worth trying 🙂"
+       }
+      ]
+     },
+     {
+      "gmap_id": "0x89c258ba8da82bef:0x49cc1c558f41c161",
+      "name": "Guo's Garden",
+      "borough": "Manhattan",
+      "score": 0.06656235456466675,
+      "reviews": 9,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c2f41e56328f41:0xe9c721be167cf784",
+      "name": "Silver Palace",
+      "borough": "Manhattan",
+      "score": 0.06543395668268204,
+      "reviews": 23,
+      "foreign": 0,
+      "snippets": []
+     },
+     {
+      "gmap_id": "0x89c2f671c94c8007:0xa6e0887b62a24f2d",
+      "name": "Crispy Bamboo Village",
+      "borough": "Manhattan",
+      "score": 0.06541619449853897,
+      "reviews": 21,
+      "foreign": 0,
+      "snippets": []
+     }
+    ],
+    "foreign": 0,
+    "snippets": 9,
+    "flags": {
+     "group_snips": 0,
+     "neg_snips": 0,
+     "neg_top_snippet": 0,
+     "shell_dish_no_allergy": 0,
+     "fish_allergy_not_shellfish": 0,
+     "shellfish_allergy": 0,
+     "total_snips": 9,
+     "median_reviews": 19
+    }
+   }
+  },
+  "overlap": {
+   "sem&chunk": 2,
+   "sem&doc": 0,
+   "chunk&doc": 2,
+   "all3": 0,
+   "union": 26
+  }
+ }
+}

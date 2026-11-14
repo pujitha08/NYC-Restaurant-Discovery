@@ -8,7 +8,8 @@ describe the earlier plan; these components target GroqCloud instead.
 
 ```python
 parse_query(text, *, client=None, model=None) -> ParsedQuery
-summarize_evidence(query, result, *, client=None, model=None) -> EvidenceSummary
+summarize_evidence(query, result, *, client=None, model=None, reasoning_effort=None,
+                   user_request=None) -> EvidenceSummary
 ```
 
 Import from `src.llm.query_parser` and `src.llm.evidence_summarizer`.
@@ -19,7 +20,11 @@ person qualifiers for mixed groups. Validation checks exact keys and types, not 
 the model correctly understood the original sentence. Ambiguities need user clarification
 by the calling application.
 
-The summarizer accepts `ParsedQuery` and `RetrievalResult`. It returns local dataclasses:
+The summarizer accepts `ParsedQuery` and `RetrievalResult`, and optionally the user's exact request
+(`user_request`, at most 500 characters, sent as data) so claims are labeled against the stated need:
+`support` = the reviewer reports the restaurant meeting the need; `contradiction` = a warning, refusal,
+failure to accommodate, reaction or advice to avoid; `uncertainty` = related but neither (including a
+mere mention of the allergen or diet). It returns local dataclasses:
 `EvidenceSummary(status, claims, limitations)` and
 `EvidenceClaim(text, review_ids, label)`. Labels are `support`, `contradiction`, or
 `uncertainty` relative to the query. Status is `evidence_found` or
