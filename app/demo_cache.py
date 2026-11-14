@@ -110,9 +110,15 @@ def load_cached(query, borough_choice, method, cache_dir=None):
     if (normalize(outcome.query), outcome.borough_choice, outcome.method) != (normalize(query), borough_choice, method):
         return None
     outcome.request_id = pipeline.uuid.uuid4().hex[:12]
-    outcome.cached = True
-    outcome.notices = [f"This is a {CACHE_LABEL} (saved {record['cached_at']}), not a live search."]
+    outcome.cached, outcome.cached_at = True, record["cached_at"]
+    outcome.notices = [cached_notice(outcome.cached_at)]  # exactly one notice about the cache, with the saved date
     return outcome
+
+
+def cached_notice(saved, unavailable=False):
+    if unavailable:
+        return f"The language model was unavailable, so a {CACHE_LABEL} (saved {saved}) is shown instead."
+    return f"This is a {CACHE_LABEL} (saved {saved}), not a live search."
 
 
 def live_failed(outcome):
@@ -121,19 +127,23 @@ def live_failed(outcome):
     return any(e and e["category"] in FALLBACK_CATEGORIES for e in errors)
 
 
-def search_with_fallback(query, borough_choice, method, *, demo_mode=False, cache_dir=None, **kwargs):
+def search_with_fallback(query, borough_choice, method, *, demo_mode=False, cache_dir=None, progress=None, **kwargs):
     """pipeline.run_search, or the cached outcome in demo mode / after a rate-limit, timeout or network failure.
 
     Returns (SearchOutcome, raw results); raw is empty for a cached outcome (no live Explain).
     """
     cached = load_cached(query, borough_choice, method, cache_dir) if query and query.strip() else None
     if demo_mode and cached:
+        if progress:
+            progress("cache")
         return cached, []
-    outcome, raw = pipeline.run_search(query, borough_choice, method, **kwargs)
+    outcome, raw = pipeline.run_search(query, borough_choice, method, progress=progress, **kwargs)
     if demo_mode:
         outcome.notices.append(f"Demo mode is on, but no {CACHE_LABEL} exists for this query; ran a live search.")
     elif cached and live_failed(outcome):
-        cached.notices.insert(0, "The language model was unavailable, so a " + CACHE_LABEL + " is shown instead.")
+        cached.notices = [cached_notice(cached.cached_at, unavailable=True)]  # replaces the plain cached notice: one only
+        if progress:
+            progress("cache")
         return cached, []
     return outcome, raw
 

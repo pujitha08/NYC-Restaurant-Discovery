@@ -147,6 +147,7 @@ class SearchOutcome:
     allergy_sensitive: bool = False
     cached: bool = False  # served from data/demo_cache (app/demo_cache.py), not a live search
     ranking_fallback: bool = False  # stance re-ranking was unavailable; the base ranking is shown instead
+    cached_at: Optional[str] = None  # YYYY-MM-DD the cached demo result was saved (cached outcomes only)
 
 
 # ---- LLM client ---------------------------------------------------------------
@@ -315,12 +316,15 @@ def summarize(view, result, context, client, model, guarded=False, user_request=
 # ---- entry points -------------------------------------------------------------
 def run_search(query, borough_choice, method, *, retriever, client, model, setup_error=None,
                auto_summaries=AUTO_SUMMARIES, top_k=TOP_K, include_low_evidence=False, log_path=_DEFAULT_LOG,
-               prior=None, search_options=None):
+               prior=None, search_options=None, progress=None):
     """Parse, retrieve and summarize the top results; returns (SearchOutcome, raw results).
 
     prior: an earlier SearchOutcome for the same query; its parse result is reused instead of calling the parser
     (compare mode). search_options: extra keyword arguments for the retriever's search (e.g. cache_only).
+    progress: optional callable(stage) told when each stage starts: "understand" (only when the parser is called),
+    "search", "read" (reviews retrieved, results built) and "summarize" (only when summaries will be requested).
     """
+    progress = progress or (lambda stage: None)
     if method not in METHODS:
         raise ValueError(f"unknown method {method!r}")
     query = (query or "").strip()
@@ -337,6 +341,8 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
     if prior is not None:
         outcome.parsed, outcome.parse_error = prior.parsed, prior.parse_error
     else:
+        if client is not None:
+            progress("understand")
         outcome.parsed, outcome.parse_error = parse(query, client, model)
     outcome.timings["parse_s"] = round(time.monotonic() - t, 3)
     if outcome.parse_error:
@@ -350,6 +356,7 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
     if notice:
         outcome.notices.append(notice)
     t = time.monotonic()
+    progress("search")
     try:
         outcome.results, raw = retrieve(query, retriever, method, outcome.boroughs, top_k, include_low_evidence,
                                         search_options)
@@ -366,7 +373,11 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
     if not outcome.results:
         outcome.notices.append("No restaurants matched. Try fewer or different words, or another borough.")
 
+    if outcome.results:
+        progress("read")
     t = time.monotonic()
+    if client is not None and auto_summaries > 0 and outcome.results:
+        progress("summarize")
     stop = None if client is not None else (setup_error or {}).get("message", "Summaries are unavailable.")
     for view, result in zip(outcome.results, raw):
         if view.rank > auto_summaries:

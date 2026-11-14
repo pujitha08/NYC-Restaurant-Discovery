@@ -13,7 +13,7 @@ MODEL = "openai/gpt-oss-20b"
 QUERY, BOROUGH, METHOD = "vegan options for a group", "Both", "semantic_capped"
 
 
-class DemoCacheTests(unittest.TestCase):
+class _CacheFixture(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
@@ -30,6 +30,8 @@ class DemoCacheTests(unittest.TestCase):
         demo_cache.save_outcome(outcome, self.dir)
         return outcome
 
+
+class DemoCacheTests(_CacheFixture):
     def test_round_trip_keeps_results_excerpts_and_summaries(self):
         original = self.saved()
         cached = demo_cache.load_cached("  Vegan  options for a GROUP ", BOROUGH, METHOD, self.dir)
@@ -110,6 +112,29 @@ class DemoCacheTests(unittest.TestCase):
         for category, expected in (("rate_limit", True), ("timeout", True), ("network", True), ("provider", False)):
             outcome = pipeline.SearchOutcome("r", "q", "Both", METHOD, None, None, None, [], parse_error=err(category))
             self.assertEqual(demo_cache.live_failed(outcome), expected, category)
+
+
+class CacheNoticeTests(_CacheFixture):
+    def test_exactly_one_notice_with_the_saved_date_when_served_in_demo_mode(self):
+        self.saved()
+        outcome, _ = demo_cache.search_with_fallback(QUERY, BOROUGH, METHOD, demo_mode=True, **self.live())
+        self.assertEqual(len(outcome.notices), 1)
+        self.assertRegex(outcome.notices[0], r"cached demo result \(saved \d{4}-\d{2}-\d{2}\), not a live search")
+        self.assertEqual(outcome.cached_at, outcome.notices[0].split("saved ")[1][:10])
+
+    def test_fallback_after_a_rate_limit_also_has_exactly_one_notice(self):
+        self.saved()
+        client = pipeline.UsageRecorder(FakeClient(summary="rate_limit"))
+        outcome, _ = demo_cache.search_with_fallback(QUERY, BOROUGH, METHOD, **self.live(client))
+        self.assertEqual(len(outcome.notices), 1)
+        self.assertIn("language model was unavailable", outcome.notices[0])
+        self.assertRegex(outcome.notices[0], r"\(saved \d{4}-\d{2}-\d{2}\)")
+
+    def test_progress_reports_the_cache_stage(self):
+        self.saved()
+        seen = []
+        demo_cache.search_with_fallback(QUERY, BOROUGH, METHOD, demo_mode=True, progress=seen.append, **self.live())
+        self.assertEqual(seen, ["cache"])
 
 
 class CommittedCacheTests(unittest.TestCase):

@@ -41,16 +41,18 @@ def rank_changes(base_views, stance_views):
 
 
 def run_compare(query, borough_choice, *, base_retriever, stance_retriever, client, model, setup_error=None,
-                include_low_evidence=False, demo_mode=False, cache_dir=None, **log):
+                include_low_evidence=False, demo_mode=False, cache_dir=None, progress=None, **log):
     """Both rankings for one query as a Comparison; `log` (e.g. log_path) goes to pipeline.run_search."""
     common = dict(client=client, model=model, setup_error=setup_error, include_low_evidence=include_low_evidence,
                   auto_summaries=0, **log)
     base, _ = demo_cache.search_with_fallback(query, borough_choice, BASE_METHOD, demo_mode=demo_mode,
-                                              cache_dir=cache_dir, retriever=base_retriever, **common)
+                                              cache_dir=cache_dir, retriever=base_retriever, progress=progress, **common)
     comparison = Comparison(base, None, notices=list(base.notices))
     if stance_retriever is None:
         comparison.notices.append("The stance re-ranker is not available, so only semantic_capped is shown.")
         return comparison
+    if progress:
+        progress("rerank")
     stance, _ = pipeline.run_search(query, borough_choice, STANCE_METHOD, retriever=stance_retriever, prior=base,
                                     search_options={"cache_only": True} if demo_mode else None, **common)
     if stance.ranking_fallback or not stance.results:

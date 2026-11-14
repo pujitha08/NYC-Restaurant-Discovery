@@ -302,6 +302,51 @@ def get_data_stats():
     return pipeline.data_stats()
 
 
+def stage_text():
+    """Progress stage -> the line shown while it runs (the passage count comes from the built index when known)."""
+    n = get_data_stats().get("chunks")
+    return {"understand": "Understanding your request",
+            "search": f"Searching {n / 1000:,.0f}K review passages" if isinstance(n, int) else "Searching review passages",
+            "read": "Reading reviews", "summarize": "Summarizing", "rerank": "Re-ranking by what the reviews say",
+            "cache": "Loading the saved demo result"}
+
+
+def run_staged(work, final_label):
+    """Run work(progress) inside an st.status that lists the stages as they happen, then collapses to one line.
+
+    work receives progress(stage); errors turn the status red and are re-raised (run_search itself turns LLM errors
+    and rate limits into notices, so those finish normally). final_label(result) is the closing line.
+    """
+    text = stage_text()
+    with st.status("Starting…", expanded=True) as status:
+        seen = []
+
+        def progress(stage):
+            if seen:
+                st.write(f"{text[seen[-1]]}: done")
+            seen.append(stage)
+            status.update(label=f"{text[stage]}…")
+
+        try:
+            result = work(progress)
+        except Exception:
+            status.update(label="The search failed", state="error", expanded=True)
+            raise
+        if seen:
+            st.write(f"{text[seen[-1]]}: done")
+        status.update(label=final_label(result), state="complete", expanded=False)
+    return result
+
+
+def search_final_label(result):
+    outcome = result[0]
+    if outcome.cached:
+        return "Showing a saved demo result"
+    if any(v.summary_error for v in outcome.results) or outcome.parse_error or outcome.ranking_fallback:
+        return "Done (some steps were unavailable; see the notice below)"
+    return "Done"
+
+
 def show_sidebar():
     with st.sidebar:
         st.header("How it works")
@@ -376,18 +421,22 @@ def main():
                 st.error("The semantic index is not built yet. "
                          "Run `python -m src.retrieval.semantic --build` and restart the app.")
             elif compare_mode:
-                with st.spinner("Searching and re-ranking (labeling review sentences can take a minute)…"):
-                    comparison = compare.run_compare(
-                        query, borough, base_retriever=base_retriever,
-                        stance_retriever=get_retriever(pipeline.METHODS[compare.STANCE_METHOD][0]), client=client,
-                        model=model, setup_error=setup_error, include_low_evidence=include_low, demo_mode=demo_mode)
+                stance_retriever = get_retriever(pipeline.METHODS[compare.STANCE_METHOD][0])
+                comparison = run_staged(
+                    lambda progress: compare.run_compare(
+                        query, borough, base_retriever=base_retriever, stance_retriever=stance_retriever, client=client,
+                        model=model, setup_error=setup_error, include_low_evidence=include_low, demo_mode=demo_mode,
+                        progress=progress),
+                    lambda c: "Showing a saved demo result" if c.base.cached else
+                    "Done" if c.stance is not None else "Done (the stance ranking was unavailable; see the notice below)")
                 st.session_state["last_compare"] = comparison
                 st.session_state.pop("last_search", None)
             else:
-                with st.spinner("Searching and summarizing the top reviews…"):
-                    outcome, raw = demo_cache.search_with_fallback(
+                outcome, raw = run_staged(
+                    lambda progress: demo_cache.search_with_fallback(
                         query, borough, method, demo_mode=demo_mode, retriever=retriever, client=client, model=model,
-                        setup_error=setup_error, include_low_evidence=include_low)
+                        setup_error=setup_error, include_low_evidence=include_low, progress=progress),
+                    search_final_label)
                 st.session_state["last_search"] = (outcome, raw)
                 st.session_state.pop("last_compare", None)
 

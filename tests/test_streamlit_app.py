@@ -320,6 +320,57 @@ class AppSmokeTests(unittest.TestCase):
         self.assertIn("How it works", " ".join(h.value for h in at.sidebar.header))
         self.assertNotIn("The data:", side)
 
+    def test_staged_progress_replaces_the_spinner(self):
+        with patch.object(pipeline, "data_stats", lambda: {"chunks": 605540}):
+            at = self.search(self.start(FakeClient(location=None)))
+        self.assertEqual(len(at.status), 1)
+        status = at.status[0]
+        self.assertEqual((status.label, status.state), ("Done", "complete"))
+        lines = self.text(status)
+        for stage in ("Understanding your request: done", "Searching 606K review passages: done", "Reading reviews: done",
+                      "Summarizing: done"):
+            self.assertIn(stage, lines)
+        self.assertLess(lines.index("Understanding"), lines.index("Searching"))
+        self.assertLess(lines.index("Reading reviews"), lines.index("Summarizing"))
+
+    def test_rate_limit_finishes_with_a_notice_and_the_results(self):
+        at = self.search(self.start(FakeClient(location=None, summary="rate_limit")))
+        self.assertEqual(at.status[0].state, "complete")
+        self.assertIn("some steps were unavailable", at.status[0].label)
+        self.assertTrue(any("Some summaries are unavailable" in i.value for i in at.info))
+        self.assertEqual(len(self.results(at)), 4)  # excerpts still shown
+
+    def test_unexpected_error_turns_the_status_red_and_is_not_swallowed(self):
+        class Boom(FakeRetriever):
+            def search(self, *a, **kw):
+                raise RuntimeError("index exploded")
+        at = self.start(retrievers={"semantic": Boom()})
+        at.text_input[0].input("vegan food")
+        self.button(at, "Search").click()
+        at.run()
+        self.assertEqual(at.status[0].state, "error")
+        self.assertTrue(at.exception)
+
+    def test_compare_mode_shows_the_rerank_stage(self):
+        at = self.start(FakeClient(location=None), retrievers={"semantic_stance": FakeStance()})
+        at.checkbox(key="compare_mode").check()
+        self.search(at)
+        self.assertEqual(at.status[0].state, "complete")
+        self.assertIn("Re-ranking by what the reviews say: done", self.text(at.status[0]))
+
+    def test_demo_mode_shows_the_cache_stage_and_one_notice(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out, _ = pipeline.run_search("vegan options for a group", "Both", "semantic_capped", retriever=FakeRetriever(),
+                                         client=pipeline.UsageRecorder(FakeClient()), model="openai/gpt-oss-20b", log_path=None)
+            demo_cache.save_outcome(out, tmp)
+            with patch.object(demo_cache, "CACHE_DIR", Path(tmp)):
+                at = self.start(FakeClient())
+                next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
+                self.search(at)
+        self.assertEqual(at.status[0].label, "Showing a saved demo result")
+        self.assertIn("Loading the saved demo result: done", self.text(at.status[0]))
+        self.assertEqual(len([i for i in at.info if "cached demo result" in i.value]), 1)
+
     def test_full_caveat_only_above_allergy_results(self):
         plain = self.search(self.start(), "vegan options for a group")
         self.assertEqual([w.value for w in plain.warning], [])

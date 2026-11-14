@@ -267,3 +267,27 @@ class DataStatsTests(unittest.TestCase):
             (Path(tmp) / "semantic").mkdir()
             (Path(tmp) / "semantic" / "info.json").write_text(json.dumps({"chunk_count": "many", "other": 1}))
             self.assertEqual(pipeline.data_stats(tmp), {"chunks": "many"})  # no crash on odd values
+
+
+class ProgressTests(PipelineTestCase):
+    def stages(self, **kw):
+        seen = []
+        self.run_search(progress=seen.append, **kw)
+        return seen
+
+    def test_stages_in_order_with_the_model(self):
+        self.assertEqual(self.stages(client=FakeClient(location=None)), ["understand", "search", "read", "summarize"])
+
+    def test_no_model_means_no_understand_or_summarize_stage(self):
+        self.assertEqual(self.stages(), ["search", "read"])
+
+    def test_prior_parse_and_zero_summaries_skip_their_stages(self):
+        prior, _ = self.run_search(client=FakeClient(location=None))
+        self.assertEqual(self.stages(client=FakeClient(location=None), prior=prior, auto_summaries=0), ["search", "read"])
+
+    def test_no_results_means_no_read_stage(self):
+        self.assertEqual(self.stages(retriever=FakeRetriever(gids=()), client=FakeClient(location=None)),
+                         ["understand", "search"])
+
+    def test_rate_limited_summaries_still_finish_the_stages(self):
+        self.assertEqual(self.stages(client=FakeClient(location=None, summary="rate_limit"))[-1], "summarize")
