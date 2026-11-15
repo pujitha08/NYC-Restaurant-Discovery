@@ -58,16 +58,16 @@ class AppSmokeTests(unittest.TestCase):
     class PrefsClient(FakeClient):
         """A parser that also returns preferences (and an allergen), to exercise the request summary."""
 
-        def __init__(self, preferences, allergens=()):
+        def __init__(self, preferences, allergens=(), **fields):
             super().__init__(location=None)
-            self.preferences, self.allergens = preferences, list(allergens)
+            self.fields = {"preferences": preferences, "allergens": list(allergens), **fields}
 
         def create(self, **kwargs):
             res = super().create(**kwargs)
             if kwargs["response_format"]["json_schema"]["name"] == "parsed_query":
                 import json
                 body = json.loads(res.choices[0].message.content)
-                body.update(preferences=self.preferences, allergens=self.allergens)
+                body.update(self.fields)
                 res.choices[0].message.content = json.dumps(body)
             return res
 
@@ -99,6 +99,58 @@ class AppSmokeTests(unittest.TestCase):
         self.assertNotIn("<i>", text)
         self.assertIn("\\<b\\>late", text)  # Markdown specials carry a backslash, so they render as literal text
         self.assertIn("\\*ramen\\*", text)
+
+    SCOPE = ("Built for dietary needs and food allergies: diets, allergens and mixed groups. "
+             "It doesn’t check opening hours, prices or availability.")
+    NO_NEED = ("No dietary or allergy need detected, so these results are ranked by general review match and "
+               "aren’t checked against a diet or allergen.")
+
+    def test_scope_note_under_the_title(self):
+        at = self.start()
+        captions = [c.value for c in at.caption]
+        self.assertIn(self.SCOPE, captions)
+        self.assertLess(captions.index(self.SCOPE), captions.index(next(c for c in captions if "not safety guarantees" in c)))
+
+    def test_no_need_notice_when_nothing_dietary_is_parsed(self):
+        at = self.search(self.start(self.PrefsClient(["ramen"], dietary_restrictions=[], group_needs=[])), "good ramen")
+        self.assertEqual([i.value for i in at.info if i.value == self.NO_NEED], [self.NO_NEED])
+        self.assertEqual(len(self.results(at)), 4)  # the results are still shown
+        st.cache_resource.clear()  # the app caches its LLM client
+        self.assertNotIn(self.NO_NEED, [i.value for i in self.search(self.start(FakeClient(location=None))).info])  # a diet was parsed
+
+    def test_no_need_notice_is_not_shown_when_the_parse_failed_or_the_text_is_about_allergies(self):
+        failed = self.search(self.start(FakeClient(parser="bad")))
+        self.assertNotIn(self.NO_NEED, [i.value for i in failed.info])
+        st.cache_resource.clear()
+        missed = self.search(self.start(self.PrefsClient([], dietary_restrictions=[], group_needs=[])), "something for my peanut allergy")
+        self.assertNotIn(self.NO_NEED, [i.value for i in missed.info])  # allergy wording the parser missed: guarded, not "no need"
+
+    def test_cards_show_coverage_chips_and_unverified_preferences(self):
+        at = self.search(self.start(self.PrefsClient(["open late"], dietary_restrictions=["vegan", "halal"], group_needs=["kids"])))
+        for card in self.results(at)[:3]:
+            row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
+            self.assertIn("vegan ✓ 2 excerpts", row)  # both fake excerpts mention vegan (one negatively): a mention count, not a verdict
+            self.assertIn("halal: not found in these excerpts", row)
+            self.assertIn("kids: not found in these excerpts", row)
+            self.assertIn("Not verified from reviews: open late", [c.value for c in card.caption])
+            self.assertNotIn("safe", row.lower())
+
+    def test_allergen_chips_never_imply_safety(self):
+        at = self.search(self.start(self.PrefsClient([], ["peanut", "sesame"], dietary_restrictions=["vegan"])), "vegan, peanut allergy")
+        for card in self.results(at)[:3]:
+            row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
+            self.assertIn("peanut: not mentioned in shown excerpts", row)
+            self.assertIn("vegan: mentioned in", row)  # allergy request: no check marks even for diets
+            self.assertNotIn("✓", row)
+            self.assertNotIn("safe", row.lower())
+
+    def test_coverage_text_is_escaped(self):
+        at = self.search(self.start(self.PrefsClient(["<i>late</i>"], dietary_restrictions=["<b>vegan</b>"])))
+        card = self.results(at)[0]
+        row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
+        self.assertNotIn("<b>", row)
+        self.assertIn("&lt;b&gt;vegan", row)
+        self.assertNotIn("<i>", " ".join(c.value for c in card.caption))
 
     def test_initial_page(self):
         at = self.start()

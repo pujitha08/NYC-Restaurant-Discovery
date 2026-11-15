@@ -18,6 +18,9 @@ CSS = """
 .chip-diet { background: #E8F3E9; color: #14532D; border-color: #A7D3AD; }
 .chip-allergen { background: #FDECEA; color: #7F1D1D; border-color: #F2B8B3; }
 .chip-place { background: #FAF3EA; color: #7C2D12; border-color: #E8CDB0; }
+.chip-found { background: #EEF2F7; color: #1E293B; border-color: #CBD5E1; font-size: 0.85rem; }
+.chip-none { background: #F5F5F4; color: #44403C; border-color: #D6D3D1; font-size: 0.85rem; font-weight: 500; }
+.coverage { margin: 0.1rem 0 0.4rem 0; }
 .chip-note { background: #F3F4F6; color: #1F2937; border-color: #D1D5DB; }
 </style>
 """

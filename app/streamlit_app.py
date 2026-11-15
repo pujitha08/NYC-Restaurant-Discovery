@@ -12,13 +12,17 @@ import streamlit as st
 # Streamlit puts app/ on sys.path, not the repo root, so add it for `app`, `src` and `eval` imports.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import chips, compare, demo_cache, pipeline  # noqa: E402
+from app import chips, compare, coverage, demo_cache, pipeline  # noqa: E402
 from src.config import STANCE_RERANK  # noqa: E402
 from app.highlight import highlight_html, highlight_terms, html_text, md, squash  # noqa: E402,F401 (md is used by the tests)
 
 PREFERENCES_NOTE = "Preferences like opening hours or cuisine guide the search but aren’t verified from reviews."
 TAGLINE = "Ask in plain English. Get NYC restaurants backed by review evidence."
 # The slim note is always shown; the full-strength caveat only above allergy results.
+SCOPE_NOTE = ("Built for dietary needs and food allergies: diets, allergens and mixed groups. "
+              "It doesn’t check opening hours, prices or availability.")
+NO_NEED_NOTICE = ("No dietary or allergy need detected, so these results are ranked by general review match and "
+                  "aren’t checked against a diet or allergen.")
 SLIM_NOTE = f"Reviews are historical (Google, through {pipeline.DATA_THROUGH}) and anecdotal, not safety guarantees."
 CAVEAT = (f"Reviews are historical (Google reviews through {pipeline.DATA_THROUGH}) and are not safety "
           "guarantees. **For allergies, always confirm with the restaurant before you order.**")
@@ -140,6 +144,20 @@ def result_header(view):
     return " · ".join(parts)
 
 
+def show_coverage(view, outcome):
+    """Which parsed needs the shown excerpts mention (chips), and the parsed preferences, which are not checked."""
+    row = coverage.coverage_html(coverage.coverage(outcome.parsed, view.excerpts, outcome.allergy_sensitive))
+    if row:
+        st.markdown(row, unsafe_allow_html=True)
+    prefs = coverage.preferences_line(outcome.parsed)
+    if prefs:
+        st.caption(md(prefs))
+
+
+def has_dietary_need(parsed):
+    return parsed is not None and bool(parsed.dietary_restrictions or parsed.allergens or parsed.group_needs)
+
+
 def show_stance(view):
     """Evidence bar and the strongest warning sentence, if the ranking labeled this result's sentences."""
     bar = pipeline.stance_bar(view)
@@ -243,6 +261,7 @@ def show_result(view, outcome, raw, client, model):
         st.caption(f"{view.num_reviews:,} reviews · {md(clean_address(view.name, view.address))}")
         if view.low_evidence:
             st.caption("⚠ Low evidence: fewer than 5 usable reviews.")
+        show_coverage(view, outcome)
         show_stance(view)
         if view.summary:
             show_summary(view, outcome, terms)
@@ -412,6 +431,7 @@ def main():
     st.markdown(CSS, unsafe_allow_html=True)
     st.title("NYC Restaurant Discovery")
     st.markdown(f'<p class="tagline">{TAGLINE}</p>', unsafe_allow_html=True)
+    st.caption(SCOPE_NOTE)
     st.caption(SLIM_NOTE)
     show_sidebar()
 
@@ -491,6 +511,9 @@ def main():
         show_notices(outcome.notices, outcome.cached)
         show_request_chips(outcome)
         show_parsed(outcome)
+        # Not shown when the parse failed or the request uses allergy wording the parser missed: those are treated as allergy requests.
+        if outcome.parsed is not None and not has_dietary_need(outcome.parsed) and not outcome.allergy_sensitive:
+            st.info(NO_NEED_NOTICE)
         if outcome.results:
             st.subheader(f"{len(outcome.results)} restaurants")
             line = pipeline.results_summary(outcome)
