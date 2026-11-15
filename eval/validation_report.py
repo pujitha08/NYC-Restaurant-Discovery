@@ -36,6 +36,7 @@ from eval.validate_judge import read_llm, summarize
 EVAL_DIR = Path(__file__).parent
 REPO = EVAL_DIR.parent
 HUMAN_PATH = EVAL_DIR / "labels" / "labels_pujitha.csv"
+HUMAN2_PATH = EVAL_DIR / "labels" / "labels_kang.csv"
 LLM_PATH = EVAL_DIR / "llm_labels.jsonl"
 QUERIES_PATH = EVAL_DIR / "queries_final.csv"
 SAMPLE_KEY_PATH = EVAL_DIR / "labels" / "sample_key.csv"
@@ -46,11 +47,20 @@ _REVIEW_ID = re.compile(r"^\[review (\d+)[,\]]")
 
 
 # ---- inputs -------------------------------------------------------------------
+def decode_utf8(data):
+    """UTF-8 (BOM allowed). A file that is UTF-8 except for stray Mac Roman apostrophes (a lone 0xD5, as left by a
+    Mac spreadsheet export) is read with those bytes as U+2019; any other invalid byte still raises."""
+    try:
+        return data.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return re.sub(rb"\xd5(?![\x80-\xbf])", "\u2019".encode(), data).decode("utf-8-sig")
+
+
 def read_human(path):
     """(rows with an integer `human` label, ids of rows with a blank label). UTF-8 (BOM allowed) or a clear error."""
     path = Path(path)
     try:
-        text = path.read_text(encoding="utf-8-sig")
+        text = decode_utf8(path.read_bytes())
     except UnicodeDecodeError as e:
         raise ValueError(f"{path}: not valid UTF-8 (byte {e.start}). Re-save the file as 'CSV UTF-8' from your "
                          "spreadsheet program (Excel's plain 'CSV' uses a legacy encoding that breaks names and accents).") from None
@@ -223,6 +233,26 @@ def analyze(pairs, categories):
     return result
 
 
+def human_vs_human(rows_a, rows_b):
+    """Agreement between two raters on the sample_ids both labeled (rows from read_human). Pairs use `human` for A and `llm` for B
+    so bootstrap() and the statistics are the same ones used against the LLM."""
+    b = {r["sample_id"]: r for r in rows_b}
+    pairs = [{"sample_id": r["sample_id"], "query_id": r["query_id"], "query": r.get("query"), "name": r["name_fixed"],
+              "human": r["human"], "llm": b[r["sample_id"]]["human"], "note_a": (r.get("note") or "").strip(),
+              "note_b": (b[r["sample_id"]].get("note") or "").strip()} for r in rows_a if r["sample_id"] in b]
+    a_, b_ = [p["human"] for p in pairs], [p["llm"] for p in pairs]
+    return {"n": len(pairs), "only_a": sorted({r["sample_id"] for r in rows_a} - set(b)),
+            "only_b": sorted(set(b) - {r["sample_id"] for r in rows_a}),
+            "agreement": raw_agreement(a_, b_), "kappa": cohen_kappa(a_, b_), "kappa_quadratic": cohen_kappa(a_, b_, "quadratic"),
+            "alpha_ordinal": krippendorff_alpha([[x, y] for x, y in zip(a_, b_)], "ordinal"),
+            "confusion": confusion_matrix(a_, b_), "ci_agreement": bootstrap(raw_agreement, pairs),
+            "ci_kappa_quadratic": bootstrap(lambda x, y: cohen_kappa(x, y, "quadratic"), pairs),
+            "mean_a": mean(a_), "mean_b": mean(b_), "one_step": sum(abs(x - y) == 1 for x, y in zip(a_, b_)),
+            "two_step": sum(abs(x - y) == 2 for x, y in zip(a_, b_)),
+            "disagreements": sorted((p for p in pairs if p["human"] != p["llm"]),
+                                    key=lambda p: (-abs(p["human"] - p["llm"]), p["sample_id"]))}
+
+
 # ---- report -------------------------------------------------------------------
 def f3(x):
     return "n/a" if x is None or x != x else f"{x:.3f}"
@@ -236,11 +266,61 @@ def cell(text):
     return " ".join((text or "").split()).replace("|", "\\|")
 
 
-def write_report(path, *, args, rows, blank, matched, unmatched, result, categories, provider_counts):
+def human_sections(args, rows_a, categories, second):
+    """Human-vs-human and second-rater-vs-LLM sections. second: {"name", "rows", "blank", "matched", "unmatched", "result", "hh"}."""
+    hh, r2, r1 = second["hh"], second["result"], second["primary_result"]
+    na, nb = second["primary_name"], second["name"]
+    L = [f"## Human vs human: {na} and {nb}", "",
+         f"- Second rater: `{rel(args.human2)}` ({len(second['rows']) + len(second['blank'])} rows; {len(second['blank'])} blank). "
+         "Per the project workflow neither rater was shown the LLM labels (not verifiable from the files; see Limitations).",
+         f"- **Shared labeled pairs: {hh['n']}** (labeled by {na} only: {len(hh['only_a'])}; by {nb} only: {len(hh['only_b'])}). "
+         "Same sample sheet; matched on `sample_id`.", "",
+         "| Statistic | Value | 95% CI |", "|---|---|---|",
+         f"| Exact agreement | {f3(hh['agreement'])} | {ci(hh['ci_agreement'])} |",
+         f"| Cohen's kappa (unweighted) | {f3(hh['kappa'])} | |",
+         f"| Cohen's kappa (quadratic-weighted) | {f3(hh['kappa_quadratic'])} | {ci(hh['ci_kappa_quadratic'])} |",
+         f"| Krippendorff's alpha (ordinal) | {f3(hh['alpha_ordinal'])} | |",
+         f"| Mean label: {na} / {nb} | {f3(hh['mean_a'])} / {f3(hh['mean_b'])} | |",
+         f"| Off by one step / by two | {hh['one_step']} / {hh['two_step']} | |", "",
+         f"Confusion matrix (rows: {na}, columns: {nb}):", "", f"| {na} \\ {nb} | 0 | 1 | 2 | total |", "|---|---|---|---|---|"]
+    for lab, row in zip(LABELS, hh["confusion"]):
+        L.append(f"| {lab} | {row[0]} | {row[1]} | {row[2]} | {sum(row)} |")
+    L += ["", f"### Disagreements: {len(hh['disagreements'])} of {hh['n']}", "",
+          f"| Sample | Query | Restaurant | {na} | {nb} | {na}'s note | {nb}'s note |", "|---|---|---|---|---|---|---|"]
+    L += [f"| {p['sample_id']} | {p['query_id']} {cell(p.get('query'))} | {cell(p['name'])} | {p['human']} | {p['llm']} | "
+          f"{cell(p['note_a']) or '—'} | {cell(p['note_b']) or '—'} |" for p in hh["disagreements"]]
+    L += ["", f"## Second rater vs the LLM: {nb}, computed the same way as {na}", "",
+          f"Matched {len(second['matched'])} of {len(second['rows'])} labeled rows (unmatched: {len(second['unmatched'])}).", "",
+          f"| Statistic | {na} vs LLM | {nb} vs LLM |", "|---|---|---|",
+          f"| n matched | {r1['n']} | {r2['n']} |",
+          f"| Raw agreement | {f3(r1['agreement'])} {ci(r1['ci_agreement'])} | {f3(r2['agreement'])} {ci(r2['ci_agreement'])} |",
+          f"| Cohen's kappa (unweighted) | {f3(r1['kappa'])} | {f3(r2['kappa'])} |",
+          f"| Cohen's kappa (quadratic) | {f3(r1['kappa_quadratic'])} {ci(r1['ci_kappa_quadratic'])} | "
+          f"{f3(r2['kappa_quadratic'])} {ci(r2['ci_kappa_quadratic'])} |",
+          f"| Krippendorff's alpha (ordinal) | {f3(r1['alpha_ordinal'])} | {f3(r2['alpha_ordinal'])} |",
+          f"| Mean label: human / LLM | {f3(r1['mean_human'])} / {f3(r1['mean_llm'])} | {f3(r2['mean_human'])} / {f3(r2['mean_llm'])} |",
+          f"| LLM above / below human | {r1['llm_higher']} / {r1['llm_lower']} | {r2['llm_higher']} / {r2['llm_lower']} |",
+          f"| Off by one step / by two | {r1['one_step']} / {len(r1['big_disagreements'])} | {r2['one_step']} / {len(r2['big_disagreements'])} |",
+          f"| Agreement without the 'no evidence' flagged pairs | {f3(r1['no_evidence_mismatch']['agreement_without'])} "
+          f"(n={r1['no_evidence_mismatch']['n_without']}) | {f3(r2['no_evidence_mismatch']['agreement_without'])} "
+          f"(n={r2['no_evidence_mismatch']['n_without']}) |", "",
+          f"{nb} vs LLM confusion matrix (rows: {nb}, columns: LLM):", "", f"| {nb} \\ LLM | 0 | 1 | 2 | total |", "|---|---|---|---|---|"]
+    for lab, row in zip(LABELS, r2["confusion"]):
+        L.append(f"| {lab} | {row[0]} | {row[1]} | {row[2]} | {sum(row)} |")
+    L += ["", f"Agreement with the LLM by query category ({na} / {nb}):", "",
+          "| Category | n | Agreement | Kappa (quadratic) |", "|---|---|---|---|"]
+    L += [f"| {c} | {r1['by_category'][c]['n']} / {r2['by_category'][c]['n']} | "
+          f"{f3(r1['by_category'][c]['agreement'])} / {f3(r2['by_category'][c]['agreement'])} | "
+          f"{f3(r1['by_category'][c]['kappa_quadratic'])} / {f3(r2['by_category'][c]['kappa_quadratic'])} |" for c in r1["by_category"]]
+    L.append("")
+    return L
+
+
+def write_report(path, *, args, rows, blank, matched, unmatched, result, categories, provider_counts, second=None):
     n_llm = sum(provider_counts.values())
     L = ["# Judge validation: human labels vs the LLM judge", "",
          f"- Human labels: `{rel(args.human)}` ({len(rows) + len(blank)} rows; {len(blank)} with a blank label skipped; {len(rows)} labeled). "
-         "Labeled blind to the LLM labels, by one rater.",
+         "Labeled blind to the LLM labels" + (", by two raters (second rater: see below)." if second else ", by one rater."),
          f"- LLM labels: `{rel(args.llm)}` ({n_llm} labeled pairs, by source: {', '.join(f'{k} {v}' for k, v in provider_counts.items())})",
          f"- **Matched: {len(matched)} of {len(rows)} labeled rows** "
          f"(by {', '.join(f'{k}: {v}' for k, v in Counter(p['method'] for p in matched).items()) or 'none'}); "
@@ -288,13 +368,18 @@ def write_report(path, *, args, rows, blank, matched, unmatched, result, categor
                 L += [f"| {p['sample_id']} | {p['query_id']} {cell(p.get('query'))} ({categories.get(p['query_id'], '?')}) | {cell(p['name'])} | "
                       f"{label_source(p['llm_record'])} | {cell(p.get('note')) or '—'} | {cell(p['llm_record'].get('reason'))} |" for p in group]
                 L.append("")
+    if second:
+        L += human_sections(args, rows, categories, second)
     if unmatched:
         L += ["## Rows not matched", "", "| Sample | Query | Restaurant | Why |", "|---|---|---|---|"]
         L += [f"| {r['sample_id']} | {r['query_id']} | {cell(r['name'])} | {why} |" for r, why in unmatched]
         L.append("")
     L += ["## Limitations", "",
-          f"- **One rater.** No human-human agreement can be computed, so these numbers measure agreement with one person's reading of the "
-          "rubric, not with a consensus; that person's own consistency is unknown.",
+          ("- **Two raters.** Human-human agreement is computed above on the shared sample_ids, but the two raters are not a consensus: "
+           "kappa and alpha measure how often they read the rubric alike, and both are small-sample estimates."
+           if second else
+           "- **One rater.** No human-human agreement can be computed, so these numbers measure agreement with one person's reading of the "
+           "rubric, not with a consensus; that person's own consistency is unknown."),
           f"- **n = {len(matched)}** matched pairs. The CIs above are wide; per-category cells (4 to 11 queries) and the confusion-matrix cells "
           "are small, and the kappa values depend heavily on a few pairs.",
           f"- **A sample, not the pool.** The rater labeled a stratified sample of {len(matched)} of the {n_llm:,} judged pairs "
@@ -304,6 +389,9 @@ def write_report(path, *, args, rows, blank, matched, unmatched, result, categor
           "visible through the 'by source' table above.",
           "- **Same judge model throughout.** All LLM labels use one model family and one prompt, so shared blind spots (for example, treating a "
           "mention of the topic as support) would not show up as disagreement between LLM sources.",
+          *(["- **Blindness is not verifiable.** Neither rater was shown the LLM labels per the workflow, but the files cannot prove it. The second rater "
+             "agrees with the LLM more than with the first rater, so a shared reading of the rubric and contamination cannot be told apart "
+             "here; confirm with the rater before leaning on that gap."] if second else []),
           "- **The rater saw the evidence shown to the judge**, not the full review text of each restaurant; both are limited to what retrieval "
           "returned, so agreement says nothing about whether the shown reviews were representative.",
           "- Matching rows to restaurants relies on the review ids cited in the evidence; rows without evidence are matched by name and borough "
@@ -315,6 +403,7 @@ def write_report(path, *, args, rows, blank, matched, unmatched, result, categor
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Validate the LLM judge against one human rater's labels")
     ap.add_argument("--human", type=Path, default=HUMAN_PATH)
+    ap.add_argument("--human2", type=Path, default=HUMAN2_PATH, help="second rater's labels (skipped if the file is missing)")
     ap.add_argument("--llm", type=Path, default=LLM_PATH)
     ap.add_argument("--queries", type=Path, default=QUERIES_PATH)
     ap.add_argument("--sample-key", type=Path, default=SAMPLE_KEY_PATH)
@@ -336,12 +425,27 @@ def main(argv=None):
     categories = read_categories(args.queries)
     result = analyze(matched, categories) if matched else {}
     provider_counts = Counter(label_source(r) for r in llm.values())
+    second = None
+    if args.human2 and args.human2.exists():
+        try:
+            rows2, blank2 = read_human(args.human2)
+        except ValueError as e:
+            sys.exit(str(e))
+        matched2, unmatched2 = resolve(rows2, llm, read_meta(args.meta), review_gmap, read_sample_key(args.sample_key))
+        second = {"name": args.human2.stem.replace("labels_", "").capitalize(), "primary_name": args.human.stem.replace("labels_", "").capitalize(),
+                  "rows": rows2, "blank": blank2, "matched": matched2, "unmatched": unmatched2,
+                  "result": analyze(matched2, categories) if matched2 else {}, "primary_result": result,
+                  "hh": human_vs_human(rows, rows2)}
     write_report(args.out, args=args, rows=rows, blank=blank, matched=matched, unmatched=unmatched, result=result,
-                 categories=categories, provider_counts=dict(provider_counts.most_common()))
+                 categories=categories, provider_counts=dict(provider_counts.most_common()), second=second)
     print(f"{len(rows)} labeled rows ({len(blank)} blank skipped); matched {len(matched)}, unmatched {len(unmatched)}")
     if matched:
         print(f"agreement {f3(result['agreement'])}, kappa {f3(result['kappa'])}, quadratic kappa {f3(result['kappa_quadratic'])}, "
               f"alpha {f3(result['alpha_ordinal'])}")
+    if second:
+        hh = second["hh"]
+        print(f"human vs human: n {hh['n']}, agreement {f3(hh['agreement'])}, quadratic kappa {f3(hh['kappa_quadratic'])}, "
+              f"alpha {f3(hh['alpha_ordinal'])}")
     print(f"Wrote {args.out}")
 
 

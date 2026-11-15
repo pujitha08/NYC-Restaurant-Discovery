@@ -47,6 +47,14 @@ class LoaderTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not valid UTF-8.*CSV UTF-8"):
             vr.read_human(self.path)
 
+    def test_stray_mac_roman_apostrophe_is_repaired_in_memory(self):
+        write_csv(self.path, [row("S1", "Q1", "A", "1", note="doesn\u2019t confirm")])
+        data = self.path.read_bytes().replace("\u2019".encode(), b"\xd5")
+        self.path.write_bytes(data)
+        rows, _ = vr.read_human(self.path)
+        self.assertEqual(rows[0]["note"], "doesn\u2019t confirm")
+        self.assertEqual(self.path.read_bytes(), data)  # the file itself is not rewritten
+
     def test_invalid_label_and_missing_column(self):
         write_csv(self.path, [row("S1", "Q1", "A", "3")])
         with self.assertRaisesRegex(ValueError, "S1='3'"):
@@ -98,6 +106,28 @@ class ResolveTests(unittest.TestCase):
 def pair(sid, qid, h, m, note="", source="llm", provider="groq", upstream=None):
     return {"sample_id": sid, "query_id": qid, "query": "q", "name": f"R{sid}", "human": h, "llm": m, "note": note,
             "llm_record": llm_rec(m, source, provider, upstream, f"reason {sid}")}
+
+
+class HumanVsHumanTests(unittest.TestCase):
+    def rows(self, labels, notes=None):
+        return [{"sample_id": f"S{i}", "query_id": "Q1", "query": "q", "name": f"R{i}", "name_fixed": f"R{i}", "human": l,
+                 "note": (notes or {}).get(i, "")} for i, l in enumerate(labels)]
+
+    def test_agreement_only_on_shared_ids_and_disagreements_listed(self):
+        a = self.rows([0, 1, 2, 2, 1, 0])
+        b = self.rows([0, 1, 2, 0, 2], {3: "stricter"})[:5]
+        r = vr.human_vs_human(a, b)
+        self.assertEqual((r["n"], r["only_a"], r["only_b"]), (5, ["S5"], []))
+        self.assertAlmostEqual(r["agreement"], 0.6)
+        self.assertEqual([(p["sample_id"], p["human"], p["llm"], p["note_b"]) for p in r["disagreements"]],
+                         [("S3", 2, 0, "stricter"), ("S4", 1, 2, "")])
+        self.assertEqual((r["one_step"], r["two_step"]), (1, 1))
+
+    def test_identical_raters_agree_perfectly(self):
+        a = self.rows([0, 1, 2, 1, 0, 2])
+        r = vr.human_vs_human(a, a)
+        self.assertEqual((r["agreement"], r["kappa_quadratic"]), (1.0, 1.0))
+        self.assertEqual(r["disagreements"], [])
 
 
 class MojibakeTests(unittest.TestCase):
