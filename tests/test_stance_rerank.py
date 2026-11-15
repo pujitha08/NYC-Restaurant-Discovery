@@ -274,6 +274,54 @@ class RerankerTests(unittest.TestCase):
         self.assertEqual(lab.label("anything", []), [])
 
 
+class LabelerSettingTests(unittest.TestCase):
+    """config.STANCE_LABELER, not the existence of stance.joblib, picks the labeler."""
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.model = Path(tmp.name) / "stance.joblib"
+        patcher = patch.object(sr, "STANCE_MODEL_PATH", self.model)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def labeler(self, **kw):
+        with patch.object(sr, "LabelCache"), patch.object(sr, "ClassifierLabeler") as clf:
+            clf.load.return_value = "CLF"
+            r = sr.StanceReranker.from_defaults(FakeBase({}), **kw)
+        return r.labeler, clf
+
+    def test_default_is_llm(self):
+        from src import config
+        self.assertEqual(config.STANCE_LABELER, "llm")
+        self.assertEqual(sr.STANCE_LABELER, "llm")
+
+    def test_model_file_existing_does_not_change_the_default(self):
+        self.model.write_bytes(b"x")
+        labeler, clf = self.labeler()
+        self.assertIsInstance(labeler, sr.LLMLabeler)
+        clf.load.assert_not_called()
+
+    def test_llm_without_model_file(self):
+        self.assertIsInstance(self.labeler()[0], sr.LLMLabeler)
+
+    def test_classifier_when_set_and_file_present(self):
+        self.model.write_bytes(b"x")
+        with patch.object(sr, "STANCE_LABELER", "classifier"):
+            self.assertEqual(self.labeler()[0], "CLF")
+        self.assertEqual(self.labeler(labeler="classifier")[0], "CLF")  # explicit override
+
+    def test_classifier_without_file_is_an_error_not_a_fallback(self):
+        with patch.object(sr, "STANCE_LABELER", "classifier"):
+            with self.assertRaises(FileNotFoundError):
+                self.labeler()
+
+    def test_unknown_value_is_rejected(self):
+        with patch.object(sr, "STANCE_LABELER", "both"):
+            with self.assertRaisesRegex(ValueError, "'llm' or 'classifier'"):
+                self.labeler()
+
+
 class AppFallbackTests(unittest.TestCase):
     def test_labeling_failure_falls_back_to_the_base_ranking(self):
         class Broken:

@@ -19,4 +19,8 @@ DATA_DIR = PROJECT_ROOT / "data"
 # PRE-REGISTERED (2026-11-13, before any test-split stance result was computed or looked at): the candidate depth is
 # top_n = 20 for BOTH weight tuning (dev queries) and the final held-out test evaluation. It was fixed for judging
 # cost (the judge pool is the top-20 of semantic_capped) and is not tuned; eval/tune_stance_rerank.py has no depth flag.
+# Which stance labeler the re-ranker, the tuner, the labeling script and the app use: "llm" (Groq, labels cached on disk) or
+# "classifier" (the model trained by src/classifier/stance.py). Whether data/processed/stance/stance.joblib exists never
+# changes this: an evaluation must not switch labelers because a file appeared.
+STANCE_LABELER = "llm"
 STANCE_RERANK = {"top_n": 20, "sentences_per_restaurant": 4, "w_pos": 0.3, "w_neg": 0.6, "w_strong_neg": 0.1}

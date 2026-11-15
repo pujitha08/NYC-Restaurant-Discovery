@@ -13,8 +13,8 @@ sentences say about the user's need.
    over the N candidates, share = sentences with that stance / sentences kept for the restaurant.
 
 Labeling backends share one interface, `label(need, sentences) -> [stance]`:
-  ClassifierLabeler  the embedding + logistic-regression model of src/classifier/stance.py, if
-                     data/processed/stance/stance.joblib exists (the need is ignored: it was trained on allergy stance)
+  ClassifierLabeler  the embedding + logistic-regression model of src/classifier/stance.py, only when
+                     config.STANCE_LABELER == "classifier" (the need is ignored: it was trained on allergy stance)
   LLMLabeler         Groq with a strict JSON schema, many sentences per call (paced for the tokens-per-minute limit)
 Labels are cached on disk by (labeler, need hash, sentence hash), so reruns are free and deterministic.
 Weights live in src/config.py STANCE_RERANK.
@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from src.allergy import is_allergy_text
-from src.config import DATA_DIR, PROJECT_ROOT, STANCE_RERANK
+from src.config import DATA_DIR, PROJECT_ROOT, STANCE_LABELER, STANCE_RERANK
 from src.llm.groq_client import LLMError, LLMResponseError, request_json, resolve_model
 from src.schemas import RetrievalResult
 
@@ -263,12 +263,21 @@ class StanceReranker:
         self.base_kwargs = {"density_mode": "capped", **(base_kwargs or {})}
 
     @classmethod
-    def from_defaults(cls, base, **kwargs):
-        """The trained classifier if data/processed/stance/stance.joblib exists, else the Groq labeler."""
-        if STANCE_MODEL_PATH.exists():
+    def from_defaults(cls, base, labeler=None, **kwargs):
+        """The labeler named by config.STANCE_LABELER ("llm": Groq; "classifier": data/processed/stance/stance.joblib).
+
+        labeler overrides the config value. The model file's existence never changes the choice, and "classifier"
+        without the file is an error, not a fallback to the LLM.
+        """
+        choice = labeler or STANCE_LABELER
+        if choice == "classifier":
+            if not STANCE_MODEL_PATH.exists():
+                raise FileNotFoundError(f"STANCE_LABELER is 'classifier' but {STANCE_MODEL_PATH} does not exist")
             labeler = ClassifierLabeler.load(base.embedder)
-        else:
+        elif choice == "llm":
             labeler = LLMLabeler(client_factory=_groq_client)
+        else:
+            raise ValueError(f"STANCE_LABELER must be 'llm' or 'classifier', got {choice!r}")
         return cls(base, labeler, LabelCache(), **kwargs)
 
     def info(self, gmap_id):
