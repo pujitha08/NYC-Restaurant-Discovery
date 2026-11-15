@@ -128,3 +128,112 @@ Unjudged top-10 results per variant: baseline (LLM labels): 0; human labels over
 - **The 245 flagged calls outside your sample** were not compared with any sheet; the conclusion for them rests on the same prompt-size behaviour of the sampled ones, and on their using the same pipeline and prompt.
 - **Why the judge chose 0 for the five two-step disagreements** cannot be read from the labels (the reasons are the stock phrase). In the sample they involve a second requirement in the query (bakery, brunch) or an allergy query where the reviews do not describe the restaurant's handling; S072 carries your note that the evidence suggests the restaurant is not peanut free, which supports the judge's 0 and may be a labeling slip.
 - **Rankings are rebuilt locally** (index build 2026-11-14) rather than read from the original runs.csv; they reproduce the published per-query NDCG@10.
+
+## Extended pool, top-20 dev labels
+
+Pairs: the 149 pairs in `eval/pool_extended.csv` (top-20 of semantic_capped on the 20 dev queries, no label before this work), judged in two batches: 110 earlier (before the 120b daily quota ran out) and 39 later (the 39 judged most recently). All by Groq `openai/gpt-oss-120b`. "Flagged" means a model call whose reason starts "no evidence" and cites no review. No API calls were made and no label was modified.
+
+**Summary.** 22 of the 39 newest labels (22/39) are flagged, against 51 of 149 for the whole extended pool and 31% (274 of 883) in the original 964 labels. Every flagged row had excerpts (none was an empty prompt) and the judge's prompt size tracks the excerpt size like the unflagged calls, so the judge saw the evidence; the words "no evidence found" are the rubric's stock phrase for label 0, not a report of empty evidence. The higher rate is mostly a matter of which queries were judged last, not of weaker candidates: the extended pool is entirely rank 11-20 (the top 10 were already labeled), where the flagged share over all dev queries is 36% against 28% at rank 1-10 (see 3), while the newest batch is concentrated in Q30, Q31, Q25, which hold 16 of the flagged labels. Where the reason can be checked against the excerpts it often does not describe them (see 2), so treat the label 0 as a strict reading of the need, not as 'nothing relevant was retrieved'.
+
+### 1. Did the pool rows have evidence?
+
+Of the 39 newest labels, **22 are flagged**. 
+
+| Pair | Evidence status | Excerpts shown | Evidence characters | Label | Rank |
+|---|---|---|---|---|---|
+| Q25 Docks Oyster Bar | retrieved | 3 | 459 | 0 | 14 |
+| Q25 Hot n Juicy Crawfish | retrieved | 3 | 802 | 0 | 15 |
+| Q25 Bed-Stuy Fish Fry | retrieved | 3 | 435 | 0 | 17 |
+| Q25 Red Lobster | retrieved | 3 | 600 | 0 | 20 |
+| Q30 Olympia Pita | retrieved | 3 | 292 | 0 | 12 |
+| Q30 Upside Craft | retrieved | 3 | 538 | 0 | 13 |
+| Q30 Sunflower Cafe | retrieved | 3 | 748 | 0 | 20 |
+| Q30 Cafe Renaissance | retrieved | 3 | 446 | 0 | 19 |
+| Q30 Kingston Bake Shop | retrieved | 3 | 212 | 0 | 14 |
+| Q30 Mozzarella | retrieved | 3 | 277 | 0 | 16 |
+| Q30 Grill On Lee | retrieved | 3 | 255 | 0 | 17 |
+| Q31 Simply Sweet | retrieved | 3 | 767 | 0 | 11 |
+| Q31 Egg | retrieved | 3 | 747 | 0 | 17 |
+| Q31 Dao Palate | retrieved | 3 | 949 | 0 | 12 |
+| Q31 Buntopia | retrieved | 3 | 997 | 0 | 14 |
+| Q31 Natural Blend Vegan Cafe & Juice Bar | retrieved | 3 | 773 | 0 | 16 |
+| Q33 Zucker's Bagels & Smoked Fish | retrieved | 1 | 280 | 0 | 12 |
+| Q33 Franchia Vegan Café | retrieved | 1 | 272 | 0 | 11 |
+| Q33 Brooklyn Natural Market & Cafe | retrieved | 1 | 357 | 0 | 13 |
+| Q34 Gargiulo's | retrieved | 3 | 322 | 0 | 18 |
+| Q34 Monty Q's | retrieved | 3 | 615 | 0 | 20 |
+| Q34 Brooklyn Roots NYC | retrieved | 3 | 814 | 0 | 11 |
+
+Evidence status of the flagged rows: retrieved; rows with an empty evidence set: 0 of 22. All 149 pool rows have status `retrieved` with at least one excerpt, so none was an empty prompt.
+
+### 2. Is the judge's reason consistent with the excerpts shown?
+
+Five of the 22 flagged pairs, drawn with seed 6165. Excerpts are as on the pool row (truncated to 400 characters here).
+
+**Q30 kosher bakery / Olympia Pita**: label 0; judge's reason: "no evidence found"
+
+> [review 2657687, 2018-06] Great Kosher food made fresh at the restaurant and super authentic. RECOMMENDED
+> [review 2657644, 2018-10] The best place to get a good meal always fresh ! most kosher stores don’t have good food these days
+> [review 2657934, 2015-12] Standard kosher middle eastern fare.
+
+**Q31 nut-free brunch in brooklyn, one of our friends is vegan / Buntopia**: label 0; judge's reason: "no evidence found"
+
+> [review 2219055, 2018-02] Yummy food alert! I randomly found this place on Yelp while searching for vegan sushi and holy cow this was the best meal I've had in 2018. Definitely a must try! It's an omni Asian fusion restaurant in Bedstuy with a half vegan menu, seems to be owned and operated by a family, very affordable, and lovely environment. …
+> [review 2219064, 2019-11] I am vegetarian and I live right next door, so I love this place! This place has very healthy and tasty Japanese food that's not super expensive, and the best part is the large number of options available for vegetarians (yay!). Plus it has a very bright feel and ambience, and the people are very nice. …
+> [review 2219054, 2019-09] Yum!!! I’ve never had vegan sushi - it was delicious! Basically, I read a bunch of reviews to figure out what to try, and ended up ordering the popular things: mango tango; happy bull-da; and a watermelon shake. (I think the shake has lots of strawberries in it as well - seed city.) Eat here!
+
+**Q31 nut-free brunch in brooklyn, one of our friends is vegan / Natural Blend Vegan Cafe & Juice Bar**: label 0; judge's reason: "no evidence found"
+
+> [review 888126, 2020-03] If you dont know now you know ... Promise you wont dissappointed best vegan mac and chesse in all of america ... The best and healthest food in brooklyn without compromising taste in tradional food that that has always been a cultural staple in bed stuy
+> [review 888201, 2019-06] One of the best foods I've had a vegan restaurants...and the prices are great
+> [review 888197, 2018-07] This quaint vegan restaurant in the bed stuy neighborhood if Brooklyn is extremely delicious and posses a semi-robust menu of various plant based dishes and beverages. The staff is friendly and aim to answer any/all inquiries regarding customizing dishes or specific ingredients. The outdoor seating has a eye capturing aethestic with distinctive plants and flowers. …
+
+**Q33 i have a real dairy allergy not just lactose intolerance, who takes that seriously / Zucker's Bagels & Smoked Fish**: label 0; judge's reason: "no evidence found"
+
+> [review 61190, 2020-02] … Twice. They don’t seem to be serious or care about allergies. They person who did it found it funny and even though I called the supervisor he really didn’t care at all either. People with allergies or that simply don’t eat dairy: be aware of this place.
+
+**Q33 i have a real dairy allergy not just lactose intolerance, who takes that seriously / Brooklyn Natural Market & Cafe**: label 0; judge's reason: "no evidence found"
+
+> [review 456007, 2021-03] … I have been dying trying to avoid these restaurants where everything contains dairy. If it’s not cheese it’s an egg or milk batter and my skin just cannot. I have an allergic reaction to ALL things containing the smallest amount of dairy. It’s annoying ordering burgers saying no cheese or Mayo and still getting either or both. …
+
+Reading of the five (the reasons are all the bare phrase, so this is an inference from the excerpts): every pair had topical excerpts, so "no evidence found" does not describe what was shown. A 0 looks defensible for the two Q33 pairs (a warning about dismissed allergies, and an allergic reviewer's complaint) and plausibly for Olympia Pita under the category-filter rule (kosher food, no sign of a bakery). It is more debatable for the two Q31 pairs, which show strong vegan evidence but nothing on nut-free or brunch: whether that is a 0 or a 1 depends on how strictly the rubric's combined-need rule is applied. Whether a 0 is justified is a labeling question this audit cannot settle without a human label.
+
+**Did the judge see the excerpts?** Judge prompt size against evidence size across the pool (prompt tokens = 1238 + 0.242 x evidence characters, n = 149): the fixed part of the prompt is about 1238 tokens, so a call with no evidence would use about that many. Mean prompt tokens: flagged 1372 (mean evidence 560 characters), not flagged 1380 (583 characters). Mean residual from the fit: flagged -1, not flagged +1 tokens. Residuals near zero for both mean the flagged calls were given their excerpts like the others.
+
+### 3. Share by retrieval rank (semantic_capped)
+
+| Group | Rank 1-10 | Rank 11-20 |
+|---|---|---|
+| Extended pool (149 pairs) | 0 / 0 | 51 / 149 (34%) |
+|   earlier batch of the extended pool | 0 / 0 | 29 / 110 (26%) |
+|   newest 39 | 0 / 0 | 22 / 39 (56%) |
+| All top-20 dev pairs (model calls only) | 56 / 200 (28%) | 71 / 197 (36%) |
+
+Pairs labeled by the no-evidence rule (no excerpts at all) are excluded from these shares.
+
+### 4. Share per query
+
+| Query | Category | Extended pool pairs | Flagged | Share | Newest-39 pairs | Newest flagged |
+|---|---|---|---|---|---|---|
+| Q25 | allergy | 7 | 7 | 100% | 4 | 4 |
+| Q30 | diet_plus_filter | 7 | 7 | 100% | 7 | 7 |
+| Q12 | single_diet | 10 | 9 | 90% | 0 | 0 |
+| Q31 | mixed_group | 8 | 5 | 62% | 8 | 5 |
+| Q10 | single_diet | 10 | 6 | 60% | 0 | 0 |
+| Q34 | allergy | 5 | 3 | 60% | 5 | 3 |
+| Q02 | single_diet | 6 | 2 | 33% | 0 | 0 |
+| Q33 | allergy | 9 | 3 | 33% | 9 | 3 |
+| Q19 | allergy | 7 | 2 | 29% | 0 | 0 |
+| Q20 | allergy | 7 | 2 | 29% | 0 | 0 |
+| Q18 | mixed_group | 8 | 2 | 25% | 0 | 0 |
+| Q22 | allergy | 9 | 2 | 22% | 0 | 0 |
+| Q17 | mixed_group | 7 | 1 | 14% | 0 | 0 |
+| Q03 | single_diet | 6 | 0 | 0% | 0 | 0 |
+| Q06 | single_diet | 9 | 0 | 0% | 0 | 0 |
+| Q07 | single_diet | 6 | 0 | 0% | 0 | 0 |
+| Q13 | mixed_group | 7 | 0 | 0% | 0 | 0 |
+| Q15 | mixed_group | 6 | 0 | 0% | 0 | 0 |
+| Q16 | mixed_group | 9 | 0 | 0% | 0 | 0 |
+| Q28 | diet_plus_filter | 6 | 0 | 0% | 6 | 0 |
+
+The three queries with most flagged newest labels (Q30, Q31, Q25) account for 16 of 22.
