@@ -4,8 +4,9 @@ The match uses the same term matcher as the highlighting (app/highlight.py): a n
 matched as whole words or by prefix, and an excerpt counts when every one of those words occurs in it (so a multi-word
 group need is not "found" just because one of its words is). Needs with no matchable word are left out rather than
 reported either way. Only the excerpts shown on the card are searched, so the row says nothing about the restaurant
-beyond them, and its wording never implies safety: allergens (and every need on allergy-sensitive requests) read
-"mentioned in N excerpts" / "not mentioned in shown excerpts", never with a check mark. Parsed preferences (cuisine,
+beyond them. One wording for every need type (diet, allergen, group need): "<need>: mentioned in N excerpt(s)" or
+"<need>: not mentioned in shown excerpts". It counts mentions, not verdicts (an excerpt that says a place has no vegan
+dishes still mentions "vegan"), and it never implies safety or uses a check mark. Parsed preferences (cuisine,
 dish, venue, hours) are not checked at all; they are listed as "Not verified from reviews".
 
 Text comes from the language model and the user, so every string is HTML-escaped; the markup around it is static.
@@ -38,23 +39,19 @@ def count_excerpts(need, excerpts):
     return sum(all(p.search(e.text) for p in patterns) for e in excerpts)
 
 
-def coverage(parsed, excerpts, allergy_sensitive=False):
+def coverage(parsed, excerpts):
     """[(state, text)] for each parsed diet, allergen and group need: state is FOUND or NONE. [] when nothing is parsed."""
     if parsed is None:
         return []
-    needs = [(n, False) for n in parsed.dietary_restrictions + parsed.group_needs] + [(n, True) for n in parsed.allergens]
     out = []
-    for need, is_allergen in needs:
+    for need in parsed.dietary_restrictions + parsed.allergens + parsed.group_needs:
         n = count_excerpts(need, excerpts)
         if n is None:
             continue
-        label = short(need)
-        careful = is_allergen or allergy_sensitive
         if n == 0:
-            out.append((NONE, f"{label}: not mentioned in shown excerpts" if careful else f"{label}: not found in these excerpts"))
+            out.append((NONE, f"{short(need)}: not mentioned in shown excerpts"))
         else:
-            word = "excerpt" if n == 1 else "excerpts"
-            out.append((FOUND, f"{label}: mentioned in {n} {word}" if careful else f"{label} ✓ {n} {word}"))
+            out.append((FOUND, f"{short(need)}: mentioned in {n} {'excerpt' if n == 1 else 'excerpts'}"))
     return out
 
 

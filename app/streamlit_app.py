@@ -146,7 +146,7 @@ def result_header(view):
 
 def show_coverage(view, outcome):
     """Which parsed needs the shown excerpts mention (chips), and the parsed preferences, which are not checked."""
-    row = coverage.coverage_html(coverage.coverage(outcome.parsed, view.excerpts, outcome.allergy_sensitive))
+    row = coverage.coverage_html(coverage.coverage(outcome.parsed, view.excerpts))
     if row:
         st.markdown(row, unsafe_allow_html=True)
     prefs = coverage.preferences_line(outcome.parsed)

@@ -129,18 +129,19 @@ class AppSmokeTests(unittest.TestCase):
         at = self.search(self.start(self.PrefsClient(["open late"], dietary_restrictions=["vegan", "halal"], group_needs=["kids"])))
         for card in self.results(at)[:3]:
             row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
-            self.assertIn("vegan ✓ 2 excerpts", row)  # both fake excerpts mention vegan (one negatively): a mention count, not a verdict
-            self.assertIn("halal: not found in these excerpts", row)
-            self.assertIn("kids: not found in these excerpts", row)
+            self.assertIn("vegan: mentioned in 2 excerpts", row)  # both fake excerpts mention vegan (one negatively): a mention count, not a verdict
+            self.assertIn("halal: not mentioned in shown excerpts", row)
+            self.assertIn("kids: not mentioned in shown excerpts", row)
             self.assertIn("Not verified from reviews: open late", [c.value for c in card.caption])
             self.assertNotIn("safe", row.lower())
+            self.assertNotIn("✓", row)
 
     def test_allergen_chips_never_imply_safety(self):
         at = self.search(self.start(self.PrefsClient([], ["peanut", "sesame"], dietary_restrictions=["vegan"])), "vegan, peanut allergy")
         for card in self.results(at)[:3]:
             row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
             self.assertIn("peanut: not mentioned in shown excerpts", row)
-            self.assertIn("vegan: mentioned in", row)  # allergy request: no check marks even for diets
+            self.assertIn("vegan: mentioned in", row)
             self.assertNotIn("✓", row)
             self.assertNotIn("safe", row.lower())
 

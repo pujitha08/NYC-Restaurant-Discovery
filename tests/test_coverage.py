@@ -33,26 +33,22 @@ class WordingTests(unittest.TestCase):
     parsed = ParsedQuery(dietary_restrictions=["vegetarian", "halal"], allergens=["peanut"], group_needs=["kids"])
     excerpts = ex("A vegetarian dish and a vegetarian plate", "vegetarian friendly; kids menu", "peanut sauce on the side")
 
-    def test_diet_and_group_wording(self):
-        cov = dict((t.split(" ✓")[0].split(":")[0], (s, t)) for s, t in coverage.coverage(self.parsed, self.excerpts))
-        self.assertEqual(cov["vegetarian"], (coverage.FOUND, "vegetarian ✓ 2 excerpts"))
-        self.assertEqual(cov["halal"], (coverage.NONE, "halal: not found in these excerpts"))
-        self.assertEqual(cov["kids"], (coverage.FOUND, "kids ✓ 1 excerpt"))
+    def test_one_wording_for_every_need_type(self):
+        self.assertEqual(coverage.coverage(self.parsed, self.excerpts),
+                         [(coverage.FOUND, "vegetarian: mentioned in 2 excerpts"),
+                          (coverage.NONE, "halal: not mentioned in shown excerpts"),
+                          (coverage.FOUND, "peanut: mentioned in 1 excerpt"),
+                          (coverage.FOUND, "kids: mentioned in 1 excerpt")])
 
-    def test_allergen_wording_never_implies_safety(self):
-        out = coverage.coverage(ParsedQuery(allergens=["peanut", "sesame"]), self.excerpts)
-        self.assertEqual(out, [(coverage.FOUND, "peanut: mentioned in 1 excerpt"),
-                               (coverage.NONE, "sesame: not mentioned in shown excerpts")])
-        text = " ".join(t for _, t in out).lower()
-        for word in ("safe", "free", "✓", "no sesame", "guarantee"):
-            self.assertNotIn(word, text)
+    def test_same_wording_for_a_not_found_allergen(self):
+        self.assertEqual(coverage.coverage(ParsedQuery(allergens=["sesame"]), self.excerpts),
+                         [(coverage.NONE, "sesame: not mentioned in shown excerpts")])
 
-    def test_allergy_requests_use_careful_wording_for_every_need(self):
-        out = coverage.coverage(self.parsed, self.excerpts, allergy_sensitive=True)
-        self.assertEqual(len(out), 4)
-        for _, text in out:
-            self.assertNotIn("✓", text)
-            self.assertRegex(text, r": (mentioned in \d+ excerpts?|not mentioned in shown excerpts)$")
+    def test_no_check_mark_and_no_safety_wording_anywhere(self):
+        for text in (t for _, t in coverage.coverage(self.parsed, self.excerpts)):
+            self.assertRegex(text, r"^.+: (mentioned in \d+ excerpts?|not mentioned in shown excerpts)$")
+            for word in ("✓", "✔", "safe", "free", "guarantee", "not found"):
+                self.assertNotIn(word, text.lower())
 
     def test_nothing_parsed_gives_no_row(self):
         self.assertEqual(coverage.coverage(None, self.excerpts), [])
@@ -64,7 +60,7 @@ class WordingTests(unittest.TestCase):
         self.assertEqual(coverage.preferences_line(p), "Not verified from reviews: open late, ramen")
         self.assertEqual(coverage.preferences_line(ParsedQuery()), "")
         self.assertEqual(coverage.preferences_line(None), "")
-        self.assertEqual([t for _, t in coverage.coverage(p, ex("open late ramen vegan"))], ["vegan ✓ 1 excerpt"])
+        self.assertEqual([t for _, t in coverage.coverage(p, ex("open late ramen vegan"))], ["vegan: mentioned in 1 excerpt"])
 
 
 class EscapingTests(unittest.TestCase):

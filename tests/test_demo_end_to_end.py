@@ -98,10 +98,9 @@ class ExampleButtonsInDemoModeTests(unittest.TestCase):
                 self.assertNotIn("Explain", [b.label for b in at.button])  # cached ranks 4+ have no live Explain
                 for card in cards:  # every card has a coverage row for the parsed need, and it never implies safety
                     row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
-                    self.assertRegex(row, r"(✓ \d+ excerpts?|: mentioned in \d+ excerpts?|: not found in these excerpts|: not mentioned in shown excerpts)")
+                    self.assertRegex(row, r": (mentioned in \d+ excerpts?|not mentioned in shown excerpts)")
                     self.assertNotIn("safe", row.lower())
-                    if label in ALLERGY_EXAMPLES:
-                        self.assertNotIn("✓", row)
+                    self.assertNotIn("✓", row)  # one wording for every need type, no check marks
                 self.assertFalse(any("No dietary or allergy need detected" in i.value for i in at.info))
 
     def test_allergy_examples_keep_the_guard_and_the_full_caveat(self):
