@@ -50,6 +50,13 @@ contradiction = the reviewer reports the opposite: a warning, a refusal, a failu
 accommodate, a reaction or illness, or advice to avoid the restaurant for this need.
 uncertainty = related to the need but neither, including a mere mention of the allergen,
 ingredient, dish or diet. A reviewer warning against the restaurant is never support.
+A claim's wording must match its label: a contradiction is phrased as a warning or reported
+problem, a support claim as the restaurant meeting the need, and an uncertainty claim as unclear.
+When a reviewer relays reassurance from staff (for example 'the manager said allergies are
+not a problem') but the review as a whole warns against the restaurant or reports a problem,
+the claim leads with the warning or problem and mentions the reassurance only as context
+('... although staff reportedly said it was not a problem'). Never write a claim that
+presents staff reassurance as the finding of a review that warns.
 Write every claim in third person with explicit reviewer attribution, such as
 'One reviewer reported ...' or 'Another reviewer described ...'. Prefer concise
 paraphrases over copied review text. Never write from the reviewer's first-person
