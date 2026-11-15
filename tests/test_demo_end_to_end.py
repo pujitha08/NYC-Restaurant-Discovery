@@ -72,7 +72,7 @@ class ExampleButtonsInDemoModeTests(unittest.TestCase):
                 cards = self.cards(at)
                 self.assertEqual(len(cards), 10)
                 self.assertEqual([c.proto.expanded for c in cards], [True] + [False] * 9)  # the top card is open
-                self.assertEqual(at.status[0].label, "Showing a saved demo result")
+                self.assertEqual(at.status[0].label, "Done")
                 notices = [m.value for m in at.markdown if 'class="notice-cache"' in m.value]
                 self.assertEqual(len(notices), 1)  # one notice, neutral style, with the saved date
                 self.assertRegex(notices[0], r"\(saved \d{4}-\d{2}-\d{2}\), not a live search")

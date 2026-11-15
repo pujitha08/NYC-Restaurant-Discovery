@@ -374,7 +374,7 @@ def run_staged(work, final_label):
 def search_final_label(result):
     outcome = result[0]
     if outcome.cached:
-        return "Showing a saved demo result"
+        return "Done"  # the grey "cached demo result" notice below says it is saved
     if any(v.summary_error for v in outcome.results) or outcome.parse_error or outcome.ranking_fallback:
         return "Done (some steps were unavailable; see the notice below)"
     return "Done"
@@ -460,8 +460,7 @@ def main():
                         query, borough, base_retriever=base_retriever, stance_retriever=stance_retriever, client=client,
                         model=model, setup_error=setup_error, include_low_evidence=include_low, demo_mode=demo_mode,
                         progress=progress),
-                    lambda c: "Showing a saved demo result" if c.base.cached else
-                    "Done" if c.stance is not None else "Done (the stance ranking was unavailable; see the notice below)")
+                    lambda c: "Done" if c.base.cached or c.stance is not None else "Done (the stance ranking was unavailable; see the notice below)")
                 st.session_state["last_compare"] = comparison
                 st.session_state.pop("last_search", None)
             else:

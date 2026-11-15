@@ -405,7 +405,7 @@ class AppSmokeTests(unittest.TestCase):
                 at = self.start(FakeClient())
                 next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
                 self.search(at)
-        self.assertEqual(at.status[0].label, "Showing a saved demo result")
+        self.assertEqual(at.status[0].label, "Done")
         self.assertIn("Loading the saved demo result: done", self.text(at.status[0]))
         self.assertEqual(len([m for m in at.markdown if 'class="notice-cache"' in m.value]), 1)
         self.assertEqual(len([i for i in at.info if "cached demo result" in i.value]), 0)
