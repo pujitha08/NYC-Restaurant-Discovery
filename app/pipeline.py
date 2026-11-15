@@ -17,6 +17,7 @@ token usage per LLM call, and error categories/codes.
 """
 
 import datetime
+from collections import Counter
 import hashlib
 import json
 import os
@@ -269,6 +270,60 @@ def stance_bar(view):
     return {"accommodate": a, "warns": w, "mention": m, "other": counts.get("not_about_allergy", 0),
             "bar": "🟩" * a + "🟥" * w + "🟨" * m + "⬜" * counts.get("not_about_allergy", 0),
             "text": f"{a} accommodate / {w} warns / {m} mention", "warning": warning}
+
+
+def results_summary(outcome):
+    """One plain-text line summarizing the result cards, or "" if there are none. No model call: it only counts the
+    status badges and stance counts already on the cards, and each restaurant is counted once.
+
+    Allergy-sensitive requests: warn (a "reports problems"/"mixed" badge, or a warning sentence in its stance counts) /
+    describe accommodation (the cautious "reviews discuss this" badge, or an accommodation sentence) / no direct evidence.
+    Other requests: supported / mixed / reports problems / insufficient evidence. Restaurants without a summary
+    (and no stance counts) are counted as "not summarized yet", never as evidence either way. Zero parts are left out.
+    The wording never says a restaurant is safe.
+    """
+    views = list(outcome.results)
+    if not views:
+        return ""
+    allergens = [a.strip() for a in (getattr(outcome.parsed, "allergens", None) or []) if a and a.strip()]
+    stance = lambda v, k: (v.stance_counts or {}).get(k, 0)
+    counts = Counter()
+    for v in views:
+        status = v.summary.status if v.summary is not None else None
+        if outcome.allergy_sensitive:
+            if status in (STATUS_PROBLEMS, STATUS_MIXED) or stance(v, "negative"):
+                counts["warn"] += 1
+            elif status == STATUS_NEUTRAL or stance(v, "accommodation"):
+                counts["accommodate"] += 1
+            elif status is None:
+                counts["pending"] += 1
+            else:
+                counts["none"] += 1
+        else:
+            key = {STATUS_SUPPORTED: "supported", STATUS_MIXED: "mixed", STATUS_PROBLEMS: "problems",
+                   STATUS_INSUFFICIENT: "none", STATUS_NEUTRAL: "supported"}.get(status, "pending")
+            counts[key] += 1
+    plural = lambda n, one, many: one if n == 1 else many
+    parts = []
+    if outcome.allergy_sensitive:
+        about = ", ".join(allergens) if allergens else "this allergy"
+        n = counts["warn"]
+        if n:
+            parts.append(f"{n} {plural(n, 'restaurant has', 'restaurants have')} reviews that warn about {about}")
+        n = counts["accommodate"]
+        if n:
+            parts.append(f"{n} {plural(n, 'describes', 'describe')} accommodating {'it' if len(allergens) <= 1 else 'them'}")
+        n = counts["none"]
+        if n:
+            parts.append(f"{n} show no direct evidence")
+    else:
+        for key, text in (("supported", "supported by reviews"), ("mixed", "with mixed evidence"),
+                          ("problems", "with reviews that report problems"), ("none", "with insufficient evidence")):
+            if counts[key]:
+                parts.append(f"{counts[key]} {text}")
+    if counts["pending"]:
+        parts.append(f"{counts['pending']} not summarized yet")
+    return " · ".join(parts)
 
 
 def is_allergy_sensitive(query, parsed):

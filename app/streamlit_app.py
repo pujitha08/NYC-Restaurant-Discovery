@@ -44,6 +44,7 @@ CSS = """
 [class*="st-key-example_"] button { border-radius: 999px; padding: 0.15rem 0.9rem; border: 1px solid #C2410C;
   color: #9A3412; background: #FFFFFF; font-weight: 600; }
 [class*="st-key-example_"] button:hover { background: #FAF3EA; border-color: #9A3412; }
+.results-summary { color: #44403C; font-size: 0.95rem; margin: -0.25rem 0 0.5rem; }
 .notice-cache { background: #F5F5F4; border: 1px solid #D6D3D1; border-left: 5px solid #C2410C; border-radius: 8px;
   padding: 0.6rem 0.9rem; margin: 0.5rem 0; color: #1C1917; font-size: 0.95rem; }
 .claim { border-left: 6px solid #475569; background: #F8FAFC; padding: 0.55rem 0.9rem; margin: 0.6rem 0;
@@ -490,6 +491,9 @@ def main():
         show_parsed(outcome)
         if outcome.results:
             st.subheader(f"{len(outcome.results)} restaurants")
+            line = pipeline.results_summary(outcome)
+            if line:
+                st.markdown(f'<div class="results-summary">{html_text(line)}</div>', unsafe_allow_html=True)
             st.caption(f"Top {pipeline.AUTO_SUMMARIES} are summarized automatically; open a result and use Explain "
                        "for the others. Ranking reflects review relevance, not safety.")
         t = outcome.timings

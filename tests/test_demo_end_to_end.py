@@ -5,6 +5,7 @@ runs the real page (chips, status, cards, allergy guard) on the real saved outco
 """
 
 import tempfile
+import re
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -81,6 +82,13 @@ class ExampleButtonsInDemoModeTests(unittest.TestCase):
                 chips = next(m.value for m in at.markdown if 'class="chips"' in m.value)
                 self.assertNotIn("restaurants", chips)  # no count chip ...
                 self.assertEqual(at.subheader[0].value, "10 restaurants")  # ... the heading carries the count
+                lines = [m.value for m in at.markdown if 'class="results-summary"' in m.value]
+                self.assertEqual(len(lines), 1)  # one summary line, computed from the cards
+                text = re.sub(r"<[^>]+>", "", lines[0])
+                self.assertEqual(sum(int(n) for n in re.findall(r"(?:^|· )(\d+) ", text)), 10)  # every card counted once
+                if label in ALLERGY_EXAMPLES:
+                    for word in ("safe", "supported", "guarantee"):
+                        self.assertNotIn(word, text.lower())
                 for card in cards:
                     self.assertLessEqual(card.label.count("★"), 1)
                     if card.caption:
