@@ -1,10 +1,9 @@
-# Demo guide (integration/demo)
+# Demo guide
 
 ## Launch
 
 ```bash
 cd NYC-Restaurant-Discovery
-git checkout integration/demo
 source ~/tf-env/bin/activate        # or your venv with requirements.txt installed
 streamlit run app/streamlit_app.py  # opens http://localhost:8501
 ```
@@ -24,21 +23,30 @@ uses about 3.5-4K Groq tokens (parse plus 3 summaries) and Groq allows 8K tokens
 
 ## Reading the results
 
-The first screen is a title, a one-line value proposition, the search box with the four example chips right under it,
-borough pills, **Compare rankings** and **Demo mode** toggles, and a collapsed **Advanced settings** expander (retrieval
-method, "fewer than 5 reviews"). A slim note says reviews are historical and anecdotal; the full-strength warning
-appears only above allergy results.
+The first screen is a title, a one-line value proposition, a **scope note** ("Built for dietary needs and food allergies:
+diets, allergens and mixed groups. It doesn't check opening hours, prices or availability."), the search box with the four
+example chips right under it, borough pills, **Compare rankings** and **Demo mode** toggles, and a collapsed **Advanced
+settings** expander (retrieval method, "fewer than 5 reviews"). A slim note says reviews are historical and anecdotal; the
+full-strength warning appears only above allergy results. The default method is `semantic_capped`; the stance re-ranker is
+an optional, experimental method whose held-out evaluation is still pending, so don't present it as better.
 
 After a search, a staged progress box ("Understanding your request", "Searching 605K review passages", "Reading
-reviews", "Summarizing") collapses to one line, then chips show the parsed request (diets, allergens, borough, result
-count). Results are cards: the title row is "1. Champs Diner — Brooklyn · ★ 4.5 · ✓ Supported" (the badge is the
+reviews", "Summarizing") collapses to one line ("Done"), then chips show the parsed request (diets, allergens, borough).
+If no diet, allergen or group need was detected, an info notice says the results are ranked by general review match and
+are not checked against a diet or allergen. Under the "N restaurants" heading, one summary line counts the summarized
+cards, e.g. "Of the top 3 summarized: 1 restaurant has reviews that warn about a peanut allergy · 2 show no direct
+evidence" (computed from the badges and stance counts; zero parts hidden; it never says a restaurant is safe). If the
+request has preferences (cuisine, hours, venue) a muted line says they guide the search but are not verified from reviews.
+Results are cards: the title row is "1. Champs Diner — Brooklyn · ★ 4.5 · ✓ Supported" (the badge is the
 evidence status: ✓ Supported, ◐ Mixed evidence, ⚠ Reviews report problems, ○ Insufficient evidence, ℹ Reviews discuss
-this — read each claim, or "… Not summarized yet"). The top card starts open. Inside a card: rating, review count and
-address; ONE status row (the verdict plus, for allergy requests, the allergy reminder); the top claim as a block with a
+this — read each claim, or "… Summary on request"). The top card starts open. Inside a card: rating, review count and
+address; a **coverage row** with one chip per parsed diet, allergen and group need ("vegan: mentioned in 3 excerpts" or
+"halal: not mentioned in shown excerpts"; it counts mentions in the shown excerpts, not verdicts, and never implies safety)
+and a muted "Not verified from reviews: ..." line for preferences; ONE status row (the verdict plus, for allergy requests, the allergy reminder); the top claim as a block with a
 colored left border and a plain label (Warning / Positive / Mention) and its best quote with the review date; and
 **Show all evidence** for the other claims and every retrieved excerpt. Warnings are ordered first, so the claim shown by
 default is never milder than a hidden one. Allergy requests never show "Supported" or "Positive": a supporting claim there
-is only a "Mention". Results 4-10 say "Not summarized yet"; open one and click **Explain**. **Expand all** / **Collapse
+is only a "Mention". Results 4-10 say "Summary on request"; open one and click **Explain**. **Expand all** / **Collapse
 all** sit above the list.
 
 ## Four demo queries
@@ -78,6 +86,9 @@ relevance, not safety.
   with **Demo mode** on it uses only labels already saved on disk and otherwise shows the base ranking alone.
   No summaries in this view.
 - **Evidence bar**: results ranked by `semantic_capped_stance` show the same bar and the strongest warning sentence.
+  The stance labeler is chosen by `STANCE_LABELER` in `src/config.py` (`"llm"` by default); see the README's "Stance
+  re-ranker" section. The weights chosen on the dev queries are in `reports/stance_rerank_frozen.json`; they are dev
+  numbers and the held-out result is pending.
 - Query terms are highlighted in the review excerpts; the sidebar explains the stages, the data size and the badges.
 
 ## Cached demo results (offline / rate-limit fallback)
@@ -87,7 +98,11 @@ The four queries above (and `halal chinese food` with `semantic_log`) are saved 
 match (same query text, borough and method) from the cache without calling the language model. The app also
 falls back to the cache by itself when a live search hits a rate-limit, timeout or network error and the query
 matches. Cached results are always labeled **"cached demo result"**; results past the top 3 have no Explain.
-Other queries run live. The cached summaries come from one earlier live run, so wording and a few statuses can
+Other queries run live. In a cached result the status line just says "Done" and a grey notice says it is a saved result
+with its date. The cached summaries come from one earlier live run (2026-11-13), before the summarizer prompt change that makes
+a claim's wording match its label and lets a warning lead over relayed staff reassurance; they have not been regenerated,
+so for example the Pig and Khao claim may still read as reassurance. They also have summaries only for the top 3, so the
+results summary line counts three cards. Wording and a few statuses can
 differ from the descriptions above (in the saved run Pig and Khao is "Reviews report problems" and Mission
 "Insufficient evidence").
 
@@ -102,4 +117,9 @@ Regenerate (needs the semantic index and a working Groq key; takes about 4 minut
 - **Slow first search**: that is the warm-up; it is fast afterwards.
 - **No summaries at all / setup message**: check `.env` (key and model) and restart Streamlit.
 - **Fallback**: tick **Demo mode** (see above), or `reports/failure_examples.md` (case 9) and `reports/metrics_summary.md` (provisional metrics)
-  tell the before/after and results story without the live app.
+  tell the before/after and results story without the live app. The other reports live in `reports/` (listed in the README).
+
+## Privacy
+
+Never commit `.env` or any key, `eval/labels/*` (rater files), `eval/llm_labels*.jsonl` (judge labels) or the judging pools;
+`.gitignore` covers them. Only `data/demo_cache/` is tracked under `data/`.

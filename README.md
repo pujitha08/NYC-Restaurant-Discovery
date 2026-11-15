@@ -5,11 +5,21 @@ dietary needs in natural language (e.g. "nut-free brunch in Brooklyn for a
 group with a vegan friend") and get ranked NYC restaurant recommendations
 backed by evidence from real reviews.
 
+**Scope.** Built for dietary needs and food allergies: diets, allergens and mixed groups. It does not check opening
+hours, prices or availability; those words in a request guide the search but are not verified from reviews. Reviews are
+Google reviews through September 2021, so results are anecdotal and are not safety guarantees. For allergies, always
+confirm with the restaurant.
+
 ## Pipeline
 
 1. **Query parser** – a Groq-hosted LLM (`GROQ_MODEL`, default `openai/gpt-oss-20b`) turns the free-text query into a structured `ParsedQuery` (`src/llm/query_parser.py`).
 2. **Retrieval** – TF-IDF baselines (`doc_tfidf`, `chunk_tfidf_*`) and sentence-transformer retrieval over review chunks (`semantic_log`, `semantic_capped`; all-MiniLM-L6-v2). `semantic_capped` is the app default.
 3. **Evidence summarizer** – the same Groq model summarizes the retrieved review excerpts of the top results as support / contradiction / uncertainty claims, each citing a review (`src/llm/evidence_summarizer.py`). Allergy-sensitive queries never get a "Supported" status.
+
+4. **Stance re-ranker (optional, experimental)** – `semantic_capped_stance` re-orders the top 20 of `semantic_capped` by
+   what individual review sentences say about the need (accommodation / mention / negative / not about it). It is
+   selectable in the app (Advanced settings) and in Compare rankings, but **it is not the default**, and its benefit over
+   `semantic_capped` has not been established: the held-out test evaluation is still pending (see "Stance re-ranker").
 
 **Classifier lane:** `src/classifier/allergen_tagger.py` is a character n-gram TF-IDF + one-vs-rest logistic regression
 model that tags which FDA major allergens a text mentions; it is trained on the HuggingFace `14-allergens-v2` menu-item
@@ -68,6 +78,77 @@ python -m pytest -q
 
 The reported metrics use provisional LLM-judge labels that have not yet been validated against human labels (see
 [reports/metrics_summary.md](reports/metrics_summary.md)). [DEMO.md](DEMO.md) has the demo script.
+
+## The app
+
+`streamlit run app/streamlit_app.py`. A search shows:
+
+- **Parsed request chips** (diets, allergens, borough) and an expander, "How your request was understood", that lists only
+  the fields that were parsed. If no diet, allergen or group need was detected, a notice says results are ranked by general
+  review match and are not checked against a diet or allergen (the results are still shown).
+- **A results summary line** under the "N restaurants" heading, for example "Of the top 3 summarized: 1 restaurant has
+  reviews that warn about a peanut allergy · 2 show no direct evidence". It is computed from the status badges and stance
+  counts already on the cards (no model call), counts only restaurants that have a summary or stance counts, hides zero
+  parts and never says a restaurant is safe. A muted line notes that preferences such as opening hours or cuisine are not
+  verified from reviews.
+- **Result cards** with an evidence status badge (Allergy requests never show "Supported"), the top claim and its quote,
+  "Show all evidence", and a **coverage row**: one chip per parsed diet, allergen and group need saying whether the shown
+  excerpts mention it ("vegan: mentioned in 3 excerpts" / "halal: not mentioned in shown excerpts"). It uses the same term
+  matcher as the highlighting, counts mentions (not verdicts) and never implies safety. Parsed preferences are listed
+  separately as "Not verified from reviews: ...". Cards without a summary say "Summary on request" (click Explain).
+- **Demo mode** (checkbox): answers the four example queries from `data/demo_cache/*.json` (public review text already shown
+  in the app; no keys) without calling the language model. Cached results are labeled "cached demo result" with the save
+  date; the status line just says "Done". Cached summaries come from one earlier live run and predate the latest summarizer
+  prompt wording fix; they have not been regenerated.
+- **Compare rankings** (checkbox): `semantic_capped` and `semantic_capped_stance` side by side with rank-change marks and a
+  sentence-stance bar per restaurant. With Demo mode on it only uses stance labels already saved on disk.
+- **Advanced settings** (collapsed): retrieval method (default `semantic_capped`) and "include restaurants with fewer than
+  5 reviews".
+
+## Stance re-ranker
+
+`src/retrieval/stance_rerank.py` re-orders the top 20 of `semantic_capped`:
+`score = base_norm + w_pos*accommodation_share - w_neg*negative_share - w_strong_neg*(strong negative, allergy queries)`.
+Sentence stance labels come from a labeler chosen by the explicit setting `STANCE_LABELER` in `src/config.py`:
+`"llm"` (default: Groq `openai/gpt-oss-20b`, labels cached on disk in `data/processed/stance_rerank/`) or `"classifier"`
+(the logistic regression of `src/classifier/stance.py`). Whether the classifier's model file exists never changes the choice.
+
+Evaluation design (fixed before looking at test results):
+- Candidate depth is pre-registered at 20 (`STANCE_RERANK["top_n"]`), used for tuning and for the test.
+- The 35 evaluation queries are split 20 dev / 15 test by seed 6165. Weights were tuned on the dev queries only.
+- **Frozen weights:** [reports/stance_rerank_frozen.json](reports/stance_rerank_frozen.json) records the weights chosen
+  on dev (w_pos 0.9, w_neg 0.0, w_strong_neg 0.2), the rule used (best dev NDCG@10 with w_pos at most 0.9), the weight
+  grids and the dev scores. These are dev numbers on the queries the weights were tuned on, so they are optimistic.
+  `STANCE_RERANK` in `src/config.py` still holds the original starting weights; the frozen ones are not adopted as the app
+  setting.
+- **Pending:** the held-out evaluation on the 15 test queries (judging the test candidate pairs and running the evaluation
+  once with the frozen weights). Until it is done, nothing here claims that the stance re-ranker beats `semantic_capped`.
+
+```bash
+python -m eval.label_stance [--dev-only]    # budgeted, resumable sentence labeling (Groq, ledger in data/processed/stance_rerank/)
+python -m eval.tune_stance_rerank --labels eval/llm_labels.jsonl --dev-only --cache-only
+```
+
+## Reports
+
+| File (reports/) | What it is |
+|---|---|
+| metrics_summary.md, metrics_per_query.csv, metrics_ndcg_p10.png, retrieval_comparison.json | retrieval metrics per system (provisional LLM-judge labels) |
+| judge_validation.md | LLM judge vs human raters: agreement, kappa, alpha; human-vs-human section |
+| no_evidence_audit.md | audit of "no evidence found" judge labels, incl. the extended top-20 dev pool |
+| allergen_tagger.md | allergen tagger held-out menu results and limitations |
+| sentence_check.md | labeled review sentences: rater agreement, stance classifier CV, tagger on reviews |
+| stance_rerank_dev_grid1.md / _grid2.md (+ `_weights.json`) | dev-only tuner runs (grid 1, and grid 2 with `w_pos` widened once) |
+| stance_rerank_frozen.json | frozen dev weights, the rule, grids and dev scores |
+| failure_examples.md | before/after failure cases |
+| eda/ | exploratory data analysis |
+
+## Privacy and what not to commit
+
+Never commit `.env` or any API key, the rater label files (`eval/labels/*`, except the two labeling guides), LLM judge labels
+(`eval/llm_labels*.jsonl`), the judging pools (`eval/pool_extended.csv`, `eval/pool_test.csv`), request logs (`logs/`) or
+`data/` (except `data/demo_cache/`). The raters must not see each other's files or the LLM labels while labeling. `.gitignore`
+enforces this; use named `git add` paths. No test-split result or label should influence the frozen weights.
 
 ## Data pipeline
 
@@ -181,16 +262,18 @@ Caveats:
 ## Layout
 
 ```
-app/          Streamlit app (streamlit_app.py) and its pipeline (pipeline.py: parse -> retrieve -> summarize)
+app/          Streamlit app (streamlit_app.py), its pipeline (pipeline.py: parse -> retrieve -> summarize), demo_cache.py,
+              compare.py, chips.py, coverage.py, highlight.py
 src/
   config.py, schemas.py   settings and shared dataclasses
   data/                   filtering, cleaning, EDA, restaurant docs and review chunks
-  retrieval/              tfidf.py, tfidf_chunks.py, semantic.py, evidence.py (snippet selection)
+  retrieval/              tfidf.py, tfidf_chunks.py, semantic.py, evidence.py (snippet selection), stance_rerank.py
   classifier/             allergen_tagger.py (FDA allergen mentions), stance.py (review-sentence stance)
   llm/                    groq_client.py, nvidia_client.py, openrouter_client.py, query_parser.py, evidence_summarizer.py
-eval/         queries, judging pool, LLM judge, metrics, significance tests, agreement and validation scripts
+eval/         queries, judging pool, LLM judge, metrics, significance tests, agreement and validation scripts,
+              stance labeling and tuning (label_stance.py, tune_stance_rerank.py), audits, answer_eval.py
               (eval/labels/ holds rater material and is git-ignored except the labeling guides)
-reports/      metrics summary and figures, EDA, failure examples
+reports/      metrics, validation, audits, stance re-ranker runs and frozen weights, EDA, failure examples (see "Reports")
 docs/         LLM integration notes
 examples/     LLM pipeline demo script
 tests/        pytest suite
