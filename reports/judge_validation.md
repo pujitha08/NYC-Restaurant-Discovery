@@ -1,20 +1,20 @@
 # Judge validation: human labels vs the LLM judge
 
-- Human labels: `eval/labels/labels_pujitha.csv` (120 rows; 1 with a blank label skipped; 119 labeled). Labeled blind to the LLM labels, by two raters (second rater: see below).
-- LLM labels: `eval/llm_labels.jsonl` (1074 labeled pairs, by source: openrouter/crusoe 559, groq 434, rule (no evidence shown) 81)
-- **Matched: 119 of 119 labeled rows** (by review ids: 106, name + borough: 13); 0 could not be matched and are excluded.
+- Human labels: `eval/labels/labels_pujitha.csv` (120 rows; 0 with a blank label skipped; 120 labeled). Labeled blind to the LLM labels, by two raters (second rater: see below).
+- LLM labels: `eval/llm_labels.jsonl` (1165 labeled pairs, by source: openrouter/crusoe 559, groq 525, rule (no evidence shown) 81)
+- **Matched: 120 of 120 labeled rows** (by review ids: 107, name + borough: 13); 0 could not be matched and are excluded.
 - Relevance scale 0/1/2 (eval/RUBRIC.md). Bootstrap 95% CIs resample items (seed 6165).
 
 ## Agreement
 
 | Statistic | Value | 95% CI |
 |---|---|---|
-| n matched | 119 | |
-| Raw agreement | 0.748 | [0.672, 0.824] |
-| Cohen's kappa (unweighted) | 0.618 | |
-| Cohen's kappa (quadratic-weighted) | 0.735 | [0.617, 0.834] |
-| Krippendorff's alpha (ordinal) | 0.734 | |
-| Mean label: human / LLM | 1.092 / 0.958 | |
+| n matched | 120 | |
+| Raw agreement | 0.750 | [0.667, 0.825] |
+| Cohen's kappa (unweighted) | 0.620 | |
+| Cohen's kappa (quadratic-weighted) | 0.737 | [0.620, 0.834] |
+| Krippendorff's alpha (ordinal) | 0.736 | |
+| Mean label: human / LLM | 1.100 / 0.967 | |
 | LLM above / below human | 10 / 20 | |
 | Off by one step / by two | 24 / 6 | |
 
@@ -24,17 +24,17 @@
 |---|---|---|---|---|
 | 0 | 35 | 2 | 0 | 37 |
 | 1 | 9 | 17 | 8 | 34 |
-| 2 | 6 | 5 | 37 | 48 |
+| 2 | 6 | 5 | 38 | 49 |
 
 ## Data-quality flag: the judge reported no evidence where you saw some
 
-29 matched pairs have an LLM call (not the no-evidence rule) whose reason says "no evidence found" and cites no review, although your sheet showed retrieved or fallback evidence for them (mean human label 0.552; samples S072, S109, S017, S037, S104, S085, S019, S068, S077, S049, S088, S118, S116, S084, S117, S064, S105, S074, S078, S101, S087, S095, S030, S070, S075, S076, S114, S071, S056). The judge may have been shown different (or empty) evidence than the sheet; this should be checked against the pool the judge actually read before trusting those labels. Sensitivity analysis without these pairs: n = 90, raw agreement 0.789, quadratic kappa 0.809 (with them: 0.748 and 0.735).
+29 matched pairs have an LLM call (not the no-evidence rule) whose reason says "no evidence found" and cites no review, although your sheet showed retrieved or fallback evidence for them (mean human label 0.552; samples S072, S109, S017, S037, S104, S085, S019, S068, S077, S049, S088, S118, S116, S084, S117, S064, S105, S074, S078, S101, S087, S095, S030, S070, S075, S076, S114, S071, S056). The judge may have been shown different (or empty) evidence than the sheet; this should be checked against the pool the judge actually read before trusting those labels. Sensitivity analysis without these pairs: n = 91, raw agreement 0.791, quadratic kappa 0.811 (with them: 0.750 and 0.737).
 
 ## Mean label by LLM label source
 
 | Source | n | Mean human | Mean LLM | Agreement |
 |---|---|---|---|---|
-| openrouter/crusoe | 106 | 1.226 | 1.075 | 0.717 |
+| openrouter/crusoe | 107 | 1.234 | 1.084 | 0.720 |
 | rule (no evidence shown) | 13 | 0.000 | 0.000 | 1.000 |
 
 ## Agreement by query category
@@ -44,7 +44,7 @@
 | single_diet | 43 | 0.814 | 0.828 | 1.349 | 1.372 | 5 / 3 |
 | mixed_group | 30 | 0.633 | 0.589 | 1.133 | 1.033 | 4 / 7 |
 | allergy | 34 | 0.765 | 0.649 | 0.735 | 0.412 | 0 / 8 |
-| diet_plus_filter | 12 | 0.750 | 0.534 | 1.083 | 0.833 | 1 / 2 |
+| diet_plus_filter | 13 | 0.769 | 0.578 | 1.154 | 0.923 | 1 / 2 |
 
 Cells with few queries are noisy; read the category rows as descriptions of this sample, not estimates.
 
@@ -64,15 +64,15 @@ Cells with few queries are noisy; read the category rows as descriptions of this
 ## Human vs human: Pujitha and Kang
 
 - Second rater: `eval/labels/labels_kang.csv` (120 rows; 0 blank). Per the project workflow neither rater was shown the LLM labels (not verifiable from the files; see Limitations).
-- **Shared labeled pairs: 119** (labeled by Pujitha only: 0; by Kang only: 1). Same sample sheet; matched on `sample_id`.
+- **Shared labeled pairs: 120** (labeled by Pujitha only: 0; by Kang only: 0). Same sample sheet; matched on `sample_id`.
 
 | Statistic | Value | 95% CI |
 |---|---|---|
-| Exact agreement | 0.739 | [0.664, 0.815] |
-| Cohen's kappa (unweighted) | 0.605 | |
-| Cohen's kappa (quadratic-weighted) | 0.788 | [0.693, 0.863] |
-| Krippendorff's alpha (ordinal) | 0.783 | |
-| Mean label: Pujitha / Kang | 1.092 / 1.017 | |
+| Exact agreement | 0.742 | [0.658, 0.817] |
+| Cohen's kappa (unweighted) | 0.608 | |
+| Cohen's kappa (quadratic-weighted) | 0.790 | [0.695, 0.865] |
+| Krippendorff's alpha (ordinal) | 0.785 | |
+| Mean label: Pujitha / Kang | 1.100 / 1.025 | |
 | Off by one step / by two | 29 / 2 | |
 
 Confusion matrix (rows: Pujitha, columns: Kang):
@@ -81,9 +81,9 @@ Confusion matrix (rows: Pujitha, columns: Kang):
 |---|---|---|---|---|
 | 0 | 35 | 2 | 0 | 37 |
 | 1 | 7 | 17 | 10 | 34 |
-| 2 | 2 | 10 | 36 | 48 |
+| 2 | 2 | 10 | 37 | 49 |
 
-### Disagreements: 31 of 119
+### Disagreements: 31 of 120
 
 | Sample | Query | Restaurant | Pujitha | Kang | Pujitha's note | Kang's note |
 |---|---|---|---|---|---|---|
@@ -125,15 +125,15 @@ Matched 120 of 120 labeled rows (unmatched: 0).
 
 | Statistic | Pujitha vs LLM | Kang vs LLM |
 |---|---|---|
-| n matched | 119 | 120 |
-| Raw agreement | 0.748 [0.672, 0.824] | 0.842 [0.775, 0.900] |
-| Cohen's kappa (unweighted) | 0.618 | 0.756 |
-| Cohen's kappa (quadratic) | 0.735 [0.617, 0.834] | 0.899 [0.851, 0.939] |
-| Krippendorff's alpha (ordinal) | 0.734 | 0.899 |
-| Mean label: human / LLM | 1.092 / 0.958 | 1.025 / 0.967 |
+| n matched | 120 | 120 |
+| Raw agreement | 0.750 [0.667, 0.825] | 0.842 [0.775, 0.900] |
+| Cohen's kappa (unweighted) | 0.620 | 0.756 |
+| Cohen's kappa (quadratic) | 0.737 [0.620, 0.834] | 0.899 [0.851, 0.939] |
+| Krippendorff's alpha (ordinal) | 0.736 | 0.899 |
+| Mean label: human / LLM | 1.100 / 0.967 | 1.025 / 0.967 |
 | LLM above / below human | 10 / 20 | 6 / 13 |
 | Off by one step / by two | 24 / 6 | 19 / 0 |
-| Agreement without the 'no evidence' flagged pairs | 0.789 (n=90) | 0.857 (n=91) |
+| Agreement without the 'no evidence' flagged pairs | 0.791 (n=91) | 0.857 (n=91) |
 
 Kang vs LLM confusion matrix (rows: Kang, columns: LLM):
 
@@ -150,13 +150,13 @@ Agreement with the LLM by query category (Pujitha / Kang):
 | single_diet | 43 / 43 | 0.814 / 0.884 | 0.828 / 0.925 |
 | mixed_group | 30 / 30 | 0.633 / 0.733 | 0.589 / 0.712 |
 | allergy | 34 / 34 | 0.765 / 0.912 | 0.649 / 0.918 |
-| diet_plus_filter | 12 / 13 | 0.750 / 0.769 | 0.534 / 0.859 |
+| diet_plus_filter | 13 / 13 | 0.769 / 0.769 | 0.578 / 0.859 |
 
 ## Limitations
 
 - **Two raters.** Human-human agreement is computed above on the shared sample_ids, but the two raters are not a consensus: kappa and alpha measure how often they read the rubric alike, and both are small-sample estimates.
-- **n = 119** matched pairs. The CIs above are wide; per-category cells (4 to 11 queries) and the confusion-matrix cells are small, and the kappa values depend heavily on a few pairs.
-- **A sample, not the pool.** The rater labeled a stratified sample of 119 of the 1,074 judged pairs (about 11%; drawn by `eval/make_sample.py`), so errors in the unsampled pairs are unmeasured.
+- **n = 120** matched pairs. The CIs above are wide; per-category cells (4 to 11 queries) and the confusion-matrix cells are small, and the kappa values depend heavily on a few pairs.
+- **A sample, not the pool.** The rater labeled a stratified sample of 120 of the 1,074 pairs judged when the sample was drawn (about 11%; drawn by `eval/make_sample.py`), so errors in the unsampled pairs are unmeasured. The label file now holds 1,165 pairs because pairs were added later.
 - **The sample predates the new labels.** It was drawn from the earlier judging pool; the pairs added later for the stance re-ranker (top-20 candidates, a single provider: Groq, `gpt-oss-120b`) are not validated here, and provider-specific behaviour is only visible through the 'by source' table above.
 - **Same judge model throughout.** All LLM labels use one model family and one prompt, so shared blind spots (for example, treating a mention of the topic as support) would not show up as disagreement between LLM sources.
 - **Blindness is not verifiable.** Neither rater was shown the LLM labels per the workflow, but the files cannot prove it. The second rater agrees with the LLM more than with the first rater, so a shared reading of the rubric and contamination cannot be told apart here; confirm with the rater before leaning on that gap.
