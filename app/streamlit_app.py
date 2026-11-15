@@ -16,6 +16,7 @@ from app import chips, compare, demo_cache, pipeline  # noqa: E402
 from src.config import STANCE_RERANK  # noqa: E402
 from app.highlight import highlight_html, highlight_terms, html_text, md, squash  # noqa: E402,F401 (md is used by the tests)
 
+PREFERENCES_NOTE = "Preferences like opening hours or cuisine guide the search but aren’t verified from reviews."
 TAGLINE = "Ask in plain English. Get NYC restaurants backed by review evidence."
 # The slim note is always shown; the full-strength caveat only above allergy results.
 SLIM_NOTE = f"Reviews are historical (Google, through {pipeline.DATA_THROUGH}) and anecdotal, not safety guarantees."
@@ -99,7 +100,7 @@ BADGE_LEGEND = [
     (STATUS_BADGE[pipeline.STATUS_PROBLEMS], "reviewers warn about this need; read the warnings"),
     (STATUS_BADGE[pipeline.STATUS_INSUFFICIENT], "the reviews shown don't establish it either way"),
     (STATUS_BADGE[pipeline.STATUS_NEUTRAL], "used for allergy requests: reviews mention the topic, so read each claim"),
-    ("… Not summarized yet", "open the result and click Explain"),
+    ("… Summary on request", "open the result and click Explain"),
     ("Low evidence", "fewer than 5 usable reviews for this restaurant"),
 ]
 PIPELINE_STAGES = [
@@ -112,7 +113,7 @@ PIPELINE_STAGES = [
 ]
 ANECDOTE_NOTE = ("Review text is anecdotal, and allergy suitability cannot be confirmed from reviews. "
                  "Always ask the restaurant.")
-BADGE_NOT_SUMMARIZED = "… Not summarized yet"
+BADGE_NOT_SUMMARIZED = "… Summary on request"
 BADGE_UNAVAILABLE = "Summary unavailable"
 PENDING_OPEN = "pending_open"  # expander key to open on the next run (set after Explain, before st.rerun)
 
@@ -325,7 +326,8 @@ def show_parsed(outcome):
             rows = [("Diets", p.dietary_restrictions), ("Allergens", p.allergens), ("Group needs", p.group_needs),
                     ("Preferences (cuisine, dish, venue)", p.preferences)]
             for label, values in rows:
-                st.markdown(f"**{label}:** {md(', '.join(values)) if values else '—'}")
+                if values:  # empty fields are left out, not shown as a dash
+                    st.markdown(f"**{label}:** {md(', '.join(values))}")
         where = " and ".join(outcome.boroughs) if outcome.boroughs else "Manhattan and Brooklyn"
         st.markdown(f"**Borough filter:** {where}")
         st.caption("Diets and allergens guide the summaries; they are not hard filters on the results.")
@@ -494,6 +496,8 @@ def main():
             line = pipeline.results_summary(outcome)
             if line:
                 st.markdown(f'<div class="results-summary">{html_text(line)}</div>', unsafe_allow_html=True)
+            if outcome.parsed is not None and outcome.parsed.preferences:
+                st.caption(PREFERENCES_NOTE)
             st.caption(f"Top {pipeline.AUTO_SUMMARIES} are summarized automatically; open a result and use Explain "
                        "for the others. Ranking reflects review relevance, not safety.")
         t = outcome.timings

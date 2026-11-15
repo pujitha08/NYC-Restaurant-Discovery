@@ -55,6 +55,51 @@ class AppSmokeTests(unittest.TestCase):
         self.assertFalse(at.exception, at.exception)
         return at
 
+    class PrefsClient(FakeClient):
+        """A parser that also returns preferences (and an allergen), to exercise the request summary."""
+
+        def __init__(self, preferences, allergens=()):
+            super().__init__(location=None)
+            self.preferences, self.allergens = preferences, list(allergens)
+
+        def create(self, **kwargs):
+            res = super().create(**kwargs)
+            if kwargs["response_format"]["json_schema"]["name"] == "parsed_query":
+                import json
+                body = json.loads(res.choices[0].message.content)
+                body.update(preferences=self.preferences, allergens=self.allergens)
+                res.choices[0].message.content = json.dumps(body)
+            return res
+
+    NOTE = "Preferences like opening hours or cuisine guide the search but aren’t verified from reviews."
+
+    def test_preferences_note_only_when_there_are_preferences(self):
+        shown = self.search(self.start(self.PrefsClient(["open late", "ramen"])))
+        self.assertEqual([c.value for c in shown.caption if c.value == self.NOTE], [self.NOTE])
+        st.cache_resource.clear()  # the app caches its LLM client; start again with one that returns no preferences
+        hidden = self.search(self.start(FakeClient(location=None)))
+        self.assertNotIn(self.NOTE, [c.value for c in hidden.caption])
+
+    def test_understood_panel_hides_empty_fields(self):
+        at = self.search(self.start(self.PrefsClient(["open late"])))
+        panel = next(e for e in at.expander if e.label == "How your request was understood")
+        text = self.text(panel)
+        self.assertNotIn("—", text)
+        self.assertIn("**Diets:** vegan", text)
+        self.assertIn("**Group needs:** group dinner", text)
+        self.assertIn("**Preferences (cuisine, dish, venue):** open late", text)
+        self.assertNotIn("Allergens", text)  # empty: not listed
+        self.assertIn("**Borough filter:**", text)
+
+    def test_understood_panel_escapes_parsed_text(self):
+        at = self.search(self.start(self.PrefsClient(["<b>late</b> *ramen*"], ["pea<i>nut"])))
+        panel = next(e for e in at.expander if e.label == "How your request was understood")
+        text = self.text(panel)
+        self.assertNotIn("<b>", text)
+        self.assertNotIn("<i>", text)
+        self.assertIn("\\<b\\>late", text)  # Markdown specials carry a backslash, so they render as literal text
+        self.assertIn("\\*ramen\\*", text)
+
     def test_initial_page(self):
         at = self.start()
         self.assertEqual(at.title[0].value, "NYC Restaurant Discovery")
@@ -81,7 +126,7 @@ class AppSmokeTests(unittest.TestCase):
         self.assertEqual(len(results), 4)
         self.assertEqual([e.proto.expanded for e in results], [True, False, False, False])
         self.assertRegex(results[0].label, r"^1\. Place 1 — (Brooklyn|Manhattan) · (★ \d\.\d|no rating) · ✓ Supported")
-        self.assertIn("Not summarized yet", results[3].label)  # rank 4: not summarized automatically
+        self.assertIn("Summary on request", results[3].label)  # rank 4: not summarized automatically
         self.assertNotIn("✓", results[3].label)
         self.assertEqual(at.subheader[0].value, "4 restaurants")
         self.assertTrue(any(c.value.startswith("Method ") for c in at.caption))  # timings above the list
@@ -202,7 +247,7 @@ class AppSmokeTests(unittest.TestCase):
         self.assertFalse(at.exception, at.exception)
         results = self.results(at)
         self.assertEqual([e.proto.expanded for e in results], [True, False, False, True])
-        self.assertNotIn("Not summarized yet", results[3].label)
+        self.assertNotIn("Summary on request", results[3].label)
         self.assertIn("One reviewer reported", self.text(results[3]))
         self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
         at.run()  # an unrelated rerun keeps it open
@@ -479,7 +524,7 @@ class AppSmokeTests(unittest.TestCase):
         self.assertIn("GROQ_API_KEY", at.error[0].value)
         self.assertIn("Search still works", at.error[0].value)
         self.assertTrue(self.results(at)[0].label.startswith("1. Place 1"))
-        self.assertIn("Not summarized yet", self.results(at)[0].label)
+        self.assertIn("Summary on request", self.results(at)[0].label)
 
     def test_empty_query_and_markdown_escaping(self):
         at = self.start()
