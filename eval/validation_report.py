@@ -43,6 +43,7 @@ SAMPLE_KEY_PATH = EVAL_DIR / "labels" / "sample_key.csv"
 META_PATH = REPO / "data" / "processed" / "restaurants_final.jsonl"
 OUT_PATH = REPO / "reports" / "judge_validation.md"
 BOOTSTRAP = 2000
+SAMPLE_POOL = 1074  # labeled pairs when the human sample was drawn (the label file has grown since)
 _REVIEW_ID = re.compile(r"^\[review (\d+)[,\]]")
 
 
@@ -382,8 +383,9 @@ def write_report(path, *, args, rows, blank, matched, unmatched, result, categor
            "rubric, not with a consensus; that person's own consistency is unknown."),
           f"- **n = {len(matched)}** matched pairs. The CIs above are wide; per-category cells (4 to 11 queries) and the confusion-matrix cells "
           "are small, and the kappa values depend heavily on a few pairs.",
-          f"- **A sample, not the pool.** The rater labeled a stratified sample of {len(matched)} of the {n_llm:,} judged pairs "
-          f"(about {(len(matched) / n_llm if n_llm else 0):.0%}; drawn by `eval/make_sample.py`), so errors in the unsampled pairs are unmeasured.",
+          f"- **A sample, not the pool.** The rater labeled a stratified sample of {len(matched)} of the {SAMPLE_POOL:,} pairs judged when the "
+          f"sample was drawn (about {len(matched) / SAMPLE_POOL:.0%}; drawn by `eval/make_sample.py`), so errors in the unsampled pairs are unmeasured. "
+          f"The label file now holds {n_llm:,} pairs because pairs were added later.",
           "- **The sample predates the new labels.** It was drawn from the earlier judging pool; the pairs added later for the stance re-ranker "
           "(top-20 candidates, a single provider: Groq, `gpt-oss-120b`) are not validated here, and provider-specific behaviour is only "
           "visible through the 'by source' table above.",
