@@ -272,21 +272,31 @@ def stance_bar(view):
             "text": f"{a} accommodate / {w} warns / {m} mention", "warning": warning}
 
 
-def results_summary(outcome):
-    """One plain-text line summarizing the result cards, or "" if there are none. No model call: it only counts the
-    status badges and stance counts already on the cards, and each restaurant is counted once.
+def allergy_phrase(allergens):
+    """'a peanut allergy', 'peanut and milk allergies', 'peanut, milk and egg allergies'; 'this allergy' if none are named."""
+    names = [a.strip() for a in allergens or [] if a and a.strip()]
+    if not names:
+        return "this allergy"
+    if len(names) == 1:
+        return f"{'an' if names[0][0].lower() in 'aeiou' else 'a'} {names[0]} allergy"
+    return f"{', '.join(names[:-1])} and {names[-1]} allergies"
 
+
+def results_summary(outcome):
+    """One plain-text line summarizing the result cards, or "" if no card has a summary or stance counts.
+
+    No model call: it counts the status badges and stance counts already on the cards, each restaurant once, and only
+    restaurants that have a summary or stance counts ("Of the top N summarized:" names N). Restaurants without either are
+    left out, never counted as evidence either way, and zero parts are hidden.
     Allergy-sensitive requests: warn (a "reports problems"/"mixed" badge, or a warning sentence in its stance counts) /
     describe accommodation (the cautious "reviews discuss this" badge, or an accommodation sentence) / no direct evidence.
-    Other requests: supported / mixed / reports problems / insufficient evidence. Restaurants without a summary
-    (and no stance counts) are counted as "not summarized yet", never as evidence either way. Zero parts are left out.
-    The wording never says a restaurant is safe.
+    Other requests: supported / mixed / reports problems / insufficient evidence. The wording never says a restaurant is safe.
     """
-    views = list(outcome.results)
+    stance = lambda v, k: (v.stance_counts or {}).get(k, 0)
+    views = [v for v in outcome.results if v.summary is not None or v.stance_counts]
     if not views:
         return ""
     allergens = [a.strip() for a in (getattr(outcome.parsed, "allergens", None) or []) if a and a.strip()]
-    stance = lambda v, k: (v.stance_counts or {}).get(k, 0)
     counts = Counter()
     for v in views:
         status = v.summary.status if v.summary is not None else None
@@ -295,21 +305,17 @@ def results_summary(outcome):
                 counts["warn"] += 1
             elif status == STATUS_NEUTRAL or stance(v, "accommodation"):
                 counts["accommodate"] += 1
-            elif status is None:
-                counts["pending"] += 1
             else:
                 counts["none"] += 1
         else:
-            key = {STATUS_SUPPORTED: "supported", STATUS_MIXED: "mixed", STATUS_PROBLEMS: "problems",
-                   STATUS_INSUFFICIENT: "none", STATUS_NEUTRAL: "supported"}.get(status, "pending")
-            counts[key] += 1
+            counts[{STATUS_SUPPORTED: "supported", STATUS_MIXED: "mixed", STATUS_PROBLEMS: "problems",
+                    STATUS_NEUTRAL: "supported"}.get(status, "none")] += 1
     plural = lambda n, one, many: one if n == 1 else many
     parts = []
     if outcome.allergy_sensitive:
-        about = ", ".join(allergens) if allergens else "this allergy"
         n = counts["warn"]
         if n:
-            parts.append(f"{n} {plural(n, 'restaurant has', 'restaurants have')} reviews that warn about {about}")
+            parts.append(f"{n} {plural(n, 'restaurant has', 'restaurants have')} reviews that warn about {allergy_phrase(allergens)}")
         n = counts["accommodate"]
         if n:
             parts.append(f"{n} {plural(n, 'describes', 'describe')} accommodating {'it' if len(allergens) <= 1 else 'them'}")
@@ -321,9 +327,7 @@ def results_summary(outcome):
                           ("problems", "with reviews that report problems"), ("none", "with insufficient evidence")):
             if counts[key]:
                 parts.append(f"{counts[key]} {text}")
-    if counts["pending"]:
-        parts.append(f"{counts['pending']} not summarized yet")
-    return " · ".join(parts)
+    return f"Of the top {len(views)} summarized: " + " · ".join(parts)
 
 
 def is_allergy_sensitive(query, parsed):

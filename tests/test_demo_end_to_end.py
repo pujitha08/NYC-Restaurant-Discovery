@@ -85,7 +85,9 @@ class ExampleButtonsInDemoModeTests(unittest.TestCase):
                 lines = [m.value for m in at.markdown if 'class="results-summary"' in m.value]
                 self.assertEqual(len(lines), 1)  # one summary line, computed from the cards
                 text = re.sub(r"<[^>]+>", "", lines[0])
-                self.assertEqual(sum(int(n) for n in re.findall(r"(?:^|· )(\d+) ", text)), 10)  # every card counted once
+                n_top = int(re.match(r"Of the top (\d+) summarized: ", text).group(1))  # only summarized cards are counted
+                self.assertEqual(sum(int(n) for n in re.findall(r"(?:: |· )(\d+) ", text)), n_top)  # each counted once
+                self.assertNotIn("not summarized", text)
                 if label in ALLERGY_EXAMPLES:
                     for word in ("safe", "supported", "guarantee"):
                         self.assertNotIn(word, text.lower())
