@@ -1,0 +1,194 @@
+{
+ "frozen_on": "2026-11-14",
+ "weights": {
+  "w_pos": 0.9,
+  "w_neg": 0.0,
+  "w_strong_neg": 0.2
+ },
+ "rule": "Best mean dev NDCG@10 among grid-2 settings with w_pos <= 0.9 (ties to the smaller total weight, as in eval/tune_stance_rerank.grid_search). The cap was chosen by hand because the unrestricted grid-2 optimum (w_pos 1.8, w_neg 0.4, w_strong_neg 0.0) sat on the widened grid's upper edge and the dev NDCG@10 curve was nearly flat for w_pos >= 0.9 (0.691 at 0.9 vs 0.695 at 1.8).",
+ "unrestricted_grid2_best": {
+  "w_pos": 1.8,
+  "w_neg": 0.4,
+  "w_strong_neg": 0.0
+ },
+ "grids": {
+  "grid1": {
+   "w_pos": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.45,
+    0.6
+   ],
+   "w_neg": [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.9,
+    1.2
+   ],
+   "w_strong_neg": [
+    0.0,
+    0.1,
+    0.2,
+    0.4
+   ]
+  },
+  "grid2": {
+   "w_pos": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.45,
+    0.6,
+    0.9,
+    1.2,
+    1.8
+   ],
+   "w_neg": [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.9,
+    1.2
+   ],
+   "w_strong_neg": [
+    0.0,
+    0.1,
+    0.2,
+    0.4
+   ]
+  },
+  "restricted_for_freeze": {
+   "w_pos": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.45,
+    0.6,
+    0.9
+   ],
+   "w_neg": [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.9,
+    1.2
+   ],
+   "w_strong_neg": [
+    0.0,
+    0.1,
+    0.2,
+    0.4
+   ]
+  }
+ },
+ "dev_queries": [
+  "Q02",
+  "Q03",
+  "Q06",
+  "Q07",
+  "Q10",
+  "Q12",
+  "Q13",
+  "Q15",
+  "Q16",
+  "Q17",
+  "Q18",
+  "Q19",
+  "Q20",
+  "Q22",
+  "Q25",
+  "Q28",
+  "Q30",
+  "Q31",
+  "Q33",
+  "Q34"
+ ],
+ "test_queries_not_used": true,
+ "top_depth": 20,
+ "seed": 6165,
+ "dev_scores": {
+  "semantic_capped": {
+   "NDCG10": 0.597941606706158,
+   "P5_lenient": 0.6599999999999999,
+   "P10_lenient": 0.65
+  },
+  "stance_frozen": {
+   "NDCG10": 0.6907842390940881,
+   "P5_lenient": 0.74,
+   "P10_lenient": 0.7150000000000001,
+   "ci_NDCG10": [
+    0.5778025636618129,
+    0.7945595513639365
+   ],
+   "ci_P5": [
+    0.61,
+    0.8699999999999999
+   ]
+  },
+  "ndcg_diff_vs_base": {
+   "diff": 0.09284263238793024,
+   "ci": [
+    0.03590609526276136,
+    0.15603957288628806
+   ],
+   "p_sign_flip": 0.004299570042995701,
+   "better": 12,
+   "worse": 2,
+   "tie": 6
+  },
+  "unjudged_dev_results": 0,
+  "note": "Dev queries are where the weights were chosen: optimistic."
+ },
+ "top5_restricted_settings": [
+  {
+   "mean_dev_ndcg10": 0.6908,
+   "weights": {
+    "w_pos": 0.9,
+    "w_neg": 0.0,
+    "w_strong_neg": 0.2
+   }
+  },
+  {
+   "mean_dev_ndcg10": 0.6904,
+   "weights": {
+    "w_pos": 0.9,
+    "w_neg": 0.2,
+    "w_strong_neg": 0.4
+   }
+  },
+  {
+   "mean_dev_ndcg10": 0.6898,
+   "weights": {
+    "w_pos": 0.9,
+    "w_neg": 0.4,
+    "w_strong_neg": 0.4
+   }
+  },
+  {
+   "mean_dev_ndcg10": 0.6875,
+   "weights": {
+    "w_pos": 0.9,
+    "w_neg": 0.4,
+    "w_strong_neg": 0.0
+   }
+  },
+  {
+   "mean_dev_ndcg10": 0.6872,
+   "weights": {
+    "w_pos": 0.9,
+    "w_neg": 0.6,
+    "w_strong_neg": 0.2
+   }
+  }
+ ],
+ "labeler": "llm:openai/gpt-oss-20b",
+ "label_file": "eval/llm_labels.jsonl (1113 pairs)"
+}
