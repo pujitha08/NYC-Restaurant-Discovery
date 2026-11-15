@@ -64,6 +64,16 @@ class GridTests(unittest.TestCase):
         tuned = tune.summarize_rows(tune.rows_for(f, labels(dev), dev, best, "s", {}))["NDCG10"]
         self.assertGreater(tuned, base)
 
+    def test_widened_w_pos_grid_extends_only_that_axis(self):
+        f = features()
+        dev = list(f)
+        wide = {**tune.GRID, "w_pos": tune.GRID["w_pos"] + tune.WIDE_W_POS}
+        _, base = tune.grid_search(f, labels(dev), dev, {})
+        _, widened = tune.grid_search(f, labels(dev), dev, {}, wide)
+        self.assertEqual(len(widened), len(base) // len(tune.GRID["w_pos"]) * len(wide["w_pos"]))
+        self.assertEqual(max(w["w_pos"] for _, _, w in widened), max(tune.WIDE_W_POS))
+        self.assertEqual({w["w_neg"] for _, _, w in widened}, set(tune.GRID["w_neg"]))
+
     def test_ties_prefer_smaller_weights(self):
         f = features(2)
         dev = list(f)

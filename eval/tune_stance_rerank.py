@@ -41,6 +41,8 @@ INITIAL = {"w_pos": 0.3, "w_neg": 0.6, "w_strong_neg": 0.1}
 ZERO = {"w_pos": 0.0, "w_neg": 0.0, "w_strong_neg": 0.0}  # no stance effect: the semantic_capped order
 GRID = {"w_pos": [0.0, 0.1, 0.2, 0.3, 0.45, 0.6], "w_neg": [0.0, 0.2, 0.4, 0.6, 0.9, 1.2],
         "w_strong_neg": [0.0, 0.1, 0.2, 0.4]}
+# One recorded widening: when the best w_pos of GRID is its upper edge (0.6), --widen-w-pos adds these larger values (other axes unchanged).
+WIDE_W_POS = [0.9, 1.2, 1.8]
 BASE, STANCE = "semantic_capped", "semantic_capped_stance"
 EXAMPLES = [("peanut allergy", "restaurant careful about peanut allergies"),
             ("celiac safe", "safe for celiac disease, no cross contamination"),
@@ -174,7 +176,7 @@ def write_report(path, *, args, dev, test, tuned, grid_results, tbl, features, l
          (f"- Split (seed {args.seed}): {len(dev)} dev queries ({cat_n(dev)}) and {len(test)} test queries ({cat_n(test)})"
           if test else f"- **DEV-ONLY RUN:** {len(dev)} of {args.n_dev_total} dev queries had cached stance labels ({cat_n(dev)}); "
                        f"{len(args.unlabeled_dev)} dev queries still unlabeled. The test queries were not labeled, scored or used."),
-         f"- Weights were tuned on the dev queries only (grid of {len(grid_results)} settings, objective: mean dev NDCG@10). "
+         f"- Weights were tuned on the dev queries only (grid of {len(grid_results)} settings{', w_pos axis widened with ' + str(WIDE_W_POS) if getattr(args, 'widen_w_pos', False) else ''}, objective: mean dev NDCG@10). "
          f"Chosen{' (PARTIAL dev set: do not adopt)' if args.partial else ''}: w_pos {tuned['w_pos']}, w_neg {tuned['w_neg']}, w_strong_neg {tuned['w_strong_neg']}. "
          f"Starting weights (untuned): {INITIAL}.",
          f"- Re-ranks the top {args.top_n} of semantic_capped; per restaurant, its evidence sentences are labeled "
@@ -227,6 +229,7 @@ def main(argv=None):
     ap.add_argument("--seed", type=int, default=SEED)
     ap.add_argument("--resamples", type=int, default=N_RESAMPLES)
     ap.add_argument("--dev-only", action="store_true", help="use only the dev queries; the test split is never labeled or scored")
+    ap.add_argument("--widen-w-pos", action="store_true", help=f"extend the w_pos grid with {WIDE_W_POS} (use once, if the best w_pos sat on the grid edge)")
     ap.add_argument("--cache-only", action="store_true",
                     help="never call the labeler: skip queries whose sentence labels are not all cached")
     args = ap.parse_args(argv)
@@ -266,7 +269,8 @@ def main(argv=None):
     args.n_dev_total = len(all_dev)
     if not dev:
         sys.exit("No dev query has all its sentence labels cached; run python -m eval.label_stance first.")
-    tuned, grid_results = grid_search(features, labels, dev, categories)
+    grid = {**GRID, "w_pos": GRID["w_pos"] + WIDE_W_POS} if args.widen_w_pos else GRID
+    tuned, grid_results = grid_search(features, labels, dev, categories, grid)
     tbl = {}
     for title, ids in sections(dev, test):
         tbl[title] = split_table(features, labels, ids, {STANCE: tuned, "stance_initial_weights": INITIAL}, categories,
