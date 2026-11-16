@@ -99,8 +99,10 @@ The reported metrics use provisional LLM-judge labels that have not yet been val
   separately as "Not verified from reviews: ...". Cards without a summary say "Summary on request" (click Explain).
 - **Demo mode** (checkbox): answers the four example queries from `data/demo_cache/*.json` (public review text already shown
   in the app; no keys) without calling the language model. Cached results are labeled "cached demo result" with the save
-  date; the status line just says "Done". Cached summaries come from one earlier live run and predate the latest summarizer
-  prompt wording fix; they have not been regenerated.
+  date; the status line just says "Done". The cache was regenerated on 2026-11-16 (live, `semantic_capped`) with the fixed
+  summarizer wording (claim wording matches its label; warnings lead; for allergy requests, no safety language in the app's
+  own voice, enforced by a guard that replaces such a claim with a neutral line while keeping its quoted review). The
+  `semantic_log` halal entry is still the older run.
 - **Compare rankings** (checkbox): `semantic_capped` and `semantic_capped_stance` side by side with rank-change marks and a
   sentence-stance bar per restaurant. With Demo mode on it only uses stance labels already saved on disk.
 - **Advanced settings** (collapsed): retrieval method (default `semantic_capped`) and "include restaurants with fewer than

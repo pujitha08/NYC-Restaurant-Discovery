@@ -100,12 +100,13 @@ match (same query text, borough and method) from the cache without calling the l
 falls back to the cache by itself when a live search hits a rate-limit, timeout or network error and the query
 matches. Cached results are always labeled **"cached demo result"**; results past the top 3 have no Explain.
 Other queries run live. In a cached result the status line just says "Done" and a grey notice says it is a saved result
-with its date. The cached summaries come from one earlier live run (2026-11-13), before the summarizer prompt change that makes
-a claim's wording match its label and lets a warning lead over relayed staff reassurance; they have not been regenerated,
-so for example the Pig and Khao claim may still read as reassurance. They also have summaries only for the top 3, so the
-results summary line counts three cards. Wording and a few statuses can
-differ from the descriptions above (in the saved run Pig and Khao is "Reviews report problems" and Mission
-"Insufficient evidence").
+with its date. The four `semantic_capped` entries were regenerated live on 2026-11-16 with the fixed summarizer wording: a claim's
+wording matches its label, a warning leads over relayed staff reassurance (Pig and Khao now opens with the warning), and for
+allergy requests claims avoid safety language in the app's own voice; a claim that still used it is replaced by "A reviewer's
+comment about this allergy is quoted below." with its quoted review kept (this happens on some Celiac safe cards). The
+`semantic_log` halal entry is still the older 2026-11-13 run. Cached results have summaries only for the top 3, so the
+results summary line counts three cards. Wording and a few statuses can differ from one live run to the next, so the
+descriptions in "Four demo queries" are indicative, not exact.
 
 Regenerate (needs the semantic index and a working Groq key; takes about 4 minutes):
 `python -m app.demo_cache --build`.
