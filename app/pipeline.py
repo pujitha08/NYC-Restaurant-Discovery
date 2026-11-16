@@ -288,14 +288,42 @@ def stance_bar(view):
             "text": f"{a} accommodate / {w} warns / {m} mention", "warning": warning}
 
 
+_ALLERGY_SUFFIX = re.compile(r"\s+allerg(?:y|ies)\s*$", re.IGNORECASE)
+
+
 def allergy_phrase(allergens):
-    """'a peanut allergy', 'peanut and milk allergies', 'peanut, milk and egg allergies'; 'this allergy' if none are named."""
-    names = [a.strip() for a in allergens or [] if a and a.strip()]
+    """'a peanut allergy', 'peanut and milk allergies', 'peanut, milk and egg allergies'; 'this allergy' if none are named.
+
+    A parsed name that already ends in "allergy" or "allergies" ("peanut allergy") is not given a second one.
+    """
+    names = [_ALLERGY_SUFFIX.sub("", a.strip()).strip() for a in allergens or [] if a and a.strip()]
+    names = [n for n in names if n and n.lower() not in ("allergy", "allergies")]
     if not names:
         return "this allergy"
     if len(names) == 1:
         return f"{'an' if names[0][0].lower() in 'aeiou' else 'a'} {names[0]} allergy"
     return f"{', '.join(names[:-1])} and {names[-1]} allergies"
+
+
+def merge_neutral_claims(claims):
+    """Collapse claims that the wording guard replaced by the same neutral line (and that share a label) into one claim.
+
+    The merged claim keeps every cited excerpt (once per review), so no quoted review is lost; other claims are unchanged
+    and the order is kept (the merged claim sits where the first of its group was).
+    """
+    out, index = [], {}
+    for c in claims:
+        if c.text != NEUTRAL_CLAIM:
+            out.append(c)
+            continue
+        if c.label in index:
+            merged = out[index[c.label]]
+            seen = {e.review_id for e in merged.excerpts}
+            merged.excerpts = merged.excerpts + [e for e in c.excerpts if e.review_id not in seen]
+        else:
+            index[c.label] = len(out)
+            out.append(Claim(c.text, c.label, list(c.excerpts)))
+    return out
 
 
 def results_summary(outcome):

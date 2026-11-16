@@ -192,8 +192,10 @@ def claim_html(claim, terms, guarded, max_quotes=None):
 
 
 def ordered_claims(summary):
-    """Warnings first (stable otherwise), so the claim shown by default is never milder than one that is hidden."""
-    return sorted(summary.claims, key=lambda c: c.label != "contradiction")
+    """Warnings first (stable otherwise), so the claim shown by default is never milder than one that is hidden.
+
+    Identical neutral guard lines (same label) are collapsed into one claim that keeps all their quoted reviews."""
+    return sorted(pipeline.merge_neutral_claims(summary.claims), key=lambda c: c.label != "contradiction")
 
 
 def show_status_row(view):

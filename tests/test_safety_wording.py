@@ -74,6 +74,64 @@ class ReplacementTests(unittest.TestCase):
         self.assertEqual(pipeline.to_summary(raw, view(), guarded=False).claims[0].text, "One reviewer said the place was safe and clean.")
 
 
+class AllergyPhraseTests(unittest.TestCase):
+    def test_no_doubled_allergy(self):
+        self.assertEqual(pipeline.allergy_phrase(["peanut allergy"]), "a peanut allergy")
+        self.assertEqual(pipeline.allergy_phrase(["Peanut Allergies"]), "a Peanut allergy")
+        self.assertEqual(pipeline.allergy_phrase(["peanut", "milk allergies"]), "peanut and milk allergies")
+        self.assertEqual(pipeline.allergy_phrase(["egg allergy", "sesame allergy", "soy"]), "egg, sesame and soy allergies")
+
+    def test_plain_names_and_empty_input_still_work(self):
+        self.assertEqual(pipeline.allergy_phrase(["peanut"]), "a peanut allergy")
+        self.assertEqual(pipeline.allergy_phrase(["egg"]), "an egg allergy")
+        for empty in ([], None, [""], ["allergy"], ["allergies"]):
+            self.assertEqual(pipeline.allergy_phrase(empty), "this allergy")
+
+    def test_results_summary_line_does_not_double_allergy(self):
+        from tests.test_results_summary import outcome, view
+        line = pipeline.results_summary(outcome([view(pipeline.STATUS_PROBLEMS)], True, ["peanut allergy"]))
+        self.assertIn("warn about a peanut allergy", line)
+        self.assertNotIn("allergy allergy", line)
+
+
+class MergeNeutralTests(unittest.TestCase):
+    def ex(self, i):
+        return pipeline.Excerpt(i, "2019-05", f"text {i}")
+
+    def claim(self, text, label, *ids):
+        return pipeline.Claim(text, label, [self.ex(i) for i in ids])
+
+    def test_identical_neutral_lines_collapse_into_one_that_keeps_every_quote(self):
+        n = pipeline.NEUTRAL_CLAIM
+        merged = pipeline.merge_neutral_claims([self.claim(n, "support", 1), self.claim(n, "support", 2, 1), self.claim(n, "support", 3)])
+        self.assertEqual(len(merged), 1)
+        self.assertEqual((merged[0].text, merged[0].label), (n, "support"))
+        self.assertEqual([e.review_id for e in merged[0].excerpts], [1, 2, 3])  # each review once, in order
+
+    def test_different_labels_and_ordinary_claims_stay_separate_and_in_order(self):
+        n = pipeline.NEUTRAL_CLAIM
+        claims = [self.claim("A real claim.", "support", 1), self.claim(n, "support", 2), self.claim(n, "contradiction", 3),
+                  self.claim(n, "support", 4), self.claim("Another claim.", "uncertainty", 5)]
+        merged = pipeline.merge_neutral_claims(claims)
+        self.assertEqual([(c.text, c.label) for c in merged], [("A real claim.", "support"), (n, "support"), (n, "contradiction"),
+                                                              ("Another claim.", "uncertainty")])
+        self.assertEqual([e.review_id for e in merged[1].excerpts], [2, 4])
+
+    def test_the_input_claims_are_not_modified(self):
+        n = pipeline.NEUTRAL_CLAIM
+        a, b = self.claim(n, "support", 1), self.claim(n, "support", 2)
+        pipeline.merge_neutral_claims([a, b])
+        self.assertEqual([e.review_id for e in a.excerpts], [1])
+
+    def test_the_card_shows_one_neutral_line(self):
+        from app.streamlit_app import ordered_claims
+        n = pipeline.NEUTRAL_CLAIM
+        summary = SimpleNamespace(claims=[self.claim(n, "support", 1), self.claim(n, "support", 2), self.claim("A warning.", "contradiction", 3)])
+        shown = ordered_claims(summary)
+        self.assertEqual([c.text for c in shown], ["A warning.", n])
+        self.assertEqual(len(shown[1].excerpts), 2)
+
+
 class PromptTests(unittest.TestCase):
     def test_prompt_forbids_safety_language_for_allergy_requests_and_keeps_the_other_rules(self):
         system = " ".join(evidence_summarizer.SYSTEM.split())
