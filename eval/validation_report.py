@@ -267,11 +267,17 @@ def cell(text):
     return " ".join((text or "").split()).replace("|", "\\|")
 
 
+CORRECTION = ("**Correction (2026-11-15).** An earlier version of this report used a `labels_kang.csv` that was not the rater's human "
+              "labeling (the wrong file was sent). Every number computed from it is withdrawn, including human-vs-human quadratic kappa "
+              "0.788 / 0.790 and Kang vs LLM quadratic kappa 0.899. The sections below use the rater's actual file; "
+              "Pujitha vs LLM was never affected.")
+
+
 def human_sections(args, rows_a, categories, second):
     """Human-vs-human and second-rater-vs-LLM sections. second: {"name", "rows", "blank", "matched", "unmatched", "result", "hh"}."""
     hh, r2, r1 = second["hh"], second["result"], second["primary_result"]
     na, nb = second["primary_name"], second["name"]
-    L = [f"## Human vs human: {na} and {nb}", "",
+    L = [f"## Human vs human: {na} and {nb}", "", CORRECTION, "",
          f"- Second rater: `{rel(args.human2)}` ({len(second['rows']) + len(second['blank'])} rows; {len(second['blank'])} blank). "
          "Per the project workflow neither rater was shown the LLM labels (not verifiable from the files; see Limitations).",
          f"- **Shared labeled pairs: {hh['n']}** (labeled by {na} only: {len(hh['only_a'])}; by {nb} only: {len(hh['only_b'])}). "
@@ -391,9 +397,10 @@ def write_report(path, *, args, rows, blank, matched, unmatched, result, categor
           "visible through the 'by source' table above.",
           "- **Same judge model throughout.** All LLM labels use one model family and one prompt, so shared blind spots (for example, treating a "
           "mention of the topic as support) would not show up as disagreement between LLM sources.",
-          *(["- **Blindness is not verifiable.** Neither rater was shown the LLM labels per the workflow, but the files cannot prove it. The second rater "
-             "agrees with the LLM more than with the first rater, so a shared reading of the rubric and contamination cannot be told apart "
-             "here; confirm with the rater before leaning on that gap."] if second else []),
+          *(["- **Blindness is not verifiable.** Neither rater was shown the LLM labels per the workflow, but the files cannot prove it."
+             + (" The second rater agrees with the LLM more than with the first rater, so a shared reading of the rubric and contamination cannot be "
+                "told apart here; confirm with the rater before leaning on that gap."
+                if second["result"]["agreement"] > second["hh"]["agreement"] else "")] if second else []),
           "- **The rater saw the evidence shown to the judge**, not the full review text of each restaurant; both are limited to what retrieval "
           "returned, so agreement says nothing about whether the shown reviews were representative.",
           "- Matching rows to restaurants relies on the review ids cited in the evidence; rows without evidence are matched by name and borough "
