@@ -17,3 +17,35 @@ ALLERGEN_NAMES = re.compile(
 def is_allergy_text(query):
     """True if the text uses allergy wording or names an FDA major allergen."""
     return bool(ALLERGY_TERMS.search(query or "") or ALLERGEN_NAMES.search(query or ""))
+
+
+# Allergen groups: the words that name the allergen or stand for it in a review. app/coverage.py has no such lists (it only
+# matches the words of the parsed need), so they live here, next to ALLERGEN_NAMES, which they extend. A parsed allergen
+# belongs to every group one of whose terms occurs in it ("celiac disease" -> gluten, "tree nut" -> tree nut).
+ALLERGEN_GROUPS = {
+    "shellfish": ("shellfish", "seafood", "shrimp", "prawn", "lobster", "crab", "crawfish", "crayfish", "oyster", "clam",
+                  "mussel", "scallop"),
+    "peanut": ("peanut",),
+    "tree nut": ("tree nut", "nut", "almond", "cashew", "walnut", "pecan", "pistachio", "hazelnut", "macadamia"),
+    "sesame": ("sesame", "tahini"),
+    "dairy": ("dairy", "milk", "lactose", "cheese"),
+    "gluten": ("gluten", "celiac", "coeliac", "wheat"),
+    "egg": ("egg",),
+    "soy": ("soy", "soya", "soybean"),
+    "fish": ("fish",),
+}
+
+
+def _term_regex(term):
+    """Whole-word regex for a term (a space may be a hyphen too), optionally plural."""
+    return r"\b" + r"[\s-]+".join(re.escape(w) for w in term.split()) + r"(?:e?s)?\b"
+
+
+GROUP_PATTERNS = {name: re.compile("|".join(_term_regex(t) for t in terms), re.IGNORECASE)
+                  for name, terms in ALLERGEN_GROUPS.items()}
+GENERIC_ALLERGY = re.compile(r"\ballerg\w*\b", re.IGNORECASE)  # allergy, allergies, allergic
+
+
+def allergen_groups(allergen):
+    """The groups a parsed allergen belongs to, e.g. "peanut allergy" -> ["peanut"]; [] if it names none of them."""
+    return [name for name, pattern in GROUP_PATTERNS.items() if pattern.search(allergen or "")]

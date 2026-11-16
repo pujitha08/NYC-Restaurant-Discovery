@@ -62,7 +62,18 @@ class CueRetriever(FakeRetriever):
         out = super().search(*a, **kw)
         for r in out:
             for snippet in r.evidence_snippets:
-                snippet.text = "I had an allergic reaction after eating here."
+                snippet.text = "I had an allergic reaction to peanuts after eating here."
+        return out
+
+
+class PeanutRetriever(FakeRetriever):
+    """Reviews that talk about peanut allergies (so claims pass the allergen gate)."""
+
+    def search(self, *a, **kw):
+        out = super().search(*a, **kw)
+        for r in out:
+            r.evidence_snippets[0].text = "Great peanut allergy care, our group was looked after."
+            r.evidence_snippets[1].text = "They told us nothing on the menu was peanut free."
         return out
 
 
@@ -275,7 +286,7 @@ class PageTests(unittest.TestCase):
                                 r"3 Summarized with quotes · \d+\.\d s")
 
     def test_two_columns_with_icons_and_sublines_for_allergy_and_diet_requests(self):
-        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        at = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}), "restaurant careful about peanut allergies")
         html = self.html(at)
         self.assertIn('<div class="t">✓ Reviews mention allergy care</div><div class="s">Worth a closer look. Confirm with the restaurant.</div>', html)
         self.assertIn('<div class="t">⚠ Reviews report problems</div><div class="s">Reviewers describe allergy trouble here. Read before you go.</div>', html)
@@ -309,19 +320,19 @@ class PageTests(unittest.TestCase):
             self.assertIn(fact, body)
 
     def test_allergy_evidence_view_has_the_confirm_with_the_restaurant_caveat(self):
-        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        at = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}), "restaurant careful about peanut allergies")
         body = next(m.value for m in at.markdown if "AI summary of the reviews below" in m.value)
         self.assertIn("Confirm with the restaurant before you order.", body)
 
     def test_the_allergy_guard_never_says_supported_or_safe(self):
-        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        at = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}), "restaurant careful about peanut allergies")
         text = self.html(at) + " ".join(c.value for c in at.caption)
         self.assertNotRegex(text, r"(?i)supported")
         self.assertNotRegex(text, r"(?i)\bsafe\b")
         self.assertNotIn("claim-positive", text)
 
     def test_empty_problems_column_message(self):
-        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        at = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}), "restaurant careful about peanut allergies")
         self.assertIn("No restaurant in the top results has reviews reporting allergy problems. That is not a safety guarantee.", self.html(at))
 
     def test_empty_care_column_has_the_symmetric_message_for_allergy_and_diet_requests(self):

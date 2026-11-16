@@ -64,7 +64,7 @@ class CareGateTests(unittest.TestCase):
         self.assertEqual(vm.group_of(v, outcome([v], "x", ["peanut"])), vm.CARE)
 
     def test_the_restaurant_falls_to_problems_mixed_or_not_enough_by_its_other_claims(self):
-        cue = ex(2, "I had an allergic reaction after eating here.", 1)
+        cue = ex(2, "I had an allergic reaction to the nuts.", 1)
         low = ex(1, "Staff said no nuts.", 1)
         problems = view("A", [("s", "support", [1]), ("c", "contradiction", [2])], [low, cue])
         self.assertEqual(vm.group_of(problems, outcome([problems], "x", ["nut"])), vm.PROBLEMS)
@@ -122,9 +122,87 @@ class ProblemGateTests(unittest.TestCase):
                      "General Tso was the same as the sesame chicken", ""):
             self.assertFalse(vm.has_allergy_cue(text), text)
 
-    def test_peanut_request_with_a_warning_that_names_a_different_allergen_still_counts(self):
-        v = view("Mission", [("not attentive", "contradiction", [1])], [ex(1, MISSION, 1)])
-        self.assertEqual(vm.group_of(v, outcome([v], "peanut allergies", ["peanut"])), vm.PROBLEMS)
+
+SPICE = ("I would like to warn anyone with any allergies not to eat at the Red Lobster. Since my mother and I are both very "
+         "allergic to any spices, we asked for no salt and pepper. Both of us were taken to the hospital.")
+MISSION_2 = ("If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one "
+             "wheat allergy. We then found a lone piece of a wheat noodle at the bottom of our dish.")
+
+
+class AllergenGateTests(unittest.TestCase):
+    """A claim about an allergy request counts only if a cited review names that allergen (or a synonym)."""
+
+    def test_red_lobster_the_spice_allergy_claim_is_ignored_for_shellfish(self):
+        excerpts = [ex(738786, RED_LOBSTER[0][2], 1), ex(739842, SPICE, 1), ex(738174, RED_LOBSTER[2][2], 1)]
+        v = view("Red Lobster", [("seafood allergy", "contradiction", [738786]), ("spice allergy", "contradiction", [739842]),
+                                 ("cross contamination", "contradiction", [738174])], excerpts)
+        o = outcome([v], "restaurant careful about shellfish allergies", ["shellfish"])
+        self.assertEqual([c.text for c, _ in vm.effective_claims(v, o)], ["seafood allergy", "cross contamination"])
+        self.assertEqual(vm.group_of(v, o), vm.PROBLEMS)
+        self.assertEqual([r.review_id for r in vm.cited_reviews(v, "contradiction", o)], [738786, 738174])
+        self.assertEqual(vm.quote_for(v, o, vm.PROBLEMS).n_reviews, 2)
+
+    def test_the_restaurants_own_name_is_not_a_synonym(self):
+        # "Red Lobster" would match "lobster"; only the spice allergy review is cited, and it names no shellfish
+        v = view("Red Lobster", [("spice allergy", "contradiction", [739842])], [ex(739842, SPICE, 1)])
+        o = outcome([v], "restaurant careful about shellfish allergies", ["shellfish"])
+        self.assertEqual(vm.group_of(v, o), vm.INSUFFICIENT)
+
+    def test_buddakan_the_mushroom_allergy_claim_is_ignored_for_shellfish(self):
+        excerpts = [ex(i, t, r) for i, r, t in BUDDAKAN]
+        v = view("Buddakan", [("staff asked", "support", [79107]), ("oyster oil", "contradiction", [79848]),
+                              ("mushroom", "contradiction", [80054])], excerpts)
+        o = outcome([v], "restaurant careful about shellfish allergies", ["shellfish"])
+        self.assertEqual([c.text for c, _ in vm.effective_claims(v, o)], ["staff asked", "oyster oil"])
+        self.assertEqual(vm.group_of(v, o), vm.MIXED)
+        self.assertEqual(vm.quote_for(v, o, vm.PROBLEMS).n_reviews, 1)  # the mushroom review is no longer counted
+
+    def test_a_care_claim_may_make_a_generic_allergy_statement_but_a_problem_claim_may_not(self):
+        text = "Great and friendly staff that took time to inquire about ingredients for those with allergies."
+        care = view("Place", [("staff asked", "support", [1])], [ex(1, text, 5)])
+        o = outcome([care], "restaurant careful about shellfish allergies", ["shellfish"])
+        self.assertEqual(vm.group_of(care, o), vm.CARE)
+        problem = view("Place", [("staff did not ask", "contradiction", [1])], [ex(1, "Staff ignored my allergies and I got sick.", 1)])
+        self.assertEqual(vm.group_of(problem, outcome([problem], "shellfish allergies", ["shellfish"])), vm.INSUFFICIENT)
+
+    def test_a_care_claim_with_neither_the_allergen_nor_an_allergy_statement_is_ignored(self):
+        v = view("Place", [("good food", "support", [1])], [ex(1, "Wonderful dinner, great desserts and friendly staff.", 5)])
+        self.assertEqual(vm.group_of(v, outcome([v], "shellfish allergies", ["shellfish"])), vm.INSUFFICIENT)
+
+    def test_mission_is_not_a_peanut_problem_but_is_a_tree_nut_and_a_sesame_problem(self):
+        v = view("Mission", [("not attentive", "contradiction", [1]), ("waitress", "contradiction", [2])],
+                 [ex(1, MISSION, 1), ex(2, MISSION_2, 1)])
+        self.assertEqual(vm.group_of(v, outcome([v], "restaurant careful about peanut allergies", ["peanut"])), vm.INSUFFICIENT)
+        self.assertEqual(vm.group_of(v, outcome([v], "restaurant careful about tree nut allergies", ["tree nut"])), vm.PROBLEMS)
+        sesame = outcome([v], "restaurant careful about sesame allergies", ["sesame"])
+        self.assertEqual(vm.group_of(v, sesame), vm.PROBLEMS)
+        self.assertEqual([r.review_id for r in vm.cited_reviews(v, "contradiction", sesame)], [1])  # only review 1 says sesame/tahini
+
+    def test_the_synonym_groups(self):
+        from src.allergy import allergen_groups
+        cases = {"shellfish": ["shellfish", "shrimp", "lobster", "crab", "oyster", "clam", "mussel", "scallop", "seafood", "prawns"],
+                 "peanut": ["peanut", "peanuts"], "tree nut": ["tree nut", "almond", "cashew", "walnut", "pecan", "pistachio", "hazelnut", "nuts"],
+                 "sesame": ["sesame", "tahini"], "dairy": ["dairy", "milk", "lactose", "cheese"],
+                 "gluten": ["gluten", "celiac", "wheat"]}
+        for group, words in cases.items():
+            for word in words:
+                self.assertIn(group, allergen_groups(f"{word} allergy"), word)
+                self.assertTrue(vm.names_the_allergen(f"I am allergic to {word}.", vm.allergen_patterns(outcome([], "x", [group]))), word)
+        self.assertEqual(allergen_groups("peanut allergy"), ["peanut"])  # "nut" does not match inside "peanut"
+        self.assertEqual(allergen_groups("celiac disease"), ["gluten"])
+        self.assertEqual(allergen_groups("pollen"), [])
+
+    def test_not_gated_without_a_named_allergen_or_for_other_requests(self):
+        v = view("Place", [("good", "support", [1])], [ex(1, "Wonderful dinner.", 5)])
+        self.assertEqual(vm.group_of(v, outcome([v], "allergy friendly", [])), vm.CARE)  # allergy wording, no allergen parsed
+        diet = outcome([v], "vegan options", diets=["vegan"], allergy=False)
+        self.assertEqual(vm.group_of(v, diet), vm.CARE)
+
+    def test_an_allergen_in_no_group_is_matched_by_its_own_words(self):
+        v = view("Place", [("c", "contradiction", [1]), ("d", "contradiction", [2])],
+                 [ex(1, "I had a reaction to the mustard.", 1), ex(2, "I had a reaction to the sauce.", 1)])
+        o = outcome([v], "mustard allergy", ["mustard"])
+        self.assertEqual([r.review_id for r in vm.cited_reviews(v, "contradiction", o)], [1])
 
 
 class HonestCountTests(unittest.TestCase):

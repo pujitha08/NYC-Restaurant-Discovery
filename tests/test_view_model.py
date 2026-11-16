@@ -33,7 +33,7 @@ def outcome(views, query="restaurant careful about peanut allergies", parsed=Non
                                   allergy_sensitive=allergy, **kw)
 
 
-E1, E2, E3 = excerpt(1, "They were careful with my peanut allergy."), excerpt(2, "I got sick after the satay."), \
+E1, E2, E3 = excerpt(1, "They were careful with my peanut allergy."), excerpt(2, "I got sick after the peanut satay."), \
     excerpt(3, "Great pasta.")
 CARE = view(1, claims=[("A reviewer said they were careful.", "support", [1])], excerpts=[E1, E3], guarded=True)
 PROBLEMS = view(2, claims=[("A reviewer got sick.", "contradiction", [2])], excerpts=[E2])
@@ -159,7 +159,7 @@ class QuoteTests(unittest.TestCase):
     def test_each_column_of_a_mixed_restaurant_has_its_own_quote(self):
         o = outcome([MIXED])
         self.assertEqual(vm.quote_for(MIXED, o, vm.CARE).text, "They were careful with my peanut allergy.")
-        self.assertEqual(vm.quote_for(MIXED, o, vm.PROBLEMS).text, "I got sick after the satay.")
+        self.assertEqual(vm.quote_for(MIXED, o, vm.PROBLEMS).text, "I got sick after the peanut satay.")
 
     def test_n_reviews_counts_distinct_cited_reviews(self):
         e = [excerpt(i, f"Careful about peanut allergy number {i}.") for i in (1, 2, 3)]

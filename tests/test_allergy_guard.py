@@ -240,7 +240,7 @@ class GuardUiTests(unittest.TestCase):
         self.addCleanup(st.cache_resource.clear)
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
-        llm = (pipeline.UsageRecorder(Client(parsed(allergens=["peanut"]), summary)), MODEL, None)
+        llm = (pipeline.UsageRecorder(Client(parsed(allergens=["tree nut"]), summary)), MODEL, None)  # the Mission reviews are about tree nut
         with patch.object(pipeline, "LOG_PATH", Path(tmp.name) / "log.jsonl"), \
                 patch.object(pipeline, "load_retriever", lambda name: MissionRetriever()), \
                 patch.object(pipeline, "make_llm_client", lambda: llm):

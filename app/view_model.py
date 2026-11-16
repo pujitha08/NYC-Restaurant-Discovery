@@ -15,7 +15,7 @@ from app import pipeline
 from app.coverage import need_terms
 from app.evidence_filter import mentions
 from app.highlight import highlight_terms, squash
-from src.allergy import is_allergy_text
+from src.allergy import GENERIC_ALLERGY, GROUP_PATTERNS, allergen_groups, is_allergy_text
 from src.retrieval.evidence import _SENTENCE_RE
 
 CARE, PROBLEMS, MIXED, INSUFFICIENT = "care", "problems", "mixed", "insufficient"
@@ -51,6 +51,41 @@ def problem_claim_counts(claim, outcome):
     return any(has_allergy_cue(e.text) for e in claim.excerpts)
 
 
+def allergen_patterns(outcome):
+    """Regexes for the allergens the request names: each group's synonyms, or (for an allergen in no group) its own words.
+    [] when the request names no allergen, which turns the allergen gate off."""
+    p = outcome.parsed if outcome is not None else None
+    patterns = []
+    for allergen in (p.allergens if p else []):
+        groups = allergen_groups(allergen)
+        if groups:
+            patterns += [GROUP_PATTERNS[g] for g in groups]
+        else:
+            words = need_terms(allergen)
+            if words:
+                patterns.append(re.compile(r"\b(?:" + "|".join(re.escape(w) for w in words) + r")\w*\b", re.IGNORECASE))
+    return patterns
+
+
+def names_the_allergen(text, patterns, name=None, generic=False):
+    """True if the review text mentions the allergen or one of its synonyms outside the restaurant's name ("Red Lobster" is
+    not a lobster mention), or, when `generic`, makes a generic allergy statement ("allergy", "allergies", "allergic")."""
+    from app.evidence_filter import mask_name
+    masked = mask_name(text, name)
+    return any(pat.search(masked) for pat in patterns) or (generic and bool(GENERIC_ALLERGY.search(masked)))
+
+
+def allergen_claim_counts(claim, outcome, name, generic):
+    """For an allergy request that names an allergen: a claim counts only if a cited review mentions that allergen or a
+    synonym (care claims may also make a generic allergy statement). Other requests are not gated."""
+    if outcome is None or not outcome.allergy_sensitive:
+        return True
+    patterns = allergen_patterns(outcome)
+    if not patterns:
+        return True
+    return any(names_the_allergen(e.text, patterns, name, generic) for e in claim.excerpts)
+
+
 def effective_claims(view, outcome=None):
     """[(claim, label)] of the summary's claims that count: supporting claims that pass the care gate and, for allergy
     requests, contradicting claims that pass the problem gate. Uncertainty claims are kept as they are."""
@@ -58,9 +93,11 @@ def effective_claims(view, outcome=None):
         return []
     out = []
     for claim in pipeline.merge_neutral_claims(view.summary.claims):
-        if claim.label == "support" and not care_claim_counts(claim):
+        if claim.label == "support" and not (care_claim_counts(claim)
+                                             and allergen_claim_counts(claim, outcome, view.name, generic=True)):
             continue
-        if claim.label == "contradiction" and not problem_claim_counts(claim, outcome):
+        if claim.label == "contradiction" and not (problem_claim_counts(claim, outcome)
+                                                   and allergen_claim_counts(claim, outcome, view.name, generic=False)):
             continue
         out.append((claim, claim.label))
     return out
@@ -305,6 +342,8 @@ def about_the_need(text, outcome, name=None):
     request, has an allergy cue word. With no parsed need and no allergy request, every cited review counts."""
     needs = need_words(outcome)
     if mentions(text, needs, name) if needs else False:
+        return True
+    if allergen_patterns(outcome) and names_the_allergen(text, allergen_patterns(outcome), name):
         return True
     if outcome.allergy_sensitive:
         return has_allergy_cue(text)
