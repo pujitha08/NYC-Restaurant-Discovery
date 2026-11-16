@@ -9,23 +9,19 @@
    "location": null,
    "dietary_restrictions": [],
    "allergens": [
-    "peanut"
+    "peanut allergy"
    ],
    "group_needs": [],
-   "preferences": [
-    "restaurant careful about peanut allergies"
-   ]
+   "preferences": []
   },
   "summary_context": {
    "location": null,
    "dietary_restrictions": [],
    "allergens": [
-    "peanut"
+    "peanut allergy"
    ],
    "group_needs": [],
-   "preferences": [
-    "restaurant careful about peanut allergies"
-   ]
+   "preferences": []
   },
   "boroughs": null,
   "results": [
@@ -60,7 +56,18 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported an allergic reaction after eating at the restaurant, indicating a problem handling peanut allergies.",
+       "text": "One reviewer warned that the restaurant is unsuitable for those with severe peanut allergies, despite the manager’s claim that it would not be a problem.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2117639,
+         "date": "2020-03",
+         "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that they experienced an allergic reaction after eating at the restaurant, concluding they would not return.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -69,21 +76,9 @@
          "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies."
         }
        ]
-      },
-      {
-       "text": "Another reviewer noted that the manager claimed the restaurant could accommodate peanut allergies, but no personal experience was reported.",
-       "label": "uncertainty",
-       "excerpts": [
-        {
-         "review_id": 2117639,
-         "date": "2020-03",
-         "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
-        }
-       ]
       }
      ],
      "limitations": [
-      "Conflicting reports on peanut allergy safety; no definitive evidence of safe handling.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -120,7 +115,7 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer warned that the waitstaff and kitchen were not attentive to food allergies despite informing them of a tree nut allergy, advising patrons with allergies to avoid the restaurant.",
+       "text": "One reviewer reported that the waitstaff and kitchen were not attentive to food allergies and advised diners with a peanut allergy to avoid the restaurant.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -131,8 +126,8 @@
        ]
       },
       {
-       "text": "Another reviewer noted that although the waitress acknowledged their nut and wheat allergies and expressed no concerns about menu choices, the reviewer still recommended that people with food allergies consider dining elsewhere.",
-       "label": "contradiction",
+       "text": "Another reviewer described informing the waitress of a nut allergy, who acknowledged it and did not express concerns about menu choices, but the review does not report on whether any allergic reaction occurred or if the restaurant adequately accommodated the allergy.",
+       "label": "uncertainty",
        "excerpts": [
         {
          "review_id": 1576786,
@@ -143,6 +138,7 @@
       }
      ],
      "limitations": [
+      "No clear evidence that the restaurant successfully handled peanut allergies; one reviewer warned against the restaurant, while another provided only a partial account of the staff’s acknowledgment without outcome.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -174,7 +170,7 @@
      "status": "Reviews discuss this — read each claim",
      "claims": [
       {
-       "text": "One reviewer reported that the restaurant ensured the burger contained no nuts, reassuring them about peanut allergy safety.",
+       "text": "One reviewer reported the restaurant ensuring the burger had no nuts, indicating care for a peanut allergy.",
        "label": "support",
        "excerpts": [
         {
