@@ -1,0 +1,17 @@
+# Runtime requirements for the Hugging Face Space (copy this file to requirements.txt in the Space repository).
+# Only what the app imports at run time; the development and data-building tools (jupyter, matplotlib, datasets, nltk,
+# pandas-based EDA) are in requirements.txt, which is unchanged. tests/test_requirements_space.py checks the two files.
+#
+# torch comes from the CPU-only index (about 200 MB instead of several GB of CUDA libraries from PyPI).
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+streamlit==1.67.0          # the app (also brings pandas and pyarrow)
+numpy
+scipy                      # sparse matrices of the TF-IDF indexes
+scikit-learn==1.6.1        # the TF-IDF indexes are joblib pickles built with 1.6.1; other versions can warn or fail to load them
+joblib
+tqdm                       # imported by src/retrieval/semantic.py
+python-dotenv              # loads a local .env (a Space uses its secrets as environment variables)
+openai==3.46.0             # the GroqCloud client is the OpenAI-compatible SDK (src/llm/groq_client.py)
+sentence-transformers      # all-MiniLM-L6-v2 query embeddings
+torch
