@@ -29,6 +29,7 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from src.config import DATA_DIR
 from eval.metrics import CATEGORY_ORDER, N_RESAMPLES, SEED, read_categories, rel
 from eval.stats import LABELS, cohen_kappa, confusion_matrix, krippendorff_alpha, raw_agreement
 from eval.validate_judge import read_llm, summarize
@@ -40,7 +41,7 @@ HUMAN2_PATH = EVAL_DIR / "labels" / "labels_kang.csv"
 LLM_PATH = EVAL_DIR / "llm_labels.jsonl"
 QUERIES_PATH = EVAL_DIR / "queries_final.csv"
 SAMPLE_KEY_PATH = EVAL_DIR / "labels" / "sample_key.csv"
-META_PATH = REPO / "data" / "processed" / "restaurants_final.jsonl"
+META_PATH = DATA_DIR / "processed" / "restaurants_final.jsonl"
 OUT_PATH = REPO / "reports" / "judge_validation.md"
 BOOTSTRAP = 2000
 SAMPLE_POOL = 1074  # labeled pairs when the human sample was drawn (the label file has grown since)

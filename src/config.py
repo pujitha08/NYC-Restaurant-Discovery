@@ -3,6 +3,7 @@
 Change BOROUGHS here to widen or narrow the geographic scope of the project.
 """
 
+import os
 from pathlib import Path
 
 # Boroughs included in the pipeline. To expand, add e.g. "Queens", "Bronx",
@@ -10,7 +11,16 @@ from pathlib import Path
 BOROUGHS = ["Manhattan", "Brooklyn"]
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = PROJECT_ROOT / "data"
+
+
+def resolve_data_dir(environ=None):
+    """The data directory: $NYC_DATA_DIR if it is set and not blank (e.g. a downloaded cache dir on a hosted Space),
+    else <repo>/data. Every module that reads or writes under data/ builds its paths from DATA_DIR."""
+    raw = (os.environ if environ is None else environ).get("NYC_DATA_DIR", "").strip()
+    return Path(raw).expanduser() if raw else PROJECT_ROOT / "data"
+
+
+DATA_DIR = resolve_data_dir()
 
 # Stance-aware re-ranking (src/retrieval/stance_rerank.py): re-rank the top `top_n` restaurants of
 # semantic_capped as  base_norm + w_pos * accommodation_share - w_neg * negative_share

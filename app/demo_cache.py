@@ -20,9 +20,12 @@ import time
 from pathlib import Path
 
 from app import pipeline
+from src.config import DATA_DIR
 from src.schemas import ParsedQuery
 
-CACHE_DIR = pipeline.REPO / "data" / "demo_cache"
+# The saved demo results follow DATA_DIR (so a relocated data directory can carry them); if it has none, the copy tracked in
+# the repository (<repo>/data/demo_cache) is used, which is what a hosted Space ships.
+CACHE_DIR = DATA_DIR / "demo_cache" if (DATA_DIR / "demo_cache").is_dir() else pipeline.REPO / "data" / "demo_cache"
 CACHE_LABEL = "cached demo result"
 FALLBACK_CATEGORIES = ("rate_limit", "timeout", "network")
 # DEMO.md: (query, borough choice, method). The fourth query is also shown with semantic_log.

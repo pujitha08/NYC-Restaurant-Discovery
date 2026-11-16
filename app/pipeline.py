@@ -32,7 +32,7 @@ from types import SimpleNamespace
 
 from eval.make_pool import RETRIEVERS, SYSTEMS
 from src.allergy import ALLERGEN_NAMES, ALLERGY_TERMS  # noqa: F401 (re-exported)
-from src.config import BOROUGHS
+from src.config import BOROUGHS, DATA_DIR
 from src.llm import evidence_summarizer, query_parser
 from src.llm.evidence_summarizer import MAX_USER_REQUEST, summarize_evidence
 from src.llm.groq_client import LLMConfigurationError, LLMError, _usage, resolve_model
@@ -573,7 +573,7 @@ def data_stats(processed_dir=None):
 
     Keys: restaurants, reviews (clean reviews kept), chunks (semantic index), index_built (date).
     """
-    base = Path(processed_dir) if processed_dir else REPO / "data" / "processed"
+    base = Path(processed_dir) if processed_dir else DATA_DIR / "processed"
     stats = {}
     for name, keys in (("cleaning_stats.json", {"restaurants": "restaurants", "reviews": "kept"}),
                        ("semantic/info.json", {"chunks": "chunk_count", "index_built": "build_date"})):

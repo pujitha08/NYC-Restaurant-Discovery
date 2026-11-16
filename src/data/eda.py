@@ -24,11 +24,11 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from tqdm import tqdm
 
-from src.config import BOROUGHS, PROJECT_ROOT
+from src.config import BOROUGHS, DATA_DIR, PROJECT_ROOT
 from src.data.dietary_terms import PATTERNS
 from src.data.filter_meta import RAW_META_PATH, stream_records
 
-PROCESSED = PROJECT_ROOT / "data" / "processed"
+PROCESSED = DATA_DIR / "processed"
 RESTAURANTS_PATH = PROCESSED / "restaurants_final.jsonl"
 REVIEWS_PATH = PROCESSED / "reviews_filtered.jsonl"
 OUT_DIR = PROJECT_ROOT / "reports" / "eda"
