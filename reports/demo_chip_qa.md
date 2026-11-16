@@ -1,15 +1,18 @@
 # Saved chip results: QA table
 
-Rendered from data/demo_cache with the display rules in app/view_model.py (care gate, allergy problem gate, allergen gate, honest counts, quote composition). Display-time only: the cache files are not changed by the rules. Kosher has no saved result yet (Groq daily token limit).
+Rendered from data/demo_cache with the display rules in app/view_model.py (care gate, allergy problem gate, asymmetric allergen gate, honest counts, quote composition). Display-time only: the cache files are not changed by the rules. Kosher has no saved result yet (Groq daily token limit).
 
 
 ### Peanut — “restaurant careful about peanut allergies”
-10 restaurants checked · 1 mention allergy care · 1 report problems · 8 not enough evidence · saved 2026-11-16
+10 restaurants checked · 1 mention allergy care · 4 report problems · 6 not enough evidence · 1 listed in both columns · saved 2026-11-16
 
 | Column | Restaurant | Quoted sentence | Based on |
 |---|---|---|---|
 | care (mixed) | Ladybird | “Excellent food, they were extremely accommodating of my allergies (nut and soy) and outlined what was safe to eat”  | Based on 1 review |
 | problems | Pig and Khao | “DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. … i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts.”  | Based on 2 reviews |
+| problems | Mission | “If you have a food allergy, you should seriously consider going elsewhere. … Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed.” ⚑ problems quote has no negative cue | Based on 2 reviews |
+| problems | Superiority Burger | “As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts.”  | Based on 1 review |
+| problems (mixed) | Ladybird | “The waitress told us with certainty that they do not use those nuts at all in any dishes for allergy reasons specifically. … Unfortunately when we asked if there was a dessert she might recommend, the strawberry cheesecake that was suggested did in fact contain Cashews.”  | Based on 2 reviews |
 
 ### Tree nut — “restaurant careful about tree nut allergies”
 10 restaurants checked · 1 mention allergy care · 2 report problems · 8 not enough evidence · 1 listed in both columns · saved 2026-11-16
@@ -120,5 +123,5 @@ Rendered from data/demo_cache with the display rules in app/view_model.py (care 
 
 ### Flag summary
 care_neg 5 [('Celiac', "Friedman's Herald Square"), ('Celiac', 'Lilli and Loo'), ('Vegetarian', 'by CHLOE. - Flatiron'), ('Vegan + gluten-free group', 'by CHLOE. - West Village'), ('Vegan + gluten-free group', 'Champs Diner')]
-problems_none 8 [('Tree nut', 'Mission'), ('Shellfish', 'Red Lobster'), ('Shellfish', 'Boilery Seafood and Grill'), ('Shellfish', 'Pescatore Seafood Co'), ('Sesame', 'Mission'), ('Dairy-free', 'by CHLOE. - Flatiron'), ('Celiac', "Friedman's Hell's Kitchen"), ('Vegan + gluten-free group', 'by CHLOE. - SoHo')]
+problems_none 9 [('Peanut', 'Mission'), ('Tree nut', 'Mission'), ('Shellfish', 'Red Lobster'), ('Shellfish', 'Boilery Seafood and Grill'), ('Shellfish', 'Pescatore Seafood Co'), ('Sesame', 'Mission'), ('Dairy-free', 'by CHLOE. - Flatiron'), ('Celiac', "Friedman's Hell's Kitchen"), ('Vegan + gluten-free group', 'by CHLOE. - SoHo')]
 name_only 0 []
