@@ -169,14 +169,52 @@ class AllergenGateTests(unittest.TestCase):
         v = view("Place", [("good food", "support", [1])], [ex(1, "Wonderful dinner, great desserts and friendly staff.", 5)])
         self.assertEqual(vm.group_of(v, outcome([v], "shellfish allergies", ["shellfish"])), vm.INSUFFICIENT)
 
-    def test_mission_is_not_a_peanut_problem_but_is_a_tree_nut_and_a_sesame_problem(self):
+    def test_mission_is_a_problem_for_peanut_tree_nut_and_sesame_because_its_reviews_say_nut_and_sesame(self):
         v = view("Mission", [("not attentive", "contradiction", [1]), ("waitress", "contradiction", [2])],
                  [ex(1, MISSION, 1), ex(2, MISSION_2, 1)])
-        self.assertEqual(vm.group_of(v, outcome([v], "restaurant careful about peanut allergies", ["peanut"])), vm.INSUFFICIENT)
+        peanut = outcome([v], "restaurant careful about peanut allergies", ["peanut"])
+        self.assertEqual(vm.group_of(v, peanut), vm.PROBLEMS)  # "tree nut" and "one nut" are generic nut mentions
+        self.assertEqual([r.review_id for r in vm.cited_reviews(v, "contradiction", peanut)], [1, 2])
         self.assertEqual(vm.group_of(v, outcome([v], "restaurant careful about tree nut allergies", ["tree nut"])), vm.PROBLEMS)
         sesame = outcome([v], "restaurant careful about sesame allergies", ["sesame"])
         self.assertEqual(vm.group_of(v, sesame), vm.PROBLEMS)
         self.assertEqual([r.review_id for r in vm.cited_reviews(v, "contradiction", sesame)], [1])  # only review 1 says sesame/tahini
+
+    def test_mission_stays_out_of_a_peanut_search_when_its_reviews_name_no_nut_at_all(self):
+        v = view("Mission", [("wheat", "contradiction", [1])], [ex(1, "We told them about the wheat allergy and still found a noodle in the dish.", 1)])
+        self.assertEqual(vm.group_of(v, outcome([v], "peanut allergies", ["peanut"])), vm.INSUFFICIENT)
+
+    def test_superiority_burger_is_a_peanut_problem_through_the_generic_nuts_mention(self):
+        text = ("I am quite allergic. The employee confidently told me that there are no nuts in the burger. After a bite I had a severe "
+                "allergic reaction. His website says: CONTAINS NUTS.")
+        v = view("Superiority Burger", [("no nuts", "contradiction", [1])], [ex(1, text, 1)])
+        o = outcome([v], "restaurant careful about peanut allergies", ["peanut"])
+        self.assertEqual(vm.group_of(v, o), vm.PROBLEMS)
+        self.assertEqual(vm.quote_for(v, o, vm.PROBLEMS).n_reviews, 1)
+
+    def test_ladybird_keeps_its_cashew_warning_for_peanut(self):
+        text = ("The waitress told us with certainty that they do not use those nuts at all in any dishes for allergy reasons "
+                "specifically. Unfortunately when we asked if there was a dessert she might recommend, the strawberry cheesecake "
+                "that was suggested did in fact contain Cashews.")
+        v = view("Ladybird", [("cashews", "contradiction", [1])], [ex(1, text, 2)])
+        self.assertEqual(vm.group_of(v, outcome([v], "peanut allergies", ["peanut"])), vm.PROBLEMS)
+
+    def test_the_generic_nut_mention_is_for_warnings_only_care_claims_stay_strict(self):
+        v = view("Place", [("careful", "support", [1])], [ex(1, "Wonderful staff and the best nuts on the salad.", 5)])
+        self.assertEqual(vm.group_of(v, outcome([v], "peanut allergies", ["peanut"])), vm.INSUFFICIENT)
+        v2 = view("Place", [("careful", "support", [1])], [ex(1, "They were careful about my allergies and the nuts.", 5)])
+        self.assertEqual(vm.group_of(v2, outcome([v2], "peanut allergies", ["peanut"])), vm.CARE)  # a generic allergy statement
+
+    def test_the_generic_nut_mention_does_not_open_other_allergens(self):
+        milos = view("Estiatorio Milos", [("wait", "contradiction", [1])],
+                     [ex(1, "Though I still had to wait for a new meal, nor did they remove it off of my bill which was disappointing. So if you have allergies be aware.", 1)])
+        self.assertEqual(vm.group_of(milos, outcome([milos], "shellfish allergies", ["shellfish"])), vm.INSUFFICIENT)
+        buddakan = view("Buddakan", [("menu", "contradiction", [1])],
+                        [ex(1, "Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants.", 3)])
+        self.assertEqual(vm.group_of(buddakan, outcome([buddakan], "sesame allergies", ["sesame"])), vm.INSUFFICIENT)
+        nuts = view("Place", [("nuts", "contradiction", [1])], [ex(1, "There were nuts in my dish and I had a reaction.", 1)])
+        self.assertEqual(vm.group_of(nuts, outcome([nuts], "sesame allergies", ["sesame"])), vm.INSUFFICIENT)
+        self.assertEqual(vm.group_of(nuts, outcome([nuts], "shellfish allergies", ["shellfish"])), vm.INSUFFICIENT)
 
     def test_the_synonym_groups(self):
         from src.allergy import allergen_groups

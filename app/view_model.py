@@ -15,7 +15,7 @@ from app import pipeline
 from app.coverage import need_terms
 from app.evidence_filter import mentions
 from app.highlight import highlight_terms, squash
-from src.allergy import GENERIC_ALLERGY, GROUP_PATTERNS, allergen_groups, is_allergy_text
+from src.allergy import GENERIC_ALLERGY, GROUP_PATTERNS, NUT_GENERIC, NUT_GROUPS, allergen_groups, is_allergy_text
 from src.retrieval.evidence import _SENTENCE_RE
 
 CARE, PROBLEMS, MIXED, INSUFFICIENT = "care", "problems", "mixed", "insufficient"
@@ -75,14 +75,23 @@ def names_the_allergen(text, patterns, name=None, generic=False):
     return any(pat.search(masked) for pat in patterns) or (generic and bool(GENERIC_ALLERGY.search(masked)))
 
 
+def names_a_nut_group(outcome):
+    p = outcome.parsed
+    return any(g in NUT_GROUPS for allergen in (p.allergens if p else []) for g in allergen_groups(allergen))
+
+
 def allergen_claim_counts(claim, outcome, name, generic):
     """For an allergy request that names an allergen: a claim counts only if a cited review mentions that allergen or a
-    synonym (care claims may also make a generic allergy statement). Other requests are not gated."""
+    synonym. The gate is asymmetric. Care claims (generic=True) are strict, and may also make a generic allergy statement.
+    Problem claims (generic=False) are warnings, so for a peanut or tree nut request they also count a generic "nut"/"nuts"
+    mention. Other requests are not gated."""
     if outcome is None or not outcome.allergy_sensitive:
         return True
     patterns = allergen_patterns(outcome)
     if not patterns:
         return True
+    if not generic and names_a_nut_group(outcome):
+        patterns = patterns + [NUT_GENERIC]
     return any(names_the_allergen(e.text, patterns, name, generic) for e in claim.excerpts)
 
 
@@ -337,13 +346,14 @@ def need_words(outcome):
     return [t for need in ((p.dietary_restrictions + p.allergens) if p else []) for t in need_terms(need)]
 
 
-def about_the_need(text, outcome, name=None):
+def about_the_need(text, outcome, name=None, warning=False):
     """True if the review text mentions the need (a diet or allergen word, not in the restaurant's name) or, for an allergy
     request, has an allergy cue word. With no parsed need and no allergy request, every cited review counts."""
     needs = need_words(outcome)
     if mentions(text, needs, name) if needs else False:
         return True
-    if allergen_patterns(outcome) and names_the_allergen(text, allergen_patterns(outcome), name):
+    patterns = allergen_patterns(outcome) + ([NUT_GENERIC] if warning and names_a_nut_group(outcome) else [])
+    if patterns and names_the_allergen(text, patterns, name):
         return True
     if outcome.allergy_sensitive:
         return has_allergy_cue(text)
@@ -378,7 +388,7 @@ def quote_for(view, outcome, group):
         parts, i, excerpt = best_match(view.excerpts, view.name, terms, needs, prefer_cue)
     if parts is None:
         return None
-    n = len({e.review_id for e in cited if about_the_need(e.text, outcome, view.name)})
+    n = len({e.review_id for e in cited if about_the_need(e.text, outcome, view.name, warning=group == PROBLEMS)})
     return Quote(compose_quote(parts, i, terms), excerpt.review_id, excerpt.date, getattr(excerpt, "rating", None), n)
 
 

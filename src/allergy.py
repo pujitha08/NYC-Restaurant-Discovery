@@ -49,3 +49,6 @@ GENERIC_ALLERGY = re.compile(r"\ballerg\w*\b", re.IGNORECASE)  # allergy, allerg
 def allergen_groups(allergen):
     """The groups a parsed allergen belongs to, e.g. "peanut allergy" -> ["peanut"]; [] if it names none of them."""
     return [name for name, pattern in GROUP_PATTERNS.items() if pattern.search(allergen or "")]
+# A warning about "nuts" in general matters to a peanut or a tree nut allergy, so problem claims (not care claims) also accept it.
+NUT_GENERIC = re.compile(r"\bnuts?\b", re.IGNORECASE)
+NUT_GROUPS = ("peanut", "tree nut")
