@@ -1,5 +1,5 @@
 {
- "cached_at": "2026-11-13",
+ "cached_at": "2026-11-16",
  "outcome": {
   "request_id": "",
   "query": "halal chinese food",
@@ -62,7 +62,18 @@
      "status": "supported",
      "claims": [
       {
-       "text": "One reviewer reported enjoying halal Chinese food at the restaurant",
+       "text": "One reviewer reported that the restaurant offers halal Chinese food",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 247156,
+         "date": "2019-03",
+         "text": "I love the food! It is Fresh! It taste better than any other Chinese food I ever tasted! I come all the way from the bronx(moshulu pkwy) for this halal Chinese food! Love it!"
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that the food was halal and praised its freshness",
        "label": "support",
        "excerpts": [
         {
@@ -74,14 +85,15 @@
       }
      ],
      "limitations": [
-      "No information about whether the restaurant consistently offers halal options or about other dietary restrictions.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": false,
      "note": null
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 2,
@@ -114,14 +126,16 @@
      "status": "insufficient evidence",
      "claims": [],
      "limitations": [
-      "The provided review excerpts do not address halal dietary requirements or mention halal certification.",
+      "No excerpts mention halal, cross‑contamination, or any dietary compliance with halal.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": false,
      "note": null
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 3,
@@ -154,14 +168,16 @@
      "status": "insufficient evidence",
      "claims": [],
      "limitations": [
-      "No snippet provided evidence regarding halal compliance.",
+      "No excerpts mention halal or non‑halal status.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": false,
      "note": null
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 4,
@@ -192,7 +208,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 5,
@@ -223,7 +241,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 6,
@@ -254,7 +274,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 7,
@@ -285,7 +307,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 8,
@@ -316,7 +340,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 9,
@@ -347,7 +373,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 10,
@@ -378,7 +406,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    }
   ],
   "notices": [],
@@ -388,6 +418,8 @@
   "llm_calls": [],
   "model": "openai/gpt-oss-20b",
   "allergy_sensitive": false,
-  "cached": false
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
  }
 }

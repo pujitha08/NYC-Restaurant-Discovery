@@ -1,5 +1,5 @@
 {
- "cached_at": "2026-11-13",
+ "cached_at": "2026-11-16",
  "outcome": {
   "request_id": "",
   "query": "restaurant careful about peanut allergies",
@@ -12,7 +12,9 @@
     "peanut"
    ],
    "group_needs": [],
-   "preferences": []
+   "preferences": [
+    "restaurant careful about peanut allergies"
+   ]
   },
   "summary_context": {
    "location": null,
@@ -21,7 +23,9 @@
     "peanut"
    ],
    "group_needs": [],
-   "preferences": []
+   "preferences": [
+    "restaurant careful about peanut allergies"
+   ]
   },
   "boroughs": null,
   "results": [
@@ -56,18 +60,7 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported the manager assured that peanuts allergies are not a problem, implying the restaurant is careful.",
-       "label": "contradiction",
-       "excerpts": [
-        {
-         "review_id": 2117639,
-         "date": "2020-03",
-         "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
-        }
-       ]
-      },
-      {
-       "text": "Another reviewer reported a severe allergic reaction after eating, indicating the restaurant was not careful with peanuts.",
+       "text": "One reviewer reported an allergic reaction after eating at the restaurant, indicating a problem handling peanut allergies.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -76,17 +69,30 @@
          "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies."
         }
        ]
+      },
+      {
+       "text": "Another reviewer noted that the manager claimed the restaurant could accommodate peanut allergies, but no personal experience was reported.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2117639,
+         "date": "2020-03",
+         "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
+        }
+       ]
       }
      ],
      "limitations": [
-      "Both claims are conflicting; the overall safety for peanut allergies remains uncertain.",
+      "Conflicting reports on peanut allergy safety; no definitive evidence of safe handling.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
      "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 2,
@@ -111,17 +117,41 @@
      }
     ],
     "summary": {
-     "status": "insufficient evidence",
-     "claims": [],
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that the waitstaff and kitchen were not attentive to food allergies despite informing them of a tree nut allergy, advising patrons with allergies to avoid the restaurant.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1576831,
+         "date": "2017-08",
+         "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …"
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that although the waitress acknowledged their nut and wheat allergies and expressed no concerns about menu choices, the reviewer still recommended that people with food allergies consider dining elsewhere.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1576786,
+         "date": "2017-07",
+         "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …"
+        }
+       ]
+      }
+     ],
      "limitations": [
-      "The supplied excerpts mention general nut and tree nut allergies, but do not explicitly reference peanuts or indicate that the restaurant handled peanut allergies carefully. No review confirms or denies specific peanut allergy accommodations.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
      "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 3,
@@ -141,11 +171,11 @@
      }
     ],
     "summary": {
-     "status": "insufficient evidence",
+     "status": "Reviews discuss this — read each claim",
      "claims": [
       {
-       "text": "One reviewer reported uncertainty about peanut allergens, noting the restaurant claimed no nuts in a burger yet expressing concern over potential allergy triggers.",
-       "label": "uncertainty",
+       "text": "One reviewer reported that the restaurant ensured the burger contained no nuts, reassuring them about peanut allergy safety.",
+       "label": "support",
        "excerpts": [
         {
          "review_id": 1627793,
@@ -162,7 +192,9 @@
      "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 4,
@@ -193,7 +225,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 5,
@@ -224,7 +258,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 6,
@@ -245,7 +281,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 7,
@@ -276,7 +314,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 8,
@@ -307,7 +347,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 9,
@@ -338,7 +380,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 10,
@@ -369,7 +413,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    }
   ],
   "notices": [],
@@ -379,6 +425,8 @@
   "llm_calls": [],
   "model": "openai/gpt-oss-20b",
   "allergy_sensitive": true,
-  "cached": false
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
  }
 }

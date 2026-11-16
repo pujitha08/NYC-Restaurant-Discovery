@@ -1,5 +1,5 @@
 {
- "cached_at": "2026-11-13",
+ "cached_at": "2026-11-16",
  "outcome": {
   "request_id": "",
   "query": "safe for celiac disease, no cross contamination",
@@ -55,7 +55,7 @@
      "status": "Reviews discuss this — read each claim",
      "claims": [
       {
-       "text": "One reviewer reported that celiacs can eat without concern for cross contamination.",
+       "text": "One reviewer reported that the restaurant is safe for celiacs with no concern for cross contamination.",
        "label": "support",
        "excerpts": [
         {
@@ -66,7 +66,7 @@
        ]
       },
       {
-       "text": "One reviewer reported that they could order food without worrying about getting sick.",
+       "text": "Another reviewer reported that the restaurant was highly recommended for celiacs and allowed ordering without worry of illness.",
        "label": "support",
        "excerpts": [
         {
@@ -84,7 +84,9 @@
      "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 2,
@@ -117,7 +119,7 @@
      "status": "Reviews discuss this — read each claim",
      "claims": [
       {
-       "text": "One reviewer reported no gluten‑related symptoms and healthy blood after dining at the restaurant, indicating gluten‑free safety.",
+       "text": "One reviewer reported that the restaurant is Celiac friendly, with no bathroom issues, no breakouts, and healthy blood levels.",
        "label": "support",
        "excerpts": [
         {
@@ -128,7 +130,7 @@
        ]
       },
       {
-       "text": "Another reviewer described the restaurant as consistently safe for those with Celiac Disease.",
+       "text": "Another reviewer noted that the restaurant offers great gluten-free options and is consistently safe for those with Celiac disease.",
        "label": "support",
        "excerpts": [
         {
@@ -139,7 +141,7 @@
        ]
       },
       {
-       "text": "A third reviewer noted that cross‑contamination was not an issue during multiple visits, affirming gluten‑free suitability.",
+       "text": "A third reviewer described the restaurant as a place where cross contamination is not an issue for celiac patients, despite a slightly higher price.",
        "label": "support",
        "excerpts": [
         {
@@ -157,7 +159,9 @@
      "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 3,
@@ -190,7 +194,7 @@
      "status": "mixed",
      "claims": [
       {
-       "text": "One reviewer reported that the restaurant was not careful with gluten, resulting in a different soup and potential illness for someone with celiac disease.",
+       "text": "One reviewer reported that the restaurant was not careful with celiac needs, serving the wrong soup and causing severe illness.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -201,7 +205,7 @@
        ]
       },
       {
-       "text": "One reviewer reported that the restaurant offers gluten‑free options, suitable for those with celiac disease.",
+       "text": "Another reviewer reported that the restaurant offers tasty food and is good for celiac/gluten‑free diners.",
        "label": "support",
        "excerpts": [
         {
@@ -212,7 +216,7 @@
        ]
       },
       {
-       "text": "One reviewer reported that the restaurant has a nice gluten‑free menu, making it convenient for someone with celiac disease.",
+       "text": "A third reviewer reported a solid Asian fusion menu with a nice gluten‑free selection, suitable for someone with celiac disease.",
        "label": "support",
        "excerpts": [
         {
@@ -224,14 +228,15 @@
       }
      ],
      "limitations": [
-      "There are conflicting reports about the restaurant’s gluten‑free safety; some reviewers report issues while others report adequate accommodations.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
      "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
     },
     "summary_error": null,
-    "summary_skipped": null
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 4,
@@ -262,7 +267,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 5,
@@ -293,7 +300,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 6,
@@ -324,7 +333,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 7,
@@ -355,7 +366,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 8,
@@ -386,7 +399,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 9,
@@ -417,7 +432,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    },
    {
     "rank": 10,
@@ -448,7 +465,9 @@
     ],
     "summary": null,
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result"
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
    }
   ],
   "notices": [],
@@ -458,6 +477,8 @@
   "llm_calls": [],
   "model": "openai/gpt-oss-20b",
   "allergy_sensitive": true,
-  "cached": false
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
  }
 }
