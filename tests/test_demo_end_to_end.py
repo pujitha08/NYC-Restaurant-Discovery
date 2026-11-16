@@ -81,7 +81,8 @@ class ChipsFromTheSavedResultsTests(unittest.TestCase):
                 continue
             with self.subTest(chip=label):
                 html = " ".join(m.value for m in self.click(label).markdown)
-                self.assertNotRegex(html, r"(?i)supported|\bsafe\b")
+                app_voice = re.sub(r"<blockquote.*?</blockquote>", " ", html, flags=re.S)  # a reviewer's own words may say "safe"
+                self.assertNotRegex(app_voice, r"(?i)supported|\bsafe\b")
                 self.assertIn("Reviews mention allergy care", html)
                 self.assertIn("Reviews report problems", html)
 

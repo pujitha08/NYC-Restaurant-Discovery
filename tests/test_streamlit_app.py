@@ -43,6 +43,18 @@ class ProblemsClient(FakeClient):
         return super().create(**kwargs)
 
 
+class ProblemsAllergy(ProblemsClient):
+    """Every summary reports a problem, and the parser finds a peanut allergy."""
+
+    def create(self, **kwargs):
+        res = super().create(**kwargs)
+        if kwargs["response_format"]["json_schema"]["name"] == "parsed_query":
+            body = json.loads(res.choices[0].message.content)
+            body.update(allergens=["peanut"])
+            res.choices[0].message.content = json.dumps(body)
+        return res
+
+
 class ParsedClient(FakeClient):
     """A parser that returns the given fields (e.g. allergens), a summarizer as in FakeClient."""
 
@@ -300,6 +312,17 @@ class PageTests(unittest.TestCase):
     def test_empty_problems_column_message(self):
         at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
         self.assertIn("No restaurant in the top results has reviews reporting allergy problems. That is not a safety guarantee.", self.html(at))
+
+    def test_empty_care_column_has_the_symmetric_message_for_allergy_and_diet_requests(self):
+        allergy = self.search(self.start(ProblemsAllergy(location=None)),
+                              "restaurant careful about peanut allergies")
+        html = self.html(allergy)
+        self.assertIn("No restaurant in the top results has reviews describing care for peanut allergies. "
+                      "That doesn&#x27;t mean none exist; reviews just don&#x27;t say.", html)
+        self.assertNotIn("has reviews reporting allergy problems", html)  # the problems column is full
+        diet = self.search(self.start(ProblemsClient(location=None)), "vegan options")
+        self.assertIn("No restaurant in the top results has reviews describing vegan options. "
+                      "That doesn&#x27;t mean none exist; reviews just don&#x27;t say.", self.html(diet))
 
     def test_a_problems_only_restaurant_is_in_the_right_column_only(self):
         at = self.search(self.start(ProblemsClient(location=None)))

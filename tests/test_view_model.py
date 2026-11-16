@@ -86,6 +86,27 @@ class MappingTests(unittest.TestCase):
         self.assertIn("not a safety guarantee", vm.empty_problems_message())
 
 
+class EmptyColumnTests(unittest.TestCase):
+    def test_empty_care_message_for_an_allergy_request(self):
+        self.assertEqual(vm.empty_care_message(outcome([PROBLEMS])),
+                         "No restaurant in the top results has reviews describing care for peanut allergies. "
+                         "That doesn't mean none exist; reviews just don't say.")
+
+    def test_empty_care_message_for_a_diet_request(self):
+        o = outcome([PROBLEMS], query="halal restaurants", parsed=ParsedQuery(dietary_restrictions=["halal"]), allergy=False)
+        self.assertEqual(vm.empty_care_message(o),
+                         "No restaurant in the top results has reviews describing halal options. "
+                         "That doesn't mean none exist; reviews just don't say.")
+
+    def test_empty_care_message_without_a_parsed_need(self):
+        o = outcome([PROBLEMS], query="pizza", parsed=ParsedQuery(), allergy=False)
+        self.assertIn("describing what you asked for.", vm.empty_care_message(o))
+
+    def test_the_messages_never_say_safe_or_supported(self):
+        for o in (outcome([PROBLEMS]), outcome([PROBLEMS], parsed=ParsedQuery(dietary_restrictions=["kosher"]), allergy=False)):
+            self.assertNotRegex(vm.empty_care_message(o), r"(?i)\bsafe\b|supported")
+
+
 class CountLineTests(unittest.TestCase):
     def test_allergy_wording(self):
         o = outcome([CARE, PROBLEMS, MIXED, INSUFF, SKIPPED])

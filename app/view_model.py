@@ -142,6 +142,14 @@ def empty_problems_message():
             "That is not a safety guarantee.")
 
 
+def empty_care_message(outcome):
+    """Shown in place of the care column when no restaurant belongs there (the mirror of empty_problems_message)."""
+    kind = need_kind(outcome)
+    what = f"care for {need_phrase(outcome)}" if kind == "allergy" else \
+        f"{diet_text(outcome)} options" if kind == "diet" else "what you asked for"
+    return f"No restaurant in the top results has reviews describing {what}. That doesn't mean none exist; reviews just don't say."
+
+
 def count_line(outcome):
     """"10 restaurants checked · 6 mention allergy care · 2 report problems · 2 not enough evidence" (zero parts kept)."""
     c = columns(outcome)

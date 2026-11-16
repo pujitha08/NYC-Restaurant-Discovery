@@ -361,8 +361,7 @@ def show_columns(outcome, c):
         for view in c.care:
             show_card(outcome, view, vm.CARE)
         if not c.care:
-            st.markdown('<div class="empty-col">No restaurant in the top results has reviews that mention it.</div>',
-                        unsafe_allow_html=True)
+            st.markdown(f'<div class="empty-col">{html_text(vm.empty_care_message(outcome))}</div>', unsafe_allow_html=True)
     with right:
         column_head(outcome, vm.PROBLEMS)
         for view in c.problems:
