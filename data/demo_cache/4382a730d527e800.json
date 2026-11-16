@@ -9,7 +9,7 @@
    "location": null,
    "dietary_restrictions": [],
    "allergens": [
-    "peanut allergy"
+    "peanut"
    ],
    "group_needs": [],
    "preferences": []
@@ -18,7 +18,7 @@
    "location": null,
    "dietary_restrictions": [],
    "allergens": [
-    "peanut allergy"
+    "peanut"
    ],
    "group_needs": [],
    "preferences": []
@@ -39,41 +39,46 @@
      {
       "review_id": 2117639,
       "date": "2020-03",
-      "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
+      "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …",
+      "rating": 1
      },
      {
       "review_id": 2117626,
       "date": "2020-03",
-      "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies."
+      "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies.",
+      "rating": 1
      },
      {
       "review_id": 2117781,
       "date": "2019-05",
-      "text": "… To our surprise, we noticed an older couple sitting to our left side. We struck up a conversation and before you knew it...we found out they are Chef Leah's parents! (the foodie me was totally amazed!). So you never know who you will sit next to! Overall the food is reasonably priced and we left satisfied and full!"
+      "text": "… To our surprise, we noticed an older couple sitting to our left side. We struck up a conversation and before you knew it...we found out they are Chef Leah's parents! (the foodie me was totally amazed!). So you never know who you will sit next to! Overall the food is reasonably priced and we left satisfied and full!",
+      "rating": 5
      }
     ],
     "summary": {
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer warned that the restaurant is unsuitable for those with severe peanut allergies, despite the manager’s claim that it would not be a problem.",
+       "text": "One reviewer reported that the manager claimed peanut allergies would not be a problem, although the reviewer later experienced a severe allergic reaction.",
        "label": "contradiction",
        "excerpts": [
         {
          "review_id": 2117639,
          "date": "2020-03",
-         "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …"
+         "text": "DO NOT GO IF YOU HAVE A SEVERE PEANUT ALLERGY. i have a severe allergy to peanuts, so I called the restaurant the night before my friends and I had brunch to ask about how Pig&Khao fares with people who allergies to peanuts. The manager said people come in often who have allergies and it won’t be a problem. …",
+         "rating": 1
         }
        ]
       },
       {
-       "text": "Another reviewer reported that they experienced an allergic reaction after eating at the restaurant, concluding they would not return.",
+       "text": "Another reviewer described having an allergic reaction after eating at the restaurant and advised others with severe allergies to avoid it.",
        "label": "contradiction",
        "excerpts": [
         {
          "review_id": 2117626,
          "date": "2020-03",
-         "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies."
+         "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies.",
+         "rating": 1
         }
        ]
       }
@@ -103,42 +108,45 @@
      {
       "review_id": 1576831,
       "date": "2017-08",
-      "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …"
+      "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …",
+      "rating": 1
      },
      {
       "review_id": 1576786,
       "date": "2017-07",
-      "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …"
+      "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …",
+      "rating": 1
      }
     ],
     "summary": {
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported that the waitstaff and kitchen were not attentive to food allergies and advised diners with a peanut allergy to avoid the restaurant.",
+       "text": "One reviewer warned that the restaurant was not attentive to peanut allergies and advised patrons with such allergies to avoid the venue.",
        "label": "contradiction",
        "excerpts": [
         {
          "review_id": 1576831,
          "date": "2017-08",
-         "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …"
+         "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …",
+         "rating": 1
         }
        ]
       },
       {
-       "text": "Another reviewer described informing the waitress of a nut allergy, who acknowledged it and did not express concerns about menu choices, but the review does not report on whether any allergic reaction occurred or if the restaurant adequately accommodated the allergy.",
-       "label": "uncertainty",
+       "text": "Another reviewer reported that a waiter acknowledged a nut allergy but did not address any concerns, implying insufficient accommodation for peanut allergies.",
+       "label": "contradiction",
        "excerpts": [
         {
          "review_id": 1576786,
          "date": "2017-07",
-         "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …"
+         "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …",
+         "rating": 1
         }
        ]
       }
      ],
      "limitations": [
-      "No clear evidence that the restaurant successfully handled peanut allergies; one reviewer warned against the restaurant, while another provided only a partial account of the staff’s acknowledgment without outcome.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -163,20 +171,22 @@
      {
       "review_id": 1627793,
       "date": "2016-05",
-      "text": "… I challenged him again. He assertively told me there are no nuts in the burger. As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts. …"
+      "text": "… I challenged him again. He assertively told me there are no nuts in the burger. As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts. …",
+      "rating": 1
      }
     ],
     "summary": {
-     "status": "Reviews discuss this — read each claim",
+     "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported the restaurant ensuring the burger had no nuts, indicating care for a peanut allergy.",
-       "label": "support",
+       "text": "One reviewer reported that despite the restaurant’s claim that the burger contained no nuts, the reviewer experienced an anaphylactic reaction, indicating a potential allergy issue.",
+       "label": "contradiction",
        "excerpts": [
         {
          "review_id": 1627793,
          "date": "2016-05",
-         "text": "… I challenged him again. He assertively told me there are no nuts in the burger. As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts. …"
+         "text": "… I challenged him again. He assertively told me there are no nuts in the burger. As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts. …",
+         "rating": 1
         }
        ]
       }
@@ -206,22 +216,71 @@
      {
       "review_id": 1664372,
       "date": "2020-08",
-      "text": "… ended up throwing up my whole $80 meal within 30 minutes of eating it which kind of sucks. please put allergens on your menu or make sure the server specifies that things have nuts in them, vegans allergic to nuts are few and far between but we exist!"
+      "text": "… ended up throwing up my whole $80 meal within 30 minutes of eating it which kind of sucks. please put allergens on your menu or make sure the server specifies that things have nuts in them, vegans allergic to nuts are few and far between but we exist!",
+      "rating": 4
      },
      {
       "review_id": 1664367,
       "date": "2021-02",
-      "text": "… The waitress told us with certainty that they do not use those nuts at all in any dishes for allergy reasons specifically. Unfortunately when we asked if there was a dessert she might recommend, the strawberry cheesecake that was suggested did in fact contain Cashews. I ran to the kitchen and asked, and they said it was nut free. …"
+      "text": "… The waitress told us with certainty that they do not use those nuts at all in any dishes for allergy reasons specifically. Unfortunately when we asked if there was a dessert she might recommend, the strawberry cheesecake that was suggested did in fact contain Cashews. I ran to the kitchen and asked, and they said it was nut free. …",
+      "rating": 1
      },
      {
       "review_id": 1664497,
       "date": "2018-10",
-      "text": "Excellent food, they were extremely accommodating of my allergies (nut and soy) and outlined what was safe to eat"
+      "text": "Excellent food, they were extremely accommodating of my allergies (nut and soy) and outlined what was safe to eat",
+      "rating": 5
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported throwing up after eating a meal that likely contained peanuts, and urged the restaurant to indicate nut allergens on menus.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1664372,
+         "date": "2020-08",
+         "text": "… ended up throwing up my whole $80 meal within 30 minutes of eating it which kind of sucks. please put allergens on your menu or make sure the server specifies that things have nuts in them, vegans allergic to nuts are few and far between but we exist!",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "One reviewer described a waitress confirming no nuts were used, yet the suggested strawberry cheesecake contained cashews, and the kitchen later claimed it was nut‑free.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1664367,
+         "date": "2021-02",
+         "text": "… The waitress told us with certainty that they do not use those nuts at all in any dishes for allergy reasons specifically. Unfortunately when we asked if there was a dessert she might recommend, the strawberry cheesecake that was suggested did in fact contain Cashews. I ran to the kitchen and asked, and they said it was nut free. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A reviewer’s comment about this allergy is quoted below.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1664497,
+         "date": "2018-10",
+         "text": "Excellent food, they were extremely accommodating of my allergies (nut and soy) and outlined what was safe to eat",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only three reviews were available, and they give conflicting accounts of the restaurant’s handling of peanut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -239,22 +298,59 @@
      {
       "review_id": 1869131,
       "date": "2018-03",
-      "text": "For peanuts lovers ~ but table not cleaned regularly"
+      "text": "For peanuts lovers ~ but table not cleaned regularly",
+      "rating": 3
      },
      {
       "review_id": 1869239,
       "date": "2018-06",
-      "text": "The service was very slow we asked for the food for eat in and they gave it to us in a paper bag and the peanuts were empty which is one of the Staples of this restaurant"
+      "text": "The service was very slow we asked for the food for eat in and they gave it to us in a paper bag and the peanuts were empty which is one of the Staples of this restaurant",
+      "rating": 3
      },
      {
       "review_id": 1868818,
       "date": "2019-04",
-      "text": "Great food ... Burgers made to order. Fries are delicious and plentiful ... Love the Cajun seasoning! I'm not a peanut lover, but my friends enjoyed the peanuts while waiting for the burgers."
+      "text": "Great food ... Burgers made to order. Fries are delicious and plentiful ... Love the Cajun seasoning! I'm not a peanut lover, but my friends enjoyed the peanuts while waiting for the burgers.",
+      "rating": 5
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [
+      {
+       "text": "Reviewers noted the presence of peanuts in the restaurant but did not report whether the staff handled peanut allergies or took precautions.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1869131,
+         "date": "2018-03",
+         "text": "For peanuts lovers ~ but table not cleaned regularly",
+         "rating": 3
+        },
+        {
+         "review_id": 1869239,
+         "date": "2018-06",
+         "text": "The service was very slow we asked for the food for eat in and they gave it to us in a paper bag and the peanuts were empty which is one of the Staples of this restaurant",
+         "rating": 3
+        },
+        {
+         "review_id": 1868818,
+         "date": "2019-04",
+         "text": "Great food ... Burgers made to order. Fries are delicious and plentiful ... Love the Cajun seasoning! I'm not a peanut lover, but my friends enjoyed the peanuts while waiting for the burgers.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "No excerpts describe how the restaurant manages peanut allergy concerns or confirm safety measures.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -272,12 +368,34 @@
      {
       "review_id": 91632,
       "date": "2018-01",
-      "text": "… The only other thing that I can think of is, somehow a cashew or walnut piece got into the pancake mix!? Although, this allergy attack to nuts- would have resulted in Benadryl and a trip to the hospital if this was the case, thank goodness it was not, that severe!) Very disappointing first experience! …"
+      "text": "… The only other thing that I can think of is, somehow a cashew or walnut piece got into the pancake mix!? Although, this allergy attack to nuts- would have resulted in Benadryl and a trip to the hospital if this was the case, thank goodness it was not, that severe!) Very disappointing first experience! …",
+      "rating": 5
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [
+      {
+       "text": "One reviewer mentioned a possible peanut allergy reaction but reported no severe outcome.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 91632,
+         "date": "2018-01",
+         "text": "… The only other thing that I can think of is, somehow a cashew or walnut piece got into the pancake mix!? Although, this allergy attack to nuts- would have resulted in Benadryl and a trip to the hospital if this was the case, thank goodness it was not, that severe!) Very disappointing first experience! …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -295,17 +413,20 @@
      {
       "review_id": 73237,
       "date": "2018-04",
-      "text": "… Dinner was over salted, over cooked and cold. Told our server I was allergic to peanuts..... The chocolates given at the end of the meal to take away were peanut butter!. Absolutely no label indicating peanut...Thank goodness I only have a mild allergy. Mediocre food, mediocre service.... There are too many other wonderful places in NYC.... …"
+      "text": "… Dinner was over salted, over cooked and cold. Told our server I was allergic to peanuts..... The chocolates given at the end of the meal to take away were peanut butter!. Absolutely no label indicating peanut...Thank goodness I only have a mild allergy. Mediocre food, mediocre service.... There are too many other wonderful places in NYC.... …",
+      "rating": 1
      },
      {
       "review_id": 73590,
       "date": "2016-05",
-      "text": "Jean Georges is a spectacular restaurant but my brother did have an allergic reaction from something there i would recommend telling the waiter food allergies. But other wise very nice and polite staff and delicious food ."
+      "text": "Jean Georges is a spectacular restaurant but my brother did have an allergic reaction from something there i would recommend telling the waiter food allergies. But other wise very nice and polite staff and delicious food .",
+      "rating": 4
      },
      {
       "review_id": 73089,
       "date": "2020-10",
-      "text": "… This ambiance, along with, of course, the food and service is why we return. One couple across the room did not realize that the outdoor terrace / Nougatine menu is not available inside, just the three tasting menus: short, long and vegetarian. Hopefully the NYC outdoor portable heating laws will be addressed soon. …"
+      "text": "… This ambiance, along with, of course, the food and service is why we return. One couple across the room did not realize that the outdoor terrace / Nougatine menu is not available inside, just the three tasting menus: short, long and vegetarian. Hopefully the NYC outdoor portable heating laws will be addressed soon. …",
+      "rating": 5
      }
     ],
     "summary": null,
@@ -328,17 +449,20 @@
      {
       "review_id": 136010,
       "date": "2016-10",
-      "text": "The food is pretty good. BUT. I ordered a Veggie Burger. I'm allergic to nuts. I didn't expect a veggie burger to have nuts in it. & the was nothing saying or indicating that on the menu at all. So after a couple bites, the person I went with went to get Benadryl at DuaneReade. …"
+      "text": "The food is pretty good. BUT. I ordered a Veggie Burger. I'm allergic to nuts. I didn't expect a veggie burger to have nuts in it. & the was nothing saying or indicating that on the menu at all. So after a couple bites, the person I went with went to get Benadryl at DuaneReade. …",
+      "rating": 2
      },
      {
       "review_id": 135512,
       "date": "2018-04",
-      "text": "If you have food allergies - STAY AWAY! Went with my friends for dinner. After 35 minutes of waiting, we finally set and made an order. I informed the waitress about my food allergies and she confirmed that the food is gluten free. Well - I got back home really sick and vomited until 4am. …"
+      "text": "If you have food allergies - STAY AWAY! Went with my friends for dinner. After 35 minutes of waiting, we finally set and made an order. I informed the waitress about my food allergies and she confirmed that the food is gluten free. Well - I got back home really sick and vomited until 4am. …",
+      "rating": 1
      },
      {
       "review_id": 136005,
       "date": "2017-11",
-      "text": "… We will not be back here due to this discourteous treatment. Read below: I wish i could have given Cafeteria a big fat zero but i had to pick a star. They made it clear today that they do not care at all about food allergies. My daughter has a dairy allergy and wanted scrambled eggs. …"
+      "text": "… We will not be back here due to this discourteous treatment. Read below: I wish i could have given Cafeteria a big fat zero but i had to pick a star. They made it clear today that they do not care at all about food allergies. My daughter has a dairy allergy and wanted scrambled eggs. …",
+      "rating": 1
      }
     ],
     "summary": null,
@@ -361,17 +485,20 @@
      {
       "review_id": 1315265,
       "date": "2017-03",
-      "text": "… My friend is deathly allergic to peanut butter and there was never a mention of peanut butter in the description (ie: it shouldn't be there and thus they don't follow recipes and really can't be trusted to follow procedure). …"
+      "text": "… My friend is deathly allergic to peanut butter and there was never a mention of peanut butter in the description (ie: it shouldn't be there and thus they don't follow recipes and really can't be trusted to follow procedure). …",
+      "rating": 1
      },
      {
       "review_id": 1315448,
       "date": "2016-05",
-      "text": "Terrible service , waiter forgot appetizer and wasn't giving no attention to all 3 tables he had. Never again."
+      "text": "Terrible service , waiter forgot appetizer and wasn't giving no attention to all 3 tables he had. Never again.",
+      "rating": 1
      },
      {
       "review_id": 1315444,
       "date": "2016-02",
-      "text": "Why open a denny's in the city, it goes against all logic"
+      "text": "Why open a denny's in the city, it goes against all logic",
+      "rating": 3
      }
     ],
     "summary": null,
@@ -394,17 +521,20 @@
      {
       "review_id": 79278,
       "date": "2019-11",
-      "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences."
+      "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences.",
+      "rating": 5
      },
      {
       "review_id": 79848,
       "date": "2013-08",
-      "text": "… I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants to be safe. Bad experience, BUT, the food really was very good and we had a great time. …"
+      "text": "… I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants to be safe. Bad experience, BUT, the food really was very good and we had a great time. …",
+      "rating": 3
      },
      {
       "review_id": 79107,
       "date": "2019-07",
-      "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies."
+      "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+      "rating": 5
      }
     ],
     "summary": null,

@@ -1,0 +1,686 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "vegetarian restaurants",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "vegetarian"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "vegetarian restaurants"
+   ]
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "vegetarian"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "vegetarian restaurants"
+   ]
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c2599166ac45c1:0xd2bb7efe730dd284",
+    "name": "Red Bamboo",
+    "borough": "Manhattan",
+    "address": "Red Bamboo, 140 West 4th Street, New York, NY 10012",
+    "avg_rating": 4.5,
+    "num_reviews": 673,
+    "low_evidence": false,
+    "score": 2.461846661567688,
+    "excerpts": [
+     {
+      "review_id": 1280115,
+      "date": "2021-03",
+      "text": "One of my favorite vegetarian restaurants due to its diverse vegetarian menu. The food is delicious and it is seasoned well. The employees are friendly and the service is on point. If you are in the NYC area you must check this location out. You will love it!",
+      "rating": 5
+     },
+     {
+      "review_id": 1280671,
+      "date": "2016-12",
+      "text": "Might be the best vegetarian restaurant food I've ever eaten. Everything I tried was delicious!",
+      "rating": 5
+     },
+     {
+      "review_id": 1280672,
+      "date": "2013-03",
+      "text": "Vegetarian soul cafe. Chic vegetarian dining with meat flavored options and the most amazing vegan desserts. Bamburger is a well priced menu item. Overall, priced affordably.There's a sister restaurant which uses the same kitchen and offers similar food called Vegetarian Paradise 2. …",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant is a favorite vegetarian restaurant with a diverse vegetarian menu and friendly service.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1280115,
+         "date": "2021-03",
+         "text": "One of my favorite vegetarian restaurants due to its diverse vegetarian menu. The food is delicious and it is seasoned well. The employees are friendly and the service is on point. If you are in the NYC area you must check this location out. You will love it!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the restaurant may be the best vegetarian restaurant food they have ever eaten.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1280671,
+         "date": "2016-12",
+         "text": "Might be the best vegetarian restaurant food I've ever eaten. Everything I tried was delicious!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer reported that the restaurant offers a chic vegetarian dining experience with vegan desserts and affordable menu items.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1280672,
+         "date": "2013-03",
+         "text": "Vegetarian soul cafe. Chic vegetarian dining with meat flavored options and the most amazing vegan desserts. Bamburger is a well priced menu item. Overall, priced affordably.There's a sister restaurant which uses the same kitchen and offers similar food called Vegetarian Paradise 2. …",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c2599d7b6d7905:0x13f746a075ed355f",
+    "name": "Dirt Candy",
+    "borough": "Manhattan",
+    "address": "Dirt Candy, 86 Allen St, New York, NY 10002",
+    "avg_rating": 4.6,
+    "num_reviews": 345,
+    "low_evidence": false,
+    "score": 2.4239180207252504,
+    "excerpts": [
+     {
+      "review_id": 77749,
+      "date": "2019-05",
+      "text": "Vegetarian restaurant done right. Attentive staff, open kitchen.",
+      "rating": 5
+     },
+     {
+      "review_id": 77463,
+      "date": "2017-10",
+      "text": "Amazing vegetarian/vegan restaurant. Friendly staff, quick service and spacious seating. Two tasting menus available, one with 5 dishes and another with 9 or a la carte as well. They also have cocktails and a wine list. Food wise is really tasty, flavours are all over you senses, plus it the food feels fresh and good quality. …",
+      "rating": 5
+     },
+     {
+      "review_id": 77518,
+      "date": "2020-08",
+      "text": "It’s not your typical vegetarian restaurant, it’s not trying to save the planet, nor is it filled with self-righteous people eating vegetables. This is a place where the chef makes a real effort to transform basic vegetables into a gourmet experience. …",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant is a vegetarian restaurant done right, with attentive staff and an open kitchen.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 77749,
+         "date": "2019-05",
+         "text": "Vegetarian restaurant done right. Attentive staff, open kitchen.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the restaurant as an amazing vegetarian/vegan establishment with friendly staff, quick service, tasting menus, and quality food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 77463,
+         "date": "2017-10",
+         "text": "Amazing vegetarian/vegan restaurant. Friendly staff, quick service and spacious seating. Two tasting menus available, one with 5 dishes and another with 9 or a la carte as well. They also have cocktails and a wine list. Food wise is really tasty, flavours are all over you senses, plus it the food feels fresh and good quality. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted the restaurant is not typical but offers a gourmet vegetarian experience with the chef’s effort to transform vegetables.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 77518,
+         "date": "2020-08",
+         "text": "It’s not your typical vegetarian restaurant, it’s not trying to save the planet, nor is it filled with self-righteous people eating vegetables. This is a place where the chef makes a real effort to transform basic vegetables into a gourmet experience. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c2593f2530370d:0x99977fc57ba9669c",
+    "name": "Jungle Cafe",
+    "borough": "Brooklyn",
+    "address": "Jungle Cafe, 131 Greenpoint Ave, Brooklyn, NY 11222",
+    "avg_rating": 4.7,
+    "num_reviews": 311,
+    "low_evidence": false,
+    "score": 2.336194705963135,
+    "excerpts": [
+     {
+      "review_id": 827467,
+      "date": "2016-04",
+      "text": "So far the best vegetarian restaurant I've been in ! Awesome atmosphere (colorful but cozy; kitchen smells all over the place) , tasty buffet options (I have only been there twice, couple of options changed, too). …",
+      "rating": 5
+     },
+     {
+      "review_id": 827531,
+      "date": "2017-08",
+      "text": "At an affordable price, you can choose between a vegetarian buffet and a selection of vegetarian dishes in a relaxed atmosphere. + quality and variety of the buffet + price - toilet cleanliness below American standards, but remains nevertheless acceptable. …",
+      "rating": 5
+     },
+     {
+      "review_id": 827530,
+      "date": "2021-05",
+      "text": "Delicious vegan food, order from the menu or buffet!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers a wide variety of vegetarian buffet options, describing it as the best vegetarian restaurant experienced.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 827467,
+         "date": "2016-04",
+         "text": "So far the best vegetarian restaurant I've been in ! Awesome atmosphere (colorful but cozy; kitchen smells all over the place) , tasty buffet options (I have only been there twice, couple of options changed, too). …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the restaurant provides a vegetarian buffet and a selection of vegetarian dishes at an affordable price, praising the quality and variety.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 827531,
+         "date": "2017-08",
+         "text": "At an affordable price, you can choose between a vegetarian buffet and a selection of vegetarian dishes in a relaxed atmosphere. + quality and variety of the buffet + price - toilet cleanliness below American standards, but remains nevertheless acceptable. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer reported that the restaurant offers delicious vegan food available from the menu or buffet.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 827530,
+         "date": "2021-05",
+         "text": "Delicious vegan food, order from the menu or buffet!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c25999c2266573:0x6d2f70463b09589d",
+    "name": "Nix",
+    "borough": "Manhattan",
+    "address": "Nix, 72 University Pl, New York, NY 10003",
+    "avg_rating": 4.5,
+    "num_reviews": 311,
+    "low_evidence": false,
+    "score": 2.31529815196991,
+    "excerpts": [
+     {
+      "review_id": 1955513,
+      "date": "2018-07",
+      "text": "A vegetarian restaurant with a star, delicious and special food ...",
+      "rating": 4
+     },
+     {
+      "review_id": 1955511,
+      "date": "2019-11",
+      "text": "A small restaurant with very delicious, exceptional cuisine. I must admit that I have never eaten so delicious vegetarian. The dishes are served by the chefs at the table and the ingredients are explained if necessary the preparation. The service is very nice, but the prices are above average. I'll say, a secret tip in New York.",
+      "rating": 4
+     },
+     {
+      "review_id": 1955515,
+      "date": "2017-08",
+      "text": "Vegetarian restaurant. There were many fashionable and satisfying menus. The clerk was cute and kind.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers a star‑rated vegetarian menu with special dishes.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1955513,
+         "date": "2018-07",
+         "text": "A vegetarian restaurant with a star, delicious and special food ...",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the restaurant as a small venue with exceptionally delicious vegetarian cuisine and clear ingredient explanations.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1955511,
+         "date": "2019-11",
+         "text": "A small restaurant with very delicious, exceptional cuisine. I must admit that I have never eaten so delicious vegetarian. The dishes are served by the chefs at the table and the ingredients are explained if necessary the preparation. The service is very nice, but the prices are above average. I'll say, a secret tip in New York.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted that the venue is a vegetarian restaurant with fashionable and satisfying menus.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1955515,
+         "date": "2017-08",
+         "text": "Vegetarian restaurant. There were many fashionable and satisfying menus. The clerk was cute and kind.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c259af5d600fc3:0xf214268e9258b04b",
+    "name": "by CHLOE. - West Village",
+    "borough": "Manhattan",
+    "address": "by CHLOE. - West Village, 185 Bleecker St, New York, NY 10012",
+    "avg_rating": 4.3,
+    "num_reviews": 773,
+    "low_evidence": false,
+    "score": 2.314335358142853,
+    "excerpts": [
+     {
+      "review_id": 433735,
+      "date": "2017-02",
+      "text": "Friendly vegan restaurant for non vegans.",
+      "rating": 4
+     },
+     {
+      "review_id": 433162,
+      "date": "2016-10",
+      "text": "Good organic- natural and vegetarian fast food restaurant. For me (not vegetarian) not worth it, and a little bit spicy. But the idea is cool and the service is nice!",
+      "rating": 4
+     },
+     {
+      "review_id": 433815,
+      "date": "2018-01",
+      "text": "Good vegetarian and vegan fast food. A little expensive for the type of food it is, but everything is delicious. I especially recommend the guacamole burger. They also have vegan cupcakes and sweets from the neighboring store, Sweets by Chloe. …",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant is a friendly vegan restaurant suitable for non‑vegans.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 433735,
+         "date": "2017-02",
+         "text": "Friendly vegan restaurant for non vegans.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the venue as a good organic‑natural and vegetarian fast‑food restaurant, noting pleasant service.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 433162,
+         "date": "2016-10",
+         "text": "Good organic- natural and vegetarian fast food restaurant. For me (not vegetarian) not worth it, and a little bit spicy. But the idea is cool and the service is nice!",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer praised the restaurant for good vegetarian and vegan fast food, recommending dishes such as the guacamole burger.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 433815,
+         "date": "2018-01",
+         "text": "Good vegetarian and vegan fast food. A little expensive for the type of food it is, but everything is delicious. I especially recommend the guacamole burger. They also have vegan cupcakes and sweets from the neighboring store, Sweets by Chloe. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c259a3fb073b6d:0xe07697b5fc7d2d07",
+    "name": "by CHLOE. - Flatiron",
+    "borough": "Manhattan",
+    "address": "by CHLOE. - Flatiron, 60 W 22nd St, New York, NY 10010",
+    "avg_rating": 4.4,
+    "num_reviews": 407,
+    "low_evidence": false,
+    "score": 2.305081617832184,
+    "excerpts": [
+     {
+      "review_id": 92121,
+      "date": "2018-01",
+      "text": "Vegan food place. all of menus is for vegetarien. Burger is not bad and basil pesto pasta is good. Daily soup was not good for me. Coffee ice cream was nothing special taste. A place famous for vegetarian food. Targeting white women in their 20s. Salad balls, hamburgers, air fries and other light foods that women like are available.",
+      "rating": 4
+     },
+     {
+      "review_id": 92136,
+      "date": "2018-11",
+      "text": "A restaurant where you can eat vegan food. \"Hamburger\" is good",
+      "rating": 3
+     },
+     {
+      "review_id": 92126,
+      "date": "2017-09",
+      "text": "This restaurant offers a varied menu of vegetarian dishes to enjoy in a pleasant place. The dishes are of good quality, tasteful and affordable. The service is fast. It is also possible to take ready-made dishes (mainly salads). A \"gluten-free\" option is available for certain dishes.",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant serves exclusively vegetarian dishes such as burgers, basil pesto pasta, and salads.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 92121,
+         "date": "2018-01",
+         "text": "Vegan food place. all of menus is for vegetarien. Burger is not bad and basil pesto pasta is good. Daily soup was not good for me. Coffee ice cream was nothing special taste. A place famous for vegetarian food. Targeting white women in their 20s. Salad balls, hamburgers, air fries and other light foods that women like are available.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the restaurant as a place where vegan food, including burgers, is available.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 92136,
+         "date": "2018-11",
+         "text": "A restaurant where you can eat vegan food. \"Hamburger\" is good",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "A reviewer noted the restaurant offers a varied menu of vegetarian dishes, with good quality and affordable options.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 92126,
+         "date": "2017-09",
+         "text": "This restaurant offers a varied menu of vegetarian dishes to enjoy in a pleasant place. The dishes are of good quality, tasteful and affordable. The service is fast. It is also possible to take ready-made dishes (mainly salads). A \"gluten-free\" option is available for certain dishes.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "The same reviewer mentioned a gluten‑free option for certain dishes, indicating flexibility within the vegetarian menu.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 92126,
+         "date": "2017-09",
+         "text": "This restaurant offers a varied menu of vegetarian dishes to enjoy in a pleasant place. The dishes are of good quality, tasteful and affordable. The service is fast. It is also possible to take ready-made dishes (mainly salads). A \"gluten-free\" option is available for certain dishes.",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c259967ec8fc1d:0xbba6f5a6cd4250cb",
+    "name": "Village Natural",
+    "borough": "Manhattan",
+    "address": "Village Natural, 46 Greenwich Ave, New York, NY 10011",
+    "avg_rating": 4.2,
+    "num_reviews": 88,
+    "low_evidence": false,
+    "score": 2.299282801151276,
+    "excerpts": [
+     {
+      "review_id": 423881,
+      "date": "2017-03",
+      "text": "Quaint, almost hidden restaurant offers a wide selection of guilt-free vegan and vegetarian foods, with seafood offerings for those who swing that way. Friendly and attentive staff made the whole trip that much more enjoyable. Will go back again soon to try other menu options.",
+      "rating": 4
+     },
+     {
+      "review_id": 423941,
+      "date": "2017-11",
+      "text": "Very good vegetarian food at surprisingly reasonable prices.",
+      "rating": 5
+     },
+     {
+      "review_id": 423890,
+      "date": "2013-05",
+      "text": "To be honest I am not a vegetarian but when I am fed up with all the oily/greasy/fatty food served everywhere else - I come here to enjoy something fresh. Furthermore I do not need to count calories here which makes the meal even more enjoyable.",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c259e3f8914bdd:0x1c6fca9368eaa3ac",
+    "name": "The Butcher's Daughter",
+    "borough": "Brooklyn",
+    "address": "The Butcher's Daughter, 271 Metropolitan Ave, Brooklyn, NY 11211",
+    "avg_rating": 4.2,
+    "num_reviews": 184,
+    "low_evidence": false,
+    "score": 2.2974255800247194,
+    "excerpts": [
+     {
+      "review_id": 2355941,
+      "date": "2021-04",
+      "text": "Fantastic vegetarian restaurant! We got 2 vegan dishes- the pad thai noodles and mushroom and squash carbonara- both were delicious. Service was quite friendly and they had a range of different outdoor seating. We sat in one of the individual outdoor pods, which had a heater in it (big plus!).",
+      "rating": 5
+     },
+     {
+      "review_id": 2356043,
+      "date": "2019-06",
+      "text": "Vegetarian restaurant. Not my favorite sort of restaurant (I like Chinese vegetarian restaurants and generally prefer cooked foods) so I am a bit biased. Lovely ambience for an afternoon meal. Cheese plate was uninspired. Mango Lassi was good but be warned, it's so thick and chunky that it's a meal unto itself.",
+      "rating": 3
+     },
+     {
+      "review_id": 2355950,
+      "date": "2020-12",
+      "text": "While I don’t usually enjoy vegetarian places. This place was very innovative with their dishes and I almost thought I was eating meat when I tried their eggplant dish. Beyond mouthwatering. However the best part of the experience was their bartender Will. Who truly made their restaurant feel like a warm blanket of welcomeness. Will. You are a gem. …",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c259b9a08796c5:0x9bfbffac1af9cbe9",
+    "name": "Blossom on University",
+    "borough": "Manhattan",
+    "address": "Blossom on University, 72 University Pl, New York, NY 10003",
+    "avg_rating": 4.5,
+    "num_reviews": 492,
+    "low_evidence": false,
+    "score": 2.288876008987427,
+    "excerpts": [
+     {
+      "review_id": 1830945,
+      "date": "2015-11",
+      "text": "This is probably hands down the best vegetarian restaurant ANYWHERE. I didn't know half the words on the menu but if you close your eyes and order anything, it will be fantastic.",
+      "rating": 5
+     },
+     {
+      "review_id": 1830625,
+      "date": "2016-10",
+      "text": "Vegan and vegetarian, yes. But this is the kind of restaurant where the food is so good even carnivores will find something on the menu.",
+      "rating": 4
+     },
+     {
+      "review_id": 1830623,
+      "date": "2019-10",
+      "text": "We have been to the restaurant twice, both with out of town guests, who were vegetarian. The menu was extensive, and included choices that were quite unusual. This is NOT a bean sprout restaurant. The food was excellent, from appetizers, to desserts. Well prepared and presented. The service was great, as is the casual atmosphere. …",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c259a86a3a29b5:0x79a2bb2ad7d70e00",
+    "name": "Hangawi",
+    "borough": "Manhattan",
+    "address": "Hangawi, 12 E 32nd St, New York, NY 10016",
+    "avg_rating": 4.6,
+    "num_reviews": 511,
+    "low_evidence": false,
+    "score": 2.2881357192993166,
+    "excerpts": [
+     {
+      "review_id": 818035,
+      "date": "2015-12",
+      "text": "Best vegetarian restaurant in the city! A most go!",
+      "rating": 4
+     },
+     {
+      "review_id": 817961,
+      "date": "2018-01",
+      "text": "Amazing, eclectic, flavorful restaurant for vegetarians! Must do in the city!",
+      "rating": 5
+     },
+     {
+      "review_id": 817504,
+      "date": "2020-11",
+      "text": "The vegetarian menu is delicious and the quality of the food and service is excellent. The last time I ate there we sat outside and they had a nice jazz guitarist accompanying our meal. Also the street is closed to traffic so dining outside is pleasant and safe.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": false,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}

@@ -1,0 +1,587 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "restaurant careful about shellfish allergies",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [],
+   "allergens": [
+    "shellfish"
+   ],
+   "group_needs": [],
+   "preferences": []
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [],
+   "allergens": [
+    "shellfish"
+   ],
+   "group_needs": [],
+   "preferences": []
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c25854caae8773:0x8229337547ae079f",
+    "name": "Red Lobster",
+    "borough": "Manhattan",
+    "address": "Red Lobster, 5 Times Square #5, New York, NY 10036",
+    "avg_rating": 4.2,
+    "num_reviews": 2337,
+    "low_evidence": false,
+    "score": 2.197674345970154,
+    "excerpts": [
+     {
+      "review_id": 738786,
+      "date": "2016-11",
+      "text": "… This is not acceptable . I am horrified at what happen last night , I have Been to several red lobster in the tri state area land has never had this happen . The service is forgivable but my seafood allergy that could of kill me . Is what I am very upset with .",
+      "rating": 1
+     },
+     {
+      "review_id": 739842,
+      "date": "2018-06",
+      "text": "… So both were taken to the hospital and both treated and sent back to the hotel with a big bill the next morning. After that, I had a warning at the hotel for anyone with any food allergies please do not eat at the Red Lobster. …",
+      "rating": 1
+     },
+     {
+      "review_id": 738174,
+      "date": "2018-05",
+      "text": "… All this in an hour for me to just pack the food to go and leave. I have a family member allergic to shellfish so I can’t even take the food home because of the cross contamination.",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that a shellfish allergy could have been fatal after an incident at the restaurant.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 738786,
+         "date": "2016-11",
+         "text": "… This is not acceptable . I am horrified at what happen last night , I have Been to several red lobster in the tri state area land has never had this happen . The service is forgivable but my seafood allergy that could of kill me . Is what I am very upset with .",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that two patrons were taken to the hospital for a shellfish allergy reaction, leading to a warning at the hotel not to eat there.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 739842,
+         "date": "2018-06",
+         "text": "… So both were taken to the hospital and both treated and sent back to the hotel with a big bill the next morning. After that, I had a warning at the hotel for anyone with any food allergies please do not eat at the Red Lobster. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer described cross‑contamination that prevented them from taking food home due to a family member’s shellfish allergy.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 738174,
+         "date": "2018-05",
+         "text": "… All this in an hour for me to just pack the food to go and leave. I have a family member allergic to shellfish so I can’t even take the food home because of the cross contamination.",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c259bf3e57060b:0x4f1608274f5e6fe6",
+    "name": "Buddakan",
+    "borough": "Manhattan",
+    "address": "Buddakan, 75 9th Ave, New York, NY 10011",
+    "avg_rating": 4.5,
+    "num_reviews": 1205,
+    "low_evidence": false,
+    "score": 2.044041109085083,
+    "excerpts": [
+     {
+      "review_id": 79848,
+      "date": "2013-08",
+      "text": "I'm giving this 3 stars because the place was cool and the food was all pretty good, but be careful! I have a shellfish allergy and was unaware that they used Oyster Oil in MANY non-fish dishes. I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. …",
+      "rating": 3
+     },
+     {
+      "review_id": 80054,
+      "date": "2015-04",
+      "text": "… So here I am on Google voicing my concerns. Think twice about eating here, particularly if you have a food allergy because the staff has no idea what ingredients go into their food. It makes me wonder how many vegetarians have unknowingly ingested meat in this establishment after being told the food did not have meat in it. …",
+      "rating": 1
+     },
+     {
+      "review_id": 79107,
+      "date": "2019-07",
+      "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the staff asked about allergies and inquired about ingredients for those with shellfish sensitivities.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 79107,
+         "date": "2019-07",
+         "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "One reviewer warned that the restaurant used oyster oil in many dishes and that the allergy information was not clear, leading to a severe shellfish allergy reaction.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 79848,
+         "date": "2013-08",
+         "text": "I'm giving this 3 stars because the place was cool and the food was all pretty good, but be careful! I have a shellfish allergy and was unaware that they used Oyster Oil in MANY non-fish dishes. I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. …",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer cautioned that staff were unaware of ingredient contents, implying potential hidden shellfish and other allergens.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 80054,
+         "date": "2015-04",
+         "text": "… So here I am on Google voicing my concerns. Think twice about eating here, particularly if you have a food allergy because the staff has no idea what ingredients go into their food. It makes me wonder how many vegetarians have unknowingly ingested meat in this establishment after being told the food did not have meat in it. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c258f9c69e166d:0x86b0e5488151ce61",
+    "name": "Estiatorio Milos",
+    "borough": "Manhattan",
+    "address": "Estiatorio Milos, 125 W 55th St, New York, NY 10019",
+    "avg_rating": 4.5,
+    "num_reviews": 557,
+    "low_evidence": false,
+    "score": 2.0017513751983644,
+    "excerpts": [
+     {
+      "review_id": 402868,
+      "date": "2019-10",
+      "text": "… I pointed out the error prior to consumption and they immediately made me a new meal. Though I still had to wait for a new meal, nor did they remove it off of my bill which was disappointing. So if you have allergies be aware.",
+      "rating": 4
+     },
+     {
+      "review_id": 402918,
+      "date": "2020-10",
+      "text": "I tried Whole Grilled Lobster it was unfresh and smelled bad. Later i found the reason why i couldn’t eat.",
+      "rating": 1
+     },
+     {
+      "review_id": 402854,
+      "date": "2020-10",
+      "text": "Excellent Seafood Restaurant - delicious Greek specialties. All fish is super fresh and the grilled bread is excellent",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that staff handled a shellfish allergy by preparing a new meal but did not remove the original item from the bill, indicating a lack of proper accommodation.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 402868,
+         "date": "2019-10",
+         "text": "… I pointed out the error prior to consumption and they immediately made me a new meal. Though I still had to wait for a new meal, nor did they remove it off of my bill which was disappointing. So if you have allergies be aware.",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only one review directly addresses shellfish allergy handling; other reviews do not mention allergies or cross‑contamination concerns.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c2f724743f8ca1:0x2441842248df1d",
+    "name": "Boilery Seafood and Grill",
+    "borough": "Manhattan",
+    "address": "Boilery Seafood and Grill, 710 Amsterdam Ave, New York, NY 10025",
+    "avg_rating": 4.5,
+    "num_reviews": 137,
+    "low_evidence": false,
+    "score": 1.9549121975898742,
+    "excerpts": [
+     {
+      "review_id": 410091,
+      "date": "2019-12",
+      "text": "… I can’t believe this happend to me after eating here for the first time! I’m sitting here so baffled in the emergency room because they’re saying it’s a food allergy and all I ate was shrimp. There something in this food that isn’t right at all! Beware",
+      "rating": 1
+     },
+     {
+      "review_id": 410120,
+      "date": "2019-05",
+      "text": "Awesome food, Awesome Staff, I have a shellfish allergy and all the fish dishes and steak were amazing. Especially the thai chili whole fish.",
+      "rating": 5
+     },
+     {
+      "review_id": 410117,
+      "date": "2019-05",
+      "text": "It's great to have a seafood restaurant in the neighborhood. Delicious food and friendly service.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that, despite having a shellfish allergy, the fish and steak dishes were acceptable, indicating the restaurant accommodated that need.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 410120,
+         "date": "2019-05",
+         "text": "Awesome food, Awesome Staff, I have a shellfish allergy and all the fish dishes and steak were amazing. Especially the thai chili whole fish.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "One reviewer reported that after eating shrimp at the restaurant they experienced a severe allergic reaction, warning that the restaurant may not be suitable for shellfish-allergic diners.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 410091,
+         "date": "2019-12",
+         "text": "… I can’t believe this happend to me after eating here for the first time! I’m sitting here so baffled in the emergency room because they’re saying it’s a food allergy and all I ate was shrimp. There something in this food that isn’t right at all! Beware",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c25983fc377491:0x51fd90260704236c",
+    "name": "Momofuku Ssam Bar",
+    "borough": "Manhattan",
+    "address": "Momofuku Ssam Bar, 89 South Street, Pier 17, New York, NY 10038",
+    "avg_rating": 4.5,
+    "num_reviews": 635,
+    "low_evidence": false,
+    "score": 1.8941428184509277,
+    "excerpts": [
+     {
+      "review_id": 2352440,
+      "date": "2018-06",
+      "text": "!! IMPORTANT concerning allergies !! We had a friend who was with us that has a severe allergy to shellfish; shrimp, crab, etc. Right away as we were seated, we made our waitress aware of his allergy and she told us bluntly \"we don't make any effort to prevent cross contamination of food\". Knives, pots/pans, nothing was safe. Unbelievable!!! …",
+      "rating": 2
+     },
+     {
+      "review_id": 2352468,
+      "date": "2018-09",
+      "text": "Service was accommodating and friendly enough, but the food was extremely underwhelming. The sauce for the oysters was incredibly sweet, not complementing their natural flavor at all. The bass tartare must have been cut by an inexperienced chef, since it had sinews running all throughout the cuts. After those two items, we really did not want to try anything else. …",
+      "rating": 3
+     },
+     {
+      "review_id": 2352426,
+      "date": "2019-08",
+      "text": "… Super unprofessional made me and my daughter sick who both have bad allergies to dairy. Will nwve eat here again they won't take serious allergies serious. Shame on this place.",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant does not take steps to prevent shellfish cross‑contamination, with the waitress explicitly stating \"we don't make any effort to prevent cross contamination of food\".",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2352440,
+         "date": "2018-06",
+         "text": "!! IMPORTANT concerning allergies !! We had a friend who was with us that has a severe allergy to shellfish; shrimp, crab, etc. Right away as we were seated, we made our waitress aware of his allergy and she told us bluntly \"we don't make any effort to prevent cross contamination of food\". Knives, pots/pans, nothing was safe. Unbelievable!!! …",
+         "rating": 2
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c259a7c44aacd1:0xe756c8359527229f",
+    "name": "Pescatore Seafood Co",
+    "borough": "Manhattan",
+    "address": "Pescatore Seafood Co, 327 Grand Central Terminal, New York, NY 10017",
+    "avg_rating": 4.4,
+    "num_reviews": 17,
+    "low_evidence": false,
+    "score": 1.885786209316757,
+    "excerpts": [
+     {
+      "review_id": 50275,
+      "date": "2018-09",
+      "text": "This food establishment hardly care about shellfish allergies and the way the staff handles the food. Most people may have a shellfish allergy but can still eat fish. The spring rolls are a hit and most people come to buy them for lunch or quick snack-. …",
+      "rating": 2
+     },
+     {
+      "review_id": 50274,
+      "date": "2018-08",
+      "text": "When in NYC a must is the Prescatore seafood section at the Grand Central Market - There is always something unique that you will not find anywhere else. You can smell the freshness. One item got my eye was the Salmon Meatballs in a tomato sauce. I never saw these before and said ah! why not! …",
+      "rating": 5
+     },
+     {
+      "review_id": 50267,
+      "date": "2018-10",
+      "text": "If you’re thinking about that 2-for-1 cooked lobster—avoid—it’s not fresh! The crab cakes was good and shrimp taco was just ok.",
+      "rating": 2
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant hardly cares about shellfish allergies and how the staff handles the food.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 50275,
+         "date": "2018-09",
+         "text": "This food establishment hardly care about shellfish allergies and the way the staff handles the food. Most people may have a shellfish allergy but can still eat fish. The spring rolls are a hit and most people come to buy them for lunch or quick snack-. …",
+         "rating": 2
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c2f622eb4cb8f9:0x692fd32f5a28d202",
+    "name": "Melba's",
+    "borough": "Manhattan",
+    "address": "Melba's, 300 W 114th St, New York, NY 10026",
+    "avg_rating": 4.4,
+    "num_reviews": 859,
+    "low_evidence": false,
+    "score": 1.8738357543945312,
+    "excerpts": [
+     {
+      "review_id": 2151770,
+      "date": "2018-07",
+      "text": "Really disappointed that there’s no alternative cooking preparation for people with a shellfish allergy. I don’t expect special treatment but I’ve been to plenty of restaurants where the chicken is fried in different oil than the seafood. …",
+      "rating": 2
+     },
+     {
+      "review_id": 2151289,
+      "date": "2021-02",
+      "text": "… Definitely was not expecting that at all. The salmon definitely gave us some type of food poisoning because everyone else ate from there too and were fine. We were the only two who were really sick. Super sad about this experience 😩",
+      "rating": 1
+     },
+     {
+      "review_id": 2151475,
+      "date": "2020-06",
+      "text": "I had heard alot about Melbas. I finally stopped in today. I had the Crab Cakes Mac+Cheese and Potato Salad. Everything was delisicious. The Crab Cakes were filled with Crab, not bread. They were seasoned just right. Potato salad can be tricky, but this was my kind of potato Salad. The Mac is luscious 3 cheeses and lots of butter. …",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c25d0ded33b5c7:0x2fcda78f567d3537",
+    "name": "Red Lobster",
+    "borough": "Brooklyn",
+    "address": "Red Lobster, 455 Gateway Dr, Brooklyn, NY 11239",
+    "avg_rating": 3.8,
+    "num_reviews": 1517,
+    "low_evidence": false,
+    "score": 1.873506736755371,
+    "excerpts": [
+     {
+      "review_id": 2601661,
+      "date": "2020-10",
+      "text": "Waited over 20 minutes before our waitress Kelley decided to come to our table (with an attitude) on the first day of indoor dining at NYC after the pandemic. Lobster Bisque served without spoons but it was extremely salty, couldn't eat it anyways :( The white fish had a horrible fish taste and smell. …",
+      "rating": 3
+     },
+     {
+      "review_id": 2602289,
+      "date": "2019-08",
+      "text": "They had a \"C\" rating for a Sanitary Inspection... I don't know about eating Seafood from a place with such a low rating for cleanliness🤔",
+      "rating": 1
+     },
+     {
+      "review_id": 2602287,
+      "date": "2019-11",
+      "text": "I usually dont do this but the red lobster at gate way in Brooklyn is horrible the shrimp was so small and I got 8 and the fried shrimp was over coated there food os horrible the best thing was the biscuits",
+      "rating": 1
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c259bf144c69c3:0x1b87c27e0d4a685e",
+    "name": "Lobster Place",
+    "borough": "Manhattan",
+    "address": "Lobster Place, 75 9th Ave, New York, NY 10011",
+    "avg_rating": 4.5,
+    "num_reviews": 711,
+    "low_evidence": false,
+    "score": 1.8717403531074523,
+    "excerpts": [
+     {
+      "review_id": 2090152,
+      "date": "2012-08",
+      "text": "Update: Aug 2, 2012: Not knowing of an alternative fish market option in Chelsea, I thought I'd give Lobster Place another chance. I bought two pounds of wild shrimp and put it on ice. Upon getting home and opening the bag, a strong and pungent fishy odor hit me, nothing like any shrimp I have ever smelled before. …",
+      "rating": 2
+     },
+     {
+      "review_id": 2090092,
+      "date": "2016-03",
+      "text": "… They have seafood in every way you can imagine - fish to take home, 3-pound lobsters, lobster rolls, a sushi bar, frozen items, condiments to go with the seafood to take home to cook that you will want to spend all of your money on, oysters shucked right in front of you, you name it! …",
+      "rating": 4
+     },
+     {
+      "review_id": 2090288,
+      "date": "2019-01",
+      "text": "In the heart of Chelsea market there is the lobster place, for all lovers of raw and shellfish it is the ideal place! Great butter sandwich with lobster, but the experience is absolutely to take a lobster just cooked put the gloves and eat it still hot on the tables inside the structure.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c25855a86e7237:0x739a700ff51afa5e",
+    "name": "Buca di Beppo Italian Restaurant",
+    "borough": "Manhattan",
+    "address": "Buca di Beppo Italian Restaurant, 1540 Broadway, New York, NY 10036",
+    "avg_rating": 3.9,
+    "num_reviews": 643,
+    "low_evidence": false,
+    "score": 1.8657445051389006,
+    "excerpts": [
+     {
+      "review_id": 1939834,
+      "date": "2017-12",
+      "text": "This place could not think how to accommodate myself and another family member with our seafood allergies. I was very disappointed, all I had was salad and bread, while the rest of my family members were being provided all seafood dishes. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1939672,
+      "date": "2020-03",
+      "text": "Not many options for people with food allergies...very expensive drinks..",
+      "rating": 2
+     },
+     {
+      "review_id": 1939565,
+      "date": "2020-07",
+      "text": "Best seafood restaurant in SF is in North Beach! We made a reservation but arrived early at 5:00 and was right away. There were too many things we wanted to order but settled on these dishes that made our tummies sooo happy:",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": true,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}

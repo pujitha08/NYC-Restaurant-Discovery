@@ -1,0 +1,647 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "halal restaurants",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "halal"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": []
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "halal"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": []
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c245e57d4e8c33:0x3bbbb80b40f0375d",
+    "name": "Tacis Beyti",
+    "borough": "Brooklyn",
+    "address": "Tacis Beyti, 1953-1955 Coney Island Ave #1 floor, Brooklyn, NY 11223",
+    "avg_rating": 4.5,
+    "num_reviews": 642,
+    "low_evidence": false,
+    "score": 2.260505032539368,
+    "excerpts": [
+     {
+      "review_id": 1473205,
+      "date": "2020-02",
+      "text": "**** IT’S HALAL**** A great place for a fancy style restaurant with a date or a group of people. Seating is a plenty. Easily can fit 8-12 people together. Menu is great and rich tasty food. Alsways fresh. I have brought plenty of my family that come to visit, here at this place. Always had a great experience. …",
+      "rating": 5
+     },
+     {
+      "review_id": 1473827,
+      "date": "2015-05",
+      "text": "Love this place, just wish the entire menu was halal! :(",
+      "rating": 5
+     },
+     {
+      "review_id": 1473824,
+      "date": "2018-04",
+      "text": "Delicious restaurant to bring families and dates to",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant is halal",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1473205,
+         "date": "2020-02",
+         "text": "**** IT’S HALAL**** A great place for a fancy style restaurant with a date or a group of people. Seating is a plenty. Easily can fit 8-12 people together. Menu is great and rich tasty food. Alsways fresh. I have brought plenty of my family that come to visit, here at this place. Always had a great experience. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The second reviewer noted that the menu is not fully halal, indicating partial availability of halal options. The third excerpt does not address halal availability.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c258f9088f4275:0x32defa75b3272c39",
+    "name": "The Halal Guys",
+    "borough": "Manhattan",
+    "address": "The Halal Guys, 307 E 14th St, New York, NY 10003",
+    "avg_rating": 4.3,
+    "num_reviews": 1126,
+    "low_evidence": false,
+    "score": 2.2581886768341066,
+    "excerpts": [
+     {
+      "review_id": 1876328,
+      "date": "2020-10",
+      "text": "halal food... super delicious. do yourself a favor and give this place a try. the service here is outstanding. the bill was reasonable. i see why this place has so many good reviews.",
+      "rating": 5
+     },
+     {
+      "review_id": 1876633,
+      "date": "2013-08",
+      "text": "Halal? Yep, one of the street carts any tourist should put on their list when visiting New York City, especially from the Halal Guys. First off, let me say that this isn't their only location, they have one practically a block over from every street of this address. They also have a website indicating their locations and hours. …",
+      "rating": 5
+     },
+     {
+      "review_id": 1876439,
+      "date": "2020-08",
+      "text": "halal food and service at this location is excellent. The bill was well within reason for the quality.",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported halal food that was described as super delicious and praised the outstanding service and reasonable bill.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1876328,
+         "date": "2020-10",
+         "text": "halal food... super delicious. do yourself a favor and give this place a try. the service here is outstanding. the bill was reasonable. i see why this place has so many good reviews.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer confirmed that the establishment offers halal food and recommended it as a must-visit street cart, noting its widespread presence.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1876633,
+         "date": "2013-08",
+         "text": "Halal? Yep, one of the street carts any tourist should put on their list when visiting New York City, especially from the Halal Guys. First off, let me say that this isn't their only location, they have one practically a block over from every street of this address. They also have a website indicating their locations and hours. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer described the halal food and service as excellent, adding that the bill was within reason for the quality.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1876439,
+         "date": "2020-08",
+         "text": "halal food and service at this location is excellent. The bill was well within reason for the quality.",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c2f627e36ada8d:0x47a1a107d3c2a8f8",
+    "name": "The Halal Guys",
+    "borough": "Manhattan",
+    "address": "The Halal Guys, 720 Amsterdam Ave, New York, NY 10025",
+    "avg_rating": 4.2,
+    "num_reviews": 661,
+    "low_evidence": false,
+    "score": 2.2564115047454836,
+    "excerpts": [
+     {
+      "review_id": 1439375,
+      "date": "2019-06",
+      "text": "I could give this place a couple more stars! I takeout from Halal Guys about once a week. The food is always fresh and the staff friendly. They offer a simple menu, chicken or beef, either in a gyro or platter, with lettuce, tomatoes and rice. There are a couple of toppings available, along with a few different sauces. …",
+      "rating": 5
+     },
+     {
+      "review_id": 1439595,
+      "date": "2018-07",
+      "text": "These are they only halal guys I would eat , place is clean and taste fresh",
+      "rating": 5
+     },
+     {
+      "review_id": 1439307,
+      "date": "2019-03",
+      "text": "Delicious halal meal, definetely going back insha Allah.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "This review only mentions the restaurant by name; it does not say anything about the request.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1439375,
+         "date": "2019-06",
+         "text": "I could give this place a couple more stars! I takeout from Halal Guys about once a week. The food is always fresh and the staff friendly. They offer a simple menu, chicken or beef, either in a gyro or platter, with lettuce, tomatoes and rice. There are a couple of toppings available, along with a few different sauces. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "This review only mentions the restaurant by name; it does not say anything about the request.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1439595,
+         "date": "2018-07",
+         "text": "These are they only halal guys I would eat , place is clean and taste fresh",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "One reviewer said the meal was delicious halal and that they would definitely return.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1439307,
+         "date": "2019-03",
+         "text": "Delicious halal meal, definetely going back insha Allah.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c2457d39c17de5:0xac2046e0e117dbc3",
+    "name": "HALAL Xpress Asian Fusion",
+    "borough": "Brooklyn",
+    "address": "HALAL Xpress Asian Fusion, 7524 18th Ave, Brooklyn, NY 11214",
+    "avg_rating": 4.7,
+    "num_reviews": 137,
+    "low_evidence": false,
+    "score": 2.2449801087379457,
+    "excerpts": [
+     {
+      "review_id": 1634666,
+      "date": "2020-01",
+      "text": "Good halal food, nice servers, fast delivery of food, discounts for cash, fast halal food..",
+      "rating": 5
+     },
+     {
+      "review_id": 1634759,
+      "date": "2018-08",
+      "text": "First Halal Chinese Restaurant in Bensonhurst:)",
+      "rating": 5
+     },
+     {
+      "review_id": 1634761,
+      "date": "2018-10",
+      "text": "Not halal. It's chinese food bro",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers good halal food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1634666,
+         "date": "2020-01",
+         "text": "Good halal food, nice servers, fast delivery of food, discounts for cash, fast halal food..",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the restaurant as the first halal Chinese restaurant in the area.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1634759,
+         "date": "2018-08",
+         "text": "First Halal Chinese Restaurant in Bensonhurst:)",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A reviewer warned that the restaurant is not halal.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1634761,
+         "date": "2018-10",
+         "text": "Not halal. It's chinese food bro",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c25deac862f86d:0x7086dcc13631857",
+    "name": "Momo's Mediterranean Grill",
+    "borough": "Brooklyn",
+    "address": "Momo's Mediterranean Grill, 25 101st Ave, Brooklyn, NY 11208",
+    "avg_rating": 4.1,
+    "num_reviews": 159,
+    "low_evidence": false,
+    "score": 2.2395984649658205,
+    "excerpts": [
+     {
+      "review_id": 682681,
+      "date": "2018-04",
+      "text": "An amazing place for Halal food in Queens Good food Clean eating hall Divert menu If I have a notice it’s about the eating hall that there is no service",
+      "rating": 5
+     },
+     {
+      "review_id": 682627,
+      "date": "2018-05",
+      "text": "I LOVE this place. 100% halal and fresh food. evey clean and party hall is awesome.",
+      "rating": 5
+     },
+     {
+      "review_id": 682689,
+      "date": "2018-05",
+      "text": "Quick service and good food",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant served halal food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 682681,
+         "date": "2018-04",
+         "text": "An amazing place for Halal food in Queens Good food Clean eating hall Divert menu If I have a notice it’s about the eating hall that there is no service",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer stated the restaurant was 100% halal.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 682627,
+         "date": "2018-05",
+         "text": "I LOVE this place. 100% halal and fresh food. evey clean and party hall is awesome.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer mentioned the restaurant had good food, implying halal compliance.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 682689,
+         "date": "2018-05",
+         "text": "Quick service and good food",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c244eb06ca9645:0x2a18fd48a21d22ac",
+    "name": "Affy's Premium Grill",
+    "borough": "Brooklyn",
+    "address": "Affy's Premium Grill, 1909 Coney Island Ave, Brooklyn, NY 11230",
+    "avg_rating": 4.4,
+    "num_reviews": 463,
+    "low_evidence": false,
+    "score": 2.2395411849021913,
+    "excerpts": [
+     {
+      "review_id": 1706303,
+      "date": "2019-11",
+      "text": "Halal place. -Nice looking interior with friendly staff. -Good food. -they offer delivery with many sites.",
+      "rating": 5
+     },
+     {
+      "review_id": 1706293,
+      "date": "2020-01",
+      "text": "Halal food at its best. Our server was also very helpful, polite and the service was fast. Awesome ambience. Definitely a must try.",
+      "rating": 5
+     },
+     {
+      "review_id": 1706297,
+      "date": "2020-02",
+      "text": "One of the very few places to get good halal steaks around Manhattan. Not too pricey like Nusrats but still value for money. Great burgers too.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant was a halal place with good food and friendly staff.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1706303,
+         "date": "2019-11",
+         "text": "Halal place. -Nice looking interior with friendly staff. -Good food. -they offer delivery with many sites.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported the restaurant offered halal food, with helpful service and great ambience.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1706293,
+         "date": "2020-01",
+         "text": "Halal food at its best. Our server was also very helpful, polite and the service was fast. Awesome ambience. Definitely a must try.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer reported the restaurant provided good halal steaks and burgers at a reasonable price.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1706297,
+         "date": "2020-02",
+         "text": "One of the very few places to get good halal steaks around Manhattan. Not too pricey like Nusrats but still value for money. Great burgers too.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c259652b78b7cf:0xc9b18d28cbbde518",
+    "name": "The Halal Guys",
+    "borough": "Manhattan",
+    "address": "The Halal Guys, 75 W 53rd St, New York, NY 10019",
+    "avg_rating": 4.3,
+    "num_reviews": 108,
+    "low_evidence": false,
+    "score": 2.2253335237503054,
+    "excerpts": [
+     {
+      "review_id": 1186374,
+      "date": "2020-12",
+      "text": "The food cart has a consistent taste with the storefronts. Halal Guys is dry compared to other halal places. Chicken is bland even with white sauce. Gyro is better. The red sauce is amazing though and the portion is enough for 2 meals. There's a statue and some benches nearby if you want to sit and eat. Bring cash.",
+      "rating": 4
+     },
+     {
+      "review_id": 1186426,
+      "date": "2020-12",
+      "text": "The Halal Guys are the best ever. Food is always fresh and delicious.",
+      "rating": 5
+     },
+     {
+      "review_id": 1186517,
+      "date": "2021-01",
+      "text": "Good food at a low price, if you want to eat well with little money go to Halal Guys. Meals are accessible to all",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c25b334d19dc0f:0xfed53d3cd09fbaef",
+    "name": "Milk And Honey Cafe",
+    "borough": "Brooklyn",
+    "address": "Milk And Honey Cafe, 1119 Newkirk Ave, Brooklyn, NY 11230",
+    "avg_rating": 4.3,
+    "num_reviews": 577,
+    "low_evidence": false,
+    "score": 2.211693894863129,
+    "excerpts": [
+     {
+      "review_id": 1740477,
+      "date": "2019-07",
+      "text": "Great Food, Affordable Prices. Yes They Serve Halal.",
+      "rating": 5
+     },
+     {
+      "review_id": 1740191,
+      "date": "2021-04",
+      "text": "Not a halal place. I asked the worker he said it isn’t halal as they clame",
+      "rating": 1
+     },
+     {
+      "review_id": 1740289,
+      "date": "2019-02",
+      "text": "Yummy halal food but small portions. Cafe is cute and nicely decorated. But there was no heat in the middle of winter, maybe not the best place to bring a baby. We asked if they could put the heat up and they said they would but we didn't notice any difference. Will check out in the summer time!",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c25aef51c6c179:0xbd93a70bd99badae",
+    "name": "Alnoor Halal Deli",
+    "borough": "Brooklyn",
+    "address": "Alnoor Halal Deli, 710 4th Ave, Brooklyn, NY 11232",
+    "avg_rating": 4.8,
+    "num_reviews": 230,
+    "low_evidence": false,
+    "score": 2.1837101101875307,
+    "excerpts": [
+     {
+      "review_id": 1705253,
+      "date": "2016-10",
+      "text": "Best halal place in town Bklyn they so good with everything food customer service",
+      "rating": 5
+     },
+     {
+      "review_id": 1705254,
+      "date": "2017-09",
+      "text": "Thest halal in the neighborhood. People there are kind.food is full with flavors.portion size is big.chicken wrap is my favorite",
+      "rating": 5
+     },
+     {
+      "review_id": 1705251,
+      "date": "2018-08",
+      "text": "The best halal food in all of Brooklyn and the best chef in all of Brooklyn.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c2598b3b7a5f25:0xfc5704dd1a2a165f",
+    "name": "Manhattan Halal Restaurant",
+    "borough": "Manhattan",
+    "address": "Manhattan Halal Restaurant, 156 W 29th St, New York, NY 10001",
+    "avg_rating": 4.5,
+    "num_reviews": 64,
+    "low_evidence": false,
+    "score": 2.180531394481659,
+    "excerpts": [
+     {
+      "review_id": 29254,
+      "date": "2019-11",
+      "text": "Very delicious halal food. Employee is very professional. They serve 100% halal food. Prayer place and Restaurant are available inside the Restaurant.",
+      "rating": 5
+     },
+     {
+      "review_id": 29270,
+      "date": "2019-11",
+      "text": "Awesome food, very good customer service & good location. This restaurant one of the Halal restaurant in NYC",
+      "rating": 5
+     },
+     {
+      "review_id": 29232,
+      "date": "2021-04",
+      "text": "This place has great quality food. I love Halal and this is one of the best ones in the city. I go there for lunch three times a week.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": false,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}

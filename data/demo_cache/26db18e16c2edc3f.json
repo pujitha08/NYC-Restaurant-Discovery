@@ -1,0 +1,647 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "gluten-free restaurants",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "gluten-free"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": []
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "gluten-free"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": []
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+    "name": "Senza Gluten",
+    "borough": "Manhattan",
+    "address": "Senza Gluten, 206 Sullivan St, New York, NY 10012",
+    "avg_rating": 4.5,
+    "num_reviews": 429,
+    "low_evidence": false,
+    "score": 2.424609434604645,
+    "excerpts": [
+     {
+      "review_id": 1065865,
+      "date": "2019-02",
+      "text": "nice restaurant gluten-free but beware of the price too expensive for what it's disappointed all the same but good meal",
+      "rating": 5
+     },
+     {
+      "review_id": 1065524,
+      "date": "2019-12",
+      "text": "best gluten free restaurant in the country where you can actually forget you're gluten free 🥺",
+      "rating": 5
+     },
+     {
+      "review_id": 1065490,
+      "date": "2016-12",
+      "text": "Amazing 100% gluten free restaurant!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant offered gluten‑free options, noting the food was good despite high prices.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1065865,
+         "date": "2019-02",
+         "text": "nice restaurant gluten-free but beware of the price too expensive for what it's disappointed all the same but good meal",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the restaurant as the best gluten‑free spot, claiming it makes diners feel they are not limited by gluten.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1065524,
+         "date": "2019-12",
+         "text": "best gluten free restaurant in the country where you can actually forget you're gluten free 🥺",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer praised the establishment as 100% gluten‑free, highlighting the quality of the meals.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1065490,
+         "date": "2016-12",
+         "text": "Amazing 100% gluten free restaurant!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c259b305765bf5:0xdf80dfab963e08e7",
+    "name": "Friedman's Hell's Kitchen",
+    "borough": "Manhattan",
+    "address": "Friedman's Hell's Kitchen, 450 10th Ave, New York, NY 10018",
+    "avg_rating": 4.4,
+    "num_reviews": 700,
+    "low_evidence": false,
+    "score": 2.4165534496307375,
+    "excerpts": [
+     {
+      "review_id": 2391415,
+      "date": "2018-04",
+      "text": "This gluten free restaurant has a tasty menu and super friendly staff all in a delightful atmosphere.",
+      "rating": 5
+     },
+     {
+      "review_id": 2391194,
+      "date": "2017-04",
+      "text": "We were at the NY car show right when they opened on opening day! By lunch time we were starving. We googled the nearest restaurant serving GLUTEN FREE. This place was terrific! Great staff, great GF burger! Highly recommend",
+      "rating": 5
+     },
+     {
+      "review_id": 2391358,
+      "date": "2018-02",
+      "text": "Amazing place! Having Celiac disease makes dining out hard, but pretty much everytg5on the menu can be made gluten free!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant is a gluten‑free establishment with a tasty menu and friendly staff.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2391415,
+         "date": "2018-04",
+         "text": "This gluten free restaurant has a tasty menu and super friendly staff all in a delightful atmosphere.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described a great gluten‑free burger and overall excellent experience.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2391194,
+         "date": "2017-04",
+         "text": "We were at the NY car show right when they opened on opening day! By lunch time we were starving. We googled the nearest restaurant serving GLUTEN FREE. This place was terrific! Great staff, great GF burger! Highly recommend",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A reviewer mentioned that nearly every item on the menu can be prepared gluten‑free for someone with celiac disease.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2391358,
+         "date": "2018-02",
+         "text": "Amazing place! Having Celiac disease makes dining out hard, but pretty much everytg5on the menu can be made gluten free!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c259a72f4245fd:0xda9f11b04f4cdb9e",
+    "name": "Little Beet Table",
+    "borough": "Manhattan",
+    "address": "Little Beet Table, 333 Park Ave South, New York, NY 10010",
+    "avg_rating": 4.5,
+    "num_reviews": 270,
+    "low_evidence": false,
+    "score": 2.3577505469322206,
+    "excerpts": [
+     {
+      "review_id": 1956747,
+      "date": "2019-10",
+      "text": "Perfect !!! All gluten-free restaurant",
+      "rating": 5
+     },
+     {
+      "review_id": 1956572,
+      "date": "2016-01",
+      "text": "Whole restaurant is gluten free, which is a good benefit for many! Great variety of food options for the price. Veggies and flatbreads were excellent side dishes. Cocktails are also pretty tasty. Also, save room for the desserts. We really enjoyed the chocolate mousse!",
+      "rating": 4
+     },
+     {
+      "review_id": 1956488,
+      "date": "2020-02",
+      "text": "Everything is gluten free. Very vegetarian friendly menu. Delicious variety of healthy comfort foods.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers a fully gluten-free menu.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1956747,
+         "date": "2019-10",
+         "text": "Perfect !!! All gluten-free restaurant",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "No mention of potential cross‑contamination or specific gluten‑free items.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c259af22fb0c51:0x6b78c8ca952665f4",
+    "name": "Friedman's Herald Square",
+    "borough": "Manhattan",
+    "address": "Friedman's Herald Square, 132 W 31st St, New York, NY 10001",
+    "avg_rating": 4.3,
+    "num_reviews": 1081,
+    "low_evidence": false,
+    "score": 2.353139054775238,
+    "excerpts": [
+     {
+      "review_id": 1394005,
+      "date": "2017-05",
+      "text": "Everything on the menu, except one of the soups has its gluten-free version! The majestic waiters !!",
+      "rating": 5
+     },
+     {
+      "review_id": 1393385,
+      "date": "2018-06",
+      "text": "Best celiac restaurant I've ever seen, just wish it were in Canada. My wife and I headed down here for a cruise for our honeymoon, and found this place thanks to the 'Find Me Gluten Free' app. Everything on their menu can be made gluten free except for one appetizer (I think it was mozza-balls or something). …",
+      "rating": 5
+     },
+     {
+      "review_id": 1392956,
+      "date": "2020-04",
+      "text": "God bless you for having a Gluten-free menu!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that all menu items except one soup are available gluten‑free at Friedman's Herald Square",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1394005,
+         "date": "2017-05",
+         "text": "Everything on the menu, except one of the soups has its gluten-free version! The majestic waiters !!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described Friedman's Herald Square as a top celiac-friendly restaurant where everything can be made gluten‑free except one appetizer",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1393385,
+         "date": "2018-06",
+         "text": "Best celiac restaurant I've ever seen, just wish it were in Canada. My wife and I headed down here for a cruise for our honeymoon, and found this place thanks to the 'Find Me Gluten Free' app. Everything on their menu can be made gluten free except for one appetizer (I think it was mozza-balls or something). …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer expressed gratitude for the restaurant’s gluten‑free menu",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1392956,
+         "date": "2020-04",
+         "text": "God bless you for having a Gluten-free menu!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c258ffa4ad1887:0x5ac69e6a0149170a",
+    "name": "Ceci",
+    "borough": "Manhattan",
+    "address": "Ceci, 46 W 46th St, New York, NY 10036",
+    "avg_rating": 4.2,
+    "num_reviews": 275,
+    "low_evidence": false,
+    "score": 2.308174204826355,
+    "excerpts": [
+     {
+      "review_id": 2139997,
+      "date": "2017-05",
+      "text": "Best gluten free restaurant ever!!!! Its so difficult to find a restaurant with a variety of gluten free options!! This place has almost all of the plates with a \"gluten free substitute\"... they even have a gluten free bread that tastes amazing!!! Gluten free chocolate cake anyone?? Yes!!! They have it!!... Thanks Ceci team for having us on mind!! …",
+      "rating": 5
+     },
+     {
+      "review_id": 2140084,
+      "date": "2017-07",
+      "text": "Great Italian restaurant with good gluten free options. Cozy atmosphere. Definitely recommend.",
+      "rating": 4
+     },
+     {
+      "review_id": 2139938,
+      "date": "2019-01",
+      "text": "They have gluten free bread, pasta and dessert !! What more could someone ask for !!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers a wide variety of gluten‑free options, including bread, pasta, dessert and a gluten‑free chocolate cake.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2139997,
+         "date": "2017-05",
+         "text": "Best gluten free restaurant ever!!!! Its so difficult to find a restaurant with a variety of gluten free options!! This place has almost all of the plates with a \"gluten free substitute\"... they even have a gluten free bread that tastes amazing!!! Gluten free chocolate cake anyone?? Yes!!! They have it!!... Thanks Ceci team for having us on mind!! …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that the restaurant provides good gluten‑free choices in an Italian setting.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2140084,
+         "date": "2017-07",
+         "text": "Great Italian restaurant with good gluten free options. Cozy atmosphere. Definitely recommend.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer mentioned that gluten‑free bread, pasta and dessert were available at the restaurant.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2139938,
+         "date": "2019-01",
+         "text": "They have gluten free bread, pasta and dessert !! What more could someone ask for !!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c258fcd37169af:0xa248df9032a332f1",
+    "name": "Bistango",
+    "borough": "Manhattan",
+    "address": "Bistango, 145 East 50th Street BETWEEN LEXINGTON AND, 3rd Ave, New York, NY 10022",
+    "avg_rating": 4.4,
+    "num_reviews": 165,
+    "low_evidence": false,
+    "score": 2.2929270386695864,
+    "excerpts": [
+     {
+      "review_id": 784320,
+      "date": "2018-03",
+      "text": "This is one of the best restaurants ever!, let alone a gluten free restaurant where they are aware of us Celiacs. Good and service is spectacular. Waiter remembered my food allergy and the dessert the best ever received on my birthday! 💕",
+      "rating": 5
+     },
+     {
+      "review_id": 784384,
+      "date": "2014-12",
+      "text": "Fantastic gluten free italian restaurant. Found this by mistake as only recently opened in the Kimberley hotel. They can provide everything on the menu gluten free but the flatbreads (mini pizzas) are all GF already. Excellent quality food and great service at a reasonable price.",
+      "rating": 5
+     },
+     {
+      "review_id": 784321,
+      "date": "2018-08",
+      "text": "Wnt there last night with Friend from LA...They have an awesome, gluten free menu...fresh food, quick and great service. Highly recommend it! They even have a delicious gluten free mudslide cake, decadent with flavor",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant accommodated a gluten‑free diet by providing gluten‑free dishes and remembering the customer’s allergy.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 784320,
+         "date": "2018-03",
+         "text": "This is one of the best restaurants ever!, let alone a gluten free restaurant where they are aware of us Celiacs. Good and service is spectacular. Waiter remembered my food allergy and the dessert the best ever received on my birthday! 💕",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the restaurant offered a gluten‑free menu, including gluten‑free flatbreads, and that all menu items were gluten free.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 784384,
+         "date": "2014-12",
+         "text": "Fantastic gluten free italian restaurant. Found this by mistake as only recently opened in the Kimberley hotel. They can provide everything on the menu gluten free but the flatbreads (mini pizzas) are all GF already. Excellent quality food and great service at a reasonable price.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer reported that the restaurant had a gluten‑free menu and even served a gluten‑free dessert.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 784321,
+         "date": "2018-08",
+         "text": "Wnt there last night with Friend from LA...They have an awesome, gluten free menu...fresh food, quick and great service. Highly recommend it! They even have a delicious gluten free mudslide cake, decadent with flavor",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c25994b4f25379:0xfc3ba7dd257e3760",
+    "name": "Wild",
+    "borough": "Manhattan",
+    "address": "Wild, 535 Hudson St, New York, NY 10014",
+    "avg_rating": 3.9,
+    "num_reviews": 238,
+    "low_evidence": false,
+    "score": 2.285278630256653,
+    "excerpts": [
+     {
+      "review_id": 342308,
+      "date": "2019-10",
+      "text": "A 100% gluten free restaurant is killer when you are allergic. Great looking menu...I had a pepperoni pizza and it tastes just like a bar pie! Not like frozen and reheated cardboard. Sitting outside on a fall day made for a great break in my day!",
+      "rating": 5
+     },
+     {
+      "review_id": 342287,
+      "date": "2019-11",
+      "text": "Great gluten free food. The prosciutto brushetta was exceptional. Only complaint was that the chef was playing music in the kitchen and there was different music playing in front of house. Chef, I'll listen to whatever you want to play, just turn off the front of house music, please. Anyone in this area should eat here.",
+      "rating": 4
+     },
+     {
+      "review_id": 342309,
+      "date": "2019-10",
+      "text": "Honestly, some of the best gluten-free food I've ever eaten. I have Celiac disease and they're extremely careful about gluten. I've had dinner here, dessert here, breakfast here, and it's all incredible. The staff is also super friendly. It doesn't get better.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c2588956cc6037:0xe0b6da86dc587467",
+    "name": "Pappardella",
+    "borough": "Manhattan",
+    "address": "Pappardella, 316 Columbus Ave, New York, NY 10023",
+    "avg_rating": 4.2,
+    "num_reviews": 363,
+    "low_evidence": false,
+    "score": 2.270027768611908,
+    "excerpts": [
+     {
+      "review_id": 1808203,
+      "date": "2017-02",
+      "text": "Love this place for gluten free.",
+      "rating": 5
+     },
+     {
+      "review_id": 1808083,
+      "date": "2017-12",
+      "text": "Italian restaurant with more than the standard Italian restaurant dinners. Gluten free menu available. Lastly, it is a bit pricey so if you're on some sort of budget check out the menu prices beforehand.",
+      "rating": 5
+     },
+     {
+      "review_id": 1808096,
+      "date": "2019-01",
+      "text": "Gluten free menu was good and had a lot of options",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c25babae750393:0xce9fc002cbc09f03",
+    "name": "Wild Park Slope",
+    "borough": "Brooklyn",
+    "address": "Wild Park Slope, 148 5th Ave, Brooklyn, NY 11217",
+    "avg_rating": 3.8,
+    "num_reviews": 140,
+    "low_evidence": false,
+    "score": 2.2288097858428957,
+    "excerpts": [
+     {
+      "review_id": 957522,
+      "date": "2020-07",
+      "text": "Absolutely no gluten anywhere in the restaurant, and it was all super delicious. They also have gf and vegan options.",
+      "rating": 5
+     },
+     {
+      "review_id": 957594,
+      "date": "2018-03",
+      "text": "A Fantastic Gluten Free Restaurant! Was a treat to have Mozzarella Sticks again!",
+      "rating": 5
+     },
+     {
+      "review_id": 957604,
+      "date": "2018-12",
+      "text": "Everything is gluten free AND the food is really good",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c258a253c5fb3b:0xebc60d483b19dd72",
+    "name": "Noglu",
+    "borough": "Manhattan",
+    "address": "Noglu, 1266 Madison Ave, New York, NY 10128",
+    "avg_rating": 4.4,
+    "num_reviews": 156,
+    "low_evidence": false,
+    "score": 2.2218210816383364,
+    "excerpts": [
+     {
+      "review_id": 1222841,
+      "date": "2020-03",
+      "text": "Super cute gluten free cafe with bakery downstairs and seating upstairs. Staff was very friendly and welcoming. The desserts had great presentation.",
+      "rating": 4
+     },
+     {
+      "review_id": 1222851,
+      "date": "2018-11",
+      "text": "Many great gluten free options!",
+      "rating": 5
+     },
+     {
+      "review_id": 1222883,
+      "date": "2019-11",
+      "text": "100% gluten free shop with many great goodies...not giving 5 stars only because it is pricey :/ but I am usually happy to stop by for a coffee and a muffin",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": false,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}

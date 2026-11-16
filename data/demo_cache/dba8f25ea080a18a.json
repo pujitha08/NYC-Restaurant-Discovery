@@ -1,0 +1,556 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "restaurant careful about sesame allergies",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [],
+   "allergens": [
+    "sesame"
+   ],
+   "group_needs": [],
+   "preferences": []
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [],
+   "allergens": [
+    "sesame"
+   ],
+   "group_needs": [],
+   "preferences": []
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c2598152ae11f1:0x778df2824b1172c1",
+    "name": "Mission",
+    "borough": "Manhattan",
+    "address": "Mission, 171 E Broadway, New York, NY 10002",
+    "avg_rating": 4,
+    "num_reviews": 396,
+    "low_evidence": false,
+    "score": 2.133044791221619,
+    "excerpts": [
+     {
+      "review_id": 1576831,
+      "date": "2017-08",
+      "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1576786,
+      "date": "2017-07",
+      "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that the waitstaff and kitchen were not attentive to food allergies, advising diners with a sesame allergy to avoid the restaurant.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1576831,
+         "date": "2017-08",
+         "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that the waitress acknowledged a sesame allergy and offered no concerns about menu choices, yet advised that diners with food allergies should consider going elsewhere.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1576786,
+         "date": "2017-07",
+         "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c25981bc0101af:0x6f023e0cb73a8463",
+    "name": "Pig and Khao",
+    "borough": "Manhattan",
+    "address": "Pig and Khao, 68 Clinton St, New York, NY 10002",
+    "avg_rating": 4.3,
+    "num_reviews": 492,
+    "low_evidence": false,
+    "score": 1.9818117469280718,
+    "excerpts": [
+     {
+      "review_id": 2117626,
+      "date": "2020-03",
+      "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies.",
+      "rating": 1
+     },
+     {
+      "review_id": 2117639,
+      "date": "2020-03",
+      "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies.",
+      "rating": 1
+     },
+     {
+      "review_id": 2117650,
+      "date": "2019-02",
+      "text": "… I don't think the waiter smiled once, and we hesitantly joked and wondered if he had spit in our food. I asked if I could have the Khao Soi with rice noodles instead of the egg noodles (I grew up in Italy and I'm gluten intolerant-- not.by.choice)-- not possible because no rice noodles in the house. …",
+      "rating": 2
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "No excerpts mention sesame or the restaurant's handling of sesame allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c244f49623b3c1:0x405c0c6c32646e28",
+    "name": "Sizzling Wok",
+    "borough": "Brooklyn",
+    "address": "Sizzling Wok, 2421 Coney Island Ave, Brooklyn, NY 11223",
+    "avg_rating": 3.9,
+    "num_reviews": 52,
+    "low_evidence": false,
+    "score": 1.8740208595722674,
+    "excerpts": [
+     {
+      "review_id": 204564,
+      "date": "2018-11",
+      "text": "Pros: Big portion Friendly staff Cons: Sesame chicken was not chicken Food was clearly microwaved And sesame chciech had a funky taste",
+      "rating": 2
+     },
+     {
+      "review_id": 204547,
+      "date": "2020-06",
+      "text": "NOT RECOMMENDED !! Sesame chicken feels like chewing on a old tire, for they price they charge they could at least use fresh ingredients .",
+      "rating": 1
+     },
+     {
+      "review_id": 204545,
+      "date": "2019-12",
+      "text": "Very disappointed. The food was very bland. The General Tso and sesame chicken was the exact same taste aside from the sesames that were thrown on top. I ordered steamed dumplings, they gave me steamed wontons not dumplings. I have never been so annoyed in my life. I’m really shocked at some of the 5 star ratings. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that the sesame chicken at Sizzling Wok was not truly chicken, was clearly microwaved, and had a funky taste, suggesting poor handling of sesame-containing dishes.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 204564,
+         "date": "2018-11",
+         "text": "Pros: Big portion Friendly staff Cons: Sesame chicken was not chicken Food was clearly microwaved And sesame chciech had a funky taste",
+         "rating": 2
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer warned that the sesame chicken at Sizzling Wok tasted like chewing on an old tire and used stale ingredients, indicating unsatisfactory sesame preparation.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 204547,
+         "date": "2020-06",
+         "text": "NOT RECOMMENDED !! Sesame chicken feels like chewing on a old tire, for they price they charge they could at least use fresh ingredients .",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer complained that the General Tso and sesame chicken had the same bland taste and that the sesame was only sprinkled on top, implying that sesame was not handled with care.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 204545,
+         "date": "2019-12",
+         "text": "Very disappointed. The food was very bland. The General Tso and sesame chicken was the exact same taste aside from the sesames that were thrown on top. I ordered steamed dumplings, they gave me steamed wontons not dumplings. I have never been so annoyed in my life. I’m really shocked at some of the 5 star ratings. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c259aa7b788285:0xac6a1439af315fe7",
+    "name": "Szechuan Gourmet",
+    "borough": "Manhattan",
+    "address": "Szechuan Gourmet, 21 W 39th St, New York, NY 10018",
+    "avg_rating": 4.1,
+    "num_reviews": 227,
+    "low_evidence": false,
+    "score": 1.8203487515449523,
+    "excerpts": [
+     {
+      "review_id": 1404331,
+      "date": "2017-10",
+      "text": "I ordered sesame chicken from Szechuan Gourmet and I will never order from this restaurant again. The sesame chicken was incredibly salty and simply did not taste like sesame chicken. It was really gross. More than just the chicken tasting gross, the sesame chicken came in a bowl that was filled with dirty oil. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1404330,
+      "date": "2018-05",
+      "text": "So mediocre, Food is disgusting, contains peanuts can cause my allergies, too spicy, everything is hot, after cooked and boiled for a long time, Szechuan Gourmet is not the best food in New York. Still not satisfied about this cuisine, American food is the best than Szechuan food. You are getting the Certificate Of Mediocrity!!!!!!!!!!!!!!!!!! …",
+      "rating": 1
+     },
+     {
+      "review_id": 1404352,
+      "date": "2017-08",
+      "text": "Terrible Customer Service. I called to complain for the food that was not made properly and chicken was very hard, but instead of speaking nicely and sorting out the problem the phone representative was very mean and rude. I recommend to improve on your service.",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "No review excerpts provided evidence about how the restaurant handles sesame allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+    "name": "Senza Gluten",
+    "borough": "Manhattan",
+    "address": "Senza Gluten, 206 Sullivan St, New York, NY 10012",
+    "avg_rating": 4.5,
+    "num_reviews": 429,
+    "low_evidence": false,
+    "score": 1.8199416816234588,
+    "excerpts": [
+     {
+      "review_id": 1065571,
+      "date": "2019-04",
+      "text": "The food was delicious and the service was great! Accommodating and understanding when it comes to food allergies. I would recommend this restaurant to everyone.",
+      "rating": 5
+     },
+     {
+      "review_id": 1065716,
+      "date": "2018-08",
+      "text": "I appreciate that they are extremely allergy conscious and that it is a completely gluten free restaurant, so you don't have to worry about cross-contamination. They also gave us a free sample of their bread basket, which was very nice of them to do. These are the only reasons they get two stars. …",
+      "rating": 2
+     },
+     {
+      "review_id": 1065525,
+      "date": "2018-09",
+      "text": "Food was good. Service was terrific. Pizza was excellent! The waiter asked if there were any other food allergies or concerns. I really appreciated that.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported the restaurant was accommodating and understanding regarding food allergies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1065571,
+         "date": "2019-04",
+         "text": "The food was delicious and the service was great! Accommodating and understanding when it comes to food allergies. I would recommend this restaurant to everyone.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c259bf3e57060b:0x4f1608274f5e6fe6",
+    "name": "Buddakan",
+    "borough": "Manhattan",
+    "address": "Buddakan, 75 9th Ave, New York, NY 10011",
+    "avg_rating": 4.5,
+    "num_reviews": 1205,
+    "low_evidence": false,
+    "score": 1.8150470972061157,
+    "excerpts": [
+     {
+      "review_id": 79848,
+      "date": "2013-08",
+      "text": "… I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants to be safe. Bad experience, BUT, the food really was very good and we had a great time. …",
+      "rating": 3
+     },
+     {
+      "review_id": 79107,
+      "date": "2019-07",
+      "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+      "rating": 5
+     },
+     {
+      "review_id": 79278,
+      "date": "2019-11",
+      "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported a severe reaction to sesame, noting the restaurant did not provide clear allergy information, leading to an illness.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 79848,
+         "date": "2013-08",
+         "text": "… I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants to be safe. Bad experience, BUT, the food really was very good and we had a great time. …",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that staff took time to inquire about ingredients for allergy sufferers, but did not specify sesame.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 79107,
+         "date": "2019-07",
+         "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer said the waiter was helpful and accommodating for all allergies and dietary preferences, without detailing sesame handling.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 79278,
+         "date": "2019-11",
+         "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c25908538632bd:0xc1c8c73450bff681",
+    "name": "Bistango",
+    "borough": "Manhattan",
+    "address": "Bistango, 415 3rd Avenue AT, E 29th St, New York, NY 10016",
+    "avg_rating": 4.4,
+    "num_reviews": 172,
+    "low_evidence": false,
+    "score": 1.793155562877655,
+    "excerpts": [
+     {
+      "review_id": 530192,
+      "date": "2013-05",
+      "text": "My husband has several food allergies and during our trip to NYC, this restaurant was a breath of fresh air. Our server, Juli, was so kind and accommodating to my husband's needs. In fact, her first question to us was if either of us had any food allergies. We went twice during our trip and loved it. …",
+      "rating": 5
+     },
+     {
+      "review_id": 530186,
+      "date": "2017-06",
+      "text": "… The owner Anthony and his manager Heron welcome you like you are family and remember you when you come back. Great food and wonderful accommodations for all allergies. In fact, the first thing the server will ask is, \"are there any allergies at the table?\" Then the rest of your meal is flawlessly delivered to your specifications.",
+      "rating": 5
+     },
+     {
+      "review_id": 530183,
+      "date": "2018-09",
+      "text": "Everything on their menu can be made gluten free. Everything. They are very aware of and cater to allergies. Fantastic food.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c259acd391978f:0x40e0a6ad4cb1f4b9",
+    "name": "Weng's Palace",
+    "borough": "Manhattan",
+    "address": "Weng's Palace, 304 W 40th St, New York, NY 10018",
+    "avg_rating": 3.4,
+    "num_reviews": 74,
+    "low_evidence": false,
+    "score": 1.7818102061748504,
+    "excerpts": [
+     {
+      "review_id": 1335622,
+      "date": "2018-07",
+      "text": "Their sesame chicken is amazing...!!!",
+      "rating": 5
+     },
+     {
+      "review_id": 1335567,
+      "date": "2019-11",
+      "text": "… We decided to order two nights later. It was the WORST Chinese food I ever had. I ordered the chicken and cashew and hot and sour soup, my friend had sesame Chicken. The soup had no taste and either did my meal or my friends. The only good thing, was it was delivered fast and hot. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1335578,
+      "date": "2018-06",
+      "text": "Horrible experience. I made an order on 6/5/18 for Jumbo Shrimp Fried Rice and after a few hours, I felt completely nauseous, and started to vomit. As for me, I rate this restaurant a solid 0 (zero) out 5 Stars. The food was horrible, I will never order anything from this place ever again. …",
+      "rating": 1
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c258ef6b70b8ed:0x63df3a29b0ab6a71",
+    "name": "Lilli and Loo",
+    "borough": "Manhattan",
+    "address": "Lilli and Loo, 1026 3rd Ave, New York, NY 10065",
+    "avg_rating": 4.1,
+    "num_reviews": 236,
+    "low_evidence": false,
+    "score": 1.7813747346401214,
+    "excerpts": [
+     {
+      "review_id": 2070088,
+      "date": "2019-06",
+      "text": "Oh my gosh!! The best Sesame Chicken! I thoroughly enjoyed my lunch!",
+      "rating": 5
+     },
+     {
+      "review_id": 2070141,
+      "date": "2018-10",
+      "text": "Awesome sesame chicken. Happy hour from 4pm - 7pm.",
+      "rating": 5
+     },
+     {
+      "review_id": 2070057,
+      "date": "2018-10",
+      "text": "Used to come here all the time when I lived nearby. Returned for the first time in awhile. Still super good, with an extensive menu. Their sesame chicken is some of the best around.",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c259adab5d38ad:0xf6f61c1def7a611e",
+    "name": "Chef Yu",
+    "borough": "Manhattan",
+    "address": "Chef Yu, 520 8th Ave, New York, NY 10018",
+    "avg_rating": 4.1,
+    "num_reviews": 444,
+    "low_evidence": false,
+    "score": 1.7781664252281189,
+    "excerpts": [
+     {
+      "review_id": 2391783,
+      "date": "2019-03",
+      "text": "If you have a gluten allergy, avoid this place :( It was lovely inside & my friend's meal looked good. Mine was super bland though. The shrimp, rice and broccoli were all tasteless. I brought them home and the sight of them made me nauseous. …",
+      "rating": 1
+     },
+     {
+      "review_id": 2391975,
+      "date": "2017-11",
+      "text": "Szechuan Shrimp Wontons is a must get on every visit. This restaurant has great service and some of the best Chinese cuisine, especially if you like spicy food. The spice level seems to have gone down some so maybe they nerfed it some.",
+      "rating": 4
+     },
+     {
+      "review_id": 2391666,
+      "date": "2021-03",
+      "text": "Walking distance from Port Authority, Walk-in dining, pandemic guidelines observed, lunch special til 4pm, ample serving of Tofu Schezuan style with vegetable fried rice, fair priced, quick service, all in perfect temperature",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": true,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}

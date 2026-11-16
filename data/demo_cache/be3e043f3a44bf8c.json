@@ -1,0 +1,682 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "vegan and gluten-free options for a group",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "vegan",
+    "gluten-free"
+   ],
+   "allergens": [],
+   "group_needs": [
+    "mixed dietary needs: vegan and gluten-free"
+   ],
+   "preferences": [
+    "vegan options",
+    "gluten-free options"
+   ]
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "vegan",
+    "gluten-free"
+   ],
+   "allergens": [],
+   "group_needs": [
+    "mixed dietary needs: vegan and gluten-free"
+   ],
+   "preferences": [
+    "vegan options",
+    "gluten-free options"
+   ]
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c259af5d600fc3:0xf214268e9258b04b",
+    "name": "by CHLOE. - West Village",
+    "borough": "Manhattan",
+    "address": "by CHLOE. - West Village, 185 Bleecker St, New York, NY 10012",
+    "avg_rating": 4.3,
+    "num_reviews": 773,
+    "low_evidence": false,
+    "score": 2.0412899971008303,
+    "excerpts": [
+     {
+      "review_id": 433323,
+      "date": "2015-09",
+      "text": "My friend and I have a standing brunch date and we decided to try by Chloe. Despite the huge crowd of people and the over sized meat eaters we call brothers, the food and options were amazing. I am gluten free (for celiac's, not for fun) so the options for me were wonderful. …",
+      "rating": 5
+     },
+     {
+      "review_id": 433365,
+      "date": "2018-03",
+      "text": "Finally came here to see what the fuss was about. Nice to see a menu that is 100% vegan, though only a handful of things that are gluten-free. Some things like mac & cheese can be made gluten-free but it's a $2.50 charge (not sure if the surcharge is the same for a small and a large portion ... …",
+      "rating": 4
+     },
+     {
+      "review_id": 433352,
+      "date": "2017-07",
+      "text": "If you looking for simple and good food, you find it! Gluten free, great selection and great menu, is a must",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offered excellent gluten‑free options, describing them as wonderful for a celiac customer.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 433323,
+         "date": "2015-09",
+         "text": "My friend and I have a standing brunch date and we decided to try by Chloe. Despite the huge crowd of people and the over sized meat eaters we call brothers, the food and options were amazing. I am gluten free (for celiac's, not for fun) so the options for me were wonderful. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported a 100% vegan menu, noting that only a handful of items were gluten‑free and that a surcharge applied for gluten‑free versions.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 433365,
+         "date": "2018-03",
+         "text": "Finally came here to see what the fuss was about. Nice to see a menu that is 100% vegan, though only a handful of things that are gluten-free. Some things like mac & cheese can be made gluten-free but it's a $2.50 charge (not sure if the surcharge is the same for a small and a large portion ... …",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer reported a great selection of gluten‑free items, describing it as a must‑visit for gluten‑free diners.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 433352,
+         "date": "2017-07",
+         "text": "If you looking for simple and good food, you find it! Gluten free, great selection and great menu, is a must",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c259a72f4245fd:0xda9f11b04f4cdb9e",
+    "name": "Little Beet Table",
+    "borough": "Manhattan",
+    "address": "Little Beet Table, 333 Park Ave South, New York, NY 10010",
+    "avg_rating": 4.5,
+    "num_reviews": 270,
+    "low_evidence": false,
+    "score": 1.999982488155365,
+    "excerpts": [
+     {
+      "review_id": 1956488,
+      "date": "2020-02",
+      "text": "Everything is gluten free. Very vegetarian friendly menu. Delicious variety of healthy comfort foods.",
+      "rating": 5
+     },
+     {
+      "review_id": 1956650,
+      "date": "2017-11",
+      "text": "All farm to table and gluten free in a very clean yet cozy environment.",
+      "rating": 4
+     },
+     {
+      "review_id": 1956450,
+      "date": "2019-02",
+      "text": "Delicious healthy options, 100% GF and different options labeled vegetarian, vegan, and dairy free, delicious drinks, I would come back for sure!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers a variety of gluten‑free and vegetarian options, describing the menu as very vegetarian friendly and all gluten free.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1956488,
+         "date": "2020-02",
+         "text": "Everything is gluten free. Very vegetarian friendly menu. Delicious variety of healthy comfort foods.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the restaurant is gluten free and has a farm‑to‑table menu, indicating suitability for gluten‑free diners.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1956650,
+         "date": "2017-11",
+         "text": "All farm to table and gluten free in a very clean yet cozy environment.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer reported 100% gluten free options and that vegetarian, vegan, and dairy‑free dishes were clearly labeled on the menu.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1956450,
+         "date": "2019-02",
+         "text": "Delicious healthy options, 100% GF and different options labeled vegetarian, vegan, and dairy free, delicious drinks, I would come back for sure!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c259af22fb0c51:0x6b78c8ca952665f4",
+    "name": "Friedman's Herald Square",
+    "borough": "Manhattan",
+    "address": "Friedman's Herald Square, 132 W 31st St, New York, NY 10001",
+    "avg_rating": 4.3,
+    "num_reviews": 1081,
+    "low_evidence": false,
+    "score": 1.956115734577179,
+    "excerpts": [
+     {
+      "review_id": 1393629,
+      "date": "2018-03",
+      "text": "Good options for Gluten - free meals!",
+      "rating": 5
+     },
+     {
+      "review_id": 1393224,
+      "date": "2019-09",
+      "text": "Great gluten free and vegetarian options.",
+      "rating": 5
+     },
+     {
+      "review_id": 1393559,
+      "date": "2018-07",
+      "text": "One of the rare places where gluten intolerant people, vegans and 'normal people' can go to enjoy a good meal without compromising.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers good gluten‑free meals.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1393629,
+         "date": "2018-03",
+         "text": "Good options for Gluten - free meals!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the restaurant provides great gluten‑free and vegetarian options.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1393224,
+         "date": "2019-09",
+         "text": "Great gluten free and vegetarian options.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer described the establishment as a rare place where gluten‑intolerant people, vegans, and others can enjoy a good meal without compromising.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1393559,
+         "date": "2018-07",
+         "text": "One of the rare places where gluten intolerant people, vegans and 'normal people' can go to enjoy a good meal without compromising.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c2595780ce7183:0x78708c4fd2e5970a",
+    "name": "Champs Diner",
+    "borough": "Brooklyn",
+    "address": "Champs Diner, 197 Meserole St, Brooklyn, NY 11206, United States",
+    "avg_rating": 4.5,
+    "num_reviews": 1230,
+    "low_evidence": false,
+    "score": 1.9155988812446594,
+    "excerpts": [
+     {
+      "review_id": 431442,
+      "date": "2017-06",
+      "text": "I'm not Gluten free or Vegan but I ate here w/ family and it didn't taste any different to me. I had the smore's pancakes which were excellent and my first vegan bacon which was small, but crispy and it worked for me.",
+      "rating": 5
+     },
+     {
+      "review_id": 431374,
+      "date": "2019-03",
+      "text": "gluten free options not suitable for celiac",
+      "rating": 3
+     },
+     {
+      "review_id": 431476,
+      "date": "2018-05",
+      "text": "… They have vegan waffles, vegan sausages, a country breakfast, mac n cheese, tatertot nachos, EVERYTHING!!!! Never been so excited to eat out as a vegan! And my friend with me is gluten free where she gets immensely sick when she eats something on accident thats not vegan! She has soooo many options to eat at this place as well!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offered numerous vegan options and also provided suitable choices for a gluten‑free guest, stating that the friend could eat there without issue.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 431476,
+         "date": "2018-05",
+         "text": "… They have vegan waffles, vegan sausages, a country breakfast, mac n cheese, tatertot nachos, EVERYTHING!!!! Never been so excited to eat out as a vegan! And my friend with me is gluten free where she gets immensely sick when she eats something on accident thats not vegan! She has soooo many options to eat at this place as well!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer warned that the gluten‑free options were not suitable for a person with celiac disease.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 431374,
+         "date": "2019-03",
+         "text": "gluten free options not suitable for celiac",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "One reviewer mentioned a vegan bacon item but did not comment on gluten‑free availability.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 431442,
+         "date": "2017-06",
+         "text": "I'm not Gluten free or Vegan but I ate here w/ family and it didn't taste any different to me. I had the smore's pancakes which were excellent and my first vegan bacon which was small, but crispy and it worked for me.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c2598f2dd9ecb5:0xeeb9eec4f4c35e5a",
+    "name": "by CHLOE. - SoHo",
+    "borough": "Manhattan",
+    "address": "by CHLOE. - SoHo, 240 Lafayette St, New York, NY 10012",
+    "avg_rating": 4.3,
+    "num_reviews": 285,
+    "low_evidence": false,
+    "score": 1.8587876677513122,
+    "excerpts": [
+     {
+      "review_id": 1056960,
+      "date": "2017-12",
+      "text": "Delicious, fresh vegan food. My faves are the burger and the quinoa taco salad. It’s one of my go-to lunch spots in Soho, and I love that you can make virtually any menu item gluten free. Order ahead on their site to avoid the line.",
+      "rating": 5
+     },
+     {
+      "review_id": 1056877,
+      "date": "2019-10",
+      "text": "… I know food allergies are Lame (I do have a legit allergy, by the way), but given this place is vegan, gluten free, etc, I feel like they should be pretty accommodating.",
+      "rating": 1
+     },
+     {
+      "review_id": 1057034,
+      "date": "2018-04",
+      "text": "Probably the best gluten free chocolate chip cookies you will find",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offers vegan dishes and that any menu item can be made gluten free.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1056960,
+         "date": "2017-12",
+         "text": "Delicious, fresh vegan food. My faves are the burger and the quinoa taco salad. It’s one of my go-to lunch spots in Soho, and I love that you can make virtually any menu item gluten free. Order ahead on their site to avoid the line.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "One reviewer warned that despite the restaurant being vegan and gluten free, they experienced difficulty with food allergies and were disappointed with the accommodation.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1056877,
+         "date": "2019-10",
+         "text": "… I know food allergies are Lame (I do have a legit allergy, by the way), but given this place is vegan, gluten free, etc, I feel like they should be pretty accommodating.",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "One reviewer reported that the restaurant offers gluten-free chocolate chip cookies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1057034,
+         "date": "2018-04",
+         "text": "Probably the best gluten free chocolate chip cookies you will find",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c25baebb8fcda9:0xc0b693d248568c15",
+    "name": "Sun In Bloom",
+    "borough": "Brooklyn",
+    "address": "Sun In Bloom, 460 Bergen St #4046, Brooklyn, NY 11217",
+    "avg_rating": 4.1,
+    "num_reviews": 117,
+    "low_evidence": false,
+    "score": 1.8573304533958435,
+    "excerpts": [
+     {
+      "review_id": 717260,
+      "date": "2016-02",
+      "text": "… The surrounding area is also great for exploring. There are a lot of cute shops and interesting people in the area. As a Gluten Free Vegan it can be difficult to come across places that cater to both. Being that their menu is predominantly Raw Food based, I can eat almost everything on the menu without having to worry. …",
+      "rating": 5
+     },
+     {
+      "review_id": 717214,
+      "date": "2014-03",
+      "text": "Really cute raw/vegan/gluten-free cafe. Seriously amazing fair trade organic coffee. My only problem with this place (it's a pretty big one): Menu items are labeled as gluten free (G) or not. My server told me that everything IS gluten free, and so I ordered something that I was a little suspicious about. …",
+      "rating": 3
+     },
+     {
+      "review_id": 717256,
+      "date": "2015-08",
+      "text": "… I left filling a bag with scrumptious raw desserts and fresh green juices. I will be returning tomorrow with my daughter that lives here in Brooklyn so as to indulge in there gluten free pancakes. Really and truly fluffy gf/vegan pancakes. I have never had or been able to replicate anything close to what I observed while having lunch. …",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer reported that the largely raw‑food menu allows a gluten‑free vegan to eat almost everything without concern.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 717260,
+         "date": "2016-02",
+         "text": "… The surrounding area is also great for exploring. There are a lot of cute shops and interesting people in the area. As a Gluten Free Vegan it can be difficult to come across places that cater to both. Being that their menu is predominantly Raw Food based, I can eat almost everything on the menu without having to worry. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the café as raw/vegan/gluten‑free, noting the presence of gluten‑free labeling and server reassurance that all items were gluten‑free.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 717214,
+         "date": "2014-03",
+         "text": "Really cute raw/vegan/gluten-free cafe. Seriously amazing fair trade organic coffee. My only problem with this place (it's a pretty big one): Menu items are labeled as gluten free (G) or not. My server told me that everything IS gluten free, and so I ordered something that I was a little suspicious about. …",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer praised the gluten‑free, vegan pancakes as fluffy and noted a personal intention to return with a gluten‑free child.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 717256,
+         "date": "2015-08",
+         "text": "… I left filling a bag with scrumptious raw desserts and fresh green juices. I will be returning tomorrow with my daughter that lives here in Brooklyn so as to indulge in there gluten free pancakes. Really and truly fluffy gf/vegan pancakes. I have never had or been able to replicate anything close to what I observed while having lunch. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c25a491f17ec49:0x42743c91880aed77",
+    "name": "Perelandra Natural Food Center",
+    "borough": "Brooklyn",
+    "address": "Perelandra Natural Food Center, 175 Remsen St, Brooklyn, NY 11201",
+    "avg_rating": 4.6,
+    "num_reviews": 280,
+    "low_evidence": false,
+    "score": 1.8569016575813293,
+    "excerpts": [
+     {
+      "review_id": 827684,
+      "date": "2018-04",
+      "text": "Nice array of high quality gluten free/vegan options including brands that Whole Foods does not stock. Prices comparable to Whole Foods.",
+      "rating": 5
+     },
+     {
+      "review_id": 827594,
+      "date": "2018-10",
+      "text": "I don’t do the bulk of my grocery shopping here but go here for specialty items. Lots of great vegan and organic options. Staff is extremely friendly and helpful. Only downside is that the market is a bit pricey, but I think they have to be in order to survive.",
+      "rating": 4
+     },
+     {
+      "review_id": 827617,
+      "date": "2019-09",
+      "text": "this place is absolute HEAVEN for vegans. i have a dairy allergy and i love to come here for vegan cheeses, yogurts, treats, etc. can find better prices elsewhere but this selection can't be beat.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c25885df0bd5db:0x21704b2918766fd4",
+    "name": "Peacefood Uptown",
+    "borough": "Manhattan",
+    "address": "Peacefood Uptown, 460 Amsterdam Ave, New York, NY 10024",
+    "avg_rating": 4.4,
+    "num_reviews": 579,
+    "low_evidence": false,
+    "score": 1.8561160683631897,
+    "excerpts": [
+     {
+      "review_id": 1066869,
+      "date": "2018-07",
+      "text": "Excellent restaurant for both vegan and gluten free. Great experience!",
+      "rating": 5
+     },
+     {
+      "review_id": 1067075,
+      "date": "2015-08",
+      "text": "A fantastic restaurant with gluten free options!",
+      "rating": 5
+     },
+     {
+      "review_id": 1066575,
+      "date": "2019-09",
+      "text": "… The chickpea fries are potentially the best fries I’ve ever had, soy cappuccino was excellent, my spicy unchicken Caesar salad was phenomenal. Service could not have been better. I’ll be eating here a lot more while I’m in NYC!! Edit: Pulled the trigger on buying the grasshopper cookie sandwich... gluten free and out of this world.",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c2599de3f56c0b:0x3d44e07448f46e76",
+    "name": "S'MAC East Village",
+    "borough": "Manhattan",
+    "address": "S'MAC East Village, 197 1st Avenue, New York, NY 10003",
+    "avg_rating": 4.4,
+    "num_reviews": 899,
+    "low_evidence": false,
+    "score": 1.8441431045532226,
+    "excerpts": [
+     {
+      "review_id": 1382829,
+      "date": "2019-11",
+      "text": "Being able to order a gluten free option as easy as a press of the button, and the option of vegan as well, was fantastic. I had the philly steak gluten free nosh size and my partner had cheeseburger regular nosh size with extra breadcrumbs. …",
+      "rating": 5
+     },
+     {
+      "review_id": 1382796,
+      "date": "2019-07",
+      "text": "Vegan gluten free Mac and cheese was amazing!!!",
+      "rating": 5
+     },
+     {
+      "review_id": 1382795,
+      "date": "2017-03",
+      "text": "Some of the best gluten free macaroni and cheese I've ever tasted. Even the breadcrumbs are gluten free! The space was decent (not the cleanest, but hey, the food more than made up for it), the portions were lovely and generous, and service was super quick. …",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c25b95ffc277e7:0x9a356b435f553569",
+    "name": "Clementine Bakery",
+    "borough": "Brooklyn",
+    "address": "Clementine Bakery, 395 Classon Ave, Brooklyn, NY 11238",
+    "avg_rating": 4.4,
+    "num_reviews": 287,
+    "low_evidence": false,
+    "score": 1.8398902535438537,
+    "excerpts": [
+     {
+      "review_id": 1046821,
+      "date": "2018-09",
+      "text": "The best vegan, gluten-free cupcakes in NYC! 😍🍚",
+      "rating": 5
+     },
+     {
+      "review_id": 1046848,
+      "date": "2018-01",
+      "text": "This place makes Vegan a good word.",
+      "rating": 4
+     },
+     {
+      "review_id": 1046819,
+      "date": "2015-07",
+      "text": "was so disappointed. I purchased a gluten free vegan birthday cake as a surprise for my daughter who was visiting the country on her vacation. the cake looked good BUT cake was DRY, AND TASTELESS, kind of what I think cardboard would taste like. …",
+      "rating": 1
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": false,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}

@@ -1,0 +1,527 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "restaurant careful about tree nut allergies",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [],
+   "allergens": [
+    "tree nuts"
+   ],
+   "group_needs": [],
+   "preferences": []
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [],
+   "allergens": [
+    "tree nuts"
+   ],
+   "group_needs": [],
+   "preferences": []
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c2598152ae11f1:0x778df2824b1172c1",
+    "name": "Mission",
+    "borough": "Manhattan",
+    "address": "Mission, 171 E Broadway, New York, NY 10002",
+    "avg_rating": 4,
+    "num_reviews": 396,
+    "low_evidence": false,
+    "score": 1.9584725945919512,
+    "excerpts": [
+     {
+      "review_id": 1576831,
+      "date": "2017-08",
+      "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1576786,
+      "date": "2017-07",
+      "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that the restaurant was not attentive to food allergies, specifically noting a tree nut allergy in their party.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1576831,
+         "date": "2017-08",
+         "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the waitress acknowledged a tree nut allergy but still advised customers to consider dining elsewhere.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1576786,
+         "date": "2017-07",
+         "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c2599d7acaa7db:0x15e363a022cdfcac",
+    "name": "Superiority Burger",
+    "borough": "Manhattan",
+    "address": "Superiority Burger, 430 E 9th St, New York, NY 10009",
+    "avg_rating": 4.6,
+    "num_reviews": 588,
+    "low_evidence": false,
+    "score": 1.7653288241391802,
+    "excerpts": [
+     {
+      "review_id": 1627793,
+      "date": "2016-05",
+      "text": "… I challenged him again. He assertively told me there are no nuts in the burger. As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported that the burger at the restaurant contained no nuts.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1627793,
+         "date": "2016-05",
+         "text": "… I challenged him again. He assertively told me there are no nuts in the burger. As I neared closer and closer to anaphylactic shock, I kept worrying what else I had devolved into being allergic to now, since this burger certainly couldn't have nuts. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c259917bd96775:0xab9393586a14ef2",
+    "name": "Ladybird",
+    "borough": "Manhattan",
+    "address": "Ladybird, 111 E 7th St, New York, NY 10009",
+    "avg_rating": 4.6,
+    "num_reviews": 191,
+    "low_evidence": false,
+    "score": 1.7541598673825884,
+    "excerpts": [
+     {
+      "review_id": 1664372,
+      "date": "2020-08",
+      "text": "… ended up throwing up my whole $80 meal within 30 minutes of eating it which kind of sucks. please put allergens on your menu or make sure the server specifies that things have nuts in them, vegans allergic to nuts are few and far between but we exist!",
+      "rating": 4
+     },
+     {
+      "review_id": 1664367,
+      "date": "2021-02",
+      "text": "… The waitress told us with certainty that they do not use those nuts at all in any dishes for allergy reasons specifically. Unfortunately when we asked if there was a dessert she might recommend, the strawberry cheesecake that was suggested did in fact contain Cashews. I ran to the kitchen and asked, and they said it was nut free. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1664497,
+      "date": "2018-10",
+      "text": "Excellent food, they were extremely accommodating of my allergies (nut and soy) and outlined what was safe to eat",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that after eating there, they threw up within 30 minutes and warned that the restaurant did not properly indicate tree nuts on its menu.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1664372,
+         "date": "2020-08",
+         "text": "… ended up throwing up my whole $80 meal within 30 minutes of eating it which kind of sucks. please put allergens on your menu or make sure the server specifies that things have nuts in them, vegans allergic to nuts are few and far between but we exist!",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described a warning that a recommended dessert contained cashews, despite staff claiming it was nut‑free, indicating a possible failure to accommodate tree nut allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1664367,
+         "date": "2021-02",
+         "text": "… The waitress told us with certainty that they do not use those nuts at all in any dishes for allergy reasons specifically. Unfortunately when we asked if there was a dessert she might recommend, the strawberry cheesecake that was suggested did in fact contain Cashews. I ran to the kitchen and asked, and they said it was nut free. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A reviewer’s comment about this allergy is quoted below.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1664497,
+         "date": "2018-10",
+         "text": "Excellent food, they were extremely accommodating of my allergies (nut and soy) and outlined what was safe to eat",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Conflicting reports about the restaurant’s handling of tree nut allergies. No single review confirms consistent safety or policy.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c259531302479b:0x2e5cef15d5e7723a",
+    "name": "Nutella Cafe",
+    "borough": "Manhattan",
+    "address": "Nutella Cafe, 116 University Pl, New York, NY 10003",
+    "avg_rating": 4.1,
+    "num_reviews": 499,
+    "low_evidence": false,
+    "score": 1.7084072351455688,
+    "excerpts": [
+     {
+      "review_id": 1633752,
+      "date": "2019-02",
+      "text": "I love Nutella and the store is great. Food was awesome",
+      "rating": 5
+     },
+     {
+      "review_id": 1634070,
+      "date": "2019-01",
+      "text": "Disappointed by customer service. Food came to the table cold, nutella was hard and sticky. The seating arrangements are not space friendly and there are tones of folks waiting outside. The front door employee, Ryan is rude and seemed to get overwhelmed by the crowds of people waiting to enter.",
+      "rating": 3
+     },
+     {
+      "review_id": 1633749,
+      "date": "2019-03",
+      "text": "Nutella, my all time favorite Hazelnut spread. First Nutella Cafe in NYC and they have many great choices in the menu, and of course need to try the Nutella Banana Crepes!",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "None",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c259bf3e57060b:0x4f1608274f5e6fe6",
+    "name": "Buddakan",
+    "borough": "Manhattan",
+    "address": "Buddakan, 75 9th Ave, New York, NY 10011",
+    "avg_rating": 4.5,
+    "num_reviews": 1205,
+    "low_evidence": false,
+    "score": 1.6399335413902758,
+    "excerpts": [
+     {
+      "review_id": 79278,
+      "date": "2019-11",
+      "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences.",
+      "rating": 5
+     },
+     {
+      "review_id": 79107,
+      "date": "2019-07",
+      "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+      "rating": 5
+     },
+     {
+      "review_id": 80054,
+      "date": "2015-04",
+      "text": "… So here I am on Google voicing my concerns. Think twice about eating here, particularly if you have a food allergy because the staff has no idea what ingredients go into their food. It makes me wonder how many vegetarians have unknowingly ingested meat in this establishment after being told the food did not have meat in it. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [
+      {
+       "text": "One reviewer reported the staff was helpful and accommodated allergies, another reviewer noted staff inquired about ingredients for those with allergies, and a third reviewer warned that staff had no idea what ingredients went into their food.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 79278,
+         "date": "2019-11",
+         "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences.",
+         "rating": 5
+        },
+        {
+         "review_id": 79107,
+         "date": "2019-07",
+         "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+         "rating": 5
+        },
+        {
+         "review_id": 80054,
+         "date": "2015-04",
+         "text": "… So here I am on Google voicing my concerns. Think twice about eating here, particularly if you have a food allergy because the staff has no idea what ingredients go into their food. It makes me wonder how many vegetarians have unknowingly ingested meat in this establishment after being told the food did not have meat in it. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+    "name": "Senza Gluten",
+    "borough": "Manhattan",
+    "address": "Senza Gluten, 206 Sullivan St, New York, NY 10012",
+    "avg_rating": 4.5,
+    "num_reviews": 429,
+    "low_evidence": false,
+    "score": 1.6397416331486967,
+    "excerpts": [
+     {
+      "review_id": 1065571,
+      "date": "2019-04",
+      "text": "The food was delicious and the service was great! Accommodating and understanding when it comes to food allergies. I would recommend this restaurant to everyone.",
+      "rating": 5
+     },
+     {
+      "review_id": 1065525,
+      "date": "2018-09",
+      "text": "Food was good. Service was terrific. Pizza was excellent! The waiter asked if there were any other food allergies or concerns. I really appreciated that.",
+      "rating": 5
+     },
+     {
+      "review_id": 1065716,
+      "date": "2018-08",
+      "text": "I appreciate that they are extremely allergy conscious and that it is a completely gluten free restaurant, so you don't have to worry about cross-contamination. They also gave us a free sample of their bread basket, which was very nice of them to do. These are the only reasons they get two stars. …",
+      "rating": 2
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "No excerpts mention tree nuts specifically or any positive/negative experience related to tree nut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c259762e26a813:0xf37426d261b7d2db",
+    "name": "Tompkins Square Bagels",
+    "borough": "Manhattan",
+    "address": "Tompkins Square Bagels, 165 Avenue A, New York, NY 10009",
+    "avg_rating": 4.5,
+    "num_reviews": 543,
+    "low_evidence": false,
+    "score": 1.6057102378373767,
+    "excerpts": [
+     {
+      "review_id": 2270530,
+      "date": "2018-06",
+      "text": "… Also getting it all over the cutting board.) They assured me it would change— nope. Good luck if you have a nut allergy. It is a shame that they can’t get their act together. The people are nice and the food is good— when your order is right.",
+      "rating": 2
+     },
+     {
+      "review_id": 2270356,
+      "date": "2018-05",
+      "text": "This is not a safe place for celiac or wheat allergies. I ordered a gluten free bagel but there was a mix up and luckily I watched what happened but the cream cheese was scrapped from the regular bagel and then put on the gluten free bagel. I requested a clean knife be used, that didn't happen. …",
+      "rating": 4
+     },
+     {
+      "review_id": 2270456,
+      "date": "2018-01",
+      "text": "I can't emphasize my love for this place enough! The food is incredible, the service is phenomenal, and the prices are totally reasonable. A safe haven for anyone with gluten allergies!!",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c25994b4f25379:0xfc3ba7dd257e3760",
+    "name": "Wild",
+    "borough": "Manhattan",
+    "address": "Wild, 535 Hudson St, New York, NY 10014",
+    "avg_rating": 3.9,
+    "num_reviews": 238,
+    "low_evidence": false,
+    "score": 1.5851446836918353,
+    "excerpts": [
+     {
+      "review_id": 342308,
+      "date": "2019-10",
+      "text": "A 100% gluten free restaurant is killer when you are allergic. Great looking menu...I had a pepperoni pizza and it tastes just like a bar pie! Not like frozen and reheated cardboard. Sitting outside on a fall day made for a great break in my day!",
+      "rating": 5
+     },
+     {
+      "review_id": 342435,
+      "date": "2019-03",
+      "text": "This restaurant have zero responsibility for vegetarians and allergies. They do multiple serious mistakes such as putting real chicken on a pizza that says vegan. Being vegan or vegetarian or have food allergies, don't come here.",
+      "rating": 1
+     },
+     {
+      "review_id": 342437,
+      "date": "2015-05",
+      "text": "… The salad was supposed to be beets, toasted walnuts, warm goat cheese, frisse... We got something looking like an old pile of ice berg salad with two \"balls\" of goat cheese, a few beet chunks, and no walnuts in sight. The pizza was cold and the pizza box open when delivered. The food was also an hour late. …",
+      "rating": 1
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c2452a23f00ddb:0xe13aea6735e2604e",
+    "name": "The Nuttery",
+    "borough": "Brooklyn",
+    "address": "The Nuttery, 4710 16th Ave, Brooklyn, NY 11204",
+    "avg_rating": 4.7,
+    "num_reviews": 105,
+    "low_evidence": false,
+    "score": 1.5843994736671447,
+    "excerpts": [
+     {
+      "review_id": 564995,
+      "date": "2019-11",
+      "text": "Freshest nuts, dried fruit and chocolate in town. Try their glazed macadamia and chocolate logs.",
+      "rating": 5
+     },
+     {
+      "review_id": 565058,
+      "date": "2016-01",
+      "text": "An amazing experience! Nothing like it in NY. Freshest nuts and the smell when you walk is in....................!!!!!!",
+      "rating": 5
+     },
+     {
+      "review_id": 564991,
+      "date": "2020-06",
+      "text": "If you want good nuts you know where to go",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c25a29a00a48a7:0x579084c6ad6adcd2",
+    "name": "Jajaja Plantas Mexicana",
+    "borough": "Manhattan",
+    "address": "Jajaja Plantas Mexicana, 162 E Broadway, New York, NY 10002",
+    "avg_rating": 4.6,
+    "num_reviews": 651,
+    "low_evidence": false,
+    "score": 1.5837417241101885,
+    "excerpts": [
+     {
+      "review_id": 2034806,
+      "date": "2018-08",
+      "text": "… I have also had friends who have been since that enjoy the restaurant and stated that the servers notify of allergies with orders sometimes now as well. I have tried reaching out to management - with no response. Really sad that this place nearly cost me my life with negligence by both staff and owners.",
+      "rating": 1
+     },
+     {
+      "review_id": 2034929,
+      "date": "2018-09",
+      "text": "I wish I could give zero stars. This restaurant sent my friend into full-blown anaphylactic shock after he asked 5+ times about there being nuts in the food. The server denied any nuts and proceeded to serve him deathly cashew cheese. Even after his allergic reaction started, the server denied any nuts. …",
+      "rating": 1
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-20b",
+  "allergy_sensitive": true,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}
