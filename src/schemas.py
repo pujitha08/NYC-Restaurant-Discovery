@@ -52,6 +52,7 @@ class Snippet:
     text: str
     review_id: int  # line number in reviews_filtered.jsonl; also the `review_id` field of reviews_clean.jsonl
     time: Optional[int] = None  # Unix ms; None for placeholder dates
+    rating: Optional[int] = None  # the review's star rating (1-5) when known; shown in the evidence view only
 
 
 @dataclass

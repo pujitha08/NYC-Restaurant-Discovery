@@ -16,6 +16,7 @@ import html
 import re
 
 from app.chips import short
+from app.evidence_filter import mask_name
 from app.highlight import STOPWORDS, _WORD, MIN_PREFIX_LEN, term_pattern
 
 FOUND, NONE = "found", "none"
@@ -30,22 +31,24 @@ def need_terms(need):
     return terms
 
 
-def count_excerpts(need, excerpts):
-    """How many of the excerpts mention the need (every term of it), or None if the need has no matchable word."""
+def count_excerpts(need, excerpts, name=None):
+    """How many of the excerpts mention the need (every term of it), or None if the need has no matchable word.
+
+    A match inside the restaurant's own name ("The Halal Guys") does not count."""
     terms = need_terms(need)
     if not terms:
         return None
     patterns = [term_pattern([t]) for t in terms]
-    return sum(all(p.search(e.text) for p in patterns) for e in excerpts)
+    return sum(all(p.search(mask_name(e.text, name)) for p in patterns) for e in excerpts)
 
 
-def coverage(parsed, excerpts):
+def coverage(parsed, excerpts, name=None):
     """[(state, text)] for each parsed diet, allergen and group need: state is FOUND or NONE. [] when nothing is parsed."""
     if parsed is None:
         return []
     out = []
     for need in parsed.dietary_restrictions + parsed.allergens + parsed.group_needs:
-        n = count_excerpts(need, excerpts)
+        n = count_excerpts(need, excerpts, name)
         if n is None:
             continue
         if n == 0:

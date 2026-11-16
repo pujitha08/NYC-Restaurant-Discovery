@@ -32,6 +32,8 @@ from types import SimpleNamespace
 
 from eval.make_pool import INDEX_EXISTS, RETRIEVERS, SYSTEMS
 from src.allergy import ALLERGEN_NAMES, ALLERGY_TERMS  # noqa: F401 (re-exported)
+from app import evidence_filter
+from app.coverage import need_terms
 from src.config import BOROUGHS, DATA_DIR
 from src.llm import evidence_summarizer, query_parser
 from src.llm.evidence_summarizer import MAX_USER_REQUEST, summarize_evidence
@@ -106,6 +108,7 @@ class Excerpt:
     review_id: int
     date: str  # YYYY-MM or "date unknown"
     text: str
+    rating: Optional[int] = None  # the review's star rating when known (older saved demo results have none)
 
 
 @dataclass
@@ -265,7 +268,7 @@ def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_eviden
             rank=rank, gmap_id=r.gmap_id, name=m["name"], borough=m["borough"], address=m.get("address", ""),
             avg_rating=m.get("avg_rating"), num_reviews=m.get("num_clean_reviews", 0),
             low_evidence=bool(m.get("low_evidence")), score=float(r.score),
-            excerpts=[Excerpt(s.review_id, month(s.time), s.text) for s in r.evidence_snippets],
+            excerpts=[Excerpt(s.review_id, month(s.time), s.text, getattr(s, "rating", None)) for s in r.evidence_snippets],
             stance_counts=dict(r.stance_counts) if getattr(r, "stance_counts", None) else None,
             stance_sentences=[dict(x) for x in r.sentences] if getattr(r, "sentences", None) else None))
     return views, results
@@ -392,11 +395,33 @@ def display_status(summary, guarded=False):
     return STATUS_NEUTRAL if guarded else STATUS_SUPPORTED
 
 
-def to_summary(raw, view, guarded=False):
+def context_terms(context):
+    """The words of the parsed diets and allergens (what a claim has to be about to count as evidence)."""
+    needs = (context.dietary_restrictions + context.allergens) if context is not None else []
+    return [t for need in needs for t in need_terms(need)]
+
+
+def drop_name_only_evidence(claims, terms, name):
+    """Support and contradiction claims whose cited reviews mention the need only inside the restaurant's name
+    ("The Halal Guys") become a neutral uncertainty claim; the cited reviews stay, so they can still be read."""
+    if not terms or not name:
+        return claims
+    out = []
+    for c in claims:
+        name_only = (c.label in ("support", "contradiction") and c.excerpts
+                     and not any(evidence_filter.mentions(e.text, terms, name) for e in c.excerpts)
+                     and any(evidence_filter.mentions_only_in_name(e.text, terms, name) for e in c.excerpts))
+        out.append(Claim(evidence_filter.NAME_ONLY_CLAIM, "uncertainty", c.excerpts) if name_only else c)
+    return out
+
+
+def to_summary(raw, view, guarded=False, context=None):
     by_id = {e.review_id: e for e in view.excerpts}
     claims = [Claim(NEUTRAL_CLAIM if guarded and has_safety_wording(c.text) else c.text, c.label,
                     [by_id[i] for i in c.review_ids if i in by_id]) for c in raw.claims]
-    return Summary(display_status(raw, guarded), claims, list(raw.limitations), guarded,
+    claims = drop_name_only_evidence(claims, context_terms(context), getattr(view, "name", None))
+    status_source = SimpleNamespace(status=raw.status, claims=claims)  # the status follows the final labels
+    return Summary(display_status(status_source, guarded), claims, list(raw.limitations), guarded,
                    ALLERGY_NOTE if guarded else None)
 
 
@@ -408,8 +433,8 @@ def summarize(view, result, context, client, model, guarded=False, user_request=
         return None
     try:
         raw = summarize_evidence(context, result, client=client, model=model, reasoning_effort=LLM_REASONING_EFFORT,
-                                 user_request=user_request)
-        view.summary = to_summary(raw, view, guarded)
+                                 user_request=user_request, restaurant_name=view.name)
+        view.summary = to_summary(raw, view, guarded, context)
         view.summary_error = None
         return None
     except LLMError as e:

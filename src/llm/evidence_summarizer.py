@@ -50,6 +50,9 @@ contradiction = the reviewer reports the opposite: a warning, a refusal, a failu
 accommodate, a reaction or illness, or advice to avoid the restaurant for this need.
 uncertainty = related to the need but neither, including a mere mention of the allergen,
 ingredient, dish or diet. A reviewer warning against the restaurant is never support.
+The restaurant's own name is not evidence: payload.restaurant_name is the restaurant the excerpts are about. If the
+need's word appears in an excerpt only as part of that name (for example 'halal' in 'The Halal Guys'), the excerpt says
+nothing about the need: do not use it for a support or contradiction claim, and label any claim about it uncertainty.
 A claim's wording must match its label: a contradiction is phrased as a warning or reported
 problem, a support claim as the restaurant meeting the need, and an uncertainty claim as unclear.
 When a reviewer relays reassurance from staff (for example 'the manager said allergies are
@@ -79,12 +82,13 @@ otherwise use evidence_found with at least one cited claim. List limitations.
 
 
 def summarize_evidence(query, result, *, client=None, model=None, reasoning_effort=None,
-                       user_request=None) -> EvidenceSummary:
+                       user_request=None, restaurant_name=None) -> EvidenceSummary:
     """Return cited claims; citation membership does not prove semantic truth.
 
     reasoning_effort (optional) is passed through to request_json.
     user_request (optional): the user's exact request text, sent as data alongside the parsed query so
     claims are labeled against the stated need (parsing can drop needs such as "careful about").
+    restaurant_name (optional): sent as data so a match that comes only from the name is not treated as evidence.
     """
     if not isinstance(query, ParsedQuery) or not isinstance(result, RetrievalResult):
         raise TypeError("Expected ParsedQuery and RetrievalResult.")
@@ -105,6 +109,8 @@ def summarize_evidence(query, result, *, client=None, model=None, reasoning_effo
     payload = {"query": asdict(query), "snippets": [asdict(s) for s in snippets]}
     if user_request is not None:
         payload["user_request"] = user_request.strip()
+    if restaurant_name and restaurant_name.strip():
+        payload["restaurant_name"] = " ".join(restaurant_name.split())[:200]
     data = request_json(client=client, model=model, name="evidence_summary", schema=SUMMARY_SCHEMA,
                         system=SYSTEM, payload=payload, reasoning_effort=reasoning_effort)
     exact_object(data, ["status", "claims", "limitations"])

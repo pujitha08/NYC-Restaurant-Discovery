@@ -177,5 +177,5 @@ def best_reviews(vectorizer, q, records, n=N_SNIPPETS, requirements=None, max_wo
         if requirements and not _has_term(r["text"], requirements):
             continue
         text = excerpt(r["text"], weights, max_words) if max_words else r["text"]
-        out.append(Snippet(text=text, review_id=r["review_id"], time=r["time"]))
+        out.append(Snippet(text=text, review_id=r["review_id"], time=r["time"], rating=r.get("rating")))
     return out

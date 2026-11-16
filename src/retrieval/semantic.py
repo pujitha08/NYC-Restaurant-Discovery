@@ -313,7 +313,7 @@ class SemanticRetriever:
         for picks in chosen:
             out.append([Snippet(text=excerpt_around(split[id(r)], best_sentence[id(r)], max_words)
                                 if id(r) in best_sentence else r["text"],
-                                review_id=r["review_id"], time=r["time"]) for r in picks])
+                                review_id=r["review_id"], time=r["time"], rating=r.get("rating")) for r in picks])
         return out
 
     def info(self, gmap_id):
