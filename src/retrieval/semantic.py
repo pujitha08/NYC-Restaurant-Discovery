@@ -200,14 +200,19 @@ class SemanticRetriever:
     @classmethod
     def load(cls, index_dir=INDEX_DIR, chunks_path=CHUNKS_PATH, docs_path=DOCS_PATH, reviews_path=REVIEWS_PATH,
              review_index_path=None, embedder=None, density_mode="log"):
-        """Load a saved index; raise CacheMismatchError if it does not match the inputs or model."""
+        """Load a saved index; raise CacheMismatchError if it does not match the inputs or model.
+
+        Integrity is checked for what the index uses at run time: the embedding model, the chunk file the offsets point
+        into (size and sha256) and the array lengths. restaurant_docs.jsonl is NOT read or hashed here (the restaurant
+        metadata is stored in the index itself), so the app starts without it; docs_path is kept only for compatibility.
+        """
         index_dir = Path(index_dir)
         embedder = embedder or SentenceTransformerEmbedder()
         info = json.loads((index_dir / INFO_FILE).read_text())
         problems = []
         if info.get("model") != embedder.model_name:
             problems.append(f"model {info.get('model')!r} != {embedder.model_name!r}")
-        for key, path in (("chunks_file", chunks_path), ("docs_file", docs_path)):
+        for key, path in (("chunks_file", chunks_path),):
             if info.get(key) != file_signature(path):
                 problems.append(f"{Path(path).name} changed since the build ({key} size/sha256 differ)")
         if problems:

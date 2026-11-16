@@ -221,12 +221,24 @@ class CacheTests(SemanticFixture):
         with self.assertRaisesRegex(CacheMismatchError, "review_chunks.jsonl changed"):
             SemanticRetriever.load(index_dir, embedder=FakeEmbedder(), **kwargs)
 
-    def test_refuses_cache_when_docs_file_changed(self):
+    def test_the_docs_file_is_neither_read_nor_required_at_load(self):
         index_dir, kwargs = self.save_and_load()
-        with open(self.paths["docs_path"], "a") as f:
-            f.write("\n")
-        with self.assertRaisesRegex(CacheMismatchError, "restaurant_docs.jsonl changed"):
+        docs = self.paths["docs_path"]
+        with open(docs, "a") as f:
+            f.write("\n")  # changed since the build: no longer a reason to refuse the index
+        loaded = SemanticRetriever.load(index_dir, embedder=FakeEmbedder(), **kwargs)
+        self.assertTrue(loaded.search("vegan", top_k=3))
+        docs.unlink()  # missing altogether: the app still starts
+        loaded = SemanticRetriever.load(index_dir, embedder=FakeEmbedder(), **kwargs)
+        self.assertEqual([x.gmap_id for x in loaded.search("vegan", top_k=10)], [x.gmap_id for x in self.r.search("vegan", top_k=10)])
+
+    def test_load_never_hashes_the_docs_file(self):
+        index_dir, kwargs = self.save_and_load()
+        real = semantic.file_signature
+        seen = []
+        with patch.object(semantic, "file_signature", lambda p: (seen.append(Path(p).name), real(p))[1]):
             SemanticRetriever.load(index_dir, embedder=FakeEmbedder(), **kwargs)
+        self.assertEqual(seen, ["review_chunks.jsonl"])  # only the chunk file that the offsets point into is hashed
 
     def test_refuses_cache_built_with_another_model(self):
         index_dir, kwargs = self.save_and_load()
