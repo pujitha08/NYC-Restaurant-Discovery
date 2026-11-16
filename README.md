@@ -82,31 +82,35 @@ The reported metrics use provisional LLM-judge labels that have not yet been val
 
 ## The app
 
-`streamlit run app/streamlit_app.py`. A search shows:
+`streamlit run app/streamlit_app.py`. The story: **find restaurants whose reviews show they take your food allergy
+seriously, and see the evidence.** Reviews are evidence, not a verdict: an allergy result never says "Supported" or "safe".
 
-- **Parsed request chips** (diets, allergens, borough) and an expander, "How your request was understood", that lists only
-  the fields that were parsed. If no diet, allergen or group need was detected, a notice says results are ranked by general
-  review match and are not checked against a diet or allergen (the results are still shown).
-- **A results summary line** under the "N restaurants" heading, for example "Of the top 3 summarized: 1 restaurant has
-  reviews that warn about a peanut allergy · 2 show no direct evidence". It is computed from the status badges and stance
-  counts already on the cards (no model call), counts only restaurants that have a summary or stance counts, hides zero
-  parts and never says a restaurant is safe. A muted line notes that preferences such as opening hours or cuisine are not
-  verified from reviews.
-- **Result cards** with an evidence status badge (Allergy requests never show "Supported"), the top claim and its quote,
-  "Show all evidence", and a **coverage row**: one chip per parsed diet, allergen and group need saying whether the shown
-  excerpts mention it ("vegan: mentioned in 3 excerpts" / "halal: not mentioned in shown excerpts"). It uses the same term
-  matcher as the highlighting, counts mentions (not verdicts) and never implies safety. Parsed preferences are listed
-  separately as "Not verified from reviews: ...". Cards without a summary say "Summary on request" (click Explain).
-- **Demo mode** (checkbox): answers the four example queries from `data/demo_cache/*.json` (public review text already shown
-  in the app; no keys) without calling the language model. Cached results are labeled "cached demo result" with the save
-  date; the status line just says "Done". The cache was regenerated on 2026-11-16 (live, `semantic_capped`) with the fixed
-  summarizer wording (claim wording matches its label; warnings lead; for allergy requests, no safety language in the app's
-  own voice, enforced by a guard that replaces such a claim with a neutral line while keeping its quoted review). The
-  `semantic_log` halal entry is still the older run.
-- **Compare rankings** (checkbox): `semantic_capped` and `semantic_capped_stance` side by side with rank-change marks and a
-  sentence-stance bar per restaurant. With Demo mode on it only uses stance labels already saved on disk.
-- **Advanced settings** (collapsed): retrieval method (default `semantic_capped`) and "include restaurants with fewer than
-  5 reviews".
+- **Home screen**: headline, a one-line description with the live data size, the search box, a scope line (it does not check
+  hours, prices or availability), two rows of one-click chips (Allergies: Peanut, Tree nut, Shellfish, Sesame, Dairy-free,
+  Celiac; Diets and groups: Gluten-free, Vegetarian, Halal, Kosher, Vegan + gluten-free group), a "Where" selector (Both
+  boroughs by default) and a three-card strip (Understand, Retrieve, Summarize). One footer line says reviews are historical
+  and anecdotal and that allergies must be confirmed with the restaurant.
+- **Results screen**: "We understood: ..." chips with a Change link, the heading "What reviewers say about <need>", a count
+  line ("10 restaurants checked · 6 mention allergy care · 2 report problems · 2 not enough evidence"), the real timings of the
+  three steps, and two columns: **Reviews mention allergy care** (teal, check icon) and **Reviews report problems** (clay,
+  warning icon). Each card has the restaurant, borough and stars, ONE highlighted quote, a "Based on N reviews" pill and a
+  "See the evidence" expander (status badge, "AI summary of the reviews below", the numbered reviews with date and rating, one
+  caveat, and a collapsed "How this restaurant was found"). A restaurant with both a supporting and a contradicting claim
+  appears in both columns with a "Reviewers disagree" tag. Restaurants the reviews say too little about are in a collapsed
+  list below. The mapping reads the summarizer's claim labels (support / contradiction), see `app/view_model.py`.
+- **Other states**: if a summary call fails after retries, the card says so, shows the best-matching review sentence and
+  offers "Try the summary again"; if nothing in the top results says anything about the need, a "Reviews don't say much about
+  ... here yet" message offers broader searches; a request about hours, prices or availability is not searched and is split
+  (`split_unsupported`, a small regex rule) into what we can't check and the dietary part, which one button searches.
+- **Live searches** summarize only the top 6 restaurants, two at a time, retrying a rate-limited call with exponential backoff
+  (2, 4, 8 s). Chips are answered from the saved results in `data/demo_cache/*.json` (no model call) when one exists;
+  build the missing ones with `python -m app.demo_cache --build --missing`.
+- **Evaluation tools** (a toggle in the header, a closed expander): Compare rankings (`semantic_capped` vs
+  `semantic_capped_stance` with rank-change marks and a sentence-stance bar), the retrieval method (default
+  `semantic_capped`), "include restaurants with fewer than 5 reviews", and Demo mode (an exact saved query is answered from
+  the cache; any other query runs live, silently).
+- A match that comes only from the restaurant's own name ("The Halal Guys") is not evidence: it does not count for a claim,
+  the coverage or the quote. Halal and kosher are always parsed as dietary restrictions.
 
 ## Stance re-ranker
 

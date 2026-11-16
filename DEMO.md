@@ -23,32 +23,18 @@ uses about 3.5-4K Groq tokens (parse plus 3 summaries) and Groq allows 8K tokens
 
 ## Reading the results
 
-The first screen is a title, a one-line value proposition, a **scope note** ("Built for dietary needs and food allergies:
-diets, allergens and mixed groups. It doesn't check opening hours, prices or availability."), the search box with the four
-example chips right under it, borough pills, **Compare rankings** and **Demo mode** toggles, and a collapsed **Advanced
-settings** expander (retrieval method, "fewer than 5 reviews"). A slim note says reviews are historical and anecdotal; the
-full-strength warning appears only above allergy results. The default method is `semantic_capped`. The stance re-ranker is
-an optional experiment: its held-out evaluation showed no significant gain (NDCG@10 0.780 vs 0.787, +0.007, p = 0.74), so
-don't present it as better; Compare rankings is for showing how it re-orders results, not for claiming an improvement.
+The home screen has the headline, the search box, a scope line, a "Where" selector, two rows of chips (Allergies, Diets and
+groups) and a three-card strip. A chip fills the box and runs the search; chips are answered from the saved results when one
+exists (instant, no model call). **Evaluation tools** (header toggle) hold Compare rankings, the retrieval method (default
+`semantic_capped`), "fewer than 5 reviews" and Demo mode. The stance re-ranker is an optional experiment: its held-out
+evaluation showed no significant gain (NDCG@10 0.780 vs 0.787, +0.007, p = 0.74), so don't present it as better; Compare
+rankings is for showing how it re-orders results, not for claiming an improvement.
 
-After a search, a staged progress box ("Understanding your request", "Searching 605K review passages", "Reading
-reviews", "Summarizing") collapses to one line ("Done"), then chips show the parsed request (diets, allergens, borough).
-If no diet, allergen or group need was detected, an info notice says the results are ranked by general review match and
-are not checked against a diet or allergen. Under the "N restaurants" heading, one summary line counts the summarized
-cards, e.g. "Of the top 3 summarized: 1 restaurant has reviews that warn about a peanut allergy · 2 show no direct
-evidence" (computed from the badges and stance counts; zero parts hidden; it never says a restaurant is safe). If the
-request has preferences (cuisine, hours, venue) a muted line says they guide the search but are not verified from reviews.
-Results are cards: the title row is "1. Champs Diner — Brooklyn · ★ 4.5 · ✓ Supported" (the badge is the
-evidence status: ✓ Supported, ◐ Mixed evidence, ⚠ Reviews report problems, ○ Insufficient evidence, ℹ Reviews discuss
-this — read each claim, or "… Summary on request"). The top card starts open. Inside a card: rating, review count and
-address; a **coverage row** with one chip per parsed diet, allergen and group need ("vegan: mentioned in 3 excerpts" or
-"halal: not mentioned in shown excerpts"; it counts mentions in the shown excerpts, not verdicts, and never implies safety)
-and a muted "Not verified from reviews: ..." line for preferences; ONE status row (the verdict plus, for allergy requests, the allergy reminder); the top claim as a block with a
-colored left border and a plain label (Warning / Positive / Mention) and its best quote with the review date; and
-**Show all evidence** for the other claims and every retrieved excerpt. Warnings are ordered first, so the claim shown by
-default is never milder than a hidden one. Allergy requests never show "Supported" or "Positive": a supporting claim there
-is only a "Mention". Results 4-10 say "Summary on request"; open one and click **Explain**. **Expand all** / **Collapse
-all** sit above the list.
+After a search, a staged progress box collapses to "Done", then: "We understood:" chips with a Change link, the heading "What
+reviewers say about <need>", a count line, the real timings, and two columns, **Reviews mention allergy care** and **Reviews
+report problems**. Each card shows ONE highlighted quote, a "Based on N reviews" pill and "See the evidence". A restaurant
+with both kinds of claim is in both columns ("Reviewers disagree"). Allergy requests never show "Supported" or "safe". If a
+summary fails, the card offers "Try the summary again". Say "reviews mention", never "safe".
 
 ## Four demo queries
 
@@ -80,7 +66,7 @@ relevance, not safety.
 
 ## Page features
 
-- **Try an example**: four buttons (the queries below) fill the box and borough and run the search.
+- **Chips**: one click fills the box and runs the search (the queries below are chip queries or saved demo queries).
 - **Compare rankings** (tick in the form): `semantic_capped` and `semantic_capped_stance` side by side, with
   ▲/▼/new marks on the stance column and a "🟩 accommodate / 🟥 warns / 🟨 mention" bar per restaurant. The stance
   column labels review sentences with the model on first use for a query (about 5 Groq calls, about a minute);
@@ -90,7 +76,7 @@ relevance, not safety.
   The stance labeler is chosen by `STANCE_LABELER` in `src/config.py` (`"llm"` by default); see the README's "Stance
   re-ranker" section. The weights chosen on the dev queries are in `reports/stance_rerank_frozen.json`; they are dev
   numbers. The held-out run (`reports/stance_heldout.md`) found no significant gain, so the default stays `semantic_capped`.
-- Query terms are highlighted in the review excerpts; the sidebar explains the stages, the data size and the badges.
+- Query terms are highlighted in the quotes and review excerpts (never inside the restaurant's own name).
 
 ## Cached demo results (offline / rate-limit fallback)
 
