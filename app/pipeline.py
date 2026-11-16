@@ -64,6 +64,22 @@ STATUS_SUPPORTED, STATUS_MIXED, STATUS_INSUFFICIENT = "supported", "mixed", "ins
 STATUS_NEUTRAL = "Reviews discuss this — read each claim"
 # Contradiction claims and no support claim (uncertainty claims may be present): reviewers report problems.
 STATUS_PROBLEMS = "Reviews report problems"
+# Deterministic wording guard for allergy requests: a claim that uses safety language in the app's own voice (outside
+# quotation marks) is replaced by a neutral line; its label, citation and excerpt are kept, so the quoted review still shows.
+SAFETY_WORDS = re.compile(r"\b(?:safe|safely|safety|guarantee[sd]?|guaranteeing|reassur\w*)\b", re.IGNORECASE)
+_QUOTED = re.compile(r'"[^"]*"|\u201c[^\u201d]*\u201d')
+NEUTRAL_CLAIM = "A reviewer\u2019s comment about this allergy is quoted below."
+
+
+def has_safety_wording(text):
+    """True if text uses safe / safely / safety / guarantee(d) / reassur* outside direct quotation marks.
+
+    Balanced double-quoted spans (straight or curly) are the reviewer's own words and are ignored; an unbalanced quote
+    protects nothing.
+    """
+    return bool(SAFETY_WORDS.search(_QUOTED.sub(" ", text or "")))
+
+
 ALLERGY_NOTE = ("Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, "
                 "preparation and cross-contact before ordering.")
 LLM_REASONING_EFFORT = "low"  # parser and summarizer calls (gpt-oss); fewer reasoning tokens per search
@@ -350,7 +366,8 @@ def display_status(summary, guarded=False):
 
 def to_summary(raw, view, guarded=False):
     by_id = {e.review_id: e for e in view.excerpts}
-    claims = [Claim(c.text, c.label, [by_id[i] for i in c.review_ids if i in by_id]) for c in raw.claims]
+    claims = [Claim(NEUTRAL_CLAIM if guarded and has_safety_wording(c.text) else c.text, c.label,
+                    [by_id[i] for i in c.review_ids if i in by_id]) for c in raw.claims]
     return Summary(display_status(raw, guarded), claims, list(raw.limitations), guarded,
                    ALLERGY_NOTE if guarded else None)
 
