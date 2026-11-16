@@ -64,6 +64,26 @@ class SheetTests(unittest.TestCase):
         self.assertIn("[contradiction] claim 1", row["summary_1"])  # fixed version only
         self.assertEqual({r["query_id"] for r in b}, {"Q01", "Q20"})
 
+    def test_single_version_without_an_old_file(self):
+        n, by_version = ae.make_sheets(None, self.dir / "fixed.json", ["ana"], self.dir / "single")
+        self.assertEqual(by_version, {"fixed": n})
+        rows = list(csv.DictReader(open(self.dir / "single" / "claim_review.csv", encoding="utf-8")))
+        key = list(csv.DictReader(open(self.dir / "single" / "claim_key.csv", encoding="utf-8")))
+        self.assertEqual((len(rows), {k["version"] for k in key}), (n, {"fixed"}))
+        self.assertEqual(len({(r["query"], r["restaurant"], r["claim"]) for r in rows}), len(rows))  # no claim is listed twice
+        self.assertEqual(n, 4)  # 2 queries x top 3 results, the one without a summary has no claims
+        self.assertTrue((self.dir / "single" / "usability_ana.csv").exists())
+
+    def test_single_version_skips_the_method_check_and_the_cli_takes_no_old(self):
+        other = json.loads((self.dir / "fixed.json").read_text())
+        other["method"] = "semantic_log"
+        (self.dir / "other.json").write_text(json.dumps(other))
+        ae.make_sheets(None, self.dir / "other.json", ["ana"], self.dir / "single2")  # no old file: nothing to compare
+        ae.main(["sheets", "--fixed", str(self.dir / "fixed.json"), "--raters", "ana", "--out-dir", str(self.dir / "cli")])
+        self.assertTrue((self.dir / "cli" / "claim_review.csv").exists())
+        with self.assertRaises(SystemExit):
+            ae.main(["sheets", "--raters", "ana"])  # --fixed is required
+
     def test_refuses_overwrite_and_mismatched_methods(self):
         self.make()
         with self.assertRaises(SystemExit):

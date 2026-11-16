@@ -8,7 +8,8 @@ Subcommands (run from the repo root):
           the same --method is used for both versions so they summarize the same restaurants. Searches
           are paced (--gap seconds) to stay under Groq's per-minute token limit.
 
-  sheets  From the old and fixed outputs, write the rater files (default eval/answer_eval/):
+  sheets  From the fixed outputs (and the old ones, if --old is given: omit it to rate a single version), write the rater
+          files (default eval/answer_eval/):
             claim_review.csv     one row per summary claim of the top 3 results, both versions, shuffled,
                                  version hidden; columns supported_by_excerpt (yes/partly/no) and
                                  unjustified_safety_claim (yes/no) to fill
@@ -155,15 +156,18 @@ def write_csv(path, columns, rows):
 
 
 def make_sheets(old_path, fixed_path, raters, out_dir=OUT_DIR, seed=SEED, force=False):
-    old, fixed = (json.loads(Path(p).read_text()) for p in (old_path, fixed_path))
-    if old["method"] != fixed["method"]:
+    """Rater files from the fixed outputs, and from the old ones too when old_path is given (None: a single version, so
+    there is no old/fixed comparison and no same-method check)."""
+    old = json.loads(Path(old_path).read_text()) if old_path else None
+    fixed = json.loads(Path(fixed_path).read_text())
+    if old and old["method"] != fixed["method"]:
         raise ValueError("old and fixed outputs used different retrieval methods")
     out_dir = Path(out_dir)
     targets = [out_dir / "claim_review.csv"] + [out_dir / f"usability_{r}.csv" for r in raters]
     if any(p.exists() for p in targets) and not force:
         sys.exit("Refusing to overwrite rater sheets (they may contain ratings). Use --force.")
     out_dir.mkdir(parents=True, exist_ok=True)
-    rows, key = claim_rows([old, fixed], seed)
+    rows, key = claim_rows([o for o in (old, fixed) if o], seed)
     write_csv(out_dir / "claim_review.csv", CLAIM_COLUMNS, rows)
     write_csv(out_dir / "claim_key.csv", ["claim_id", "version", "query_id", "gmap_id"], key)
     base = usability_rows(fixed)
@@ -171,7 +175,7 @@ def make_sheets(old_path, fixed_path, raters, out_dir=OUT_DIR, seed=SEED, force=
         mine = list(base)
         random.Random(f"{seed}:{r}").shuffle(mine)
         write_csv(out_dir / f"usability_{r}.csv", USABILITY_COLUMNS, mine)
-    return len(rows), {v: sum(k["version"] == v for k in key) for v in (old["version"], fixed["version"])}
+    return len(rows), {o["version"]: sum(k["version"] == o["version"] for k in key) for o in (old, fixed) if o}
 
 
 # ---- score --------------------------------------------------------------------
@@ -239,8 +243,8 @@ def main(argv=None):
     r.add_argument("--out", type=Path, required=True)
     r.add_argument("--gap", type=float, default=45.0, help="seconds between searches (Groq per-minute tokens)")
     s = sub.add_parser("sheets")
-    s.add_argument("--old", type=Path, default=OUT_DIR / "outputs_old.json")
-    s.add_argument("--fixed", type=Path, default=OUT_DIR / "outputs_fixed.json")
+    s.add_argument("--old", type=Path, default=None, help="outputs of the old version; omit for a single version")
+    s.add_argument("--fixed", type=Path, required=True, help="outputs of the version to rate (and the usability sheets)")
     s.add_argument("--raters", nargs="+", required=True)
     s.add_argument("--out-dir", type=Path, default=OUT_DIR)
     s.add_argument("--force", action="store_true")
