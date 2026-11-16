@@ -55,6 +55,17 @@ class ProblemsAllergy(ProblemsClient):
         return res
 
 
+class CueRetriever(FakeRetriever):
+    """Reviews with an allergy cue word (so a contradicting claim passes the allergy problem gate)."""
+
+    def search(self, *a, **kw):
+        out = super().search(*a, **kw)
+        for r in out:
+            for snippet in r.evidence_snippets:
+                snippet.text = "I had an allergic reaction after eating here."
+        return out
+
+
 class ParsedClient(FakeClient):
     """A parser that returns the given fields (e.g. allergens), a summarizer as in FakeClient."""
 
@@ -314,7 +325,7 @@ class PageTests(unittest.TestCase):
         self.assertIn("No restaurant in the top results has reviews reporting allergy problems. That is not a safety guarantee.", self.html(at))
 
     def test_empty_care_column_has_the_symmetric_message_for_allergy_and_diet_requests(self):
-        allergy = self.search(self.start(ProblemsAllergy(location=None)),
+        allergy = self.search(self.start(ProblemsAllergy(location=None), retrievers={"semantic": CueRetriever()}),
                               "restaurant careful about peanut allergies")
         html = self.html(allergy)
         self.assertIn("No restaurant in the top results has reviews describing care for peanut allergies. "

@@ -149,11 +149,11 @@ class WordingTests(unittest.TestCase):
 
 
 class QuoteTests(unittest.TestCase):
-    def test_the_quote_is_one_sentence_from_a_review_cited_by_the_column_label(self):
+    def test_the_quote_is_the_matched_sentence_and_the_next_from_a_review_cited_by_the_column_label(self):
         long = excerpt(1, "Lovely room and kind staff. They were careful with my peanut allergy and checked the kitchen. Dessert was fine.")
         v = view(1, claims=[("Careful.", "support", [1])], excerpts=[long])
         q = vm.quote_for(v, outcome([v]), vm.CARE)
-        self.assertEqual(q.text, "They were careful with my peanut allergy and checked the kitchen.")
+        self.assertEqual(q.text, "They were careful with my peanut allergy and checked the kitchen. … Dessert was fine.")
         self.assertEqual((q.review_id, q.date, q.rating, q.n_reviews), (1, "2020-05", 5, 1))
 
     def test_each_column_of_a_mixed_restaurant_has_its_own_quote(self):

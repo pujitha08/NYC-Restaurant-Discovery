@@ -26,25 +26,69 @@ MAX_QUOTE_CHARS = 280
 
 
 # ---- the mapping --------------------------------------------------------------------------------------------------
-def labels_of(summary):
-    """The set of claim labels of a summary (after merging identical neutral lines)."""
-    return {c.label for c in pipeline.merge_neutral_claims(summary.claims)} if summary is not None else set()
+# Display-time rules (no model call): a claim only counts when its cited reviews back it up.
+MIN_CARE_STARS = 3  # a supporting claim needs at least one cited review rated this high
+ALLERGY_CUE = re.compile(
+    r"\b(?:allerg\w*|reactions?|anaphyl\w*|epi-?pens?|hives|swell\w*|rash(?:es)?|sick|ill(?:ness(?:es)?)?|hospital\w*|"
+    r"ER visits?|celiac|coeliac|intoleran\w*|cross[- ]?contam\w*|glutened|can[\u2019']?t eat|cannot eat)\b", re.IGNORECASE)
 
 
-def group_of(view):
+def has_allergy_cue(text):
+    return bool(ALLERGY_CUE.search(text or ""))
+
+
+def care_claim_counts(claim):
+    """A supporting claim counts unless every cited review that has a star rating is rated 1-2 (an unknown rating never excludes)."""
+    rated = [e.rating for e in claim.excerpts if getattr(e, "rating", None) is not None]
+    return not rated or max(rated) >= MIN_CARE_STARS
+
+
+def problem_claim_counts(claim, outcome):
+    """For an allergy request, a contradicting claim counts only if a cited review text has an allergy cue word
+    (so "the sesame chicken tasted like an old tire" is not an allergy problem). Other requests are not gated."""
+    if outcome is None or not outcome.allergy_sensitive:
+        return True
+    return any(has_allergy_cue(e.text) for e in claim.excerpts)
+
+
+def effective_claims(view, outcome=None):
+    """[(claim, label)] of the summary's claims that count: supporting claims that pass the care gate and, for allergy
+    requests, contradicting claims that pass the problem gate. Uncertainty claims are kept as they are."""
+    if view.summary is None:
+        return []
+    out = []
+    for claim in pipeline.merge_neutral_claims(view.summary.claims):
+        if claim.label == "support" and not care_claim_counts(claim):
+            continue
+        if claim.label == "contradiction" and not problem_claim_counts(claim, outcome):
+            continue
+        out.append((claim, claim.label))
+    return out
+
+
+def labels_of(summary, view=None, outcome=None):
+    """The set of claim labels that count (all of them when no view is given)."""
+    if summary is None:
+        return set()
+    if view is None:
+        return {c.label for c in pipeline.merge_neutral_claims(summary.claims)}
+    return {label for _, label in effective_claims(view, outcome)}
+
+
+def group_of(view, outcome=None):
     """CARE / PROBLEMS / MIXED / INSUFFICIENT / UNAVAILABLE / NOT_SUMMARIZED.
 
-    care = at least one supporting claim and no contradicting claim; problems = at least one contradicting claim and no
-    supporting one; mixed = both; insufficient = the summarizer found no evidence ("Insufficient evidence"), or only
-    claims that are neither (uncertainty). A summary whose status is "Reviews discuss this" (the allergy guard's word for
-    a supporting claim) is care: it has a supporting claim.
+    care = at least one counting supporting claim and no counting contradicting claim; problems = at least one counting
+    contradicting claim and no supporting one; mixed = both; insufficient = the summarizer found no evidence ("Insufficient
+    evidence"), or nothing counts (only uncertainty claims, or every claim failed its gate). A summary whose status is "Reviews
+    discuss this" (the allergy guard's word for a supporting claim) is care: it has a supporting claim.
     """
     s = view.summary
     if s is None:
         return UNAVAILABLE if view.summary_error else NOT_SUMMARIZED
     if s.status == pipeline.STATUS_INSUFFICIENT:
         return INSUFFICIENT
-    labels = labels_of(s)
+    labels = labels_of(s, view, outcome)
     if "support" in labels and "contradiction" in labels:
         return MIXED
     if "support" in labels:
@@ -67,7 +111,7 @@ class Columns:
 def columns(outcome):
     out = Columns([], [], [], [], [], len(outcome.results))
     for v in outcome.results:
-        g = group_of(v)
+        g = group_of(v, outcome)
         if g in (CARE, MIXED):
             out.care.append(v)
         if g in (PROBLEMS, MIXED):
@@ -192,32 +236,62 @@ def sentences(text):
     return out
 
 
-def _window(sentence, terms):
-    """The sentence, cut to about MAX_QUOTE_CHARS around its first match when it is longer."""
-    if len(sentence) <= MAX_QUOTE_CHARS:
+def _window(sentence, terms, limit=MAX_QUOTE_CHARS):
+    """The sentence, cut to about `limit` characters around its first match when it is longer."""
+    if len(sentence) <= limit:
         return sentence
     m = re.search("|".join(re.escape(t) for t in terms), sentence, re.IGNORECASE) if terms else None
-    start = max(0, min((m.start() if m else 0) - MAX_QUOTE_CHARS // 3, len(sentence) - MAX_QUOTE_CHARS))
-    cut = sentence[start:start + MAX_QUOTE_CHARS].strip()
-    return ("… " if start else "") + cut + (" …" if start + MAX_QUOTE_CHARS < len(sentence) else "")
+    start = max(0, min((m.start() if m else 0) - limit // 3, len(sentence) - limit))
+    cut = sentence[start:start + limit].strip()
+    return ("… " if start else "") + cut + (" …" if start + limit < len(sentence) else "")
 
 
-def _score(sentence, name, terms, needs):
-    """(need-word hits outside the restaurant's name, other query-word hits, shorter is better)."""
+def _score(sentence, name, terms, needs, prefer_cue=False):
+    """(allergy cue when preferred, need-word hits outside the restaurant's name, other query-word hits, shorter is better)."""
     need_hits = sum(mentions(sentence, [t], name) for t in needs)
     other_hits = sum(mentions(sentence, [t], name) for t in terms if t not in needs)
-    return (need_hits, other_hits, -len(sentence))
+    return (int(prefer_cue and has_allergy_cue(sentence)), need_hits, other_hits, -len(sentence))
 
 
-def best_sentence(excerpts, name, terms, needs):
-    """(sentence, excerpt) with the most need-word hits outside the restaurant's name, then other matched words."""
+def best_match(excerpts, name, terms, needs, prefer_cue=False):
+    """(sentences of the review, index of the matched one, excerpt): the sentence with the most need-word hits outside the
+    restaurant's name, then other matched words. With prefer_cue, a sentence with an allergy cue word wins first."""
     best = None
     for e in excerpts:
-        for sentence in sentences(e.text):
-            key = _score(sentence, name, terms, needs)
+        parts = sentences(e.text)
+        for i, sentence in enumerate(parts):
+            key = _score(sentence, name, terms, needs, prefer_cue)
             if best is None or key > best[0]:
-                best = (key, sentence, e)
-    return (best[1], best[2]) if best else (None, None)
+                best = (key, parts, i, e)
+    return (best[1], best[2], best[3]) if best else (None, None, None)
+
+
+MIN_MATCH_WORDS = 8  # a shorter matched sentence also gets the one before it
+QUOTE_JOINER = " … "
+
+
+def compose_quote(parts, i, terms, limit=MAX_QUOTE_CHARS):
+    """The matched sentence plus the one after it (and the one before it when the match is under MIN_MATCH_WORDS words),
+    joined with ellipses, at most about `limit` characters: the neighbours are dropped before the match is ever cut."""
+    match = parts[i]
+    before = parts[i - 1] if i > 0 and len(match.split()) < MIN_MATCH_WORDS else None
+    after = parts[i + 1] if i + 1 < len(parts) else None
+    for chosen in ([before, match, after], [match, after]):
+        text = QUOTE_JOINER.join(x for x in chosen if x)
+        if len(text) <= limit:
+            return text
+    if after and len(match) <= limit:  # the match fits but the neighbour does not: keep the match and a shortened neighbour
+        room = limit - len(match) - len(QUOTE_JOINER)
+        if room >= 40:
+            words = after.split()
+            cut = ""
+            for w in words:
+                if len(cut) + len(w) + 1 > room - 2:
+                    break
+                cut = f"{cut} {w}".strip()
+            if cut:
+                return match + QUOTE_JOINER + cut + " …"
+    return match if len(match) <= limit else _window(match, terms, limit)
 
 
 def need_words(outcome):
@@ -226,11 +300,22 @@ def need_words(outcome):
     return [t for need in ((p.dietary_restrictions + p.allergens) if p else []) for t in need_terms(need)]
 
 
-def cited_reviews(view, label):
-    """The reviews cited by claims with the label, each once, in claim order."""
+def about_the_need(text, outcome, name=None):
+    """True if the review text mentions the need (a diet or allergen word, not in the restaurant's name) or, for an allergy
+    request, has an allergy cue word. With no parsed need and no allergy request, every cited review counts."""
+    needs = need_words(outcome)
+    if mentions(text, needs, name) if needs else False:
+        return True
+    if outcome.allergy_sensitive:
+        return has_allergy_cue(text)
+    return not needs
+
+
+def cited_reviews(view, label, outcome=None):
+    """The reviews cited by the counting claims with the label, each once (by review id), in claim order."""
     seen, out = set(), []
-    for claim in pipeline.merge_neutral_claims(view.summary.claims) if view.summary else []:
-        if claim.label != label:
+    for claim, claim_label in effective_claims(view, outcome):
+        if claim_label != label:
             continue
         for e in claim.excerpts:
             if e.review_id not in seen:
@@ -240,26 +325,31 @@ def cited_reviews(view, label):
 
 
 def quote_for(view, outcome, group):
-    """The one quote for a card in the column `group` (CARE or PROBLEMS): the best sentence of the reviews cited by the
-    claims of that column's label. Falls back to the best sentence of any retrieved review. None if there is no text."""
+    """The one quote for a card in the column `group` (CARE or PROBLEMS), from the reviews cited by the counting claims of that
+    column's label (care: reviews rated 3 stars or more). Problems cards in an allergy request prefer a sentence with an allergy
+    cue word. "Based on N reviews" counts the distinct cited reviews that mention the need or an allergy cue.
+    Falls back to the best sentence of any retrieved review; None if there is no text."""
     terms = highlight_terms(outcome.query, outcome.parsed)
     needs = need_words(outcome)
-    cited = cited_reviews(view, LABEL_OF[group])
-    sentence, excerpt = best_sentence(cited, view.name, terms, needs)
-    if sentence is None:
-        sentence, excerpt = best_sentence(view.excerpts, view.name, terms, needs)
-    if sentence is None:
+    cited = cited_reviews(view, LABEL_OF[group], outcome)
+    pool = [e for e in cited if group != CARE or getattr(e, "rating", None) is None or e.rating >= MIN_CARE_STARS] or cited
+    prefer_cue = group == PROBLEMS and outcome.allergy_sensitive
+    parts, i, excerpt = best_match(pool, view.name, terms, needs, prefer_cue)
+    if parts is None:
+        parts, i, excerpt = best_match(view.excerpts, view.name, terms, needs, prefer_cue)
+    if parts is None:
         return None
-    return Quote(_window(sentence, terms), excerpt.review_id, excerpt.date, getattr(excerpt, "rating", None), len(cited))
+    n = len({e.review_id for e in cited if about_the_need(e.text, outcome, view.name)})
+    return Quote(compose_quote(parts, i, terms), excerpt.review_id, excerpt.date, getattr(excerpt, "rating", None), n)
 
 
 def fallback_quote(view, outcome):
     """State A: the best-matching review sentence among the retrieved reviews (no care/problem label)."""
     terms = highlight_terms(outcome.query, outcome.parsed)
-    sentence, excerpt = best_sentence(view.excerpts, view.name, terms, need_words(outcome))
-    if sentence is None:
+    parts, i, excerpt = best_match(view.excerpts, view.name, terms, need_words(outcome), outcome.allergy_sensitive)
+    if parts is None:
         return None
-    return Quote(_window(sentence, terms), excerpt.review_id, excerpt.date, getattr(excerpt, "rating", None), 0)
+    return Quote(compose_quote(parts, i, terms), excerpt.review_id, excerpt.date, getattr(excerpt, "rating", None), 0)
 
 
 def review_pill(n):
@@ -285,7 +375,7 @@ def is_no_evidence(outcome):
     """State B: results exist, but none has care, problems, mixed or an unavailable summary: nothing to show either way."""
     if not outcome.results:
         return False
-    return all(group_of(v) in (INSUFFICIENT, NOT_SUMMARIZED) for v in outcome.results)
+    return all(group_of(v, outcome) in (INSUFFICIENT, NOT_SUMMARIZED) for v in outcome.results)
 
 
 def suggestions(outcome):

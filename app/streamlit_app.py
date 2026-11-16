@@ -321,7 +321,7 @@ def card_html(view, outcome, column, group, quote):
 
 
 def show_card(outcome, view, column):
-    group = vm.group_of(view)
+    group = vm.group_of(view, outcome)
     quote = vm.quote_for(view, outcome, column)
     with st.container(key=card_key("card", outcome, view, column)):
         st.markdown(card_html(view, outcome, column, group, quote), unsafe_allow_html=True)
@@ -380,7 +380,7 @@ def show_more(outcome, c, need):
     with st.expander(label, key=f"more_{outcome.request_id}"):
         lines = "".join(
             f'<div class="more-line"><b>{html_text(squash(v.name))}</b> <span>{html_text(v.borough)} · {html_text(stars(v.avg_rating))}'
-            f'{" · not summarized" if vm.group_of(v) == vm.NOT_SUMMARIZED else ""}</span></div>' for v in c.insufficient)
+            f'{" · not summarized" if vm.group_of(v, outcome) == vm.NOT_SUMMARIZED else ""}</span></div>' for v in c.insufficient)
         st.markdown(lines, unsafe_allow_html=True)
 
 
