@@ -52,12 +52,33 @@ RUN_COLUMNS = ["query_id", "system", "rank", "gmap_id", "score"]
 QUERY_COLUMNS = ("query_id", "query", "borough")
 
 
+def doc_tfidf_exists():
+    from src.retrieval.tfidf import TfidfRetriever
+    return TfidfRetriever.exists()
+
+
+def chunk_tfidf_exists():
+    from src.retrieval.tfidf_chunks import ChunkTfidfRetriever
+    return ChunkTfidfRetriever.exists()
+
+
+def semantic_exists():
+    from src.retrieval.semantic import SemanticRetriever
+    return SemanticRetriever.exists()
+
+
 def load_doc_tfidf():
+    """The document TF-IDF retriever, or None if its index files are not there (like load_semantic)."""
+    if not doc_tfidf_exists():
+        return None
     from src.retrieval.tfidf import TfidfRetriever
     return TfidfRetriever.load()
 
 
 def load_chunk_tfidf():
+    """The chunk TF-IDF retriever, or None if its index files are not there."""
+    if not chunk_tfidf_exists():
+        return None
     from src.retrieval.tfidf_chunks import ChunkTfidfRetriever
     return ChunkTfidfRetriever.load()
 
@@ -92,6 +113,9 @@ def load_semantic_stance():
 # Retriever name -> loader; each is loaded once and shared by its systems.
 RETRIEVERS = {"chunk_tfidf": load_chunk_tfidf, "doc_tfidf": load_doc_tfidf, "semantic": load_semantic,
               "semantic_stance": load_semantic_stance}
+# Retriever name -> "are its index files there" (no loading); the app lists only methods that pass.
+INDEX_EXISTS = {"chunk_tfidf": chunk_tfidf_exists, "doc_tfidf": doc_tfidf_exists, "semantic": semantic_exists,
+                "semantic_stance": semantic_exists}
 # A retriever that re-ranks another one returns that one's evidence, so it counts as the same retriever when
 # pooled evidence is ordered by how many retrievers returned a review.
 EVIDENCE_FAMILY = {"semantic_stance": "semantic"}

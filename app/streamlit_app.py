@@ -435,6 +435,10 @@ def main():
     st.markdown(f'<p class="tagline">{TAGLINE}</p>', unsafe_allow_html=True)
     st.caption(SCOPE_NOTE)
     st.caption(SLIM_NOTE)
+    if pipeline.data_dir_missing():
+        st.error(f"The data folder was not found: `{pipeline.DATA_DIR}`. Download the search data there, or point "
+                 "`NYC_DATA_DIR` at the folder that holds `processed/`, then restart the app.")
+        return
     show_sidebar()
 
     client, model, setup_error = get_llm()
@@ -443,7 +447,7 @@ def main():
                  "To enable them: copy `.env.example` to `.env`, set `GROQ_API_KEY` and `GROQ_MODEL`, "
                  "then restart the app.")
 
-    methods = list(pipeline.METHODS)
+    methods = pipeline.available_methods()  # a method whose index files are missing is not offered
     with st.form("search", border=False):  # just the search box and button: Enter submits
         box, button = st.columns([6, 1], vertical_alignment="bottom")
         query = box.text_input("What are you looking for?", key="query",
@@ -463,7 +467,8 @@ def main():
                                help="For the presentation: an exact demo query is answered from data/demo_cache "
                                     "without calling the language model. Other queries run live.")
     with st.expander("Advanced settings"):  # collapsed by default
-        method = st.selectbox("Retrieval method", methods, index=methods.index(pipeline.DEFAULT_METHOD))
+        method = st.selectbox("Retrieval method", methods or [pipeline.DEFAULT_METHOD],
+                              index=methods.index(pipeline.DEFAULT_METHOD) if pipeline.DEFAULT_METHOD in methods else 0)
         include_low = st.checkbox("Include restaurants with fewer than 5 reviews")
 
     if submitted or st.session_state.pop("run_example", False):

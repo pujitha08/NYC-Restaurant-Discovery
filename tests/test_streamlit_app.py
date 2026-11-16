@@ -35,7 +35,9 @@ class AppSmokeTests(unittest.TestCase):
     def start(self, client=FakeClient(location=None), setup_error=None, retrievers=None):
         llm = (pipeline.UsageRecorder(client), "openai/gpt-oss-20b", None) if client else (None, None, setup_error)
         load = lambda name: (retrievers or {}).get(name) or FakeRetriever()
-        for target, value in (("load_retriever", load), ("make_llm_client", lambda: llm)):
+        for target, value in (("load_retriever", load), ("make_llm_client", lambda: llm),
+                              ("available_methods", lambda: list(pipeline.METHODS)),
+                              ("data_dir_missing", lambda: False)):
             p = patch.object(pipeline, target, value)
             p.start()
             self.addCleanup(p.stop)

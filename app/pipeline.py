@@ -30,7 +30,7 @@ from typing import Dict, List, Optional
 
 from types import SimpleNamespace
 
-from eval.make_pool import RETRIEVERS, SYSTEMS
+from eval.make_pool import INDEX_EXISTS, RETRIEVERS, SYSTEMS
 from src.allergy import ALLERGEN_NAMES, ALLERGY_TERMS  # noqa: F401 (re-exported)
 from src.config import BOROUGHS, DATA_DIR
 from src.llm import evidence_summarizer, query_parser
@@ -596,6 +596,16 @@ def data_stats(processed_dir=None):
             if isinstance(value, (int, str)) and not isinstance(value, bool):
                 stats[out_key] = value[:10] if out_key == "index_built" else value
     return stats
+
+
+def data_dir_missing():
+    """True when the data directory (NYC_DATA_DIR or the repo's data/) is not a folder."""
+    return not Path(DATA_DIR).is_dir()
+
+
+def available_methods():
+    """The METHODS whose index files exist, in METHODS order."""
+    return [name for name, (retriever, _) in METHODS.items() if INDEX_EXISTS[retriever]()]
 
 
 def load_fallback(retriever):
