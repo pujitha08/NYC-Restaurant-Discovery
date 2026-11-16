@@ -557,15 +557,25 @@ def _code(err):
     return {"category": err["category"], "code": err["code"]} if err else None
 
 
+def logging_enabled(environ=None):
+    """Request logging is on unless NYC_LOG_REQUESTS is 0, false, no or off (a hosted Space turns it off)."""
+    return (os.environ if environ is None else environ).get("NYC_LOG_REQUESTS", "1").strip().lower() not in ("0", "false", "no", "off")
+
+
 def log_event(path, kind, outcome, extra=None):
-    if path is _DEFAULT_LOG:
-        path = LOG_PATH
-    if path is None:
+    """Append one request record to the log. Never raises: with the switch off, or a folder that cannot be written
+    (read-only or ephemeral disk), the record is skipped silently."""
+    try:
+        if path is _DEFAULT_LOG:
+            path = LOG_PATH
+        if path is None or not logging_enabled():
+            return
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(log_record(kind, outcome, extra), ensure_ascii=False) + "\n")
+    except Exception:  # logging must never break a search
         return
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(log_record(kind, outcome, extra), ensure_ascii=False) + "\n")
 
 
 def data_stats(processed_dir=None):

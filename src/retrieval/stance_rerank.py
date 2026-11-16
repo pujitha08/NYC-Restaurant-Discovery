@@ -85,14 +85,17 @@ class LabelCache:
         self.path = Path(path) if path else None
         self.labels = {}
         if self.path and self.path.exists():
-            with open(self.path, encoding="utf-8") as f:
-                for line in f:
-                    try:
-                        r = json.loads(line)
-                        if r["stance"] in STANCES:
-                            self.labels[(r["labeler"], r["need"], r["sentence"])] = r["stance"]
-                    except (ValueError, KeyError):
-                        continue  # partial last line from an interrupted run
+            try:
+                with open(self.path, encoding="utf-8") as f:
+                    for line in f:
+                        try:
+                            r = json.loads(line)
+                            if r["stance"] in STANCES:
+                                self.labels[(r["labeler"], r["need"], r["sentence"])] = r["stance"]
+                        except (ValueError, KeyError):
+                            continue  # partial last line from an interrupted run
+            except OSError:
+                pass  # unreadable cache file: start empty
 
     def get(self, labeler_id, need, sentence):
         return self.labels.get((labeler_id, need_hash(need), sentence_hash(sentence)))
@@ -103,11 +106,14 @@ class LabelCache:
         key = (labeler_id, need_hash(need), sentence_hash(sentence))
         if self.labels.get(key) == stance:
             return
-        self.labels[key] = stance
+        self.labels[key] = stance  # in memory for this run, whatever happens to the file
         if self.path:
-            self.path.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.path, "a", encoding="utf-8") as f:
-                f.write(json.dumps({"labeler": key[0], "need": key[1], "sentence": key[2], "stance": stance}) + "\n")
+            try:
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                with open(self.path, "a", encoding="utf-8") as f:
+                    f.write(json.dumps({"labeler": key[0], "need": key[1], "sentence": key[2], "stance": stance}) + "\n")
+            except OSError:
+                self.path = None  # read-only or ephemeral disk: keep labels in memory only and stop trying to write
 
 
 # ---- labelers -----------------------------------------------------------------
