@@ -233,6 +233,8 @@ except ImportError:
 
 @unittest.skipIf(AppTest is None, "streamlit not installed")
 class GuardUiTests(unittest.TestCase):
+    """The page for an allergy request: columns by claim label, and never "Supported" or a safety claim."""
+
     def run_app(self, summary):
         st.cache_resource.clear()
         self.addCleanup(st.cache_resource.clear)
@@ -245,45 +247,36 @@ class GuardUiTests(unittest.TestCase):
             at = AppTest.from_file(str(Path(pipeline.REPO) / "app" / "streamlit_app.py"), default_timeout=30)
             at.run()
             at.text_input[0].input(Q20)
-            at.button[0].click()
+            next(b for b in at.button if b.label == "Search").click()
             at.run()
         self.assertFalse(at.exception, at.exception)
         return at
 
-    def test_problems_status_uses_warning_style(self):
-        at = self.run_app(MISSION_CONTRADICTIONS)
-        warnings = [w.value for w in at.warning]
-        self.assertTrue(any("Reviews report problems" in w for w in warnings), warnings)
-        self.assertNotIn("Reviews report problems", " ".join(m.value for m in at.main.markdown))  # not plain text
-        text = " ".join(m.value for m in at.main.markdown)
-        self.assertIn('claim-warning"><div class="claim-label">⚠ Warning</div>', text)
-        status_rows = [w for w in warnings if "Reviews report problems" in w]
-        self.assertTrue(all(pipeline.ALLERGY_NOTE in w for w in status_rows), status_rows)  # badge + reminder in one row
+    @staticmethod
+    def page(at):
+        return " ".join(m.value for m in at.markdown) + " ".join(c.value for c in at.caption)
 
-    def test_mission_shows_no_check_marks_or_supported(self):
-        st.cache_resource.clear()
-        self.addCleanup(st.cache_resource.clear)
-        tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(tmp.cleanup)
-        llm = (pipeline.UsageRecorder(Client(parsed(allergens=["peanut"]), MISSION_SUMMARY)), MODEL, None)
-        with patch.object(pipeline, "LOG_PATH", Path(tmp.name) / "log.jsonl"), \
-                patch.object(pipeline, "load_retriever", lambda name: MissionRetriever()), \
-                patch.object(pipeline, "make_llm_client", lambda: llm):
-            at = AppTest.from_file(str(Path(pipeline.REPO) / "app" / "streamlit_app.py"), default_timeout=30)
-            at.run()
-            at.text_input[0].input(Q20)
-            at.button[0].click()
-            at.run()
-        self.assertFalse(at.exception, at.exception)
-        text = " ".join(m.value for m in at.main.markdown)
-        rows = [w.value for w in at.warning if "Reviews discuss this — read each claim" in w.value]
-        self.assertTrue(rows)
-        self.assertTrue(all(pipeline.ALLERGY_NOTE in w for w in rows))  # the verdict and the allergy note are ONE row
-        self.assertNotIn("✓", text)
-        self.assertNotIn('class="claim claim-positive"', text)  # no "Positive" claim for an allergy request
+    def test_problems_go_to_the_problems_column_only(self):
+        text = self.page(self.run_app(MISSION_CONTRADICTIONS))
+        self.assertEqual(text.count('class="problems-card"'), 1)
+        self.assertEqual(text.count('class="care-card"'), 0)
+        self.assertIn("1 report problems", text)
+        self.assertIn("badge badge-problems", text)
+        self.assertNotRegex(text, r"(?i)supported|\bsafe\b")
+
+    def test_a_mixed_restaurant_shows_in_both_columns_with_the_disagree_tag(self):
+        text = self.page(self.run_app(MIXED))
+        self.assertEqual((text.count('class="care-card"'), text.count('class="problems-card"')), (1, 1))
+        self.assertEqual(text.count('class="tag-disagree"'), 2)
+
+    def test_mission_shows_no_supported_safe_or_positive_label(self):
+        at = self.run_app(MISSION_SUMMARY)
+        text = self.page(at)
+        self.assertNotRegex(text, r"(?i)supported|\bsafe\b|safe to eat")
+        self.assertNotIn("claim-positive", text)
         self.assertNotIn("✓ Positive", text)
-        self.assertNotIn("upported", text + " ".join(rows))  # neither "Supported" nor "supported"
-        self.assertIn("ℹ Mention", text)
+        self.assertIn("Reviews mention allergy care", text)  # an allergy request is worded as care, never as a verdict
+        self.assertIn("Confirm with the restaurant", text)
 
 
 if __name__ == "__main__":

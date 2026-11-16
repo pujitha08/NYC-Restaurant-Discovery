@@ -1,11 +1,11 @@
-"""The four example buttons end to end in Demo mode, against the real committed data/demo_cache (fake retriever and model).
+"""The chips end to end against the real committed data/demo_cache (fake retriever and model).
 
-Demo mode serves an exact (query, borough, method) match from the cache without any retriever or model call, so this
-runs the real page (chips, status, cards, allergy guard) on the real saved outcomes.
+A chip is answered from the saved result without any retriever or model call, so this runs the real page (chips, status, cards,
+columns, allergy guard) on a real saved outcome. The chips whose cache file has not been built yet run live (fake retriever).
 """
 
-import tempfile
 import re
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -16,35 +16,34 @@ try:
 except ImportError:
     AppTest = None
 
-from app import demo_cache, pipeline
+from app import demo_cache, examples, pipeline
 from tests.test_app_pipeline import FakeClient, FakeRetriever
 
 APP = str(Path(__file__).resolve().parent.parent / "app" / "streamlit_app.py")
-ALLERGY_EXAMPLES = {"Peanut allergy", "Celiac safe"}
+SAVED = [(label, query) for label, query in examples.ALLERGY_CHIPS + examples.DIET_CHIPS
+         if demo_cache.load_cached(query, examples.CHIP_BOROUGH, examples.CHIP_METHOD) is not None]
 
 
 class NoRetriever(FakeRetriever):
-    """Demo mode must not search: any call fails the test."""
+    """A saved result must not search: any call fails the test."""
 
     def search(self, *a, **kw):
-        raise AssertionError("the retriever was called in Demo mode")
+        raise AssertionError("the retriever was called for a saved result")
 
 
 @unittest.skipIf(AppTest is None, "streamlit not installed")
-class ExampleButtonsInDemoModeTests(unittest.TestCase):
+class ChipsFromTheSavedResultsTests(unittest.TestCase):
     def setUp(self):
         st.cache_resource.clear()
         st.cache_data.clear()
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
-        for target, value in (("LOG_PATH", Path(tmp.name) / "log.jsonl"),):
-            p = patch.object(pipeline, target, value)
-            p.start()
-            self.addCleanup(p.stop)
         self.client = FakeClient()
         llm = (pipeline.UsageRecorder(self.client), "openai/gpt-oss-20b", None)
-        for target, value in (("load_retriever", lambda name: NoRetriever()), ("make_llm_client", lambda: llm)):
-            p = patch.object(pipeline, target, value)
+        for obj, name, value in ((pipeline, "LOG_PATH", Path(tmp.name) / "log.jsonl"),
+                                 (pipeline, "load_retriever", lambda n: NoRetriever()),
+                                 (pipeline, "make_llm_client", lambda: llm)):
+            p = patch.object(obj, name, value)
             p.start()
             self.addCleanup(p.stop)
         self.addCleanup(st.cache_resource.clear)
@@ -53,79 +52,38 @@ class ExampleButtonsInDemoModeTests(unittest.TestCase):
     def click(self, label):
         at = AppTest.from_file(APP, default_timeout=60)
         at.run()
-        next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
         next(b for b in at.button if b.label == label).click()
         at.run()
         self.assertFalse(at.exception, at.exception)
         return at
 
-    @staticmethod
-    def cards(at):
-        return [e for e in at.expander if e.label[:1].isdigit()]
+    def test_the_peanut_chip_is_saved(self):
+        self.assertIn("Peanut", [label for label, _ in SAVED])  # the one chip query that was already cached
 
-    def test_every_example_runs_from_the_saved_outcome(self):
-        from app.streamlit_app import EXAMPLES
-        for label, query, borough in EXAMPLES:
-            with self.subTest(example=label):
+    def test_a_saved_chip_runs_without_a_model_or_retriever_call(self):
+        for label, query in SAVED:
+            with self.subTest(chip=label):
                 at = self.click(label)
-                self.assertEqual((at.text_input[0].value, at.pills[0].value), (query, borough))  # the chip filled the form
-                self.assertEqual(self.client.calls, [])  # no model call at all
-                cards = self.cards(at)
-                self.assertEqual(len(cards), 10)
-                self.assertEqual([c.proto.expanded for c in cards], [True] + [False] * 9)  # the top card is open
+                self.assertEqual(at.text_input[0].value, query)
+                self.assertEqual(self.client.calls, [])
                 self.assertEqual(at.status[0].label, "Done")
-                notices = [m.value for m in at.markdown if 'class="notice-cache"' in m.value]
-                self.assertEqual(len(notices), 1)  # one notice, neutral style, with the saved date
-                self.assertRegex(notices[0], r"\(saved \d{4}-\d{2}-\d{2}\), not a live search")
-                self.assertFalse(any("cached demo result" in i.value for i in at.info))
-                self.assertFalse(any("cached demo result" in w.value.lower() for w in at.warning))
-                chips = next(m.value for m in at.markdown if 'class="chips"' in m.value)
-                self.assertNotIn("restaurants", chips)  # no count chip ...
-                self.assertEqual(at.subheader[0].value, "10 restaurants")  # ... the heading carries the count
-                lines = [m.value for m in at.markdown if 'class="results-summary"' in m.value]
-                self.assertEqual(len(lines), 1)  # one summary line, computed from the cards
-                text = re.sub(r"<[^>]+>", "", lines[0])
-                n_top = int(re.match(r"Of the top (\d+) summarized: ", text).group(1))  # only summarized cards are counted
-                self.assertEqual(sum(int(n) for n in re.findall(r"(?:: |· )(\d+) ", text)), n_top)  # each counted once
-                self.assertNotIn("not summarized", text)
-                if label in ALLERGY_EXAMPLES:
-                    for word in ("safe", "supported", "guarantee"):
-                        self.assertNotIn(word, text.lower())
-                for card in cards:
-                    self.assertLessEqual(card.label.count("★"), 1)
-                    if card.caption:
-                        self.assertNotIn("★", card.caption[0].value)  # the rating appears once per card
-                self.assertNotIn("Explain", [b.label for b in at.button])  # cached ranks 4+ have no live Explain
-                for card in cards:  # every card has a coverage row for the parsed need, and it never implies safety
-                    row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
-                    self.assertRegex(row, r": (mentioned in \d+ excerpts?|not mentioned in shown excerpts)")
-                    self.assertNotIn("safe", row.lower())
-                    self.assertNotIn("✓", row)  # one wording for every need type, no check marks
-                self.assertFalse(any("No dietary or allergy need detected" in i.value for i in at.info))
+                html = " ".join(m.value for m in at.markdown)
+                self.assertRegex(html, r"How this was found: a saved result from \d{4}-\d{2}-\d{2} \(no live search was run\)")
+                count = re.search(r"(\d+) restaurants checked · (\d+) mention [^·]+ · (\d+) report problems · (\d+) not enough evidence", html)
+                self.assertIsNotNone(count)
+                self.assertEqual(int(count.group(1)), 10)
+                self.assertGreaterEqual(html.count('class="care-card"') + html.count('class="problems-card"'), 1)
+                self.assertEqual(html.count("not safety guarantees"), 1)  # the one footer line
 
-    def test_allergy_examples_keep_the_guard_and_the_full_caveat(self):
-        for label in sorted(ALLERGY_EXAMPLES):
-            with self.subTest(example=label):
-                at = self.click(label)
-                self.assertTrue(any("always confirm with the restaurant" in w.value for w in at.warning))  # full caveat
-                main = " ".join(m.value for m in at.main.markdown)
-                self.assertNotIn('class="claim claim-positive"', main)
-                self.assertNotIn("✓", main)
-                for card in self.cards(at):
-                    self.assertNotIn("Supported", card.label)
-                    self.assertNotIn("✓", card.label)
-                summarized = [c for c in self.cards(at) if c.warning]
-                self.assertGreaterEqual(len(summarized), 3)
-                for card in summarized:
-                    row = [w.value for w in card.warning if pipeline.ALLERGY_NOTE in w.value]
-                    self.assertEqual(len(row), 1, card.label)  # the verdict and the allergy reminder are one row
-
-    def test_non_allergy_examples_have_only_the_slim_note(self):
-        for label in ("Vegan group", "Halal Chinese"):
-            with self.subTest(example=label):
-                at = self.click(label)
-                self.assertFalse(any("always confirm with the restaurant" in w.value for w in at.warning))
-                self.assertTrue(any("not safety guarantees" in c.value for c in at.caption))
+    def test_saved_allergy_chips_never_say_supported_or_safe(self):
+        for label, query in SAVED:
+            if not any(w in query for w in ("allerg", "celiac")):
+                continue
+            with self.subTest(chip=label):
+                html = " ".join(m.value for m in self.click(label).markdown)
+                self.assertNotRegex(html, r"(?i)supported|\bsafe\b")
+                self.assertIn("Reviews mention allergy care", html)
+                self.assertIn("Reviews report problems", html)
 
 
 if __name__ == "__main__":

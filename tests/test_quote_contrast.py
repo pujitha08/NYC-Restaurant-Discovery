@@ -5,11 +5,12 @@ Streamlit gives every blockquote opacity 0.6, which faded the dark quote text to
 even though its declared color was fine, so the quote rules must reset opacity explicitly.
 """
 
+import inspect
 import re
 import unittest
 
 try:
-    from app import highlight
+    from app import highlight, styles
     from app import streamlit_app as ui
 except ImportError:  # streamlit is optional for the rest of the suite
     ui = None
@@ -45,49 +46,77 @@ def value(props, name):
 
 
 @unittest.skipIf(ui is None, "streamlit not installed")
-class QuoteContrastTests(unittest.TestCase):
+class PaletteContrastTests(unittest.TestCase):
+    """Every text/background pair of the redesign is at least 4.5:1, read from the CSS the app injects."""
+
     css = rules(ui.CSS if ui else "")
-    backgrounds = {}
+    P = styles.PALETTE if ui else {}
 
-    @classmethod
-    def setUpClass(cls):
-        base = value(cls.css[".claim"], "background")
-        cls.backgrounds = {"mention (grey)": base, "warning (red)": value(cls.css[".claim-warning"], "background"),
-                           "positive (green)": value(cls.css[".claim-positive"], "background"), "page (white)": WHITE}
+    def test_the_palette_is_the_one_asked_for(self):
+        expected = {"bg": "#FBF7F2", "ink": "#1F1B16", "muted": "#5E554B", "accent": "#B4461E", "care_fg": "#17695F",
+                    "care_bg": "#E4F1EE", "problems_fg": "#9B3412", "problems_bg": "#FBE9E1", "disagree_fg": "#5A3B00",
+                    "disagree_bg": "#FFF0C2"}
+        for key, color in expected.items():
+            self.assertEqual(self.P[key].upper(), color, key)
 
-    def test_quote_text_is_dark_and_readable_on_every_background(self):
+    def test_every_pair_is_at_least_4_5_to_1(self):
+        P = self.P
+        pairs = [("ink", "bg"), ("ink", "card"), ("muted", "bg"), ("muted", "card"), ("muted", "neutral_bg"),
+                 ("on_accent", "accent"), ("accent", "card"), ("accent", "bg"), ("accent", "problems_bg"),
+                 ("care_fg", "care_bg"), ("problems_fg", "problems_bg"), ("disagree_fg", "disagree_bg"),
+                 ("neutral_fg", "neutral_bg"), ("mark_fg", "mark_bg"), ("ink", "mark_bg"), ("problems_fg", "card"),
+                 ("care_fg", "card")]
+        for fg, bg in pairs:
+            self.assertGreaterEqual(contrast(P[fg], P[bg]), 4.5, f"{fg} on {bg}")
+
+    def test_the_css_uses_the_palette_for_the_columns_tag_and_primary_button(self):
+        P = self.P
+        self.assertEqual((value(self.css[".col-head.care"], "background"), value(self.css[".col-head.care"], "color")),
+                         (P["care_bg"], P["care_fg"]))
+        self.assertEqual((value(self.css[".col-head.problems"], "background"), value(self.css[".col-head.problems"], "color")),
+                         (P["problems_bg"], P["problems_fg"]))
+        self.assertEqual((value(self.css[".tag-disagree"], "background"), value(self.css[".tag-disagree"], "color")),
+                         (P["disagree_bg"], P["disagree_fg"]))
+        self.assertEqual(value(self.css[".stApp"], "background"), P["bg"])
+        button = self.css['.stButton > button[kind="primary"]']
+        self.assertEqual((value(button, "background"), value(button, "color")), (P["accent"], P["on_accent"]))
+
+    def test_columns_are_told_apart_by_icon_wording_and_line_style_not_hue_alone(self):
+        # The two given text colors are about equally light (WCAG luminance 0.11 and 0.09), so hue is not what separates
+        # the columns: each header has its own icon and words, and the quote line differs in style (solid vs double).
+        self.assertNotEqual(self.P["care_fg"], self.P["problems_fg"])
+        source = inspect.getsource(ui.column_head)
+        self.assertIn("✓", source)
+        self.assertIn("⚠", source)
+        self.assertIn("solid", self.css[".care-card blockquote.quote"]["border-left"])
+        self.assertIn("double", self.css[".problems-card blockquote.quote"]["border-left"])
+
+    def test_buttons_are_at_least_44_px_tall(self):
+        merged = {}
+        for selector, props in self.css.items():
+            if "button" in selector and "min-height" in props:
+                merged[selector] = props["min-height"]
+        self.assertTrue(merged)
+        for selector, height in merged.items():
+            self.assertGreaterEqual(int(height.replace("px", "")), 44, selector)
+        self.assertEqual(styles.MIN_TAP, "44px")
+
+    def test_quote_text_is_dark_and_opacity_is_reset(self):
         quote = self.css[".stApp blockquote.quote"]
+        self.assertEqual(quote["opacity"].replace(" ", ""), "1!important")
+        self.assertTrue(quote["color"].endswith("!important"))  # beats Streamlit's blockquote rule (opacity 0.6)
         text = value(quote, "color")
-        for name, bg in self.backgrounds.items():
-            self.assertGreaterEqual(contrast(text, bg), 4.5, f"quote text on {name}")
-            self.assertGreaterEqual(contrast(text, bg), 7, f"quote text should be near-black on {name}")
-
-    def test_date_is_a_slightly_lighter_dark_grey_and_still_readable(self):
-        quote, date = self.css[".stApp blockquote.quote"], self.css[".stApp blockquote.quote .quote-date"]
-        text, grey = value(quote, "color"), value(date, "color")
-        self.assertNotEqual(text.upper(), grey.upper())
-        self.assertGreater(sum(rgb(grey)), sum(rgb(text)))  # lighter than the quote text ...
-        self.assertLess(max(rgb(grey)) - min(rgb(grey)), 12)  # ... but still a neutral grey
-        for name, bg in self.backgrounds.items():
-            self.assertGreaterEqual(contrast(grey, bg), 4.5, f"date on {name}")
-
-    def test_opacity_is_reset_so_the_declared_colors_are_what_the_eye_sees(self):
-        for selector in (".stApp blockquote.quote", ".stApp blockquote.quote .quote-date"):
-            self.assertEqual(self.css[selector]["opacity"].replace(" ", ""), "1!important", selector)
-            self.assertTrue(self.css[selector]["color"].endswith("!important"), selector)  # beats Streamlit's blockquote rule
+        for bg in ("bg", "card", "care_bg", "problems_bg"):
+            self.assertGreaterEqual(contrast(text, self.P[bg]), 7, bg)
 
     def test_the_old_opacity_would_have_failed(self):
-        # Negative control: Streamlit's default opacity 0.6 on the red claim background.
-        text = value(self.css[".stApp blockquote.quote"], "color")
-        seen = blend(text, self.backgrounds["warning (red)"], 0.6)
-        self.assertLess(contrast(seen, self.backgrounds["warning (red)"]), 4.5)
+        # Negative control: Streamlit's default opacity 0.6 on the clay background.
+        seen = blend(self.P["ink"], self.P["problems_bg"], 0.6)
+        self.assertLess(contrast(seen, self.P["problems_bg"]), 7)
 
-    def test_claim_text_and_labels_are_readable_on_their_own_backgrounds(self):
-        self.assertGreaterEqual(contrast(value(self.css[".claim-text"], "color"), self.backgrounds["warning (red)"]), 7)
-        pairs = [(".claim-label", "mention (grey)"), (".claim-warning .claim-label", "warning (red)"),
-                 (".claim-positive .claim-label", "positive (green)")]
-        for selector, bg in pairs:
-            self.assertGreaterEqual(contrast(value(self.css[selector], "color"), self.backgrounds[bg]), 4.5, selector)
+    def test_the_page_works_at_phone_width(self):
+        self.assertIn("@media (max-width: 640px)", ui.CSS)
+        self.assertRegex(ui.CSS, r"\.block-container \{ max-width: 1100px; padding: 1rem 1rem")  # a 16px side gutter
 
     def test_highlight_mark_is_readable(self):
         bg = re.search(r"background:(#[0-9a-fA-F]{6})", highlight.MARK).group(1)

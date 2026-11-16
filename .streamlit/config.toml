@@ -1,13 +1,13 @@
 # Streamlit settings for the app (read when `streamlit run` is started from the repo root).
 # Light theme, one warm accent, high contrast (text and accent both clear WCAG AA on their backgrounds: tests/test_streamlit_config.py).
-# Fonts are the system fonts (no web fonts); no usage statistics are sent.
+# The colors match PALETTE in app/styles.py. Fonts are the system fonts (no web fonts); no usage statistics are sent.
 
 [theme]
 base = "light"
-primaryColor = "#C2410C"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#FAF3EA"
-textColor = "#1C1917"
+primaryColor = "#B4461E"
+backgroundColor = "#FBF7F2"
+secondaryBackgroundColor = "#F3ECE3"
+textColor = "#1F1B16"
 font = "sans serif"
 
 [browser]

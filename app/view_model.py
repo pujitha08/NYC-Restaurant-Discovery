@@ -122,6 +122,10 @@ def care_title(outcome):
     return f"Reviews mention {diet_text(outcome)} options" if kind == "diet" else "Reviews match your request"
 
 
+def problems_column_title():
+    return "Reviews report problems"
+
+
 def care_subline(outcome):
     return "Worth a closer look. Confirm with the restaurant." if need_kind(outcome) == "allergy" \
         else "Worth a closer look. Reviews are anecdotal."

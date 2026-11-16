@@ -124,12 +124,11 @@ class MergeNeutralTests(unittest.TestCase):
         self.assertEqual([e.review_id for e in a.excerpts], [1])
 
     def test_the_card_shows_one_neutral_line(self):
-        from app.streamlit_app import ordered_claims
         n = pipeline.NEUTRAL_CLAIM
-        summary = SimpleNamespace(claims=[self.claim(n, "support", 1), self.claim(n, "support", 2), self.claim("A warning.", "contradiction", 3)])
-        shown = ordered_claims(summary)
-        self.assertEqual([c.text for c in shown], ["A warning.", n])
-        self.assertEqual(len(shown[1].excerpts), 2)
+        claims = [self.claim(n, "support", 1), self.claim(n, "support", 2), self.claim("A warning.", "contradiction", 3)]
+        shown = pipeline.merge_neutral_claims(claims)
+        self.assertEqual([c.text for c in shown], [n, "A warning."])
+        self.assertEqual(len(shown[0].excerpts), 2)
 
 
 class PromptTests(unittest.TestCase):

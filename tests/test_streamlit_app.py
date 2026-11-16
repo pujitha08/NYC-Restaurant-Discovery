@@ -1,5 +1,7 @@
-"""Streamlit smoke tests with streamlit.testing.v1.AppTest (fake retriever and LLM; no data or network)."""
+"""The redesigned page with streamlit.testing.v1.AppTest (fake retriever and fake LLM client: no data, network or Groq)."""
 
+import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,47 +13,86 @@ try:
 except ImportError:  # streamlit is optional for the rest of the suite
     AppTest = None
 
-from app import demo_cache, pipeline
+from app import demo_cache, examples, pipeline
 from tests.test_app_pipeline import FakeClient, FakeRetriever
 from tests.test_compare import FakeStance
 
 APP = str(Path(__file__).resolve().parent.parent / "app" / "streamlit_app.py")
+STATS = {"restaurants": 15447, "reviews": 2156429, "chunks": 605540, "index_built": "2026-11-14"}
+
+
+class NoEvidenceClient(FakeClient):
+    """Summaries find nothing (insufficient evidence)."""
+
+    def create(self, **kwargs):
+        if kwargs["response_format"]["json_schema"]["name"] == "evidence_summary":
+            self.calls.append("evidence_summary")
+            return self.response({"status": "insufficient_evidence", "claims": [], "limitations": []})
+        return super().create(**kwargs)
+
+
+class ProblemsClient(FakeClient):
+    """Every summary reports a problem (a contradiction, no support)."""
+
+    def create(self, **kwargs):
+        if kwargs["response_format"]["json_schema"]["name"] == "evidence_summary":
+            self.calls.append("evidence_summary")
+            ids = [s["review_id"] for s in json.loads(kwargs["messages"][1]["content"])["snippets"]]
+            return self.response({"status": "evidence_found", "limitations": [], "claims": [
+                {"text": "One reviewer reported no vegan dishes.", "review_ids": [ids[1]], "label": "contradiction"}]})
+        return super().create(**kwargs)
+
+
+class ParsedClient(FakeClient):
+    """A parser that returns the given fields (e.g. allergens), a summarizer as in FakeClient."""
+
+    def __init__(self, **fields):
+        super().__init__(location=None)
+        self.fields = fields
+
+    def create(self, **kwargs):
+        res = super().create(**kwargs)
+        if kwargs["response_format"]["json_schema"]["name"] == "parsed_query":
+            body = json.loads(res.choices[0].message.content)
+            body.update(self.fields)
+            res.choices[0].message.content = json.dumps(body)
+        return res
 
 
 @unittest.skipIf(AppTest is None, "streamlit not installed")
-class AppSmokeTests(unittest.TestCase):
+class PageTests(unittest.TestCase):
     def setUp(self):
         st.cache_resource.clear()
+        st.cache_data.clear()
+        self.addCleanup(st.cache_resource.clear)
+        self.addCleanup(st.cache_data.clear)
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
-        self.log_path = Path(tmp.name) / "app_requests.jsonl"
-        log = patch.object(pipeline, "LOG_PATH", self.log_path)
-        log.start()
-        self.addCleanup(log.stop)
-        self.addCleanup(st.cache_resource.clear)
-        st.cache_data.clear()  # the sidebar's data stats are cached
-        self.addCleanup(st.cache_data.clear)
+        self.cache_dir = Path(tmp.name) / "demo_cache"
+        for obj, name, value in ((pipeline, "LOG_PATH", Path(tmp.name) / "app_requests.jsonl"),
+                                 (demo_cache, "CACHE_DIR", self.cache_dir),
+                                 (pipeline, "data_stats", lambda *a, **k: dict(STATS)),
+                                 (pipeline, "available_methods", lambda: list(pipeline.METHODS)),
+                                 (pipeline, "data_dir_missing", lambda: False)):
+            p = patch.object(obj, name, value)
+            p.start()
+            self.addCleanup(p.stop)
 
-    def start(self, client=FakeClient(location=None), setup_error=None, retrievers=None):
-        llm = (pipeline.UsageRecorder(client), "openai/gpt-oss-20b", None) if client else (None, None, setup_error)
+    def start(self, client=None, setup_error=None, retrievers=None, run=True):
+        st.cache_resource.clear()  # the page caches its LLM client and retrievers
+        client = client if client is not None else FakeClient(location=None)
+        llm = (pipeline.UsageRecorder(client), "openai/gpt-oss-20b", None) if not setup_error else (None, None, setup_error)
+        self.client = client
         load = lambda name: (retrievers or {}).get(name) or FakeRetriever()
-        for target, value in (("load_retriever", load), ("make_llm_client", lambda: llm),
-                              ("available_methods", lambda: list(pipeline.METHODS)),
-                              ("data_dir_missing", lambda: False)):
+        for target, value in (("load_retriever", load), ("make_llm_client", lambda: llm)):
             p = patch.object(pipeline, target, value)
             p.start()
             self.addCleanup(p.stop)
-        defaults = patch.dict(pipeline.run_search.__kwdefaults__, {"auto_summaries": 3})  # the old layout summarized 3
-        defaults.start()
-        self.addCleanup(defaults.stop)
         at = AppTest.from_file(APP, default_timeout=30)
-        at.run()
-        self.assertFalse(at.exception, at.exception)
+        if run:
+            at.run()
+            self.assertFalse(at.exception, at.exception)
         return at
-
-    @staticmethod
-    def button(at, label):
-        return next(b for b in at.button if b.label == label)
 
     def search(self, at, query="vegan options for a group"):
         at.text_input[0].input(query)
@@ -60,537 +101,360 @@ class AppSmokeTests(unittest.TestCase):
         self.assertFalse(at.exception, at.exception)
         return at
 
-    class PrefsClient(FakeClient):
-        """A parser that also returns preferences (and an allergen), to exercise the request summary."""
-
-        def __init__(self, preferences, allergens=(), **fields):
-            super().__init__(location=None)
-            self.fields = {"preferences": preferences, "allergens": list(allergens), **fields}
-
-        def create(self, **kwargs):
-            res = super().create(**kwargs)
-            if kwargs["response_format"]["json_schema"]["name"] == "parsed_query":
-                import json
-                body = json.loads(res.choices[0].message.content)
-                body.update(self.fields)
-                res.choices[0].message.content = json.dumps(body)
-            return res
-
-    NOTE = "Preferences like opening hours or cuisine guide the search but aren’t verified from reviews."
-
-    def test_preferences_note_only_when_there_are_preferences(self):
-        shown = self.search(self.start(self.PrefsClient(["open late", "ramen"])))
-        self.assertEqual([c.value for c in shown.caption if c.value == self.NOTE], [self.NOTE])
-        st.cache_resource.clear()  # the app caches its LLM client; start again with one that returns no preferences
-        hidden = self.search(self.start(FakeClient(location=None)))
-        self.assertNotIn(self.NOTE, [c.value for c in hidden.caption])
-
-    def test_understood_panel_hides_empty_fields(self):
-        at = self.search(self.start(self.PrefsClient(["open late"])))
-        panel = next(e for e in at.expander if e.label == "How your request was understood")
-        text = self.text(panel)
-        self.assertNotIn("—", text)
-        self.assertIn("**Diets:** vegan", text)
-        self.assertIn("**Group needs:** group dinner", text)
-        self.assertIn("**Preferences (cuisine, dish, venue):** open late", text)
-        self.assertNotIn("Allergens", text)  # empty: not listed
-        self.assertIn("**Borough filter:**", text)
-
-    def test_understood_panel_escapes_parsed_text(self):
-        at = self.search(self.start(self.PrefsClient(["<b>late</b> *ramen*"], ["pea<i>nut"])))
-        panel = next(e for e in at.expander if e.label == "How your request was understood")
-        text = self.text(panel)
-        self.assertNotIn("<b>", text)
-        self.assertNotIn("<i>", text)
-        self.assertIn("\\<b\\>late", text)  # Markdown specials carry a backslash, so they render as literal text
-        self.assertIn("\\*ramen\\*", text)
-
-    SCOPE = ("Built for dietary needs and food allergies: diets, allergens and mixed groups. "
-             "It doesn’t check opening hours, prices or availability.")
-    NO_NEED = ("No dietary or allergy need detected, so these results are ranked by general review match and "
-               "aren’t checked against a diet or allergen.")
-
-    def test_scope_note_under_the_title(self):
-        at = self.start()
-        captions = [c.value for c in at.caption]
-        self.assertIn(self.SCOPE, captions)
-        self.assertLess(captions.index(self.SCOPE), captions.index(next(c for c in captions if "not safety guarantees" in c)))
-
-    def test_no_need_notice_when_nothing_dietary_is_parsed(self):
-        at = self.search(self.start(self.PrefsClient(["ramen"], dietary_restrictions=[], group_needs=[])), "good ramen")
-        self.assertEqual([i.value for i in at.info if i.value == self.NO_NEED], [self.NO_NEED])
-        self.assertEqual(len(self.results(at)), 4)  # the results are still shown
-        st.cache_resource.clear()  # the app caches its LLM client
-        self.assertNotIn(self.NO_NEED, [i.value for i in self.search(self.start(FakeClient(location=None))).info])  # a diet was parsed
-
-    def test_no_need_notice_is_not_shown_when_the_parse_failed_or_the_text_is_about_allergies(self):
-        failed = self.search(self.start(FakeClient(parser="bad")))
-        self.assertNotIn(self.NO_NEED, [i.value for i in failed.info])
-        st.cache_resource.clear()
-        missed = self.search(self.start(self.PrefsClient([], dietary_restrictions=[], group_needs=[])), "something for my peanut allergy")
-        self.assertNotIn(self.NO_NEED, [i.value for i in missed.info])  # allergy wording the parser missed: guarded, not "no need"
-
-    def test_cards_show_coverage_chips_and_unverified_preferences(self):
-        at = self.search(self.start(self.PrefsClient(["open late"], dietary_restrictions=["vegan", "halal"], group_needs=["kids"])))
-        for card in self.results(at)[:3]:
-            row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
-            self.assertIn("vegan: mentioned in 2 excerpts", row)  # both fake excerpts mention vegan (one negatively): a mention count, not a verdict
-            self.assertIn("halal: not mentioned in shown excerpts", row)
-            self.assertIn("kids: not mentioned in shown excerpts", row)
-            self.assertIn("Not verified from reviews: open late", [c.value for c in card.caption])
-            self.assertNotIn("safe", row.lower())
-            self.assertNotIn("✓", row)
-
-    def test_allergen_chips_never_imply_safety(self):
-        at = self.search(self.start(self.PrefsClient([], ["peanut", "sesame"], dietary_restrictions=["vegan"])), "vegan, peanut allergy")
-        for card in self.results(at)[:3]:
-            row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
-            self.assertIn("peanut: not mentioned in shown excerpts", row)
-            self.assertIn("vegan: mentioned in", row)
-            self.assertNotIn("✓", row)
-            self.assertNotIn("safe", row.lower())
-
-    def test_coverage_text_is_escaped(self):
-        at = self.search(self.start(self.PrefsClient(["<i>late</i>"], dietary_restrictions=["<b>vegan</b>"])))
-        card = self.results(at)[0]
-        row = next(m.value for m in card.markdown if 'class="chips coverage"' in m.value)
-        self.assertNotIn("<b>", row)
-        self.assertIn("&lt;b&gt;vegan", row)
-        self.assertNotIn("<i>", " ".join(c.value for c in card.caption))
-
-    def test_initial_page(self):
-        at = self.start()
-        self.assertEqual(at.title[0].value, "NYC Restaurant Discovery")
-        self.assertIn("Ask in plain English. Get NYC restaurants backed by review evidence.", " ".join(m.value for m in at.markdown))
-        self.assertEqual(len(at.warning), 0)  # only a slim note on the first screen, no full-strength warning
-        self.assertTrue(any("through September 2021" in c.value and "not safety guarantees" in c.value for c in at.caption))
-        self.assertEqual(at.selectbox[0].value, pipeline.DEFAULT_METHOD)
-        self.assertEqual(at.pills[0].options, ["Both", "Manhattan", "Brooklyn"])
-        self.assertEqual(at.pills[0].value, "Both")
-        self.assertEqual(len(at.error), 0)
-
-    @staticmethod
-    def results(at):
-        """Result expanders (labels start with the rank), in order."""
-        return [e for e in at.expander if e.label[:1].isdigit()]
-
-    @staticmethod
-    def text(block):
-        return " ".join(m.value for m in block.markdown)
-
-    def test_top_card_is_open_and_the_rest_collapsed_with_a_header(self):
-        at = self.search(self.start())
-        results = self.results(at)
-        self.assertEqual(len(results), 4)
-        self.assertEqual([e.proto.expanded for e in results], [True, False, False, False])
-        self.assertRegex(results[0].label, r"^1\. Place 1 — (Brooklyn|Manhattan) · (★ \d\.\d|no rating) · ✓ Supported")
-        self.assertIn("Summary on request", results[3].label)  # rank 4: not summarized automatically
-        self.assertNotIn("✓", results[3].label)
-        self.assertEqual(at.subheader[0].value, "4 restaurants")
-        self.assertTrue(any(c.value.startswith("Method ") for c in at.caption))  # timings above the list
-
-    def test_guarded_allergy_header_has_no_check_mark(self):
-        at = self.search(self.start(), "peanut allergy friendly dinner")
-        for e in self.results(at):
-            self.assertNotIn("✓", e.label)
-            self.assertNotIn("Supported", e.label)
-        self.assertIn(f"ℹ {pipeline.STATUS_NEUTRAL}", self.results(at)[0].label)
-        first = self.results(at)[0]
-        self.assertEqual(len(first.warning), 1)  # badge and allergy reminder share ONE row
-        self.assertIn(f"ℹ {pipeline.STATUS_NEUTRAL}", first.warning[0].value)
-        self.assertIn(pipeline.ALLERGY_NOTE, first.warning[0].value)
-        self.assertNotIn('class="claim claim-positive"', self.text(first))  # an allergy request never shows a "Positive" claim
-        self.assertIn("ℹ Mention", self.text(first))
-
-    def test_card_shows_one_status_row_the_top_claim_and_its_best_quote(self):
-        at = self.search(self.start())
-        first = self.results(at)[0]
-        self.assertTrue(first.proto.expanded)
-        self.assertFalse(any(e.proto.expanded for e in self.results(at)[1:]))
-        self.assertEqual(len(first.success), 1)  # ONE status row (no separate banner and note)
-        self.assertIn("✓ Supported", first.success[0].value)
-        body = self.text(first)
-        self.assertEqual(body.count('class="claim '), 1)  # only the top claim by default
-        self.assertIn('claim-positive"><div class="claim-label">✓ Positive</div>', body)
-        self.assertIn("One reviewer reported vegan options for a group.", body)
-        self.assertIn("Review from 2019-01", body)
-        self.assertNotIn("Place 1", body)  # the restaurant name is in the card label only, not repeated in the body
-        self.assertRegex(first.caption[0].value, r"^\d+ reviews · 1 Main St")
-        self.assertNotIn("★", first.caption[0].value)  # the rating is in the card title only, not repeated in the body
-        self.assertEqual(first.label.count("★"), 1)
-
-    def test_claim_html_escapes_model_and_review_text_and_labels_by_icon_text_and_color(self):
-        from app.streamlit_app import claim_html, ordered_claims, quote_html
-        evil = pipeline.Excerpt(1, "2020-05", '<img src=x onerror=alert(1)> peanut & "nuts"')
-        claim = pipeline.Claim("<b>bold</b> claim & more", "contradiction", [evil])
-        html = claim_html(claim, ["peanut"], guarded=True)
-        self.assertNotIn("<img", html)
-        self.assertNotIn("<b>", html)
-        self.assertIn("&lt;b&gt;bold&lt;/b&gt; claim &amp; more", html)
-        self.assertIn('class="claim claim-warning"', html)
-        self.assertIn("⚠ Warning", html)
-        self.assertIn(">peanut</mark>", html)
-        self.assertIn("Review from 2020-05", html)
-        self.assertNotIn("\n\n", html)  # one HTML block, so Markdown does not cut it
-        self.assertIn("blockquote", quote_html(evil, []))
-
-    def test_claim_labels_and_the_allergy_guarded_mapping(self):
-        from app.streamlit_app import claim_html, ordered_claims
-        support, doubt = pipeline.Claim("s", "support", []), pipeline.Claim("u", "uncertainty", [])
-        self.assertIn("✓ Positive", claim_html(support, [], guarded=False))
-        self.assertIn("claim-positive", claim_html(support, [], guarded=False))
-        guarded = claim_html(support, [], guarded=True)  # allergy request: a supporting claim is only a mention
-        self.assertIn("ℹ Mention", guarded)
-        self.assertNotIn("Positive", guarded)
-        self.assertNotIn("✓", guarded)
-        self.assertIn("• Mention", claim_html(doubt, [], guarded=False))
-        summary = pipeline.Summary("mixed", [support, pipeline.Claim("w", "contradiction", []), doubt], [])
-        self.assertEqual([c.label for c in ordered_claims(summary)], ["contradiction", "support", "uncertainty"])
-
-    def test_rendered_quote_keeps_the_spaces_around_highlighted_terms(self):
-        from app.streamlit_app import quote_html
-        excerpt = pipeline.Excerpt(1, "2020-05", "I have a severe allergy to peanuts and it is not a problem")
-        html = quote_html(excerpt, ["allergy", "peanuts"])
-        self.assertRegex(html, r"severe <mark[^>]*>allergy</mark> to <mark[^>]*>peanuts</mark> and it is not a problem")
-        card = pipeline.Claim("Staff took my  peanut\nallergy seriously", "support", [excerpt])
-        from app.streamlit_app import claim_html
-        self.assertIn("Staff took my peanut allergy seriously", claim_html(card, ["peanut"], guarded=True))
-
-    def test_clean_address_drops_only_a_leading_restaurant_name(self):
-        from app.streamlit_app import clean_address
-        self.assertEqual(clean_address("Pig and Khao", "Pig and Khao, 68 Clinton St, New York, NY 10002"), "68 Clinton St, New York, NY 10002")
-        self.assertEqual(clean_address("Pig and Khao", "pig  and khao, 68 Clinton St"), "68 Clinton St")  # case and spaces
-        self.assertEqual(clean_address("Mission", "1 Main St, Mission Hills"), "1 Main St, Mission Hills")  # not a prefix
-        self.assertEqual(clean_address("Mission", "Mission Chinese Food, 171 E Broadway"), "Mission Chinese Food, 171 E Broadway")
-        self.assertEqual(clean_address("", "1 Main St"), "1 Main St")
-        self.assertEqual(clean_address("X", None), "")
-
-    def test_card_body_does_not_repeat_the_restaurant_name_from_the_address(self):
-        class Named(FakeRetriever):
-            def info(self, gid):
-                m = dict(super().info(gid))
-                m["address"] = f"{m['name']}, 1 Main St, New York, NY"
-                return m
-        at = self.search(self.start(retrievers={"semantic": Named()}))
-        first = self.results(at)[0]
-        self.assertNotIn("Place 1", first.caption[0].value)
-        self.assertIn("1 Main St", first.caption[0].value)
-
-    def test_cache_notice_is_neutral_grey_with_an_accent_not_streamlit_blue(self):
-        from app.streamlit_app import CSS
-        rule = CSS[CSS.index(".notice-cache"):].split("}")[0]
-        self.assertIn("#F5F5F4", rule)  # neutral grey
-        self.assertIn("border-left: 5px solid #C2410C", rule)  # the app's accent
-
-    def test_show_all_evidence_expander_holds_the_remaining_evidence(self):
-        at = self.search(self.start(FakeClient(location=None, summary="mixed")))
-        first = self.results(at)[0]
-        inner = next(e for e in first.expander if e.label.startswith("Show all evidence"))
-        self.assertFalse(inner.proto.expanded)
-        self.assertIn("(1 more claim · 2 excerpts)", inner.label)
-        # mixed evidence: the warning claim is the top claim and the positive one is under "Show all evidence"
-        self.assertEqual(self.text(first).count('class="claim '), 2)  # top claim outside + the other inside the expander
-        top_markdown = [m.value for m in first.markdown if 'class="claim ' in m.value]
-        self.assertIn("claim-warning", top_markdown[0])
-        self.assertIn("Show all evidence", " ".join(e.label for e in first.expander))
-        self.assertIn("All retrieved excerpts (2)", self.text(inner))
-        self.assertIn("claim-positive", self.text(inner))
-
-    def test_explain_keeps_result_open(self):
-        at = self.search(self.start())
-        explain = [b for b in at.button if b.label == "Explain"]
-        self.assertEqual(len(explain), 1)  # rank 4 only; top 3 summarized automatically
-        explain[0].click()
+    def click(self, at, label):
+        self.button(at, label).click()
         at.run()
         self.assertFalse(at.exception, at.exception)
-        results = self.results(at)
-        self.assertEqual([e.proto.expanded for e in results], [True, False, False, True])
-        self.assertNotIn("Summary on request", results[3].label)
-        self.assertIn("One reviewer reported", self.text(results[3]))
-        self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
-        at.run()  # an unrelated rerun keeps it open
-        self.assertTrue(self.results(at)[3].proto.expanded)
-        events = [line.split('"event": "')[1].split('"')[0] for line in self.log_path.read_text().splitlines()]
-        self.assertEqual(events, ["search", "explain"])  # both logged to the temp file
+        return at
 
-    def test_expand_all_collapse_all_and_new_search_resets(self):
-        at = self.search(self.start())
-        next(b for b in at.button if b.label == "Expand all").click()
-        at.run()
-        self.assertEqual([e.proto.expanded for e in self.results(at)], [True] * 4)
-        at.run()
-        self.assertEqual([e.proto.expanded for e in self.results(at)], [True] * 4)  # survives reruns
-        next(b for b in at.button if b.label == "Collapse all").click()
-        at.run()
-        self.assertEqual([e.proto.expanded for e in self.results(at)], [False] * 4)
-        next(b for b in at.button if b.label == "Expand all").click()
-        at.run()
-        self.search(at, "vegan brunch")  # a new search starts with only the top card open
-        self.assertEqual([e.proto.expanded for e in self.results(at)], [True, False, False, False])
+    @staticmethod
+    def button(at, label):
+        return next(b for b in at.button if b.label == label)
 
-    def test_demo_mode_serves_a_labeled_cached_result(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            outcome, _ = pipeline.run_search("vegan options for a group", "Both", "semantic_capped",
-                                             retriever=FakeRetriever(), client=pipeline.UsageRecorder(FakeClient()),
-                                             model="openai/gpt-oss-20b", log_path=None)
-            demo_cache.save_outcome(outcome, tmp)
-            real = demo_cache.CACHE_DIR
-            with patch.object(demo_cache, "CACHE_DIR", Path(tmp)):
-                client = FakeClient()
-                at = self.start(client)
-                next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
-                self.search(at)
-                self.assertEqual(client.calls, [])  # no model call
-                notices = [m.value for m in at.markdown if 'class="notice-cache"' in m.value]
-                self.assertEqual(len(notices), 1)  # one notice, with the saved date, in the neutral style (not st.info blue)
-                self.assertRegex(notices[0], r"saved \d{4}-\d{2}-\d{2}")
-                self.assertFalse(any("cached demo result" in i.value for i in at.info))
-                self.assertFalse(any("cached demo result" in w.value.lower() for w in at.warning))
-                self.assertTrue(any(c.value.endswith("cached demo result") for c in at.caption))
-                self.assertEqual(len([b for b in at.button if b.label == "Explain"]), 0)
+    @staticmethod
+    def html(at):
+        return " ".join(m.value for m in at.markdown)
 
-    def test_example_buttons_fill_the_form_and_run_the_search(self):
-        client = FakeClient(location=None)
-        at = self.start(client)
+    @staticmethod
+    def plain(at):
+        return re.sub(r"<[^>]+>", " ", " ".join(m.value for m in at.markdown))
+
+    @staticmethod
+    def method_box(at):
+        return next(s for s in at.selectbox if s.label == "Retrieval method")
+
+    # ---- home screen -------------------------------------------------------------------------------------------
+    def test_home_screen_content(self):
+        at = self.start()
+        html, plain = self.html(at), self.plain(at)
+        self.assertIn("NYC Restaurant Discovery", plain)
+        self.assertIn("Manhattan + Brooklyn · Google reviews to Sept 2021", plain)
+        self.assertIn("Find restaurants whose reviews show they take your food allergy seriously.", plain)
+        self.assertIn("Ask in plain English. We read 605,540 review passages from 15,447 restaurants and show what "
+                      "reviewers actually said, so you know where to look and where to think twice.", plain)
+        self.assertEqual(at.text_input[0].placeholder, "e.g. restaurant careful about peanut allergies")
+        self.assertIn("Built for dietary needs and food allergies. It doesn&#x27;t check opening hours, prices or availability.", html)
+        self.assertEqual(html.count("Reviews are historical and anecdotal, not safety guarantees. "
+                                    "For allergies, always confirm with the restaurant before you order."), 1)
+
+    def test_home_chips_in_two_labeled_rows_and_no_halal_chinese(self):
+        at = self.start()
+        html = self.html(at)
+        self.assertLess(html.index("Allergies"), html.index("Diets and groups"))
         labels = [b.label for b in at.button if b.label != "Search"]
-        self.assertEqual(labels[:4], ["Vegan group", "Peanut allergy", "Celiac safe", "Halal Chinese"])
-        self.button(at, "Peanut allergy").click()
-        at.run()
-        self.assertFalse(at.exception, at.exception)
-        self.assertEqual(at.text_input[0].value, "restaurant careful about peanut allergies")
-        self.assertEqual(at.pills[0].value, "Both")
-        self.assertEqual(len(self.results(at)), 4)  # the search ran without pressing Search
-        self.assertEqual(client.calls[0], "parsed_query")
-        self.button(at, "Halal Chinese").click()
-        at.run()
-        self.assertEqual((at.text_input[0].value, at.pills[0].value), ("halal chinese food", "Manhattan"))
+        self.assertEqual(labels, ["Peanut", "Tree nut", "Shellfish", "Sesame", "Dairy-free", "Celiac", "Gluten-free",
+                                  "Vegetarian", "Halal", "Kosher", "Vegan + gluten-free group"])
+        self.assertNotIn("Halal Chinese", labels)
+        self.assertEqual([label for label, _ in examples.ALLERGY_CHIPS],
+                         ["Peanut", "Tree nut", "Shellfish", "Sesame", "Dairy-free", "Celiac"])
 
-    def test_compare_mode_shows_two_columns_with_rank_arrows(self):
-        client = FakeClient(location=None)
-        at = self.start(client, retrievers={"semantic_stance": FakeStance()})
-        at.checkbox(key="compare_mode").check()
-        self.search(at)
-        self.assertFalse(at.exception, at.exception)
-        self.assertEqual(len(self.results(at)), 0)  # no result expanders: two plain columns
-        left, right = at.columns[-2], at.columns[-1]
-        self.assertIn("semantic_capped", self.text(left))
-        self.assertIn("semantic_capped_stance", self.text(right))
-        self.assertIn(":green[▲ 3] **1.** Place 4", self.text(right))
-        self.assertIn(":red[▼ 3] **4.** Place 1", self.text(right))
-        self.assertNotIn("▲", self.text(left))
-        self.assertEqual(client.calls, ["parsed_query"])  # one parse, no summaries
-
-    def test_compare_mode_falls_back_to_the_base_ranking_with_a_notice(self):
-        from src.llm.groq_client import LLMAPIError
-        at = self.start(retrievers={"semantic_stance": FakeStance(fail=LLMAPIError("x", category="rate_limit"))})
-        at.checkbox(key="compare_mode").check()
-        self.search(at)
-        self.assertFalse(at.exception, at.exception)
-        self.assertTrue(any("stance ranking is unavailable" in i.value for i in at.info))
-        self.assertIn("Place 1", self.text(at.columns[-1]) + self.text(at.columns[-2]))
-
-    def test_normal_search_clears_a_previous_comparison(self):
-        at = self.start(retrievers={"semantic_stance": FakeStance()})
-        at.checkbox(key="compare_mode").check()
-        self.search(at)
-        self.assertIn("last_compare", at.session_state)
-        at.checkbox(key="compare_mode").uncheck()
-        self.search(at)
-        self.assertNotIn("last_compare", at.session_state)
-        self.assertEqual(len(self.results(at)), 4)
-
-    def test_evidence_bar_in_an_opened_stance_result_keeps_the_allergy_guard(self):
-        at = self.start(FakeClient(location=None), retrievers={"semantic_stance": FakeStance()})
-        at.selectbox[0].select("semantic_capped_stance")
-        self.search(at, "peanut allergy friendly dinner")
-        self.assertFalse(at.exception, at.exception)
-        outcome, _ = at.session_state["last_search"]
-        for v in outcome.results:
-            at.session_state[f"open_{outcome.request_id}_{v.gmap_id}"] = True
-        at.run()
-        first = self.results(at)[0]
-        body = self.text(first)
-        self.assertIn("2 accommodate / 1 warns / 1 mention", body)
-        self.assertIn("🟩🟩🟥🟨", body)
-        self.assertTrue(any("Strongest warning" in w.value and "Staff were not careful." in w.value for w in first.warning))
-        self.assertIn(pipeline.ALLERGY_NOTE, " ".join(w.value for w in first.warning))  # allergy note unchanged
-        for e in self.results(at):
-            self.assertNotIn("Supported", e.label)
-            self.assertNotIn("✓", e.label)
-
-    def test_excerpts_highlight_query_terms_and_escape_review_html(self):
-        class Evil(FakeRetriever):
-            def search(self, *a, **kw):
-                out = super().search(*a, **kw)
-                for r in out:
-                    r.evidence_snippets[0].text = "<script>alert(1)</script> Great vegan options & more"
-                return out
-        at = self.start(retrievers={"semantic": Evil(), "semantic_stance": Evil()})
-        at = self.search(at)
-        outcome, _ = at.session_state["last_search"]
-        at.session_state[f"open_{outcome.request_id}_{outcome.results[0].gmap_id}"] = True
-        at.run()
-        body = self.text(self.results(at)[0])
-        self.assertIn('<mark style=', body)
-        self.assertRegex(body, r">vegan</mark>")
-        self.assertIn("&lt;script&gt;", body)
-        self.assertNotIn("<script", body)
-
-    def test_no_evidence_bar_without_stance_labels(self):
-        at = self.search(self.start())
-        outcome, _ = at.session_state["last_search"]
-        at.session_state[f"open_{outcome.request_id}_{outcome.results[0].gmap_id}"] = True
-        at.run()
-        self.assertNotIn("accommodate", self.text(self.results(at)[0]))
-        self.assertFalse(any("Strongest warning" in w.value for w in at.warning))
-
-    def test_sidebar_explains_stages_data_badges_and_the_anecdote_note(self):
-        with patch.object(pipeline, "data_stats", lambda: {"restaurants": 15447, "reviews": 2156429, "chunks": 605540}):
-            at = self.start()
-        side = " ".join(m.value for m in at.sidebar.markdown) + " " + " ".join(i.value for i in at.sidebar.info)
-        for needle in ("1. Understand", "2. Retrieve", "3. Re-rank (optional)", "4. Summarize", "15,447 restaurants",
-                       "2,156,429 cleaned Google reviews", "605,540 review passages", "✓ Supported", "◐ Mixed evidence",
-                       "⚠ Reviews report problems", "○ Insufficient evidence", "Low evidence",
-                       "Review text is anecdotal", "allergy suitability cannot be confirmed from reviews"):
-            self.assertIn(needle, side)
-
-    def test_sidebar_without_data_files_still_renders(self):
-        with patch.object(pipeline, "data_stats", lambda: {}):
-            at = self.start()
-        side = " ".join(m.value for m in at.sidebar.markdown)
-        self.assertIn("How it works", " ".join(h.value for h in at.sidebar.header))
-        self.assertNotIn("The data:", side)
-
-    def test_staged_progress_replaces_the_spinner(self):
-        with patch.object(pipeline, "data_stats", lambda: {"chunks": 605540}):
-            at = self.search(self.start(FakeClient(location=None)))
-        self.assertEqual(len(at.status), 1)
-        status = at.status[0]
-        self.assertEqual((status.label, status.state), ("Done", "complete"))
-        lines = self.text(status)
-        for stage in ("Understanding your request: done", "Searching 606K review passages: done", "Reading reviews: done",
-                      "Summarizing: done"):
-            self.assertIn(stage, lines)
-        self.assertLess(lines.index("Understanding"), lines.index("Searching"))
-        self.assertLess(lines.index("Reading reviews"), lines.index("Summarizing"))
-
-    def test_rate_limit_finishes_with_a_notice_and_the_results(self):
-        at = self.search(self.start(FakeClient(location=None, summary="rate_limit")))
-        self.assertEqual(at.status[0].state, "complete")
-        self.assertIn("some steps were unavailable", at.status[0].label)
-        self.assertTrue(any("Some summaries are unavailable" in i.value for i in at.info))
-        self.assertEqual(len(self.results(at)), 4)  # excerpts still shown
-
-    def test_unexpected_error_turns_the_status_red_and_is_not_swallowed(self):
-        class Boom(FakeRetriever):
-            def search(self, *a, **kw):
-                raise RuntimeError("index exploded")
-        at = self.start(retrievers={"semantic": Boom()})
-        at.text_input[0].input("vegan food")
-        self.button(at, "Search").click()
-        at.run()
-        self.assertEqual(at.status[0].state, "error")
-        self.assertTrue(at.exception)
-
-    def test_compare_mode_shows_the_rerank_stage(self):
-        at = self.start(FakeClient(location=None), retrievers={"semantic_stance": FakeStance()})
-        at.checkbox(key="compare_mode").check()
-        self.search(at)
-        self.assertEqual(at.status[0].state, "complete")
-        self.assertIn("Re-ranking by what the reviews say: done", self.text(at.status[0]))
-
-    def test_demo_mode_shows_the_cache_stage_and_one_notice(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            out, _ = pipeline.run_search("vegan options for a group", "Both", "semantic_capped", retriever=FakeRetriever(),
-                                         client=pipeline.UsageRecorder(FakeClient()), model="openai/gpt-oss-20b", log_path=None)
-            demo_cache.save_outcome(out, tmp)
-            with patch.object(demo_cache, "CACHE_DIR", Path(tmp)):
-                at = self.start(FakeClient())
-                next(c for c in at.checkbox if c.label.startswith("Demo mode")).check()
-                self.search(at)
-        self.assertEqual(at.status[0].label, "Done")
-        self.assertIn("Loading the saved demo result: done", self.text(at.status[0]))
-        self.assertEqual(len([m for m in at.markdown if 'class="notice-cache"' in m.value]), 1)
-        self.assertEqual(len([i for i in at.info if "cached demo result" in i.value]), 0)
-
-    def test_full_caveat_only_above_allergy_results(self):
-        plain = self.search(self.start(), "vegan options for a group")
-        self.assertEqual([w.value for w in plain.warning], [])
-        allergy = self.search(self.start(), "peanut allergy friendly dinner")
-        caveat = [w.value for w in allergy.warning if "always confirm with the restaurant" in w.value]
-        self.assertEqual(len(caveat), 1)
-        self.assertIn("through September 2021", caveat[0])
-
-    def test_search_box_then_example_chips_then_borough_pills(self):
+    def test_where_selector_defaults_to_both_boroughs(self):
         at = self.start()
-        labels = [b.label for b in at.button]
-        self.assertEqual(labels[:5], ["Search", "Vegan group", "Peanut allergy", "Celiac safe", "Halal Chinese"])
-        self.assertEqual(at.pills[0].label, "Borough")
+        pills = at.pills[0]
+        self.assertEqual((pills.label, list(pills.options), pills.value), ("Where", ["Both boroughs", "Manhattan", "Brooklyn"], "Both"))
 
-    def test_request_chips_appear_above_the_results(self):
-        at = self.search(self.start(), "vegan options for a group")
-        chip_block = next(m.value for m in at.markdown if 'class="chips"' in m.value)
-        self.assertIn("chip-diet", chip_block)
-        self.assertIn("vegan", chip_block)
-        self.assertIn("Manhattan + Brooklyn", chip_block)
-        self.assertNotIn("restaurants", chip_block)  # the count is the heading, not a chip
-        self.assertEqual(at.subheader[0].value, "4 restaurants")
+    def test_three_step_strip_only_before_the_first_search(self):
+        at = self.start()
+        plain = self.plain(at)
+        for text in ("UNDERSTAND", "RETRIEVE", "SUMMARIZE", "quotes the review behind every claim"):
+            self.assertIn(text, plain)
+        self.assertNotIn("UNDERSTAND", self.plain(self.search(at)))
 
-    def test_chips_show_a_named_borough_scope(self):
-        at = self.search(self.start(FakeClient(location="Brooklyn")), "vegan options for a group in Brooklyn")
-        block = next(m.value for m in at.markdown if 'class="chips"' in m.value)
-        self.assertIn("📍 Brooklyn</span>", block)
-        self.assertNotIn("Manhattan + Brooklyn", block)
+    def test_no_sidebar_legend_or_old_disclaimers(self):
+        at = self.search(self.start())
+        self.assertEqual(len(at.sidebar.markdown), 0)
+        text = self.plain(at) + " ".join(c.value for c in at.caption)
+        for old in ("Reading the badges", "Of the top", "Ranking reflects relevance, not safety", "Summary on request",
+                    "Supported", "Preferences like opening hours"):
+            self.assertNotIn(old, text)
 
-    def test_borough_pill_filters_and_deselecting_means_both(self):
+    # ---- evaluation tools ---------------------------------------------------------------------------------------
+    def test_evaluation_tools_hold_compare_method_low_evidence_and_demo_mode_and_start_closed(self):
+        at = self.start()
+        panel = next(e for e in at.expander if e.label == "Evaluation tools")
+        self.assertFalse(panel.proto.expanded)
+        self.assertEqual([c.label for c in at.checkbox], ["Compare rankings", "Include restaurants with fewer than 5 reviews", "Demo mode"])
+        self.assertEqual(self.method_box(at).label, "Retrieval method")
+        self.assertEqual([t.label for t in at.toggle], ["Evaluation tools"])
+
+    def test_the_header_toggle_opens_the_expander_and_back(self):
+        at = self.start()
+        at.toggle[0].set_value(True).run()
+        self.assertTrue(next(e for e in at.expander if e.label == "Evaluation tools").proto.expanded)
+        at.toggle[0].set_value(False).run()
+        self.assertFalse(next(e for e in at.expander if e.label == "Evaluation tools").proto.expanded)
+
+    def test_retrieval_method_defaults_to_semantic_capped_in_every_new_session(self):
+        for _ in range(3):
+            at = self.start()
+            self.assertEqual(self.method_box(at).value, "semantic_capped")
+            self.assertEqual(list(self.method_box(at).options)[1], "chunk_tfidf_capped")  # the option that once showed
+
+    def test_a_stored_choice_that_is_no_longer_offered_falls_back_to_the_default_not_to_the_option_order(self):
+        at = self.start()
+        at.session_state["method"] = "chunk_tfidf_capped"
+        with patch.object(pipeline, "available_methods", lambda: ["semantic_log", "semantic_capped", "semantic_capped_stance"]):
+            at.run()
+        self.assertEqual(self.method_box(at).value, "semantic_capped")
+
+    def test_without_semantic_capped_a_semantic_method_is_preferred_over_a_tfidf_baseline(self):
+        with patch.object(pipeline, "available_methods", lambda: ["chunk_tfidf_log", "chunk_tfidf_capped", "doc_tfidf", "semantic_log"]):
+            at = self.start()
+        self.assertEqual(self.method_box(at).value, "semantic_log")
+
+    def test_the_chosen_method_is_used_for_the_search(self):
         retriever = FakeRetriever()
         at = self.start(retrievers={"semantic": retriever})
-        at.pills[0].set_value("Brooklyn")
+        self.method_box(at).select("semantic_log").run()
         self.search(at)
-        self.assertEqual(retriever.calls[-1]["boroughs"], ["Brooklyn"])
-        at.pills[0].set_value(None)
-        self.search(at)
-        self.assertIsNone(retriever.calls[-1]["boroughs"])
+        self.assertEqual(retriever.calls[-1]["density_mode"], "log")
 
-    def test_advanced_settings_expander_holds_method_and_low_evidence(self):
-        at = self.start()
-        advanced = next(e for e in at.expander if e.label == "Advanced settings")
-        self.assertFalse(advanced.proto.expanded)
-        self.assertEqual([w.label for w in advanced.selectbox], ["Retrieval method"])
-        self.assertEqual([w.label for w in advanced.checkbox], ["Include restaurants with fewer than 5 reviews"])
-        self.assertEqual((advanced.selectbox[0].value, advanced.checkbox[0].value), (pipeline.DEFAULT_METHOD, False))
-        main_checkboxes = [c.label for c in at.checkbox if c not in advanced.checkbox]
-        self.assertEqual(main_checkboxes[0], "Compare rankings")
-        self.assertTrue(main_checkboxes[1].startswith("Demo mode"))
-        self.assertEqual([r for r in self.results(at)], [])  # the expander is not mistaken for a result
-
-    def test_settings_inside_advanced_still_apply(self):
-        retriever = FakeRetriever(gids=("G1", "G2", "G3", "G4", "G5", "G6"))
+    def test_low_evidence_checkbox_applies(self):
+        retriever = FakeRetriever()
         at = self.start(retrievers={"semantic": retriever})
         next(c for c in at.checkbox if c.label.startswith("Include restaurants")).check()
         self.search(at)
         self.assertTrue(retriever.calls[-1]["include_low_evidence"])
 
-    def test_examples_are_the_demo_queries(self):
-        from app.streamlit_app import EXAMPLES
-        self.assertEqual([(q, b) for _, q, b in EXAMPLES], [(q, b) for q, b, _ in demo_cache.DEMO_QUERIES[:4]])
+    # ---- searching ----------------------------------------------------------------------------------------------
+    def test_a_search_replaces_the_home_content_with_the_results_screen(self):
+        at = self.search(self.start())
+        plain = self.plain(at)
+        self.assertIn("We understood:", plain)
+        self.assertIn("What reviewers say about vegan options", plain)
+        self.assertNotIn("Find restaurants whose reviews show", plain)
+        self.assertEqual(at.pills, [])  # the Where selector belongs to the home screen
+        self.assertEqual(at.status[0].label, "Done")
 
-    def test_missing_key_shows_setup_message_and_still_searches(self):
-        setup = {"category": "configuration", "code": "invalid_api_key_configuration",
-                 "message": pipeline.ERROR_MESSAGES["configuration"]}
-        at = self.search(self.start(client=None, setup_error=setup))
-        self.assertIn("GROQ_API_KEY", at.error[0].value)
-        self.assertIn("Search still works", at.error[0].value)
-        self.assertTrue(self.results(at)[0].label.startswith("1. Place 1"))
-        self.assertIn("Summary on request", self.results(at)[0].label)
+    def test_understood_chips_name_the_diets_allergens_and_borough_and_change_goes_home(self):
+        at = self.search(self.start(ParsedClient(allergens=["peanut"], dietary_restrictions=["vegan"])))
+        html = self.html(at)
+        self.assertIn("chip chip-diet\">🥗 vegan", html)
+        self.assertIn("chip chip-allergen\">⚠ peanut", html)
+        self.assertIn("📍 Manhattan + Brooklyn", html)
+        self.click(at, "Change")
+        self.assertIn("Find restaurants whose reviews show", self.plain(at))
+        self.assertEqual(at.text_input[0].value, "vegan options for a group")  # the request is still in the box
 
-    def test_empty_query_and_markdown_escaping(self):
+    def test_understood_chip_text_is_escaped(self):
+        at = self.search(self.start(ParsedClient(allergens=["pea<i>nut"])))
+        html = self.html(at)
+        self.assertNotIn("pea<i>nut", html)
+        self.assertIn("pea&lt;i&gt;nut", html)
+
+    def test_count_line_helper_line_and_trace_with_the_real_timings(self):
+        at = self.search(self.start())
+        plain = self.plain(at)
+        self.assertRegex(plain, r"4 restaurants checked · 4 mention vegan options · 0 report problems · 0 not enough evidence")
+        self.assertIn("Stars show how much people liked the food. The columns below show what reviewers said about your need. "
+                      "Sorted by how strongly reviews match it.", plain)
+        self.assertRegex(plain, r"How this was found: 1 Understood · \d+\.\d s → 2 Searched 605,540 passages · \d+\.\d s → "
+                                r"3 Summarized with quotes · \d+\.\d s")
+
+    def test_two_columns_with_icons_and_sublines_for_allergy_and_diet_requests(self):
+        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        html = self.html(at)
+        self.assertIn('<div class="t">✓ Reviews mention allergy care</div><div class="s">Worth a closer look. Confirm with the restaurant.</div>', html)
+        self.assertIn('<div class="t">⚠ Reviews report problems</div><div class="s">Reviewers describe allergy trouble here. Read before you go.</div>', html)
+        self.assertIn("What reviewers say about peanut allergies", html)
+        diet = self.search(self.start(), "vegan options")
+        self.assertIn("✓ Reviews mention vegan options", self.html(diet))
+
+    def test_card_has_name_borough_rating_one_highlighted_quote_review_pill_and_evidence_expander(self):
+        at = self.search(self.start())
+        html = self.html(at)
+        card = next(m.value for m in at.markdown if 'class="care-card"' in m.value)
+        self.assertIn('<p class="card-name">Place 1</p>', card)
+        self.assertRegex(card, r'card-meta">(Brooklyn|Manhattan) · ★ \d\.\d<')
+        self.assertEqual(card.count("<blockquote"), 1)
+        self.assertIn("<mark", card)  # matched words highlighted
+        self.assertRegex(card, r'pill-n one">Based on 1 review<')
+        self.assertEqual([e.label for e in at.expander].count("See the evidence"), 4)
+
+    def test_the_evidence_view(self):
+        at = self.search(self.start())
+        body = next(m.value for m in at.markdown if "AI summary of the reviews below" in m.value)
+        self.assertIn("badge badge-care", body)
+        self.assertIn("✓ Reviews mention vegan options", body)
+        self.assertIn("One reviewer reported vegan options for a group.", body)
+        self.assertIn("1. 2019-", body)
+        self.assertIn("2. 2020-", body)
+        self.assertIn("Reviews are anecdotal and may be out of date.", body)
+        self.assertEqual(body.count('class="caveat"'), 1)
+        self.assertIn('<details class="found"><summary>How this restaurant was found</summary>', body)
+        for fact in ("Method: semantic_capped", "Rank 1 of 4", "Diets: vegan"):
+            self.assertIn(fact, body)
+
+    def test_allergy_evidence_view_has_the_confirm_with_the_restaurant_caveat(self):
+        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        body = next(m.value for m in at.markdown if "AI summary of the reviews below" in m.value)
+        self.assertIn("Confirm with the restaurant before you order.", body)
+
+    def test_the_allergy_guard_never_says_supported_or_safe(self):
+        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        text = self.html(at) + " ".join(c.value for c in at.caption)
+        self.assertNotRegex(text, r"(?i)supported")
+        self.assertNotRegex(text, r"(?i)\bsafe\b")
+        self.assertNotIn("claim-positive", text)
+
+    def test_empty_problems_column_message(self):
+        at = self.search(self.start(ParsedClient(allergens=["peanut"])), "restaurant careful about peanut allergies")
+        self.assertIn("No restaurant in the top results has reviews reporting allergy problems. That is not a safety guarantee.", self.html(at))
+
+    def test_a_problems_only_restaurant_is_in_the_right_column_only(self):
+        at = self.search(self.start(ProblemsClient(location=None)))
+        html = self.html(at)
+        self.assertEqual(html.count('class="problems-card"'), 4)
+        self.assertEqual(html.count('class="care-card"'), 0)
+        self.assertIn("4 restaurants checked · 0 mention vegan options · 4 report problems", self.plain(at))
+
+    def test_a_mixed_restaurant_is_in_both_columns_with_its_own_quote_and_a_tag(self):
+        at = self.search(self.start(FakeClient(summary="mixed", location=None)))
+        html = self.html(at)
+        self.assertEqual(html.count('class="care-card"'), 4)
+        self.assertEqual(html.count('class="problems-card"'), 4)
+        self.assertEqual(html.count('class="tag-disagree"'), 8)
+        self.assertIn("Also listed under “Reviews report problems”", html)
+        self.assertIn("Also listed under “Reviews mention vegan options”", html)
+        care = next(m.value for m in at.markdown if 'class="care-card"' in m.value)
+        problems = next(m.value for m in at.markdown if 'class="problems-card"' in m.value)
+        self.assertIn("Great", care)
+        self.assertIn("nothing on the menu was", problems)
+        self.assertIn("4 listed in both columns", self.plain(at))
+
+    def test_restaurants_without_a_summary_are_listed_under_not_enough_evidence_as_not_summarized(self):
+        retriever = FakeRetriever(gids=("G1", "G2", "G3", "G4", "G6"))
+        for i in range(7, 13):
+            pipeline_meta = {"name": f"Place {i}", "borough": "Brooklyn", "address": "", "avg_rating": 4.0,
+                             "num_clean_reviews": 50, "low_evidence": False}
+            from tests.test_app_pipeline import META
+            META[f"G{i}"] = pipeline_meta
+        retriever = FakeRetriever(gids=tuple(f"G{i}" for i in (1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12)))
+        at = self.search(self.start(retrievers={"semantic": retriever}))
+        more = next(e for e in at.expander if "more restaurants matched, but reviews don't say enough about" in e.label)
+        self.assertEqual(more.label, "4 more restaurants matched, but reviews don't say enough about vegan options")
+        text = " ".join(m.value for m in more.markdown)
+        self.assertEqual(text.count("not summarized"), 4)
+        self.assertNotIn("claim", text)
+        self.assertIn("6 mention vegan options", self.plain(at))  # the live top 6 were summarized
+
+    def test_no_evidence_state_b(self):
+        at = self.search(self.start(NoEvidenceClient(location=None)), "vegan options")
+        plain = self.plain(at)
+        self.assertIn("Reviews don’t say much about vegan options here yet", plain)
+        self.assertIn("almost none of their reviews mention vegan options. That is not a sign they are safe or unsafe. "
+                      "It means we have no evidence either way.", plain)
+        self.assertNotIn("✓ Reviews mention", plain)
+        labels = [b.label for b in at.button]
+        self.assertIn("A broader request", labels)
+        self.assertIn("Peanut", labels)
+        self.assertEqual(len(at.expander) and [e.label for e in at.expander if "more restaurants matched" in e.label][0][:2], "4 ")
+
+    def test_state_b_suggestion_runs_a_new_search(self):
+        at = self.search(self.start(NoEvidenceClient(location=None)), "vegan options")
+        self.click(at, "A broader request")
+        self.assertEqual(at.text_input[0].value, "vegan restaurants")
+
+    def test_summary_unavailable_state_a_and_retry(self):
+        client = FakeClient(summary="rate_limit", location=None)
+        at = self.search(self.start(client))
+        html = self.html(at)
+        self.assertEqual(html.count("The AI summary isn&#x27;t available right now. Here are the most relevant reviews we found."), 4)
+        self.assertNotIn('class="care-card"', html)
+        self.assertEqual([b.label for b in at.button].count("Try the summary again"), 4)
+        self.assertIn("4 summary unavailable", self.plain(at))
+        self.assertEqual(len(at.error) + len([e for e in at.exception]), 0)
+        client.summary = "ok"  # the provider recovered
+        self.click(at, "Try the summary again")
+        self.assertEqual(self.html(at).count('class="care-card"'), 1)
+        self.assertEqual([b.label for b in at.button].count("Try the summary again"), 3)
+
+    def test_request_about_hours_is_state_c_with_no_search_and_no_model_call(self):
+        retriever = FakeRetriever()
+        at = self.start(retrievers={"semantic": retriever})
+        self.search(at, "halal restaurants open late")
+        plain = self.plain(at)
+        self.assertIn("This app finds dietary and allergy information, not hours or prices", plain)
+        self.assertIn("We understood “open late” but can’t check it. Here is what we can answer from reviews: halal restaurants", plain)
+        self.assertEqual((self.client.calls, retriever.calls), ([], []))
+        self.click(at, "Search the dietary part")
+        self.assertEqual(at.text_input[0].value, "halal restaurants")
+        self.assertIn("What reviewers say about", self.plain(at))
+        self.assertEqual(retriever.calls[-1]["query"], "halal restaurants")
+
+    def test_state_c_without_a_dietary_part_has_no_button(self):
+        at = self.search(self.start(), "what time does it open")
+        self.assertIn("Try describing a diet or an allergy", self.plain(at))
+        self.assertNotIn("Search the dietary part", [b.label for b in at.button])
+
+    def test_a_missing_key_shows_the_setup_message_and_still_searches(self):
+        err = {"category": "configuration", "code": "x", "message": "The language model is not configured."}
+        at = self.search(self.start(setup_error=err))
+        self.assertIn("not configured", at.error[0].value)
+        self.assertIn("What reviewers say about", self.plain(at))
+
+    def test_empty_query_warns(self):
         at = self.start()
         self.button(at, "Search").click()
         at.run()
-        self.assertIn("Type what you are looking for", " ".join(w.value for w in at.warning))
-        from app.streamlit_app import md  # noqa: imported after AppTest so st is configured
-        self.assertEqual(md("$3 *happy* hour"), r"\$3 \*happy\* hour")
+        self.assertEqual(at.warning[0].value, "Type what you are looking for first.")
+
+    def test_restaurant_names_and_review_text_are_escaped(self):
+        from tests.test_app_pipeline import META
+        META["G1"] = {**META["G1"], "name": "<script>x</script> Cafe"}
+        self.addCleanup(META.__setitem__, "G1", {**META["G1"], "name": "Place 1"})
+        at = self.search(self.start())
+        html = self.html(at)
+        self.assertNotIn("<script>", html)
+        self.assertIn("&lt;script&gt;x&lt;/script&gt; Cafe", html)
+
+    # ---- chips and demo mode ---------------------------------------------------------------------------------------
+    def test_a_chip_fills_the_box_and_runs_the_search(self):
+        at = self.start()
+        self.click(at, "Peanut")
+        self.assertEqual(at.text_input[0].value, "restaurant careful about peanut allergies")
+        self.assertIn("We understood:", self.plain(at))
+
+    def test_a_chip_is_served_from_the_saved_result_without_a_model_call(self):
+        query = "restaurant careful about peanut allergies"
+        outcome, _ = pipeline.run_search(query, "Both", "semantic_capped", retriever=FakeRetriever(),
+                                         client=pipeline.UsageRecorder(FakeClient()), model="m", log_path=None)
+        demo_cache.save_outcome(outcome, self.cache_dir)
+        client = FakeClient(location=None)
+        at = self.start(client)
+        self.click(at, "Peanut")
+        self.assertEqual(client.calls, [])
+        self.assertIn("a saved result from", self.plain(at))
+        self.assertIn("(no live search was run)", self.plain(at))
+
+    def test_demo_mode_without_a_saved_result_runs_live_without_a_banner(self):
+        at = self.start()
+        next(c for c in at.checkbox if c.label == "Demo mode").check()
+        self.search(at, "tacos for a vegan")
+        self.assertEqual(self.client.calls[0], "parsed_query")  # live
+        self.assertEqual(len(at.info), 0)
+        self.assertNotIn("Demo mode is on", self.html(at) + " ".join(c.value for c in at.caption))
+        self.assertNotIn("notice-cache", self.html(at))
+
+    def test_demo_mode_serves_a_saved_result(self):
+        outcome, _ = pipeline.run_search("vegan options", "Both", "semantic_capped", retriever=FakeRetriever(),
+                                         client=pipeline.UsageRecorder(FakeClient()), model="m", log_path=None)
+        demo_cache.save_outcome(outcome, self.cache_dir)
+        client = FakeClient(location=None)
+        at = self.start(client)
+        next(c for c in at.checkbox if c.label == "Demo mode").check()
+        self.search(at, "vegan options")
+        self.assertEqual(client.calls, [])
+        self.assertIn("a saved result from", self.plain(at))
+
+    # ---- compare ---------------------------------------------------------------------------------------------------
+    def test_compare_mode_shows_two_rankings(self):
+        at = self.start(retrievers={"semantic_stance": FakeStance()})
+        next(c for c in at.checkbox if c.label == "Compare rankings").check()
+        self.search(at)
+        plain = self.plain(at)
+        self.assertIn("Compare rankings", plain)
+        self.assertIn("semantic_capped_stance", plain)
 
 
 if __name__ == "__main__":
