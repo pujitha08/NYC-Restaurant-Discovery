@@ -21,9 +21,12 @@ from collections import Counter
 import hashlib
 import json
 import os
+import random
 import re
+import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -57,7 +60,11 @@ STANCE_METHOD, STANCE_FALLBACK = "semantic_capped_stance", "semantic_capped"
 DEFAULT_METHOD = "semantic_capped"
 BOROUGH_CHOICES = ["Both", *BOROUGHS]
 TOP_K = 10
-AUTO_SUMMARIES = 3  # summarize the top results automatically; the rest on request ("Explain")
+# Live searches summarize only the top results, two at a time, and retry a rate-limited call with exponential backoff
+# (a 10-restaurant burst hit the provider's rate limit). The rest are listed without a summary ("not summarized").
+AUTO_SUMMARIES = 6
+SUMMARY_WORKERS = 2
+BACKOFF_SECONDS = (2.0, 4.0, 8.0)  # waits before the 2nd, 3rd and 4th attempt of a call that hit a rate limit
 DATA_THROUGH = "September 2021"
 
 STATUS_SUPPORTED, STATUS_MIXED, STATUS_INSUFFICIENT = "supported", "mixed", "insufficient evidence"
@@ -442,6 +449,59 @@ def summarize(view, result, context, client, model, guarded=False, user_request=
         return view.summary_error
 
 
+def _backoff_delay(base):
+    return base * random.uniform(0.75, 1.25)  # jitter, so the two workers do not retry in lockstep
+
+
+def summarize_with_backoff(view, result, context, client, model, guarded=False, user_request=None, sleep=None):
+    """summarize(), retried with exponential backoff while the provider answers with a rate limit (429).
+
+    Returns the final error dict (or None). Other errors are not retried. `sleep` is time.sleep unless given (tests).
+    """
+    sleep = sleep or time.sleep
+    error = summarize(view, result, context, client, model, guarded, user_request)
+    for base in BACKOFF_SECONDS:
+        if not error or error["category"] != "rate_limit":
+            break
+        sleep(_backoff_delay(base))
+        error = summarize(view, result, context, client, model, guarded, user_request)
+    return error
+
+
+def summarize_results(outcome, raw, client, auto_summaries, stop_message=None, sleep=None):
+    """Summarize the top `auto_summaries` results, SUMMARY_WORKERS at a time, each call retried on a rate limit.
+
+    A result whose call still fails keeps its summary_error (the card then offers a retry). A configuration,
+    authentication or billing error stops the remaining calls: those results get summary_skipped with the message.
+    Results past `auto_summaries` are marked "not requested". Returns the message of a stopping error, or None.
+    """
+    todo = []
+    for view, result in zip(outcome.results, raw):
+        if view.rank > auto_summaries:
+            view.summary_skipped = "not requested"
+        elif stop_message:
+            view.summary_skipped = stop_message
+        else:
+            todo.append((view, result))
+    stop = {"message": None}
+    lock = threading.Lock()
+
+    def work(pair):
+        view, result = pair
+        if stop["message"]:
+            view.summary_skipped = stop["message"]
+            return
+        error = summarize_with_backoff(view, result, outcome.summary_context, client, outcome.model,
+                                       outcome.allergy_sensitive, outcome.query[:MAX_USER_REQUEST], sleep)
+        if error and error["category"] in ("configuration", "authentication", "billing"):
+            with lock:
+                stop["message"] = error["message"]
+
+    with ThreadPoolExecutor(max_workers=SUMMARY_WORKERS) as pool:
+        list(pool.map(work, todo))
+    return stop["message"]
+
+
 # ---- entry points -------------------------------------------------------------
 def run_search(query, borough_choice, method, *, retriever, client, model, setup_error=None,
                auto_summaries=AUTO_SUMMARIES, top_k=TOP_K, include_low_evidence=False, log_path=_DEFAULT_LOG,
@@ -508,16 +568,7 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
     if client is not None and auto_summaries > 0 and outcome.results:
         progress("summarize")
     stop = None if client is not None else (setup_error or {}).get("message", "Summaries are unavailable.")
-    for view, result in zip(outcome.results, raw):
-        if view.rank > auto_summaries:
-            view.summary_skipped = "not requested"
-        elif stop:
-            view.summary_skipped = stop
-        else:
-            error = summarize(view, result, outcome.summary_context, client, model, outcome.allergy_sensitive,
-                              outcome.query[:MAX_USER_REQUEST])
-            if error and error["category"] in ("rate_limit", "configuration", "authentication", "billing"):
-                stop = error["message"]  # do not keep calling; show excerpts for the rest
+    stop = summarize_results(outcome, raw, client, auto_summaries if auto_summaries > 0 else 0, stop) or stop
     outcome.timings["summarize_s"] = round(time.monotonic() - t, 3)
     if any(v.summary_error for v in outcome.results) or (stop and client is not None):
         outcome.notices.append("Some summaries are unavailable; the review excerpts are shown instead.")
@@ -535,8 +586,8 @@ def explain(outcome, raw, gmap_id, *, client, model, log_path=_DEFAULT_LOG):
     if client is None:
         view.summary_error = outcome.setup_error or error_info(LLMConfigurationError("not configured"))
     else:
-        summarize(view, raw[index], outcome.summary_context, client, model, outcome.allergy_sensitive,
-                  outcome.query[:MAX_USER_REQUEST])
+        summarize_with_backoff(view, raw[index], outcome.summary_context, client, model, outcome.allergy_sensitive,
+                               outcome.query[:MAX_USER_REQUEST])
         view.summary_skipped = None
     elapsed = round(time.monotonic() - t, 3)
     calls = client.take() if isinstance(client, UsageRecorder) else []

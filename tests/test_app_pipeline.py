@@ -120,7 +120,7 @@ class SuccessTests(PipelineTestCase):
         self.assertEqual(set(out.timings), {"parse_s", "retrieve_s", "summarize_s", "total_s"})
 
     def test_supported_status_and_auto_summary_limit(self):
-        out, _ = self.run_search(query="vegan options for a group", client=FakeClient(location=None))
+        out, _ = self.run_search(query="vegan options for a group", client=FakeClient(location=None), auto_summaries=3)
         self.assertIsNone(out.boroughs)  # "Both" and no borough named
         self.assertEqual([v.summary.status for v in out.results[:3]], [pipeline.STATUS_SUPPORTED] * 3)
         self.assertIsNone(out.results[3].summary)
@@ -177,16 +177,16 @@ class FailureTests(PipelineTestCase):
         self.assertIn("No restaurants matched", " ".join(out.notices))
         self.assertEqual(fake.calls, ["parsed_query"])  # no summary requests
 
-    def test_summarizer_rate_limit_stops_and_shows_excerpts(self):
+    def test_summarizer_rate_limit_is_retried_then_shows_excerpts(self):
         fake = FakeClient(summary="rate_limit", location=None)
-        out, _ = self.run_search(query="vegan options for a group", client=fake)
+        out, _ = self.run_search(query="vegan options for a group", client=fake, auto_summaries=3)
         first, second = out.results[0], out.results[1]
         self.assertEqual((first.summary_error["category"], first.summary_error["code"]), ("rate_limit", "rate_limited"))
         self.assertIn("rate limit", first.summary_error["message"])
         self.assertNotIn("private provider text", json.dumps(first.summary_error))
-        self.assertIsNone(second.summary)
-        self.assertIn("rate limit", second.summary_skipped)  # stopped: no further calls
-        self.assertEqual(fake.calls, ["parsed_query", "evidence_summary"])
+        self.assertEqual(second.summary_error["category"], "rate_limit")  # every summarized result is tried and retried
+        attempts = 1 + len(pipeline.BACKOFF_SECONDS)
+        self.assertEqual(fake.calls.count("evidence_summary"), attempts * 3)  # the top 3 were summarized
         self.assertTrue(first.excerpts)  # excerpts still shown
         self.assertIn("Some summaries are unavailable", " ".join(out.notices))
         rec = self.logged()[0]

@@ -41,6 +41,9 @@ class AppSmokeTests(unittest.TestCase):
             p = patch.object(pipeline, target, value)
             p.start()
             self.addCleanup(p.stop)
+        defaults = patch.dict(pipeline.run_search.__kwdefaults__, {"auto_summaries": 3})  # the old layout summarized 3
+        defaults.start()
+        self.addCleanup(defaults.stop)
         at = AppTest.from_file(APP, default_timeout=30)
         at.run()
         self.assertFalse(at.exception, at.exception)

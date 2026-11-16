@@ -26,7 +26,7 @@ class _CacheFixture(unittest.TestCase):
     def saved(self, query=QUERY, **client_kwargs):
         outcome, _ = pipeline.run_search(query, BOROUGH, METHOD, retriever=FakeRetriever(),
                                          client=pipeline.UsageRecorder(FakeClient(**client_kwargs)), model=MODEL,
-                                         log_path=None)
+                                         log_path=None, auto_summaries=3)
         demo_cache.save_outcome(outcome, self.dir)
         return outcome
 
@@ -142,7 +142,7 @@ class CommittedCacheTests(unittest.TestCase):
         for query, borough, method in demo_cache.DEMO_QUERIES:
             cached = demo_cache.load_cached(query, borough, method)
             self.assertIsNotNone(cached, (query, borough, method))
-            self.assertGreaterEqual(len([v for v in cached.results if v.summary]), pipeline.AUTO_SUMMARIES)
+            self.assertGreaterEqual(len([v for v in cached.results if v.summary]), 3)  # the saved results hold the top 3 (built before the top-6 change)
 
     def test_allergy_demo_results_never_show_supported(self):
         for query, borough, method in demo_cache.DEMO_QUERIES:
