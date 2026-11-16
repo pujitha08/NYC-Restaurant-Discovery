@@ -19,7 +19,7 @@ import sys
 import time
 from pathlib import Path
 
-from app import pipeline
+from app import examples, pipeline
 from src.config import DATA_DIR
 from src.schemas import ParsedQuery
 
@@ -36,6 +36,12 @@ DEMO_QUERIES = [
     ("halal chinese food", "Manhattan", "semantic_capped"),
     ("halal chinese food", "Manhattan", "semantic_log"),
 ]
+# The home-screen chips (app/examples.py): searched across both boroughs with the default method. A query already above
+# (the peanut one) is not listed twice. Their cache files are built with `python -m app.demo_cache --build`.
+DEMO_QUERIES += [(q, examples.CHIP_BOROUGH, examples.CHIP_METHOD) for q in examples.chip_queries()
+                 if (q, examples.CHIP_BOROUGH, examples.CHIP_METHOD) not in DEMO_QUERIES]
+# Queries whose cache files were saved before the chips existed; the rest are built when the cache is rebuilt.
+SAVED_BEFORE_CHIPS = DEMO_QUERIES[:5]
 SECONDS_BETWEEN_BUILDS = 45
 
 
@@ -125,9 +131,14 @@ def cached_notice(saved, unavailable=False):
 
 
 def live_failed(outcome):
-    """True if the live run hit a rate-limit, timeout or network error (parser or any summary)."""
-    errors = [outcome.parse_error] + [v.summary_error for v in outcome.results]
-    return any(e and e["category"] in FALLBACK_CATEGORIES for e in errors)
+    """True if the live run hit a rate-limit, timeout or network error: in the parser, or in every summary it tried.
+
+    One failed summary among several is not a failure of the run: its card offers a retry (the saved result is not swapped in).
+    """
+    if outcome.parse_error and outcome.parse_error["category"] in FALLBACK_CATEGORIES:
+        return True
+    tried = [v for v in outcome.results if v.summary or v.summary_error]
+    return bool(tried) and all(v.summary_error and v.summary_error["category"] in FALLBACK_CATEGORIES for v in tried)
 
 
 def search_with_fallback(query, borough_choice, method, *, demo_mode=False, cache_dir=None, progress=None, **kwargs):
@@ -141,9 +152,7 @@ def search_with_fallback(query, borough_choice, method, *, demo_mode=False, cach
             progress("cache")
         return cached, []
     outcome, raw = pipeline.run_search(query, borough_choice, method, progress=progress, **kwargs)
-    if demo_mode:
-        outcome.notices.append(f"Demo mode is on, but no {CACHE_LABEL} exists for this query; ran a live search.")
-    elif cached and live_failed(outcome):
+    if cached and not demo_mode and live_failed(outcome):
         cached.notices = [cached_notice(cached.cached_at, unavailable=True)]  # replaces the plain cached notice: one only
         if progress:
             progress("cache")
@@ -152,12 +161,15 @@ def search_with_fallback(query, borough_choice, method, *, demo_mode=False, cach
 
 
 # ---- build --------------------------------------------------------------------
-def build(cache_dir=None, gap=SECONDS_BETWEEN_BUILDS):
+def build(cache_dir=None, gap=SECONDS_BETWEEN_BUILDS, only_missing=False):
     client, model, setup_error = pipeline.make_llm_client()
     if setup_error:
         sys.exit(f"Cannot build the demo cache: {setup_error['message']}")
     retrievers = {}
-    for n, (query, borough, method) in enumerate(DEMO_QUERIES):
+    queries = [q for q in DEMO_QUERIES if not (only_missing and cache_path(*q, cache_dir).exists())]
+    if not queries:
+        print("Every demo query already has a cache file.")
+    for n, (query, borough, method) in enumerate(queries):
         name = pipeline.METHODS[method][0]
         if name not in retrievers:
             retrievers[name] = pipeline.load_retriever(name)
@@ -176,9 +188,10 @@ def build(cache_dir=None, gap=SECONDS_BETWEEN_BUILDS):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Demo-result cache")
-    ap.add_argument("--build", action="store_true", help="run the DEMO.md queries live and save them")
+    ap.add_argument("--build", action="store_true", help="run the demo queries live and save them")
+    ap.add_argument("--missing", action="store_true", help="with --build: only the queries without a cache file yet")
     args = ap.parse_args()
     if args.build:
-        build()
+        build(only_missing=args.missing)
     else:
         ap.print_help()

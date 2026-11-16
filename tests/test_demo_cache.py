@@ -76,11 +76,11 @@ class DemoCacheTests(_CacheFixture):
         self.assertEqual(raw, [])
         self.assertEqual(client._client.calls, [])
 
-    def test_demo_mode_without_a_cached_query_runs_live_with_a_notice(self):
+    def test_demo_mode_without_a_cached_query_runs_live_silently(self):
         outcome, raw = demo_cache.search_with_fallback("tacos", BOROUGH, METHOD, demo_mode=True, **self.live())
         self.assertFalse(outcome.cached)
         self.assertTrue(raw)
-        self.assertTrue(any("no cached demo result" in n for n in outcome.notices))
+        self.assertEqual(outcome.notices, [])  # no banner: a live search just runs
 
     def test_rate_limit_falls_back_to_the_cache_for_an_exact_match(self):
         self.saved()
@@ -106,6 +106,37 @@ class DemoCacheTests(_CacheFixture):
         self.saved()
         outcome, _ = demo_cache.search_with_fallback(QUERY, BOROUGH, METHOD, **self.live())
         self.assertFalse(outcome.cached)
+
+    def test_one_failed_summary_among_several_does_not_swap_in_the_cache(self):
+        self.saved()
+        errors = {"category": "rate_limit", "code": "x", "message": "m"}
+        o = self.saved()
+        o.results[0].summary_error, o.results[0].summary = errors, None
+        self.assertFalse(demo_cache.live_failed(o))
+        for v in o.results:
+            v.summary_error, v.summary = errors, None
+        self.assertTrue(demo_cache.live_failed(o))
+
+    def test_every_chip_query_is_a_demo_query(self):
+        from app import examples
+        queries = {q for q, _, _ in demo_cache.DEMO_QUERIES}
+        for query in examples.chip_queries():
+            self.assertIn(query, queries)
+        self.assertEqual(len(demo_cache.DEMO_QUERIES), len(set(demo_cache.DEMO_QUERIES)))
+
+    def test_build_missing_skips_queries_that_have_a_file(self):
+        called = []
+
+        def fake(query, borough, method, **kw):
+            called.append(query)
+            raise SystemExit("stop after the first query that is built")
+        first = demo_cache.DEMO_QUERIES[0]
+        demo_cache.cache_path(*first, self.dir).write_text("{}", encoding="utf-8")  # a file exists for the first query
+        with patch.object(demo_cache.pipeline, "make_llm_client", lambda: (object(), "m", None)), \
+                patch.object(demo_cache.pipeline, "load_retriever", lambda name: object()), \
+                patch.object(demo_cache.pipeline, "run_search", fake), self.assertRaises(SystemExit):
+            demo_cache.build(self.dir, gap=0, only_missing=True)
+        self.assertEqual(called, [demo_cache.DEMO_QUERIES[1][0]])
 
     def test_live_failed_categories(self):
         err = lambda c: {"category": c, "code": "x", "message": "m"}
@@ -139,7 +170,7 @@ class CacheNoticeTests(_CacheFixture):
 
 class CommittedCacheTests(unittest.TestCase):
     def test_every_demo_query_has_a_committed_cache_file(self):
-        for query, borough, method in demo_cache.DEMO_QUERIES:
+        for query, borough, method in demo_cache.SAVED_BEFORE_CHIPS:  # the chip queries are built later
             cached = demo_cache.load_cached(query, borough, method)
             self.assertIsNotNone(cached, (query, borough, method))
             self.assertGreaterEqual(len([v for v in cached.results if v.summary]), 3)  # the saved results hold the top 3 (built before the top-6 change)
@@ -147,7 +178,7 @@ class CommittedCacheTests(unittest.TestCase):
     def test_allergy_demo_results_never_show_supported(self):
         for query, borough, method in demo_cache.DEMO_QUERIES:
             cached = demo_cache.load_cached(query, borough, method)
-            if cached.allergy_sensitive:
+            if cached is not None and cached.allergy_sensitive:
                 self.assertNotIn(pipeline.STATUS_SUPPORTED, [v.summary.status for v in cached.results if v.summary])
 
 
