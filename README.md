@@ -16,10 +16,11 @@ confirm with the restaurant.
 2. **Retrieval** – TF-IDF baselines (`doc_tfidf`, `chunk_tfidf_*`) and sentence-transformer retrieval over review chunks (`semantic_log`, `semantic_capped`; all-MiniLM-L6-v2). `semantic_capped` is the app default.
 3. **Evidence summarizer** – the same Groq model summarizes the retrieved review excerpts of the top results as support / contradiction / uncertainty claims, each citing a review (`src/llm/evidence_summarizer.py`). Allergy-sensitive queries never get a "Supported" status.
 
-4. **Stance re-ranker (optional, experimental)** – `semantic_capped_stance` re-orders the top 20 of `semantic_capped` by
+4. **Stance re-ranker (optional experiment)** – `semantic_capped_stance` re-orders the top 20 of `semantic_capped` by
    what individual review sentences say about the need (accommodation / mention / negative / not about it). It is
-   selectable in the app (Advanced settings) and in Compare rankings, but **it is not the default**, and its benefit over
-   `semantic_capped` has not been established: the held-out test evaluation is still pending (see "Stance re-ranker").
+   selectable in the app (Advanced settings) and in Compare rankings, but **it is not the default**: on the held-out test
+   queries it showed no significant gain over `semantic_capped` (NDCG@10 0.780 vs 0.787, +0.007, p = 0.74; see "Stance
+   re-ranker" and [reports/stance_heldout.md](reports/stance_heldout.md)). `semantic_capped` stays the default.
 
 **Classifier lane:** `src/classifier/allergen_tagger.py` is a character n-gram TF-IDF + one-vs-rest logistic regression
 model that tags which FDA major allergens a text mentions; it is trained on the HuggingFace `14-allergens-v2` menu-item
@@ -121,8 +122,12 @@ Evaluation design (fixed before looking at test results):
   grids and the dev scores. These are dev numbers on the queries the weights were tuned on, so they are optimistic.
   `STANCE_RERANK` in `src/config.py` still holds the original starting weights; the frozen ones are not adopted as the app
   setting.
-- **Pending:** the held-out evaluation on the 15 test queries (judging the test candidate pairs and running the evaluation
-  once with the frozen weights). Until it is done, nothing here claims that the stance re-ranker beats `semantic_capped`.
+- **Held-out result (done, single pre-registered run):** on the 15 test queries, with the frozen weights, NDCG@10 was 0.780
+  for `semantic_capped` and 0.787 for the stance re-ranker (paired difference +0.007, 95% CI [-0.033, 0.050], sign-flip
+  p = 0.74; 5 queries better, 4 worse, 6 tied; lenient P@5 0.720 vs 0.733). That is **no significant gain**, so the default
+  stays `semantic_capped` and the stance re-ranker is documented as an optional experiment. The dev-split gain (+0.093) did not
+  carry over to the held-out queries. The run used LLM-judge labels and 15 queries, so a small effect cannot be ruled out or
+  confirmed. Details: [reports/stance_heldout.md](reports/stance_heldout.md); script: `python -m eval.heldout_stance`.
 
 ```bash
 python -m eval.label_stance [--dev-only]    # budgeted, resumable sentence labeling (Groq, ledger in data/processed/stance_rerank/)
@@ -140,6 +145,7 @@ python -m eval.tune_stance_rerank --labels eval/llm_labels.jsonl --dev-only --ca
 | sentence_check.md | labeled review sentences: rater agreement, stance classifier CV, tagger on reviews |
 | stance_rerank_dev_grid1.md / _grid2.md (+ `_weights.json`) | dev-only tuner runs (grid 1, and grid 2 with `w_pos` widened once) |
 | stance_rerank_frozen.json | frozen dev weights, the rule, grids and dev scores |
+| stance_heldout.md | the single pre-registered held-out run of the frozen stance re-ranker on the 15 test queries (no significant gain) |
 | failure_examples.md | before/after failure cases |
 | eda/ | exploratory data analysis |
 
@@ -271,7 +277,7 @@ src/
   classifier/             allergen_tagger.py (FDA allergen mentions), stance.py (review-sentence stance)
   llm/                    groq_client.py, nvidia_client.py, openrouter_client.py, query_parser.py, evidence_summarizer.py
 eval/         queries, judging pool, LLM judge, metrics, significance tests, agreement and validation scripts,
-              stance labeling and tuning (label_stance.py, tune_stance_rerank.py), audits, answer_eval.py
+              stance labeling, tuning and the held-out run (label_stance.py, tune_stance_rerank.py, heldout_stance.py), audits, answer_eval.py
               (eval/labels/ holds rater material and is git-ignored except the labeling guides)
 reports/      metrics, validation, audits, stance re-ranker runs and frozen weights, EDA, failure examples (see "Reports")
 docs/         LLM integration notes

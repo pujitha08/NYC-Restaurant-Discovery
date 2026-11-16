@@ -27,8 +27,9 @@ The first screen is a title, a one-line value proposition, a **scope note** ("Bu
 diets, allergens and mixed groups. It doesn't check opening hours, prices or availability."), the search box with the four
 example chips right under it, borough pills, **Compare rankings** and **Demo mode** toggles, and a collapsed **Advanced
 settings** expander (retrieval method, "fewer than 5 reviews"). A slim note says reviews are historical and anecdotal; the
-full-strength warning appears only above allergy results. The default method is `semantic_capped`; the stance re-ranker is
-an optional, experimental method whose held-out evaluation is still pending, so don't present it as better.
+full-strength warning appears only above allergy results. The default method is `semantic_capped`. The stance re-ranker is
+an optional experiment: its held-out evaluation showed no significant gain (NDCG@10 0.780 vs 0.787, +0.007, p = 0.74), so
+don't present it as better; Compare rankings is for showing how it re-orders results, not for claiming an improvement.
 
 After a search, a staged progress box ("Understanding your request", "Searching 605K review passages", "Reading
 reviews", "Summarizing") collapses to one line ("Done"), then chips show the parsed request (diets, allergens, borough).
@@ -88,7 +89,7 @@ relevance, not safety.
 - **Evidence bar**: results ranked by `semantic_capped_stance` show the same bar and the strongest warning sentence.
   The stance labeler is chosen by `STANCE_LABELER` in `src/config.py` (`"llm"` by default); see the README's "Stance
   re-ranker" section. The weights chosen on the dev queries are in `reports/stance_rerank_frozen.json`; they are dev
-  numbers and the held-out result is pending.
+  numbers. The held-out run (`reports/stance_heldout.md`) found no significant gain, so the default stays `semantic_capped`.
 - Query terms are highlighted in the review excerpts; the sidebar explains the stages, the data size and the badges.
 
 ## Cached demo results (offline / rate-limit fallback)
