@@ -21,10 +21,12 @@ from collections import Counter
 import hashlib
 import json
 import os
+import dataclasses
 import random
 import re
 import threading
 import time
+import unicodedata
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
@@ -432,12 +434,33 @@ def to_summary(raw, view, guarded=False, context=None):
                    ALLERGY_NOTE if guarded else None)
 
 
-def summarize(view, result, context, client, model, guarded=False, user_request=None):
-    """Fill view.summary or view.summary_error. Returns the error dict (or None)."""
-    if not result.evidence_snippets:
-        view.summary = Summary(STATUS_INSUFFICIENT, [], ["No review excerpts were retrieved for this restaurant."],
-                               guarded, ALLERGY_NOTE if guarded else None)
-        return None
+# A summary call that comes back as a bad request ("could not produce a parsable structured response": the model wrote prose
+# instead of the JSON) or as an unusable answer is tried once more with less evidence, which is a different prompt.
+RETRY_SHORT_CATEGORIES = ("bad_request", "response")
+SHORT_EXCERPTS, SHORT_WORDS = 2, 40
+
+
+def sanitize_text(text):
+    """The text with control and format characters turned into spaces and whitespace collapsed."""
+    return " ".join("".join(" " if unicodedata.category(c)[0] == "C" else c for c in text or "").split())
+
+
+def shortened(result):
+    """A copy of the result with only the first SHORT_EXCERPTS excerpts, each sanitized and cut to SHORT_WORDS words."""
+    snippets = []
+    for snippet in result.evidence_snippets:
+        words = sanitize_text(snippet.text).split()
+        if not words:
+            continue
+        text = " ".join(words[:SHORT_WORDS]) + (" …" if len(words) > SHORT_WORDS else "")
+        snippets.append(dataclasses.replace(snippet, text=text))
+        if len(snippets) == SHORT_EXCERPTS:
+            break
+    return dataclasses.replace(result, evidence_snippets=snippets)
+
+
+def _summarize_once(view, result, context, client, model, guarded, user_request):
+    """One summary call: fills view.summary and returns None, or sets view.summary_error and returns it."""
     try:
         raw = summarize_evidence(context, result, client=client, model=model, reasoning_effort=LLM_REASONING_EFFORT,
                                  user_request=user_request, restaurant_name=view.name)
@@ -447,6 +470,24 @@ def summarize(view, result, context, client, model, guarded=False, user_request=
     except LLMError as e:
         view.summary_error = error_info(e)
         return view.summary_error
+
+
+def summarize(view, result, context, client, model, guarded=False, user_request=None):
+    """Fill view.summary or view.summary_error. Returns the error dict (or None).
+
+    A bad request or an unusable answer is retried once with shortened, sanitized evidence; if that fails too the error stays
+    (the card then shows "the AI summary isn't available right now"), and the rest of the search is not affected.
+    """
+    if not result.evidence_snippets:
+        view.summary = Summary(STATUS_INSUFFICIENT, [], ["No review excerpts were retrieved for this restaurant."],
+                               guarded, ALLERGY_NOTE if guarded else None)
+        return None
+    error = _summarize_once(view, result, context, client, model, guarded, user_request)
+    if error and error["category"] in RETRY_SHORT_CATEGORIES:
+        short = shortened(result)
+        if short.evidence_snippets:
+            error = _summarize_once(view, short, context, client, model, guarded, user_request)
+    return error
 
 
 def _backoff_delay(base):
