@@ -72,7 +72,7 @@ class DeadlineTests(unittest.TestCase):
         self.assertEqual(client._client.calls, [])
 
     def test_a_search_where_every_call_is_rate_limited_ends_with_errors_and_not_a_hang(self):
-        client = pipeline.UsageRecorder(ByModel(location=None))
+        client = pipeline.UsageRecorder(FakeClient(summary="rate_limit", location=None))  # the parser works, every summary is limited
         out, _ = pipeline.run_search("vegan options", "Both", "semantic_capped", retriever=FakeRetriever(), client=client,
                                      model=MODEL, log_path=None, auto_summaries=3)
         self.assertTrue(all(v.summary_error for v in out.results[:3]))

@@ -286,6 +286,8 @@ def source_label(outcome):
 
 
 def _reason(error):
+    if error.get("code") == "daily_limit":
+        return "daily limit"
     return {"rate_limit": "rate limit", "timeout": "timeout", "network": "no connection"}.get(
         error["category"], "the language model didn't answer")
 
@@ -302,14 +304,26 @@ def live_unavailable(outcome):
         return _reason(outcome.parse_error)
     if outcome.setup_error:
         return "the language model isn't set up"
+    daily = next((v.summary_error for v in outcome.results if v.summary_error and v.summary_error.get("code") == "daily_limit"), None)
+    if daily:  # the daily limit stops the whole search: nothing after it was tried, so nothing honest is left to show
+        return _reason(daily)
     tried = [v for v in outcome.results if v.summary or v.summary_error]
     if tried and all(v.summary_error for v in tried):
         return _reason(tried[0].summary_error)
     return None
 
 
-def unavailable_message(reason):
-    return f"Live search is unavailable right now ({reason}). Try one of the saved examples."
+def live_wait_seconds(outcome):
+    """Seconds the provider asked us to wait (from the parser error or the first summary error that has one), or None."""
+    errors = [outcome.parse_error] + [v.summary_error for v in outcome.results]
+    return next((e["retry_seconds"] for e in errors if e and e.get("retry_seconds")), None)
+
+
+def unavailable_message(reason, wait_seconds=None):
+    text = f"Live search is unavailable right now ({reason}). Try one of the saved examples."
+    if reason == "daily limit":
+        text += " " + pipeline.daily_limit_message(wait_seconds)
+    return text
 
 
 def trace_parts(outcome, passages=None):

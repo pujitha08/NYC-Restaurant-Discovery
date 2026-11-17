@@ -229,10 +229,31 @@ def make_llm_client():
         return None, None, error_info(e)
 
 
+def human_wait(seconds):
+    """"about a minute", "about 7 minutes", "about 2 hours": the wait rounded up, never shorter than the provider said."""
+    minutes = -(-float(seconds) // 60)
+    if minutes <= 1:
+        return "about a minute"
+    if minutes < 120:
+        return f"about {int(minutes)} minutes"
+    return f"about {int(-(-minutes // 60))} hours"
+
+
+def daily_limit_message(retry_seconds=None):
+    wait = f"try again in {human_wait(retry_seconds)}" if retry_seconds else "try again later"
+    return f"The daily limit resets gradually; {wait}."
+
+
 def error_info(e):
     category = getattr(e, "category", "provider")
-    return {"category": category, "code": getattr(e, "code", "error"),
-            "message": ERROR_MESSAGES.get(category, ERROR_MESSAGES["provider"])}
+    code = getattr(e, "code", "error")
+    info = {"category": category, "code": code, "message": ERROR_MESSAGES.get(category, ERROR_MESSAGES["provider"])}
+    retry = getattr(e, "retry_after", None)
+    if isinstance(retry, (int, float)):
+        info["retry_seconds"] = float(retry)
+    if code == "daily_limit":
+        info["message"] = daily_limit_message(info.get("retry_seconds"))
+    return info
 
 
 def prompt_hashes():
@@ -278,7 +299,7 @@ def parse(query, client, model):
     except LLMError as e:
         error = error_info(e)
     fb = fallback_model()
-    if fb and fb != model and error["category"] in MODEL_FALLBACK_CATEGORIES:
+    if fb and fb != model and error["category"] in MODEL_FALLBACK_CATEGORIES and error["code"] != "daily_limit":
         try:
             return parse_query(query, client=client, model=fb, reasoning_effort=LLM_REASONING_EFFORT), None
         except LLMError:
@@ -529,6 +550,8 @@ def summarize_with_backoff(view, result, context, client, model, guarded=False, 
     """
     sleep = sleep or time.sleep
     error = summarize(view, result, context, client, model, guarded, user_request)
+    if error and error["code"] == "daily_limit":  # a daily limit does not clear in seconds: no retry, no fallback model
+        return error
     for base in BACKOFF_SECONDS:
         if not error or error["category"] != "rate_limit":
             break
@@ -576,9 +599,9 @@ def summarize_results(outcome, raw, client, auto_summaries, stop_message=None, s
             return
         error = summarize_with_backoff(view, result, outcome.summary_context, client, outcome.model,
                                        outcome.allergy_sensitive, outcome.query[:MAX_USER_REQUEST], sleep, deadline, clock)
-        if error and error["category"] in ("configuration", "authentication", "billing"):
+        if error and (error["category"] in ("configuration", "authentication", "billing") or error["code"] == "daily_limit"):
             with lock:
-                stop["message"] = error["message"]
+                stop["message"] = error["message"]  # no further summary call starts
 
     if progress and todo:
         progress(0, len(todo))
@@ -657,6 +680,8 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
     if client is not None and auto_summaries > 0 and outcome.results:
         progress("summarize")
     stop = None if client is not None else (setup_error or {}).get("message", "Summaries are unavailable.")
+    if outcome.parse_error and outcome.parse_error["category"] == "rate_limit":
+        stop = outcome.parse_error["message"]  # the parser was rate limited (any kind): no summary call at all
     stop = summarize_results(outcome, raw, client, auto_summaries if auto_summaries > 0 else 0, stop,
                              progress=on_summary_progress) or stop
     outcome.timings["summarize_s"] = round(time.monotonic() - t, 3)

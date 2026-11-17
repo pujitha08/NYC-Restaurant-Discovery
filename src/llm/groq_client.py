@@ -44,9 +44,30 @@ class LLMAPIError(LLMError, RuntimeError):
     category = "provider"
     default_code = "provider_failure"
 
-    def __init__(self, message, *, category="provider", code=None, http_status=None):
+    def __init__(self, message, *, category="provider", code=None, http_status=None, retry_after=None):
         super().__init__(message, code=code, http_status=http_status)
         self.category = category
+        self.retry_after = retry_after  # seconds the provider said to wait (a number, never provider text), or None
+
+
+_WAIT_PART = re.compile(r"(\d+(?:\.\d+)?)(ms|h|m|s)")
+_WAIT_SECONDS = {"ms": 0.001, "s": 1.0, "m": 60.0, "h": 3600.0}
+
+
+def _rate_limit_detail(exc):
+    """(is_daily, wait_seconds) read from a 429's message; only a flag and a number are kept, never the text.
+
+    A daily token limit says "tokens per day (TPD)"; a per-minute one says "tokens per minute (TPM)" or "requests per ...".
+    The wait comes from "try again in 6m33.984s" (None when the message has none).
+    """
+    body = getattr(exc, "body", None)
+    text = body.get("message") if isinstance(body, dict) else None
+    if not isinstance(text, str):
+        text = str(exc) if exc is not None else ""
+    daily = bool(re.search(r"tokens per day|\bTPD\b", text, re.IGNORECASE))
+    m = re.search(r"try again in\s+((?:\d+(?:\.\d+)?(?:ms|h|m|s)\s*)+)", text, re.IGNORECASE)
+    wait = sum(float(n) * _WAIT_SECONDS[u] for n, u in _WAIT_PART.findall(m.group(1))) if m else None
+    return daily, wait
 
 
 def _safe_api_error(exc, provider_name="GroqCloud"):
@@ -62,6 +83,7 @@ def _safe_api_error(exc, provider_name="GroqCloud"):
 
     status = getattr(exc, "status_code", None) if is_sdk("APIStatusError") else None
     status = status if type(status) is int and 100 <= status <= 599 else None
+    retry_after = None
     if is_sdk("APITimeoutError") or isinstance(exc, TimeoutError):
         category, code, message = "timeout", "request_timeout", "The model request timed out. Try again manually later."
     elif is_sdk("APIConnectionError") or isinstance(exc, ConnectionError):
@@ -73,7 +95,9 @@ def _safe_api_error(exc, provider_name="GroqCloud"):
     elif is_sdk("PermissionDeniedError") or status == 403:
         category, code, message = "permission", "permission_denied", f"{provider_name} denied access. Check account and model permissions."
     elif is_sdk("RateLimitError") or status == 429:
-        category, code, message = "rate_limit", "rate_limited", f"{provider_name} rate limit reached. Wait before a manual retry and check quota."
+        daily, retry_after = _rate_limit_detail(exc)
+        category, code = "rate_limit", "daily_limit" if daily else "rate_limited"
+        message = f"{provider_name} rate limit reached. Wait before a manual retry and check quota."
     elif is_sdk("BadRequestError") or status == 400:
         category = "bad_request"
         # The SDK exposes parsed error codes. Only this known, non-sensitive value is retained.
@@ -83,7 +107,7 @@ def _safe_api_error(exc, provider_name="GroqCloud"):
             code, message = "bad_request", f"{provider_name} rejected the request. Check the model and structured-output configuration."
     else:
         category, code, message = "provider", "provider_failure", "The model request failed. No result is available."
-    return LLMAPIError(message, category=category, code=code, http_status=status)
+    return LLMAPIError(message, category=category, code=code, http_status=status, retry_after=retry_after)
 
 
 def get_client(timeout=30.0):

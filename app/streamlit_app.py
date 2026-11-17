@@ -483,9 +483,9 @@ def show_cache_miss(state):
     show_chips()
 
 
-def show_live_unavailable(reason):
+def show_live_unavailable(reason, wait_seconds=None):
     """The parser, the model setup or every summary failed: one message and the saved examples, no half results."""
-    st.markdown(f'<div class="state-title">{html_text(vm.unavailable_message(reason))}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="state-title">{html_text(vm.unavailable_message(reason, wait_seconds))}</div>', unsafe_allow_html=True)
     show_chips()
 
 
@@ -493,7 +493,7 @@ def show_results(outcome, raw, client, model):
     show_notices(outcome)
     reason = vm.live_unavailable(outcome)
     if reason:
-        show_live_unavailable(reason)
+        show_live_unavailable(reason, vm.live_wait_seconds(outcome))
         return
     show_understood(outcome)
     st.markdown(f'<h1 class="results-title">{html_text(vm.results_heading(outcome))}</h1>', unsafe_allow_html=True)
