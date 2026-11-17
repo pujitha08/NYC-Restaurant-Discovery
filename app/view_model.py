@@ -95,6 +95,47 @@ def allergen_claim_counts(claim, outcome, name, generic):
     return any(names_the_allergen(e.text, patterns, name, generic) for e in claim.excerpts)
 
 
+# (c) An explicit negative allergy cue in a cited review keeps a care card out of the care column. The exact phrases (case-insensitive):
+NEGATIVE_ALLERGY_CUES = [re.compile(p, re.IGNORECASE) for p in (
+    r"\bnot (?:ok|okay) for (?:\w+\s+){0,2}allerg\w*",  # "not ok for allergies"
+    r"\bnot safe\b",
+    r"\bunsafe\b",
+    r"\bnot suitable for\b",
+    r"\b(?:wouldn'?t|would not|won'?t|will not|don'?t|do not|can'?t|cannot)\s+recommend\b[^.!?]{0,80}allerg\w*",  # "wouldn't recommend ... allerg..."
+)]
+
+
+def has_negative_allergy_cue(text):
+    return any(p.search(text or "") for p in NEGATIVE_ALLERGY_CUES)
+
+
+def names_searched_allergen(text, outcome, name=None):
+    """True if the text names the SEARCHED allergen or a term of its group (src.allergy.ALLERGEN_GROUPS), outside the restaurant's name.
+    Strict: a generic "allergy"/"allergies" statement or the generic word "nut" does not count."""
+    return names_the_allergen(text, allergen_patterns(outcome), name, generic=False)
+
+
+def care_claim_is_acceptable(claim, outcome, name):
+    """(a) for a supporting claim of an allergy-sensitive search; any other request is not checked.
+
+    Care specificity: when the search names an allergen, at least one cited review must name it (a term of its group); a generic
+    allergy statement is not enough.
+    """
+    if outcome is None or not outcome.allergy_sensitive:
+        return True
+    if allergen_patterns(outcome):
+        return any(names_searched_allergen(e.text, outcome, name) for e in claim.excerpts)
+    return True
+
+
+def care_has_negative_cue(view, outcome):
+    """(c) True if, in an allergy-sensitive search, any review cited by one of the restaurant's supporting claims contains an
+    explicit negative allergy cue (NEGATIVE_ALLERGY_CUES)."""
+    if outcome is None or not outcome.allergy_sensitive or view.summary is None:
+        return False
+    return any(has_negative_allergy_cue(e.text) for cl in view.summary.claims if cl.label == "support" for e in cl.excerpts)
+
+
 def effective_claims(view, outcome=None):
     """[(claim, label)] of the summary's claims that count: supporting claims that pass the care gate and, for allergy
     requests, contradicting claims that pass the problem gate. Uncertainty claims are kept as they are."""
@@ -102,8 +143,7 @@ def effective_claims(view, outcome=None):
         return []
     out = []
     for claim in pipeline.merge_neutral_claims(view.summary.claims):
-        if claim.label == "support" and not (care_claim_counts(claim)
-                                             and allergen_claim_counts(claim, outcome, view.name, generic=True)):
+        if claim.label == "support" and not (care_claim_counts(claim) and care_claim_is_acceptable(claim, outcome, view.name)):
             continue
         if claim.label == "contradiction" and not (problem_claim_counts(claim, outcome)
                                                    and allergen_claim_counts(claim, outcome, view.name, generic=False)):
@@ -121,6 +161,21 @@ def labels_of(summary, view=None, outcome=None):
     return {label for _, label in effective_claims(view, outcome)}
 
 
+def care_card_is_specific(view, outcome):
+    """(a) for a care card without a finding, including one whose finding the allergen-term rule suppressed (b): the quote's source
+    review must name the searched allergen. A card with a finding is already specific (every counting support claim cites a review
+    that names it). Not applied to searches that are not allergy-sensitive or name no allergen."""
+    if outcome is None or not outcome.allergy_sensitive or not allergen_patterns(outcome):
+        return True
+    if finding_for(view, outcome, CARE) is not None:
+        return True
+    quote = quote_for(view, outcome, CARE)
+    if quote is None:
+        return False
+    source = next((e for e in view.excerpts if e.review_id == quote.review_id), None)
+    return source is not None and names_searched_allergen(source.text, outcome, view.name)
+
+
 def group_of(view, outcome=None):
     """CARE / PROBLEMS / MIXED / INSUFFICIENT / UNAVAILABLE / NOT_SUMMARIZED.
 
@@ -135,6 +190,11 @@ def group_of(view, outcome=None):
     if s.status == pipeline.STATUS_INSUFFICIENT:
         return INSUFFICIENT
     labels = labels_of(s, view, outcome)
+    if "support" in labels and not care_card_is_specific(view, outcome):
+        labels = labels - {"support"}  # (a)/(b): a care card that would show only a quote must quote a review that names the allergen
+    if "support" in labels and "contradiction" not in labels and care_has_negative_cue(view, outcome):
+        labels = labels - {"support"}  # (c): a cited care review says the place is not ok / not safe / not suitable for allergies;
+        # only a separate counting contradiction claim keeps the restaurant in the picture (it then shows as Reviewers disagree)
     if "support" in labels and "contradiction" in labels:
         return MIXED
     if "support" in labels:
@@ -170,6 +230,34 @@ def columns(outcome):
         elif g == UNAVAILABLE:
             out.unavailable.append(v)
     return out
+
+
+# ---- same-name restaurants ---------------------------------------------------------------------------------------
+def street_of(view):
+    """The street part of the address ("37 W 46th St" from "Name, 37 W 46th St, New York, NY 10036"), or ""."""
+    parts = [squash(p) for p in (view.address or "").split(",")]
+    name = squash(view.name).casefold()
+    if parts and parts[0].casefold() == name:
+        parts = parts[1:]
+    return parts[0] if len(parts) >= 2 else ""
+
+
+def duplicate_names(outcome):
+    """Names (case-insensitive) shared by two or more of the shown restaurants."""
+    counts = {}
+    for v in outcome.results:
+        key = squash(v.name).casefold()
+        counts[key] = counts.get(key, 0) + 1
+    return {k for k, n in counts.items() if n > 1}
+
+
+def place_label(view, outcome):
+    """"Manhattan" normally; "Manhattan · 37 W 46th St" when another shown restaurant has the same name."""
+    if outcome is not None and squash(view.name).casefold() in duplicate_names(outcome):
+        street = street_of(view)
+        if street:
+            return f"{view.borough} · {street}"
+    return view.borough
 
 
 # ---- wording for the need -----------------------------------------------------------------------------------------

@@ -107,12 +107,14 @@ if __name__ == "__main__":
 class PeanutSavedResultTests(unittest.TestCase):
     """The saved Peanut result: Ladybird has both praise and warnings and must appear once."""
 
-    def test_ladybird_is_mixed_and_appears_once(self):
+    def test_ladybird_moves_to_problems_and_every_restaurant_appears_once(self):
         from app import view_model as vm
         o = demo_cache.load_cached("restaurant careful about peanut allergies", "Both", "semantic_capped")
         c = vm.columns(o)
-        self.assertIn("Ladybird", [v.name for v in c.mixed])  # confirmed from the data, not assumed
-        self.assertNotIn("Ladybird", [v.name for v in c.care + c.problems])
+        # Ladybird's praise names "nut and soy", not peanut, so under the care-specificity rule it is no longer a Reviewers disagree card
+        self.assertNotIn("Ladybird", [v.name for v in c.care + c.mixed])
+        self.assertIn("Ladybird", [v.name for v in c.problems])
+        self.assertIn("Bengal Tiger", [v.name for v in c.mixed])  # praise that names peanut / tree nut plus a warning
         ids = [v.gmap_id for lst in (c.care, c.problems, c.mixed, c.insufficient, c.unavailable) for v in lst]
         self.assertEqual(len(ids), len(o.results))
         self.assertEqual(len(set(ids)), len(o.results))  # the top-30 pool: all accounted for, nobody twice

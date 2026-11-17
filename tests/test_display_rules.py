@@ -153,15 +153,18 @@ class AllergenGateTests(unittest.TestCase):
         v = view("Buddakan", [("staff asked", "support", [79107]), ("oyster oil", "contradiction", [79848]),
                               ("mushroom", "contradiction", [80054])], excerpts)
         o = outcome([v], "restaurant careful about shellfish allergies", ["shellfish"])
-        self.assertEqual([c.text for c, _ in vm.effective_claims(v, o)], ["staff asked", "oyster oil"])
-        self.assertEqual(vm.group_of(v, o), vm.MIXED)
+        # the mushroom claim fails the allergen gate; the generic "allergies" praise fails the care specificity rule
+        self.assertEqual([c.text for c, _ in vm.effective_claims(v, o)], ["oyster oil"])
+        self.assertEqual(vm.group_of(v, o), vm.PROBLEMS)
         self.assertEqual(vm.quote_for(v, o, vm.PROBLEMS).n_reviews, 1)  # the mushroom review is no longer counted
 
-    def test_a_care_claim_may_make_a_generic_allergy_statement_but_a_problem_claim_may_not(self):
+    def test_a_care_claim_needs_the_searched_allergen_and_a_generic_allergy_statement_is_not_enough(self):
         text = "Great and friendly staff that took time to inquire about ingredients for those with allergies."
         care = view("Place", [("staff asked", "support", [1])], [ex(1, text, 5)])
         o = outcome([care], "restaurant careful about shellfish allergies", ["shellfish"])
-        self.assertEqual(vm.group_of(care, o), vm.CARE)
+        self.assertEqual(vm.group_of(care, o), vm.INSUFFICIENT)  # care specificity: no shellfish term in the cited review
+        # with no allergen named in the search there is nothing to be specific about
+        self.assertEqual(vm.group_of(care, outcome([care], "allergy friendly", [])), vm.CARE)
         problem = view("Place", [("staff did not ask", "contradiction", [1])], [ex(1, "Staff ignored my allergies and I got sick.", 1)])
         self.assertEqual(vm.group_of(problem, outcome([problem], "shellfish allergies", ["shellfish"])), vm.INSUFFICIENT)
 
@@ -203,7 +206,7 @@ class AllergenGateTests(unittest.TestCase):
         v = view("Place", [("careful", "support", [1])], [ex(1, "Wonderful staff and the best nuts on the salad.", 5)])
         self.assertEqual(vm.group_of(v, outcome([v], "peanut allergies", ["peanut"])), vm.INSUFFICIENT)
         v2 = view("Place", [("careful", "support", [1])], [ex(1, "They were careful about my allergies and the nuts.", 5)])
-        self.assertEqual(vm.group_of(v2, outcome([v2], "peanut allergies", ["peanut"])), vm.CARE)  # a generic allergy statement
+        self.assertEqual(vm.group_of(v2, outcome([v2], "peanut allergies", ["peanut"])), vm.INSUFFICIENT)  # a generic allergy statement is not peanut
 
     def test_the_generic_nut_mention_does_not_open_other_allergens(self):
         milos = view("Estiatorio Milos", [("wait", "contradiction", [1])],
@@ -268,7 +271,9 @@ class HonestCountTests(unittest.TestCase):
         self.assertNotIn(1, [r.review_id for r in vm.cited_reviews(v, "contradiction", o)])
 
     def test_buddakan_counts_each_side_apart(self):
-        excerpts = [ex(i, t, r) for i, r, t in BUDDAKAN]
+        # the praise review is made specific (it must name shellfish to count under the care specificity rule)
+        excerpts = [ex(i, "Great and friendly staff took time to ask about ingredients for my shellfish allergy." if i == 79107 else t, r)
+                    for i, r, t in BUDDAKAN]
         v = view("Buddakan", [("staff asked", "support", [79107]), ("oyster oil", "contradiction", [79848]),
                               ("mushroom", "contradiction", [80054, 79848])], excerpts)
         o = outcome([v], "restaurant careful about shellfish allergies", ["shellfish"])

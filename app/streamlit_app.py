@@ -330,19 +330,19 @@ def half_html(view, outcome, column):
     return lead + quote_block(view, outcome, quote) + pill
 
 
-def card_head(view):
+def card_head(view, outcome=None):
     return (f'<p class="card-name">{html_text(squash(view.name))}</p>'
-            f'<div class="card-meta">{html_text(view.borough)} · {html_text(stars(view.avg_rating))}</div>')
+            f'<div class="card-meta">{html_text(vm.place_label(view, outcome))} · {html_text(stars(view.avg_rating))}</div>')
 
 
 def card_html(view, outcome, column):
     css = "care-card" if column == vm.CARE else "problems-card"
-    return f'<div class="{css}">{card_head(view)}{half_html(view, outcome, column)}</div>'
+    return f'<div class="{css}">{card_head(view, outcome)}{half_html(view, outcome, column)}</div>'
 
 
 def mixed_html(view, outcome):
     """One card for a restaurant with both kinds of review: a "Praised" half and a "Warned" half."""
-    return (f'<div class="mixed-card">{card_head(view)}<div class="halves">'
+    return (f'<div class="mixed-card">{card_head(view, outcome)}<div class="halves">'
             f'<div class="half praised"><div class="half-title">✓ Praised</div>{half_html(view, outcome, vm.CARE)}</div>'
             f'<div class="half warned"><div class="half-title">⚠ {html_text(vm.warned_title(outcome))}</div>{half_html(view, outcome, vm.PROBLEMS)}</div>'
             "</div></div>")
@@ -371,7 +371,7 @@ def show_unavailable_card(outcome, raw, view, client, model):
         body = (f'<blockquote class="quote">“{evidence_filter.highlight_outside_name(squash(quote.text), terms, view.name, MARK)}”</blockquote>'
                 if quote else "")
         st.markdown(f'<p class="card-name">{html_text(squash(view.name))}</p>'
-                    f'<div class="card-meta">{html_text(view.borough)} · {html_text(stars(view.avg_rating))}</div>'
+                    f'<div class="card-meta">{html_text(vm.place_label(view, outcome))} · {html_text(stars(view.avg_rating))}</div>'
                     f'<p class="unavailable">{html_text(SUMMARY_UNAVAILABLE)}</p>{body}', unsafe_allow_html=True)
         if raw and st.button("Try the summary again", key=card_key("retry", outcome, view)):
             with st.spinner("Summarizing the reviews…"):
@@ -446,7 +446,7 @@ def show_more(outcome, c, need):
     label = f"{n} more restaurant{' matched' if n == 1 else 's matched'}, but reviews don't say enough about {need}"
     with st.expander(label, key=f"more_{outcome.request_id}"):
         lines = "".join(
-            f'<div class="more-line"><b>{html_text(squash(v.name))}</b> <span>{html_text(v.borough)} · {html_text(stars(v.avg_rating))}'
+            f'<div class="more-line"><b>{html_text(squash(v.name))}</b> <span>{html_text(vm.place_label(v, outcome))} · {html_text(stars(v.avg_rating))}'
             f'{" · not summarized" if vm.group_of(v, outcome) == vm.NOT_SUMMARIZED else ""}</span></div>' for v in c.insufficient)
         st.markdown(lines, unsafe_allow_html=True)
 

@@ -223,7 +223,7 @@ class SavedResultRegressionTests(unittest.TestCase):
         self.assertIsNotNone(vm.quote_for(v, o, vm.PROBLEMS))
 
     def test_peanut_ladybird_warned_is_suppressed_and_the_praised_half_has_no_finding_either(self):
-        o, v = self.card("restaurant careful about peanut allergies", "Ladybird", "mixed")
+        o, v = self.card("restaurant careful about peanut allergies", "Ladybird", "problems")  # its praise names nut and soy, not peanut
         cand = vm.finding_candidate(v, o, vm.PROBLEMS)
         self.assertIn("peanut", cand.text.lower())
         self.assertIn("peanut", [g for g, _ in vm.allergen_gaps(cand, v.name)])
@@ -231,13 +231,10 @@ class SavedResultRegressionTests(unittest.TestCase):
         self.assertIsNotNone(vm.quote_for(v, o, vm.PROBLEMS))
         self.assertIsNone(vm.finding_for(v, o, vm.CARE))
 
-    def test_shellfish_buddakan_praised_is_suppressed_but_warned_is_kept(self):
-        o, v = self.card("restaurant careful about shellfish allergies", "Buddakan", "mixed")
+    def test_shellfish_buddakan_generic_praise_no_longer_counts_and_warned_is_kept(self):
+        o, v = self.card("restaurant careful about shellfish allergies", "Buddakan", "problems")  # no longer in Reviewers disagree
         cand = vm.finding_candidate(v, o, vm.CARE)
-        self.assertIn("shellfish", cand.text)
-        self.assertEqual([g for g, _ in vm.allergen_gaps(cand, v.name)], ["shellfish"])  # the cited review says "allergies" only
-        self.assertIsNone(vm.finding_for(v, o, vm.CARE))
-        self.assertIsNotNone(vm.quote_for(v, o, vm.CARE))
+        self.assertIsNone(cand)  # the praise (cited review says "allergies" only) fails the care specificity rule
         warned = vm.finding_for(v, o, vm.PROBLEMS)
         self.assertIn("oyster oil", warned.text)  # the oyster-oil review names shellfish
         self.assertEqual(vm.quote_for(v, o, vm.PROBLEMS).review_id, 79848)
