@@ -28,7 +28,7 @@ import threading
 import time
 import unicodedata
 import uuid
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -42,7 +42,7 @@ from app.coverage import need_terms
 from src.config import BOROUGHS, DATA_DIR
 from src.llm import evidence_summarizer, query_parser
 from src.llm.evidence_summarizer import MAX_USER_REQUEST, summarize_evidence
-from src.llm.groq_client import LLMConfigurationError, LLMError, _usage, resolve_model
+from src.llm.groq_client import SCHEMA_MODELS, LLMConfigurationError, LLMError, _usage, resolve_model
 from src.llm.query_parser import parse_query
 from src.schemas import ParsedQuery, RetrievalResult
 
@@ -66,7 +66,14 @@ TOP_K = 10
 # (a 10-restaurant burst hit the provider's rate limit). The rest are listed without a summary ("not summarized").
 AUTO_SUMMARIES = 6
 SUMMARY_WORKERS = 2
-BACKOFF_SECONDS = (2.0, 4.0, 8.0)  # waits before the 2nd, 3rd and 4th attempt of a call that hit a rate limit
+BACKOFF_SECONDS = (1.0, 2.0, 4.0)  # waits before the 2nd, 3rd and 4th attempt of a call that hit a rate limit
+# A failing live search gives up after about this long (the summaries share one deadline), and each model call is cut off
+# after CALL_TIMEOUT_S, so the page never hangs for minutes on a provider problem.
+SUMMARY_DEADLINE_S = 15.0
+CALL_TIMEOUT_S = 12.0
+# Optional second model, off unless GROQ_FALLBACK_MODEL names one that supports structured output: tried once after the main
+# model failed with a rate limit, timeout, network or provider error.
+MODEL_FALLBACK_CATEGORIES = ("rate_limit", "timeout", "network", "provider")
 DATA_THROUGH = "September 2021"
 
 STATUS_SUPPORTED, STATUS_MIXED, STATUS_INSUFFICIENT = "supported", "mixed", "insufficient evidence"
@@ -217,7 +224,7 @@ def make_llm_client():
     try:
         model = resolve_model(None)
         from src.llm.groq_client import get_client
-        return UsageRecorder(get_client()), model, None
+        return UsageRecorder(get_client(timeout=CALL_TIMEOUT_S)), model, None
     except LLMConfigurationError as e:
         return None, None, error_info(e)
 
@@ -255,14 +262,28 @@ def borough_filter(choice, parsed, raw_query):
     return None, None
 
 
+def fallback_model(environ=None):
+    """The model named by GROQ_FALLBACK_MODEL if it supports structured output, else None (the default: no fallback)."""
+    value = ((os.environ if environ is None else environ).get("GROQ_FALLBACK_MODEL") or "").strip()
+    return value if value in SCHEMA_MODELS else None
+
+
 def parse(query, client, model):
-    """(ParsedQuery or None, error dict or None)."""
+    """(ParsedQuery or None, error dict or None). After a rate limit, timeout, network or provider error the fallback model
+    (GROQ_FALLBACK_MODEL, off by default) gets one try."""
     if client is None:
         return None, None
     try:
         return parse_query(query, client=client, model=model, reasoning_effort=LLM_REASONING_EFFORT), None
     except LLMError as e:
-        return None, error_info(e)
+        error = error_info(e)
+    fb = fallback_model()
+    if fb and fb != model and error["category"] in MODEL_FALLBACK_CATEGORIES:
+        try:
+            return parse_query(query, client=client, model=fb, reasoning_effort=LLM_REASONING_EFFORT), None
+        except LLMError:
+            pass
+    return None, error
 
 
 def retrieve(query, retriever, method, boroughs, top_k=TOP_K, include_low_evidence=False, search_options=None):
@@ -494,27 +515,44 @@ def _backoff_delay(base):
     return base * random.uniform(0.75, 1.25)  # jitter, so the two workers do not retry in lockstep
 
 
-def summarize_with_backoff(view, result, context, client, model, guarded=False, user_request=None, sleep=None):
+def timeout_error():
+    return {"category": "timeout", "code": "deadline", "message": ERROR_MESSAGES["timeout"]}
+
+
+def summarize_with_backoff(view, result, context, client, model, guarded=False, user_request=None, sleep=None,
+                           deadline=None, clock=time.monotonic):
     """summarize(), retried with exponential backoff while the provider answers with a rate limit (429).
 
-    Returns the final error dict (or None). Other errors are not retried. `sleep` is time.sleep unless given (tests).
+    A retry that would start after `deadline` (a clock() value) is not made. After the retries (or a timeout, network or
+    provider error) the fallback model, if GROQ_FALLBACK_MODEL names one, gets one try. Returns the final error dict (or None).
+    `sleep` is time.sleep unless given (tests).
     """
     sleep = sleep or time.sleep
     error = summarize(view, result, context, client, model, guarded, user_request)
     for base in BACKOFF_SECONDS:
         if not error or error["category"] != "rate_limit":
             break
-        sleep(_backoff_delay(base))
+        delay = _backoff_delay(base)
+        if deadline is not None and clock() + delay >= deadline:
+            break
+        sleep(delay)
         error = summarize(view, result, context, client, model, guarded, user_request)
+    fb = fallback_model()
+    if (error and fb and fb != model and error["category"] in MODEL_FALLBACK_CATEGORIES
+            and (deadline is None or clock() < deadline)):
+        error = summarize(view, result, context, client, fb, guarded, user_request)
     return error
 
 
-def summarize_results(outcome, raw, client, auto_summaries, stop_message=None, sleep=None):
+def summarize_results(outcome, raw, client, auto_summaries, stop_message=None, sleep=None, deadline_s=None, progress=None,
+                      clock=time.monotonic):
     """Summarize the top `auto_summaries` results, SUMMARY_WORKERS at a time, each call retried on a rate limit.
 
-    A result whose call still fails keeps its summary_error (the card then offers a retry). A configuration,
-    authentication or billing error stops the remaining calls: those results get summary_skipped with the message.
-    Results past `auto_summaries` are marked "not requested". Returns the message of a stopping error, or None.
+    The summaries share one deadline (SUMMARY_DEADLINE_S): a result not started by then gets a timeout error (its card offers
+    a retry). A result whose call still fails keeps its summary_error. A configuration, authentication or billing error stops
+    the remaining calls: those results get summary_skipped with the message. Results past `auto_summaries` are marked
+    "not requested". progress(done, total) is called on the calling thread after each summary. Returns the message of a
+    stopping error, or None.
     """
     todo = []
     for view, result in zip(outcome.results, raw):
@@ -526,27 +564,37 @@ def summarize_results(outcome, raw, client, auto_summaries, stop_message=None, s
             todo.append((view, result))
     stop = {"message": None}
     lock = threading.Lock()
+    deadline = clock() + (SUMMARY_DEADLINE_S if deadline_s is None else deadline_s)
 
     def work(pair):
         view, result = pair
         if stop["message"]:
             view.summary_skipped = stop["message"]
             return
+        if clock() >= deadline:
+            view.summary_error = timeout_error()
+            return
         error = summarize_with_backoff(view, result, outcome.summary_context, client, outcome.model,
-                                       outcome.allergy_sensitive, outcome.query[:MAX_USER_REQUEST], sleep)
+                                       outcome.allergy_sensitive, outcome.query[:MAX_USER_REQUEST], sleep, deadline, clock)
         if error and error["category"] in ("configuration", "authentication", "billing"):
             with lock:
                 stop["message"] = error["message"]
 
+    if progress and todo:
+        progress(0, len(todo))
     with ThreadPoolExecutor(max_workers=SUMMARY_WORKERS) as pool:
-        list(pool.map(work, todo))
+        futures = [pool.submit(work, pair) for pair in todo]
+        for done, future in enumerate(as_completed(futures), 1):
+            future.result()
+            if progress:
+                progress(done, len(todo))
     return stop["message"]
 
 
 # ---- entry points -------------------------------------------------------------
 def run_search(query, borough_choice, method, *, retriever, client, model, setup_error=None,
                auto_summaries=AUTO_SUMMARIES, top_k=TOP_K, include_low_evidence=False, log_path=_DEFAULT_LOG,
-               prior=None, search_options=None, progress=None):
+               prior=None, search_options=None, progress=None, on_summary_progress=None):
     """Parse, retrieve and summarize the top results; returns (SearchOutcome, raw results).
 
     prior: an earlier SearchOutcome for the same query; its parse result is reused instead of calling the parser
@@ -609,7 +657,8 @@ def run_search(query, borough_choice, method, *, retriever, client, model, setup
     if client is not None and auto_summaries > 0 and outcome.results:
         progress("summarize")
     stop = None if client is not None else (setup_error or {}).get("message", "Summaries are unavailable.")
-    stop = summarize_results(outcome, raw, client, auto_summaries if auto_summaries > 0 else 0, stop) or stop
+    stop = summarize_results(outcome, raw, client, auto_summaries if auto_summaries > 0 else 0, stop,
+                             progress=on_summary_progress) or stop
     outcome.timings["summarize_s"] = round(time.monotonic() - t, 3)
     if any(v.summary_error for v in outcome.results) or (stop and client is not None):
         outcome.notices.append("Some summaries are unavailable; the review excerpts are shown instead.")

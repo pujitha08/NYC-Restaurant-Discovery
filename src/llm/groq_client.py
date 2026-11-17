@@ -86,8 +86,8 @@ def _safe_api_error(exc, provider_name="GroqCloud"):
     return LLMAPIError(message, category=category, code=code, http_status=status)
 
 
-def get_client():
-    """Create a GroqCloud-only SDK client on demand, never at import time."""
+def get_client(timeout=30.0):
+    """Create a GroqCloud-only SDK client on demand, never at import time. `timeout` is the per-call limit in seconds."""
     key = os.environ.get("GROQ_API_KEY", "").strip()
     if (not key or key.lower() in {"your-groq-api-key-here", "replace_with_your_groq_key"}
             or any(c.isspace() for c in key)):
@@ -99,7 +99,7 @@ def get_client():
         raise LLMConfigurationError("Install the project's openai dependency.") from None
     failure = None
     try:
-        client = OpenAI(api_key=key, base_url="https://api.groq.com/openai/v1", timeout=30.0, max_retries=0)
+        client = OpenAI(api_key=key, base_url="https://api.groq.com/openai/v1", timeout=timeout, max_retries=0)
     except Exception:
         failure = LLMConfigurationError("Could not initialize the GroqCloud SDK client. Check local SDK configuration.",
                                         code="client_initialization_failed")

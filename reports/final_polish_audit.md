@@ -8,7 +8,7 @@ Anything that would need a Groq call to confirm is marked UNVERIFIED.
 Shape (`data/demo_cache/4382a730d527e800.json`, Peanut, read with `json.load`; the same shape in all 14 files):
 `{"cached_at", "outcome": {...}}`; `outcome` keys: request_id, query, borough_choice, method, parsed, summary_context, boroughs,
 results, notices, parse_error, setup_error, timings, llm_calls, model, allergy_sensitive, cached, ranking_fallback, cached_at
-(written by `app/demo_cache.py:67-81`, `outcome_to_dict`/`_frozen`).
+(written by `app/demo_cache.py:61` `outcome_to_dict`, `:89` `_frozen`, `:101` `save_outcome`).
 Per restaurant (`results[]`): rank, gmap_id, name, borough, address, avg_rating, num_reviews, low_evidence, score,
 **excerpts** (list of `{review_id, date, text, rating}`), **summary**, summary_error, summary_skipped, stance_counts, stance_sentences.
 `summary` = `{status, claims, limitations, guarded, note}` (`app/pipeline.py:119-125`, `Summary`):
@@ -27,13 +27,13 @@ support/contradiction claim that cites a review present in their own evidence; *
 "insufficient evidence" summary). Of the 147 claims in total, 0 have an empty `excerpts` list (every cited id resolved).
 Caveats found: in guarded (allergy) results a claim that used safety wording is already replaced by the neutral line
 `NEUTRAL_CLAIM` (`app/pipeline.py:82`, applied at `:429`), and a name-only claim by `NAME_ONLY_CLAIM`
-(`app/evidence_filter.py:12`); those are not findings and must not be shown as one.
+(`app/evidence_filter.py:11`); those are not findings and must not be shown as one.
 
 ## B. Card rendering today
 
 - Card HTML: `card_html` `app/streamlit_app.py:310-320` (name, borough, stars, ONE quote, "Based on N reviews" pill, tag/also-note
   for mixed). Shown by `show_card` `:323-329` with the "See the evidence" expander (`evidence_html` `:275-307`, which is where the
-  model's claim sentences appear, under "AI summary of the reviews below", `:285-291`). The card itself shows NO finding sentence.
+  model's claim sentences appear, under "AI summary of the reviews below", `:280-285`). The card itself shows NO finding sentence.
 - Quote: `vm.quote_for` `app/view_model.py:376-`; count `n_reviews` from `about_the_need` (same file).
 - Care vs problem vs mixed: `vm.group_of` `app/view_model.py:124-` (reads `effective_claims` `:98-`, i.e. after the care gate, the allergy
   problem gate, the allergen gate); `vm.columns` `:157-169` puts MIXED in **both** `care` and `problems` (`:161-164`);
@@ -100,8 +100,8 @@ Caveats found: in guarded (allergy) results a claim that used safety wording is 
 |---|---|---|---|
 | 1 | NL query -> LLM parser (location, diets, allergens, group needs, preferences) | PRESENT | `src/llm/query_parser.py` (`LIST_FIELDS`, schema), called at `app/pipeline.py:576` |
 | 2 | Retrieval with BOTH TF-IDF and semantic embeddings | PARTIAL | all six systems exist (`eval/make_pool.py:126-133`, `app/pipeline.py:55`) but the app default is semantic only, TF-IDF is reachable only from the method dropdown in Evaluation tools (`streamlit_app.py:176`) and only if its index files exist (`pipeline.py:723`) |
-| 3 | LLM summary explaining in plain language why a restaurant may or may not suit, plus excerpts | PARTIAL | the model's claim sentences exist but appear only inside "See the evidence" (`streamlit_app.py:285-291`); the card shows only a quote (`:310-320`) |
-| 4 | Allergy queries report past accommodation evidence, never medical safety | PRESENT | `SAFETY_WORDS`/`has_safety_wording` `pipeline.py:80-90`, `ALLERGY_NOTE` `:94`, gates `view_model.py:60-122`, footer `streamlit_app.py:31-32` |
+| 3 | LLM summary explaining in plain language why a restaurant may or may not suit, plus excerpts | PARTIAL | the model's claim sentences exist but appear only inside "See the evidence" (`streamlit_app.py:280-285`); the card shows only a quote (`:310-320`) |
+| 4 | Allergy queries report past accommodation evidence, never medical safety | PRESENT | `SAFETY_WORDS`/`has_safety_wording` `pipeline.py:80-90`, `ALLERGY_NOTE` `:94`, gates `view_model.py:30-122`, footer `streamlit_app.py:31-32` |
 | 5 | Examples where the system fails or retrieves conflicting reviews | PARTIAL | `reports/failure_examples.md` exists; in the app conflicts show as the "Reviewers disagree" tag (`streamlit_app.py:312`), drawn twice (see B) |
 | 6 | Borough selection Manhattan/Brooklyn | PARTIAL | `where_selector` `streamlit_app.py:144-147`, home screen only (`:533-535`); not stale-proof (E) |
-| 7 | Historical-data disclaimer | PRESENT | pill `SCOPE_PILL` `streamlit_app.py:30`, footer `FOOTER` `:31-32`, drawn at `:554-` |
+| 7 | Historical-data disclaimer | PRESENT | pill `SCOPE_PILL` `streamlit_app.py:30`, footer `FOOTER` `:31-32`, drawn at `:555` |
