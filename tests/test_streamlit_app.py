@@ -707,6 +707,24 @@ class PageTests(unittest.TestCase):
         self.assertIn("Manhattan", self.plain(at))
         self.assertEqual(self.client.calls, [])
 
+    def test_a_saved_pool_of_thirty_lists_the_too_little_evidence_restaurants_in_one_collapsed_expander(self):
+        from tests.test_demo_build import retriever as many
+        outcome, _ = pipeline.run_search("restaurant careful about peanut allergies", "Both", "semantic_capped", retriever=many(30),
+                                         client=pipeline.UsageRecorder(FakeClient()), model="m", log_path=None, top_k=30, auto_summaries=3)
+        self.assertEqual(len(outcome.results), 30)
+        demo_cache.save_outcome(outcome, self.cache_dir)
+        at = self.start()
+        self.click(at, "Peanut")
+        html = self.html(at)
+        more = [e for e in at.expander if "matched, but reviews don't say enough about" in e.label]
+        self.assertEqual(len(more), 1)  # one expander, not one line per restaurant on the page
+        inside = " ".join(m.value for m in more[0].markdown)
+        self.assertEqual(inside.count('class="more-line"'), int(more[0].label.split()[0]))
+        outside = html.replace(inside, "")
+        self.assertEqual(outside.count('class="more-line"'), 0)
+        self.assertIn("30 restaurants checked", self.plain(at))
+        self.assertFalse(more[0].proto.expanded)  # collapsed
+
     def test_the_saved_setting_itself_is_served_from_the_cache(self):
         self.saved_peanut()
         at = self.start()
