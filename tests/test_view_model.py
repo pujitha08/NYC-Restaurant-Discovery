@@ -117,7 +117,7 @@ class CountLineTests(unittest.TestCase):
 
     def test_diet_wording(self):
         o = outcome([CARE], query="halal restaurants", parsed=ParsedQuery(dietary_restrictions=["halal"]), allergy=False)
-        self.assertEqual(vm.count_line(o), "1 restaurant checked · 1 mention halal options · 0 are critical · "
+        self.assertEqual(vm.count_line(o), "1 restaurant checked · 1 mention halal options · 0 raise concerns · "
                                            "0 not enough evidence")
 
     def test_unavailable_summaries_are_counted_apart_for_a_live_search_only(self):
@@ -142,8 +142,8 @@ class WordingTests(unittest.TestCase):
     def test_titles_by_kind(self):
         diet = outcome([], parsed=ParsedQuery(dietary_restrictions=["kosher"]), allergy=False)
         self.assertEqual(vm.care_title(diet), "Reviews mention kosher options")
-        self.assertEqual(vm.problems_subline(diet), "Reviewers are critical of the kosher options here. Read before you go.")
-        self.assertEqual(vm.problems_column_title(diet), "Reviews are critical")
+        self.assertEqual(vm.problems_subline(diet), "Reviewers raise concerns about the kosher options here. Read before you go.")
+        self.assertEqual(vm.problems_column_title(diet), "Reviews raise concerns")
         allergy = outcome([])
         self.assertEqual(vm.care_title(allergy), "Reviews mention allergy care")
         self.assertEqual(vm.care_subline(allergy), "Worth a closer look. Confirm with the restaurant.")
@@ -348,7 +348,7 @@ class FindingTests(unittest.TestCase):
 
 
 class NonAllergyWordingTests(unittest.TestCase):
-    """Allergy requests keep "report problems" / "Warned"; diet, group and general searches say critical / Criticized."""
+    """Allergy requests keep "report problems" / "Warned"; diet, group and general searches say "raise concerns" / "Raised concerns"."""
 
     def kinds(self):
         allergy = outcome([CARE, PROBLEMS, MIXED])
@@ -365,31 +365,40 @@ class NonAllergyWordingTests(unittest.TestCase):
     def test_column_title(self):
         allergy, diet, general = self.kinds()
         self.assertEqual(vm.problems_column_title(allergy), "Reviews report problems")
-        self.assertEqual(vm.problems_column_title(diet), "Reviews are critical")
-        self.assertEqual(vm.problems_column_title(general), "Reviews are critical")
+        self.assertEqual(vm.problems_column_title(diet), "Reviews raise concerns")
+        self.assertEqual(vm.problems_column_title(general), "Reviews raise concerns")
         self.assertEqual(vm.problems_column_title(), "Reviews report problems")  # no outcome: the default stays
 
     def test_warned_half(self):
         allergy, diet, general = self.kinds()
         self.assertEqual(vm.warned_title(allergy), "Warned")
-        self.assertEqual((vm.warned_title(diet), vm.warned_title(general)), ("Criticized", "Criticized"))
+        self.assertEqual((vm.warned_title(diet), vm.warned_title(general)), ("Raised concerns", "Raised concerns"))
         self.assertIn("warn about them", vm.disagree_sub(allergy))
-        self.assertIn("criticize them", vm.disagree_sub(diet))
+        self.assertIn("raise concerns about them", vm.disagree_sub(diet))
 
     def test_count_line(self):
         allergy, diet, general = self.kinds()
         self.assertIn("1 report problems", vm.count_line(allergy))
-        self.assertNotIn("are critical", vm.count_line(allergy))
+        self.assertNotIn("concerns", vm.count_line(allergy))
         for o in (diet, general):
-            self.assertIn("1 are critical", vm.count_line(o))
+            self.assertIn("1 raises concerns", vm.count_line(o))
             self.assertNotIn("report problems", vm.count_line(o))
 
     def test_notes_and_badge(self):
         allergy, diet, _ = self.kinds()
         self.assertIn("report problems", vm.problems_column_note(allergy, True))
-        self.assertEqual(vm.problems_column_note(diet, True), "Critical reviews only appear below, where reviewers disagree.")
-        self.assertEqual(vm.problems_column_note(diet, False), "No restaurant in the top results has critical reviews. Reviews are anecdotal.")
+        self.assertEqual(vm.problems_column_note(diet, True), "Reviews that raise concerns only appear below, where reviewers disagree.")
+        self.assertEqual(vm.problems_column_note(diet, False), "No restaurant in the top results has reviews that raise concerns. Reviews are anecdotal.")
         self.assertEqual(vm.badge_text(vm.PROBLEMS, allergy), "⚠ Reviews report problems")
-        self.assertEqual(vm.badge_text(vm.PROBLEMS, diet), "⚠ Reviews are critical")
+        self.assertEqual(vm.badge_text(vm.PROBLEMS, diet), "⚠ Reviews raise concerns")
         for o in (allergy, diet):
             self.assertNotRegex(vm.problems_subline(o) + vm.problems_column_note(o, False), r"(?i)\bsafe\b|supported")
+
+
+class ConcernCountAgreementTests(unittest.TestCase):
+    def test_singular_and_plural_in_the_count_line_for_a_diet_search(self):
+        diet = lambda views: outcome(views, query="halal", parsed=ParsedQuery(dietary_restrictions=["halal"]), allergy=False)
+        self.assertIn("1 raises concerns", vm.count_line(diet([PROBLEMS])))
+        self.assertIn("0 raise concerns", vm.count_line(diet([CARE])))
+        p2 = view(8, claims=[("c", "contradiction", [2])], excerpts=[E2])
+        self.assertIn("2 raise concerns", vm.count_line(diet([PROBLEMS, p2])))

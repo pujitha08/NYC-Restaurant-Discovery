@@ -69,7 +69,7 @@ class ChipsFromTheSavedResultsTests(unittest.TestCase):
                 self.assertEqual(at.status[0].label, "Done")
                 html = " ".join(m.value for m in at.markdown)
                 self.assertRegex(html, r"How this was found: a saved result from \d{4}-\d{2}-\d{2} \(no live search was run\)")
-                count = re.search(r"(\d+) restaurants checked · (\d+) mention [^·]+ · (\d+) (?:report problems|are critical)"
+                count = re.search(r"(\d+) restaurants checked · (\d+) mention [^·]+ · (\d+) (?:report problems|raises? concerns)"
                                   r"(?: · (\d+) with mixed reviews)? · (\d+) not enough evidence", html)
                 self.assertIsNotNone(count)
                 self.assertEqual(int(count.group(1)), 10)
