@@ -42,31 +42,7 @@ Cited review 826860 (★4) (the card's quote is marked):
 ```
 
 ## Peanut
-Findings shown: **16** (care column: 3, problems column: 9, Reviewers disagree: Praised: 2, Reviewers disagree: Warned: 2)
-
-### Peanut · care column · Buddakan
-
-- label: support
-- finding: One reviewer reported that the waiter was super helpful and accommodating for all allergies and dietary preferences.
-- cited review ids: [79278]
-
-Cited review 79278 (★5) (the card's quote is marked):
-
-```
-Did a tasting menu here. Everything was delicious. ⟦Our waiter was super helpful and accommodating for all the allergies and dietary preferences.⟧
-```
-
-### Peanut · care column · Five Guys
-
-- label: support
-- finding: One reviewer noted that the location did not have any peanuts, unlike other Five Guys outlets.
-- cited review ids: [1752174]
-
-Cited review 1752174 (★4) (the card's quote is marked):
-
-```
-It's a higher level of faster food and basically good. ⟦They didn't have any peanuts as most of the other 5 guys.⟧ ⟦That's good or disappointing depends on what you want and also likely not ok for allergies.⟧ So...
-```
+Findings shown: **13** (care column: 1, problems column: 10, Reviewers disagree: Praised: 1, Reviewers disagree: Warned: 1)
 
 ### Peanut · care column · Shake Shack
 
@@ -200,6 +176,18 @@ Cited review 2235749 (★4):
 Special type of burgers with free peanuts
 ```
 
+### Peanut · problems column · Highway Bagels
+
+- label: contradiction
+- finding: One reviewer reported finding unexpected peanut butter in a bagel, warning that it could be dangerous for someone with a peanut allergy.
+- cited review ids: [795466]
+
+Cited review 795466 (★1) (the card's quote is marked):
+
+```
+Their bagels are alright. The staff could care less for you the customer. I told them my order which was a basic sesame seed bagel with cream cheese without toastig it and they give me a plain warm bagel with cream cheese. Not to much to get angry about, but another time that I ordered the guy didn't even listen to me! Most of the time it takes a while for them to get your order and there are no other customers there! The last time I ordered here was once again a sesame bagel with cream cheese. I got home eager to eat it and as I am half way through the bagel there was peanut butter in it! ⟦What if someone who was allergic to peanut butter ate it!!!⟧ Clearly they don't care enough to use a different knife or spoon to spread some cream cheese on the bagel after they have used it in the peanut butter or at least wash it! The things on the menu seem good, but are expensive! A basic chicken wrap costs $16!!!!
+```
+
 ### Peanut · Reviewers disagree: Praised · Bengal Tiger
 
 - label: support
@@ -212,18 +200,6 @@ Cited review 2738504 (★5) (the card's quote is marked):
 Have been meaning to leave Bengal Tiger a review for awhile. Visited here back in February. ⟦Have never been able to eat out at Indian restaurants due to my severe peanut and tree nut allergy.⟧ ⟦Decided to give Bengal Tiger a try given their outstanding reviews especially when it comes to allergies.⟧ I was not disappointed. I have never felt more comfortable dining out with my allergy. Staff is so accommodating to allergies and offered great recommendations. I had the chicken tikka masala and vegetable samosas. Both were phenomenal. Place was a little hard to locate (it's on the second floor) and decently busy for a random weeknight but definitely would make another trip for this food. Don't pass up on ordering takeout from here during COVID!
 ```
 
-### Peanut · Reviewers disagree: Praised · Highway Bagels
-
-- label: support
-- finding: Another reviewer stated that the staff accommodate allergies and help customers find suitable options.
-- cited review ids: [795345]
-
-Cited review 795345 (★5) (the card's quote is marked):
-
-```
-I have been coming to this store since I was in middle school and as an adult, I can say that the service is still awesome and only got better. ⟦They accommodate based on your allergies and help you find different options so that everyone can have something to eat.⟧ I like to craft different sandwiches based on my eclectic and unique taste and every single time, this place has delivered. They're definitely out of the way from where I live, but every time I pass by, I always order. 10/10 service, 10/10 food. I would definitely recommend this to my friends, family and anyone else!
-```
-
 ### Peanut · Reviewers disagree: Warned · Bengal Tiger
 
 - label: contradiction
@@ -234,18 +210,6 @@ Cited review 2738654 (★1) (the card's quote is marked):
 
 ```
 This is the worst place. I had food poisoning after eating here. ⟦They don’t separate allergy food like nuts etc.⟧ ⟦The manager is very rude.⟧ I had a peek at the kitchen and it is very unclean. I have reported this to food inspection/ health department.
-```
-
-### Peanut · Reviewers disagree: Warned · Highway Bagels
-
-- label: contradiction
-- finding: One reviewer reported finding unexpected peanut butter in a bagel, warning that it could be dangerous for someone with a peanut allergy.
-- cited review ids: [795466]
-
-Cited review 795466 (★1) (the card's quote is marked):
-
-```
-Their bagels are alright. The staff could care less for you the customer. I told them my order which was a basic sesame seed bagel with cream cheese without toastig it and they give me a plain warm bagel with cream cheese. Not to much to get angry about, but another time that I ordered the guy didn't even listen to me! Most of the time it takes a while for them to get your order and there are no other customers there! The last time I ordered here was once again a sesame bagel with cream cheese. I got home eager to eat it and as I am half way through the bagel there was peanut butter in it! ⟦What if someone who was allergic to peanut butter ate it!!!⟧ Clearly they don't care enough to use a different knife or spoon to spread some cream cheese on the bagel after they have used it in the peanut butter or at least wash it! The things on the menu seem good, but are expensive! A basic chicken wrap costs $16!!!!
 ```
 
 ## old: safe for celiac disease, no cross contamination / Both / semantic_capped
@@ -333,7 +297,7 @@ amazing food and drinks, great service and beautiful outdoor dining space. the p
 ```
 
 ## Shellfish
-Findings shown: **6** (care column: 0, problems column: 3, Reviewers disagree: Praised: 1, Reviewers disagree: Warned: 2)
+Findings shown: **6** (care column: 0, problems column: 4, Reviewers disagree: Praised: 1, Reviewers disagree: Warned: 1)
 
 ### Shellfish · problems column · Red Lobster
 
@@ -345,6 +309,18 @@ Cited review 738786 (★1) (the card's quote is marked):
 
 ```
 Yesterday I went to red lobster in the private dining area , the service was. Horrible & slow. My group was of 13 people , neglected is how we felt . i server Adam was so slow , ultimately we were there for 2 hours and the salad was brought out , 30 mins later the food came out COLD ! . That is not even the worst part . I specifically told Adam I have a seafood allergy , for my chicken fingers and. Fries . He told me he spoke to the chef , and was told no seafood contimation will happen . I did not eat my meal at the restaurant I brought it home , I ate the food and my face began to swell . food was contimated with seafood . This is not acceptable . I am horrified at what happen last night , I have Been to several red lobster in the tri state area land has never had this happen . ⟦The service is forgivable but my seafood allergy that could of kill me .⟧ ⟦Is what I am very upset with .⟧
+```
+
+### Shellfish · problems column · Buddakan
+
+- label: contradiction
+- finding: One reviewer warned that the restaurant used oyster oil in many dishes and that the allergy information was not clear, leading to a severe shellfish allergy reaction.
+- cited review ids: [79848]
+
+Cited review 79848 (★3) (the card's quote is marked):
+
+```
+I'm giving this 3 stars because the place was cool and the food was all pretty good, but be careful! ⟦I have a shellfish allergy and was unaware that they used Oyster Oil in MANY non-fish dishes.⟧ ⟦I had a bad reaction and was very sick afterwards.⟧ Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants to be safe. Bad experience, BUT, the food really was very good and we had a great time. I didn't get hit with the reaction until after dinner was over, and the waiter caught this detail halfway through our meal and made sure to adapt our order to bring items that were safe for me.
 ```
 
 ### Shellfish · problems column · Momofuku Ssam Bar
@@ -383,18 +359,6 @@ Cited review 410120 (★5) (the card's quote is marked):
 ⟦Awesome food, Awesome Staff, I have a shellfish allergy and all the fish dishes and steak were amazing.⟧ ⟦Especially the thai chili whole fish.⟧
 ```
 
-### Shellfish · Reviewers disagree: Warned · Buddakan
-
-- label: contradiction
-- finding: One reviewer warned that the restaurant used oyster oil in many dishes and that the allergy information was not clear, leading to a severe shellfish allergy reaction.
-- cited review ids: [79848]
-
-Cited review 79848 (★3) (the card's quote is marked):
-
-```
-I'm giving this 3 stars because the place was cool and the food was all pretty good, but be careful! ⟦I have a shellfish allergy and was unaware that they used Oyster Oil in MANY non-fish dishes.⟧ ⟦I had a bad reaction and was very sick afterwards.⟧ Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants to be safe. Bad experience, BUT, the food really was very good and we had a great time. I didn't get hit with the reaction until after dinner was over, and the waiter caught this detail halfway through our meal and made sure to adapt our order to bring items that were safe for me.
-```
-
 ### Shellfish · Reviewers disagree: Warned · Boilery Seafood and Grill
 
 - label: contradiction
@@ -408,19 +372,7 @@ Do not ever and I mean EVER eat from this establishment again! I ordered shrimp 
 ```
 
 ## Sesame
-Findings shown: **2** (care column: 1, problems column: 1, Reviewers disagree: Praised: 0, Reviewers disagree: Warned: 0)
-
-### Sesame · care column · Senza Gluten
-
-- label: support
-- finding: One reviewer reported the restaurant was accommodating and understanding regarding food allergies.
-- cited review ids: [1065571]
-
-Cited review 1065571 (★5) (the card's quote is marked):
-
-```
-The food was delicious and the service was great! ⟦Accommodating and understanding when it comes to food allergies.⟧ ⟦I would recommend this restaurant to everyone.⟧
-```
+Findings shown: **1** (care column: 0, problems column: 1, Reviewers disagree: Praised: 0, Reviewers disagree: Warned: 0)
 
 ### Sesame · problems column · Mission
 
@@ -435,7 +387,7 @@ If you or anyone in your party suffers from food allergies, please avoid this re
 ```
 
 ## Dairy-free
-Findings shown: **14** (care column: 5, problems column: 7, Reviewers disagree: Praised: 1, Reviewers disagree: Warned: 1)
+Findings shown: **10** (care column: 2, problems column: 8, Reviewers disagree: Praised: 0, Reviewers disagree: Warned: 0)
 
 ### Dairy-free · care column · Bareburger
 
@@ -449,18 +401,6 @@ Cited review 2718626 (★5) (the card's quote is marked):
 An absolutely wonderful spot to get burgers! ⟦We had 4 people, 1 with gluten, dairy allergies and 1 with just dairy allergies.⟧ ⟦This was the most accommodating restaurant ever!⟧ Before we even ordered our server asked about any allergies and made sure to mark them down. If you like organic and vegan food and have allergies, this place is a must.
 ```
 
-### Dairy-free · care column · abcV
-
-- label: support
-- finding: One reviewer reported that the staff were very willing to accommodate a guest with food allergies.
-- cited review ids: [1694854]
-
-Cited review 1694854 (★5) (the card's quote is marked):
-
-```
-This place consistently exceeds expectations and has incredible food / service. Last time we dined here, I brought my mother. ⟦She has food allergies that can be difficult to accommodate at a restaurant.⟧ ⟦Our waiter was incredibly willing to help and kind to her when she mentioned it.⟧ He took the time to circle the menu items that she could eat and double checked with the kitchen just to be sure. This was during a peak lunch hour, when they were busy too. It's just nice to see a restaurant with such care for service in such a busy city where many restaurants get away with the opposite.
-```
-
 ### Dairy-free · care column · Brooklyn Natural Market & Cafe
 
 - label: support
@@ -471,30 +411,6 @@ Cited review 456007 (★5) (the card's quote is marked):
 
 ```
 Oh my god finally place where I can get a burger with vegan condiments! I have been dying trying to avoid these restaurants where everything contains dairy. If it’s not cheese it’s an egg or milk batter and my skin just cannot. ⟦I have an allergic reaction to ALL things containing the smallest amount of dairy.⟧ It’s annoying ordering burgers saying no cheese or Mayo and still getting either or both. Can’t even imagine the frustration of constantly writing NO DAIRY PLEASE and being ignored by food preps. Didn’t have to alter my burger. Had cheese & mayonnaise (vegan of course) w fries that I couldn’t finish because they’re thick cut potato wedges. Followed by a delicious soft oatmeal raisin cookie. It was the best damn burger I’ve had and it’s 1am and I’m writing a review. This place was made for me I guess lol. :)
-```
-
-### Dairy-free · care column · Bistango
-
-- label: support
-- finding: One reviewer reported that the server proactively asked about food allergies and accommodated the couple's needs on multiple visits.
-- cited review ids: [530192]
-
-Cited review 530192 (★5) (the card's quote is marked):
-
-```
-My husband has several food allergies and during our trip to NYC, this restaurant was a breath of fresh air. Our server, Juli, was so kind and accommodating to my husband's needs. ⟦In fact, her first question to us was if either of us had any food allergies.⟧ ⟦We went twice during our trip and loved it.⟧ I highly recommend the gluten free butternut squash ravioli. Amazing! I do not recommend the gluten free pizza however - it tasted like cardboard. Overall we loved bistango and our server Juli! If we ever visit NYC again, we will definitely be back :)
-```
-
-### Dairy-free · care column · Wild
-
-- label: support
-- finding: Another reviewer noted that the menu offers a wonderful variety for diners with allergens.
-- cited review ids: [342352]
-
-Cited review 342352 (★3) (the card's quote is marked):
-
-```
-Our food was delicious and worthy of a 5 star review. ⟦The restaurant is beautifully appointed and the menu has wonderful variety for us with allergens.⟧ ⟦What it lacks however is soul/life simply because of the staff.⟧ The staff appears to be attempting high french service in a setting where it is both impractical and comes across as pretentious. It's overcrowded with tables and restaurant employees that aren't adding to the experience. We went last night, Friday. We were met with a query if we had a reservation at roughly 5:30pm. When we replied no we were met with a slight look of disgust and offered a seat along the wall with someone else's jacket on the chair. We also being a large couple wouldn't have fit there even if we tried. We had to forcefully request another spot. After another 2 rounds of them trying to seat us in an unrealistic position or directly near other patrons when the place was 7/8 empty we insisted on the window. None of their seating was comfortable. Our waiter was inattentive, callously rude, pretentious, and condescending. It took him over 15 minutes to procure a slice of lemon from less than 6 ft away and only after having asked 2 other people. Even after his horrible service he had the nerve to indicate that gratuity was not included on the check. He spent most of his time chatting with other employees close by in a language I'm sure they thought nobody understood, ignoring us, and screwing up our order. The dessert options looked nice enough but only one is available currently for people who have nut allergies. Plating could be improved for desserts also. I was disappointed with the experience and saddened because I would have liked to return.
 ```
 
 ### Dairy-free · problems column · by CHLOE. - Flatiron
@@ -531,6 +447,18 @@ Cited review 2503734 (★1) (the card's quote is marked):
 
 ```
 Called inquiring about dairy free option for breakfast the person on the phone was extremely rude! Had a rather large order that we were looking to place. ⟦I am only one with food allergies the rest would have been normal.⟧ ⟦Too bad for them we went elsewhere⟧
+```
+
+### Dairy-free · problems column · Black Tap Craft Burgers & Beer
+
+- label: contradiction
+- finding: Another reviewer described that, despite explicitly requesting no dairy, staff added cream and ice cream to a shake, causing a dairy‑allergy incident.
+- cited review ids: [125003]
+
+Cited review 125003 (★1) (the card's quote is marked):
+
+```
+Pretty terrible service and don’t expect them to get your order right first time. Me and my kid went there for a party, and she ordered a veggie burger, which she said was too spicy, and then the shakes came. ⟦She has a dairy allergy, so we brought a shake and they said they would put any toppings on it.⟧ ⟦Even though we told them to not put dairy on it, and I even spoke to the manager, they still put cream and ice cream on it.⟧ My daughter was devastated. She was really upset, so they gave her candy, but she never got to try a shake. We are never coming back to black tap again.
 ```
 
 ### Dairy-free · problems column · Cafeteria
@@ -579,30 +507,6 @@ Cited review 2011614 (★1) (the card's quote is marked):
 
 ```
 This is a specific warning for those with lactose intolerance and other dietary restrictions. Though I told them sheep and goat dairy were wonderful and delicious, they assured me that in this highly rated Italian restaurant they had no sheep nor goat cheese that wasn't mixed in with cow dairy. Had I known they were so limited I would have picked some up at Safeway before I arrived, nipping that absurd deficiency in the bud. That being said, the Wagyu Carpaccio was superlative; could not ask for anything more from it. My lamb chops were delightful but I must admit they had a problem with silver skin. Additionally, my husband ordered the oxtail raviolo which arrived with some provolone which he removed with his fork in about 2 seconds and was able to share with me, a much more than memorable tasting. This is as opposed to the shell pasta with a mild and thin red sauce and just shake of chili flakes and garlic which I received. Because apparently that was all they had to accommodate the lactose intolerant. And for the absolute coup de gras, they brought to the table some very nice Italian breads with spreads to go along with them just as any fine restaurant would. My bread arrived with a small dish filled with a quenelle of Tofutti Cream Cheese, which is available at 7-Eleven. I wish I was joking. And what's worse, management assured to me that this was their best effort possible. ⟦My suspicion is that, absurd as it sounds, no one in management nor the kitchen nor the serving staff know the difference between lactose intolerance and lactose allergy.⟧ Many fewer people have lactose allergies than lactose intolerance and what they served me were meals which seemed to consider any presence of lactose as dangerous as plutonium. We went to Del Posto because it had excellent reviews & we've always enjoyed watching Lidia Bastianich and Mario Batali cooking on TV. We came to this restaurant for our 3rd anniversary and not only that, but for a bucket list because I have Stage 4 pancreatic cancer. I told them these things as well as I was making my reservations. They were completely disregarded. Despite the quality of food when they got it right the complete insufficiency of the management and the thouroughly unaccommodating treatment for those with dietary restrictions make it such that I just cannot get more than one star. They went a real distance to ruining this bucket list of mine. My husband rated Del Posto 3 stars for lack of wow factor and underwhelming memorability. Still, this is a specific warning for those with dietary restrictions.
-```
-
-### Dairy-free · Reviewers disagree: Praised · Black Tap Craft Burgers & Beer
-
-- label: support
-- finding: One reviewer reported being able to eat all menu items without experiencing an allergic reaction and recommended the restaurant for people with food allergies.
-- cited review ids: [124746]
-
-Cited review 124746 (★5) (the card's quote is marked):
-
-```
-I really loveeed this place! I randomly found it while looking for a food spot to eat near the Museum of Ice Cream. I called in advanced to ask them questions regarding their menu since I have a food allergy. It can be a pain knowing that you cannot eat certain foods without having a reaction, but they were super open to answering all of my questions. I arrived there around 8:30ish and only had to wait 20mins since it was completely packed. Afterwards they were super accommodating since it was a party of 3 including a toddler. The host and server was amazing and once I got my food it was nice and hot! The cheese from my Californian burger was dripping off like pizza and super delicious! I was so happy and in tears because I was able to eat all of my food without me having an allergic reaction. I highly recommend anyone to come here! ⟦Especially those who may suffer from having a food allergy.⟧ ⟦I will be returning here again and look forward to trying out their milkshakes next time!⟧
-```
-
-### Dairy-free · Reviewers disagree: Warned · Black Tap Craft Burgers & Beer
-
-- label: contradiction
-- finding: Another reviewer described that, despite explicitly requesting no dairy, staff added cream and ice cream to a shake, causing a dairy‑allergy incident.
-- cited review ids: [125003]
-
-Cited review 125003 (★1) (the card's quote is marked):
-
-```
-Pretty terrible service and don’t expect them to get your order right first time. Me and my kid went there for a party, and she ordered a veggie burger, which she said was too spicy, and then the shakes came. ⟦She has a dairy allergy, so we brought a shake and they said they would put any toppings on it.⟧ ⟦Even though we told them to not put dairy on it, and I even spoke to the manager, they still put cream and ice cream on it.⟧ My daughter was devastated. She was really upset, so they gave her candy, but she never got to try a shake. We are never coming back to black tap again.
 ```
 
 ## Celiac
@@ -1123,27 +1027,19 @@ Pretty poor recent experience (and usually the food is solid). Went in to grab a
 
 ## Findings suppressed by the allergen-term rule
 
-A finding is suppressed when it names an allergen group (a term of the group occurs in the finding sentence) and no cited review contains any term of that same group; the card then shows the quote alone. Suppressed: **5**.
+A finding is suppressed when it names an allergen group (a term of the group occurs in the finding sentence) and no cited review contains any term of that same group; the card then shows the quote alone. Suppressed: **3**.
 
 - Peanut · problems column · Superiority Burger
   - finding: One reviewer warned that despite being told the burger contained no nuts, they experienced severe allergic symptoms, suggesting the restaurant may not handle peanut allergies properly.
   - group `peanut`: the finding says ['peanut']; none of the group's terms ['peanut', 'groundnut'] occurs in the cited review(s) [1627793]
 
-- Peanut · problems column · by CHLOE. - Flatiron
-  - finding: One reviewer reported a possible nut piece in the pancake mix, indicating a failure to prevent peanut (or other nut) contamination and expressed disappointment with the restaurant's handling of allergies.
-  - group `peanut`: the finding says ['peanut']; none of the group's terms ['peanut', 'groundnut'] occurs in the cited review(s) [91632]
-
-- Peanut · Reviewers disagree: Warned · Ladybird
+- Peanut · problems column · Ladybird
   - finding: One reviewer reported becoming ill after the meal and warned that the restaurant did not clearly indicate the presence of nuts, suggesting a risk for peanut‑allergic diners.
   - group `peanut`: the finding says ['peanut']; none of the group's terms ['peanut', 'groundnut'] occurs in the cited review(s) [1664372]
 
-- Shellfish · Reviewers disagree: Praised · Buddakan
-  - finding: One reviewer reported that the staff asked about allergies and inquired about ingredients for those with shellfish sensitivities.
-  - group `shellfish`: the finding says ['shellfish']; none of the group's terms ['shellfish', 'seafood', 'shrimp', 'prawn', 'lobster', 'crab', 'crawfish', 'crayfish', 'oyster', 'clam', 'mussel', 'scallop'] occurs in the cited review(s) [79107]
-
-- Dairy-free · care column · Buddakan
-  - finding: One reviewer reported that the waiter was super helpful and accommodating for all allergies, implying attention to dairy allergies.
-  - group `dairy`: the finding says ['dairy']; none of the group's terms ['dairy', 'milk', 'lactose', 'cheese'] occurs in the cited review(s) [79278]
+- Peanut · problems column · by CHLOE. - Flatiron
+  - finding: One reviewer reported a possible nut piece in the pancake mix, indicating a failure to prevent peanut (or other nut) contamination and expressed disappointment with the restaurant's handling of allergies.
+  - group `peanut`: the finding says ['peanut']; none of the group's terms ['peanut', 'groundnut'] occurs in the cited review(s) [91632]
 
 ## Quote from a review the finding does not cite
 
@@ -1154,33 +1050,33 @@ Cards with a finding whose quote comes from a review that finding does not cite:
 | Chip | Before | After |
 |---|---|---|
 | old: vegan options for a group / Brooklyn / semantic_capped | 3 | 3 |
-| Peanut | 2 | 16 |
+| Peanut | 16 | 13 |
 | old: safe for celiac disease, no cross contamination / Both / semantic_capped | 3 | 3 |
 | old: halal chinese food / Manhattan / semantic_capped | 1 | 1 |
 | old: halal chinese food / Manhattan / semantic_log | 0 | 0 |
 | Tree nut | 2 | 2 |
 | Shellfish | 6 | 6 |
-| Sesame | 2 | 2 |
-| Dairy-free | 2 | 14 |
+| Sesame | 2 | 1 |
+| Dairy-free | 14 | 10 |
 | Celiac | 8 | 8 |
 | Gluten-free | 6 | 6 |
 | Vegetarian | 6 | 6 |
 | Halal | 7 | 7 |
 | Kosher | 6 | 6 |
 | Vegan + gluten-free group | 8 | 8 |
-| **Total** | **62** | **88** |
+| **Total** | **88** | **80** |
 
 ## Totals per chip
 
 - old: vegan options for a group / Brooklyn / semantic_capped: 3 finding cards: care column 3, problems column 0, Reviewers disagree: Praised 0, Reviewers disagree: Raised concerns 0
-- Peanut: 16 finding cards: care column 3, problems column 9, Reviewers disagree: Praised 2, Reviewers disagree: Warned 2
+- Peanut: 13 finding cards: care column 1, problems column 10, Reviewers disagree: Praised 1, Reviewers disagree: Warned 1
 - old: safe for celiac disease, no cross contamination / Both / semantic_capped: 3 finding cards: care column 1, problems column 0, Reviewers disagree: Praised 1, Reviewers disagree: Warned 1
 - old: halal chinese food / Manhattan / semantic_capped: 1 finding cards: care column 1, problems column 0, Reviewers disagree: Praised 0, Reviewers disagree: Raised concerns 0
 - old: halal chinese food / Manhattan / semantic_log: 0 finding cards: care column 0, problems column 0, Reviewers disagree: Praised 0, Reviewers disagree: Raised concerns 0
 - Tree nut: 2 finding cards: care column 0, problems column 1, Reviewers disagree: Praised 0, Reviewers disagree: Warned 1
-- Shellfish: 6 finding cards: care column 0, problems column 3, Reviewers disagree: Praised 1, Reviewers disagree: Warned 2
-- Sesame: 2 finding cards: care column 1, problems column 1, Reviewers disagree: Praised 0, Reviewers disagree: Warned 0
-- Dairy-free: 14 finding cards: care column 5, problems column 7, Reviewers disagree: Praised 1, Reviewers disagree: Warned 1
+- Shellfish: 6 finding cards: care column 0, problems column 4, Reviewers disagree: Praised 1, Reviewers disagree: Warned 1
+- Sesame: 1 finding cards: care column 0, problems column 1, Reviewers disagree: Praised 0, Reviewers disagree: Warned 0
+- Dairy-free: 10 finding cards: care column 2, problems column 8, Reviewers disagree: Praised 0, Reviewers disagree: Warned 0
 - Celiac: 8 finding cards: care column 3, problems column 0, Reviewers disagree: Praised 2, Reviewers disagree: Warned 3
 - Gluten-free: 6 finding cards: care column 6, problems column 0, Reviewers disagree: Praised 0, Reviewers disagree: Raised concerns 0
 - Vegetarian: 6 finding cards: care column 6, problems column 0, Reviewers disagree: Praised 0, Reviewers disagree: Raised concerns 0
