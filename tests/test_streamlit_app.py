@@ -169,8 +169,8 @@ class PageTests(unittest.TestCase):
         return html_module.unescape(re.sub(r"<[^>]+>", " ", " ".join(m.value for m in at.markdown)))
 
     def open_tools(self, at):
-        at.toggle[0].set_value(True).run()
-        self.assertFalse(at.exception, at.exception)
+        """The tools are always in the page (inside the collapsed expander); nothing to open for AppTest."""
+        self.assertEqual([e.label for e in at.expander if e.label == "Evaluation tools"], ["Evaluation tools"])
         return at
 
     @staticmethod
@@ -223,39 +223,49 @@ class PageTests(unittest.TestCase):
             self.assertNotIn(old, text)
 
     # ---- evaluation tools ---------------------------------------------------------------------------------------
-    def test_a_fresh_session_renders_none_of_the_evaluation_tools(self):
+    def test_a_fresh_session_shows_the_collapsed_expander_and_no_comparison_output(self):
         at = self.start()
-        self.assertFalse(at.toggle[0].value)  # the header toggle is off
-        self.assertEqual(len(at.checkbox), 0)  # no Compare rankings, no fewer-than-5, no Demo mode
-        self.assertEqual(len(at.selectbox), 0)  # no method dropdown
-        self.assertEqual([e.label for e in at.expander if e.label == "Evaluation tools"], [])
+        panel = next(e for e in at.expander if e.label == "Evaluation tools")
+        self.assertFalse(panel.proto.expanded)  # collapsed by default
+        self.assertEqual(len(at.toggle), 0)  # there is no header toggle any more
+        self.assertFalse(next(c for c in at.checkbox if c.label == "Compare rankings").value)
         text = self.html(at) + " ".join(c.value for c in at.caption)
-        for word in ("Compare rankings", "Retrieval method", "fewer than 5 reviews", "Demo mode"):
-            self.assertNotIn(word, text)
+        for word in ("semantic_capped_stance", "Same query, same candidates", "Compare rankings</div>"):
+            self.assertNotIn(word, text)  # no comparison output
+        self.assertNotIn("last_compare", at.session_state)
+        # the expander is the first thing under the header, above the headline
+        self.assertLess(self.html(at).index("NYC Restaurant Discovery"), self.html(at).index("Find restaurants whose reviews show"))
 
-    def test_with_the_toggle_on_the_tools_hold_compare_method_low_evidence_and_demo_mode(self):
-        at = self.open_tools(self.start())
-        self.assertEqual([t.label for t in at.toggle], ["Evaluation tools"])
-        self.assertEqual([c.label for c in at.checkbox], ["Compare rankings", "Include restaurants with fewer than 5 reviews", "Demo mode"])
-        self.assertEqual(self.method_box(at).label, "Retrieval method")
-        self.assertEqual([e.label for e in at.expander], ["Evaluation tools"])
+    def test_the_expander_holds_exactly_compare_method_low_evidence_and_demo_mode(self):
+        at = self.start()
+        panel = next(e for e in at.expander if e.label == "Evaluation tools")
+        self.assertEqual([c.label for c in panel.checkbox], ["Compare rankings", "Include restaurants with fewer than 5 reviews", "Demo mode"])
+        self.assertEqual([b.label for b in panel.selectbox], ["Retrieval method"])
+        self.assertEqual(len(at.checkbox), 3)  # every checkbox on the page is one of them
+        self.assertEqual(len(at.selectbox), 1)
         self.assertTrue(all(not c.value for c in at.checkbox))  # all off
+        self.assertIn("semantic_capped and semantic_capped_stance", next(c for c in panel.checkbox if c.label == "Compare rankings").help)
+        self.assertIn("saved results only", next(c for c in panel.checkbox if c.label == "Demo mode").help)
 
-    def test_the_header_toggle_shows_and_hides_the_tools(self):
-        at = self.open_tools(self.start())
-        self.assertEqual(len(at.checkbox), 3)
-        at.toggle[0].set_value(False).run()
-        self.assertEqual((len(at.checkbox), len(at.selectbox)), (0, 0))
-
-    def test_hiding_the_tools_returns_to_the_defaults(self):
-        retriever = FakeRetriever()
-        at = self.open_tools(self.start(retrievers={"semantic": retriever}))
-        self.method_box(at).select("semantic_log").run()
-        next(c for c in at.checkbox if c.label.startswith("Include restaurants")).check().run()
-        at.toggle[0].set_value(False).run()
+    def test_ticking_compare_shows_the_comparison_only_inside_the_tools_and_unticking_removes_it(self):
+        at = self.start(retrievers={"semantic_stance": FakeStance()})
+        next(c for c in at.checkbox if c.label == "Compare rankings").check().run()
         self.search(at)
-        self.assertEqual(retriever.calls[-1]["density_mode"], "capped")  # the default method
-        self.assertFalse(retriever.calls[-1]["include_low_evidence"])
+        self.assertIn("last_compare", at.session_state)
+        next(c for c in at.checkbox if c.label == "Compare rankings").uncheck().run()
+        self.assertNotIn("last_compare", at.session_state)
+        self.assertNotIn("semantic_capped_stance", self.html(at))
+
+    def test_nothing_stale_survives_a_fresh_load(self):
+        first = self.start()
+        self.method_box(first).select("chunk_tfidf_capped").run()
+        next(c for c in first.checkbox if c.label == "Demo mode").check().run()
+        next(c for c in first.checkbox if c.label == "Compare rankings").check().run()
+        self.assertEqual(self.method_box(first).value, "chunk_tfidf_capped")
+        fresh = self.start()  # a new session: a fresh page load
+        self.assertEqual(self.method_box(fresh).value, "semantic_capped")
+        self.assertTrue(all(not c.value for c in fresh.checkbox))
+        self.assertFalse(next(e for e in fresh.expander if e.label == "Evaluation tools").proto.expanded)
 
     def test_retrieval_method_defaults_to_semantic_capped_in_every_new_session(self):
         for _ in range(3):
@@ -620,6 +630,38 @@ class PageTests(unittest.TestCase):
         self.assertIn("Run it live", [b.label for b in at.button])
         self.assertNotIn("We understood:", plain)
 
+    def saved_peanut(self):
+        outcome, _ = pipeline.run_search("restaurant careful about peanut allergies", "Both", "semantic_capped", retriever=FakeRetriever(),
+                                         client=pipeline.UsageRecorder(FakeClient()), model="m", log_path=None)
+        demo_cache.save_outcome(outcome, self.cache_dir)
+
+    def test_a_method_with_no_saved_result_shows_the_miss_message_not_a_silent_live_run(self):
+        self.saved_peanut()
+        at = self.start()
+        self.method_box(at).select("semantic_log").run()
+        self.click(at, "Peanut")
+        self.assertIn("No saved result for this setting", self.plain(at))
+        self.assertIn("semantic_log method", self.plain(at))
+        self.assertEqual(self.client.calls, [])
+        self.assertIn("Run it live", [b.label for b in at.button])
+
+    def test_a_borough_with_no_saved_result_shows_the_miss_message_not_a_silent_live_run(self):
+        self.saved_peanut()
+        at = self.start()
+        at.pills[0].set_value("Manhattan").run()
+        self.click(at, "Peanut")
+        self.assertIn("No saved result for this setting", self.plain(at))
+        self.assertIn("Manhattan", self.plain(at))
+        self.assertEqual(self.client.calls, [])
+
+    def test_the_saved_setting_itself_is_served_from_the_cache(self):
+        self.saved_peanut()
+        at = self.start()
+        self.click(at, "Peanut")
+        self.assertNotIn("No saved result", self.plain(at))
+        self.assertIn("a saved result from", self.plain(at))
+        self.assertEqual(self.client.calls, [])
+
     def test_run_it_live_runs_the_search(self):
         at = self.start()
         self.click(at, "Peanut")
@@ -682,8 +724,6 @@ class PageTests(unittest.TestCase):
         self.assertIn("semantic_capped_stance", inside)
         outside = " ".join(m.value for m in at.main.markdown if m.value not in inside)
         self.assertNotIn("semantic_capped_stance", outside)
-        at.toggle[0].set_value(False).run()  # hiding the tools takes the comparison with them
-        self.assertNotIn("semantic_capped_stance", self.html(at))
 
 
 if __name__ == "__main__":

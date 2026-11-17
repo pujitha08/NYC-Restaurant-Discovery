@@ -116,7 +116,6 @@ def show_header():
     with right:
         with st.container(horizontal=True, horizontal_alignment="right", vertical_alignment="center", gap="small"):
             st.markdown(f'<span class="pill">{html_text(SCOPE_PILL)}</span>', unsafe_allow_html=True)
-            st.toggle("Evaluation tools", key="eval_toggle")
 
 
 def subline(stats):
@@ -163,16 +162,12 @@ def show_footer():
 
 
 def evaluation_tools(methods):
-    """Compare rankings, the retrieval method, low-evidence restaurants and Demo mode.
+    """The "Evaluation tools" expander under the header: Compare rankings, the retrieval method, low-evidence restaurants and
+    Demo mode. Closed on a fresh session (its open state is session state, so nothing stale survives a fresh load).
 
-    They are drawn only while the header toggle is on (off in a fresh session); with it off none of them exists and the
-    defaults apply (no comparison, the default method, no low-evidence restaurants, no Demo mode).
-    Returns ((compare, method, include_low, demo), slot): slot is a container inside the section for the comparison output,
-    or None when the tools are hidden.
+    Returns ((compare, method, include_low, demo), slot): slot is a container inside the expander for the comparison output.
     """
-    if not st.session_state.get("eval_toggle", False):
-        return (False, default_method(methods), False, False), None
-    with st.expander("Evaluation tools", expanded=True):
+    with st.expander("Evaluation tools", key="eval_tools", on_change="rerun"):
         compare_mode = st.checkbox("Compare rankings", key="compare_mode",
                                    help="Show semantic_capped and semantic_capped_stance side by side for this query "
                                         "(the method selector is ignored; no summaries).")
@@ -606,8 +601,8 @@ def main():
     valid_borough()
     show_header()
     tools, eval_slot = evaluation_tools(pipeline.available_methods())  # a method whose index files are missing is not offered
-    if eval_slot is None:
-        ss.pop("last_compare", None)  # the comparison lives inside Evaluation tools and goes with it
+    if not tools[0]:
+        ss.pop("last_compare", None)  # a comparison only shows while Compare rankings is ticked, inside Evaluation tools
 
     client, model, setup_error = get_llm()
     if setup_error:
@@ -631,7 +626,7 @@ def main():
 
     if pending is not None:
         run_pending(pending, tools, client, model, setup_error)
-    if "last_compare" in ss and eval_slot is not None:
+    if "last_compare" in ss and tools[0]:
         with eval_slot:
             comparison = ss["last_compare"]
             show_understood(comparison.base)

@@ -25,7 +25,7 @@ uses about 3.5-4K Groq tokens (parse plus 3 summaries) and Groq allows 8K tokens
 
 The home screen has the headline, the search box, a scope line, a "Where" selector, two rows of chips (Allergies, Diets and
 groups) and a three-card strip. A chip fills the box and runs the search; chips are answered from the saved results when one
-exists (instant, no model call). **Evaluation tools** (header toggle) hold Compare rankings, the retrieval method (default
+exists (instant, no model call). **Evaluation tools** (a closed expander under the header) hold Compare rankings, the retrieval method (default
 `semantic_capped`), "fewer than 5 reviews" and Demo mode. The stance re-ranker is an optional experiment: its held-out
 evaluation showed no significant gain (NDCG@10 0.780 vs 0.787, +0.007, p = 0.74), so don't present it as better; Compare
 rankings is for showing how it re-orders results, not for claiming an improvement.

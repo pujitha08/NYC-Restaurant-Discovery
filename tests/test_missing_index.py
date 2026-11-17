@@ -87,7 +87,6 @@ class AppTests(unittest.TestCase):
     def test_selector_lists_only_available_methods_and_defaults_to_semantic_capped(self):
         only = ["semantic_capped", "semantic_log", "semantic_capped_stance"]
         at = self.run_app(available_methods=lambda: only, data_dir_missing=lambda: False)
-        at.toggle[0].set_value(True).run()  # the method dropdown is part of Evaluation tools
         box = next(b for b in at.selectbox if b.label == "Retrieval method")
         self.assertEqual(list(box.options), only)
         self.assertEqual(box.value, "semantic_capped")

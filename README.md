@@ -105,7 +105,7 @@ seriously, and see the evidence.** Reviews are evidence, not a verdict: an aller
 - **Live searches** summarize only the top 6 restaurants, two at a time, retrying a rate-limited call with exponential backoff
   (2, 4, 8 s). Chips are answered from the saved results in `data/demo_cache/*.json` (no model call) when one exists;
   build the missing ones with `python -m app.demo_cache --build --missing`.
-- **Evaluation tools** (a toggle in the header, a closed expander): Compare rankings (`semantic_capped` vs
+- **Evaluation tools** (a closed expander under the header): Compare rankings (`semantic_capped` vs
   `semantic_capped_stance` with rank-change marks and a sentence-stance bar), the retrieval method (default
   `semantic_capped`), "include restaurants with fewer than 5 reviews", and Demo mode (an exact saved query is answered from
   the cache; any other query runs live, silently).
