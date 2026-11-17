@@ -1,12 +1,16 @@
-pandas
+# Runtime requirements: only what the app imports at run time. Streamlit Community Cloud and `pip install -r requirements.txt` read this file.
+# The development and data-building tools (jupyter, matplotlib, datasets, nltk, pandas-based EDA) are in requirements-dev.txt.
+# tests/test_requirements.py checks that every third-party import of the app is listed here.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+streamlit==1.67.0          # the app (also brings pandas and pyarrow)
 numpy
-scikit-learn
-sentence-transformers
-streamlit==1.67.0
-openai==3.46.0
-python-dotenv
-nltk
-tqdm
-jupyter
-matplotlib
-datasets==5.1.0
+scipy                      # sparse matrices of the TF-IDF indexes
+scikit-learn==1.6.1        # the TF-IDF indexes are joblib pickles built with 1.6.1; other versions can warn or fail to load them
+joblib
+tqdm                       # imported by src/retrieval/semantic.py
+python-dotenv              # loads a local .env (a Space uses its secrets as environment variables)
+openai==3.46.0             # the GroqCloud client is the OpenAI-compatible SDK (src/llm/groq_client.py)
+sentence-transformers      # all-MiniLM-L6-v2 query embeddings
+huggingface_hub            # deploy/space_data.py downloads the search data from the private dataset at startup
+torch

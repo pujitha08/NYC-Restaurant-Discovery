@@ -46,7 +46,7 @@ Shared dataclasses live in [src/schemas.py](src/schemas.py); agree on changes th
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt   # what the app needs to run; Jupyter, plots and the evaluation tools: pip install -r requirements-dev.txt
 
 cp .env.example .env   # then set GROQ_API_KEY (and GROQ_MODEL=openai/gpt-oss-20b)
 # Optional, LLM judge only: OPENROUTER_API_KEY / NVIDIA_API_KEY (see .env.example)

@@ -132,7 +132,11 @@ class PageTests(unittest.TestCase):
         client = client if client is not None else FakeClient(location=None)
         llm = (pipeline.UsageRecorder(client), "openai/gpt-oss-20b", None) if not setup_error else (None, None, setup_error)
         self.client = client
-        load = lambda name: (retrievers or {}).get(name) or FakeRetriever()
+        self.loaded = []  # the retrievers the page asked for, in order (get_retriever -> pipeline.load_retriever)
+
+        def load(name):
+            self.loaded.append(name)
+            return (retrievers or {}).get(name) or FakeRetriever()
         for target, value in (("load_retriever", load), ("make_llm_client", lambda: llm)):
             p = patch.object(pipeline, target, value)
             p.start()
@@ -724,6 +728,54 @@ class PageTests(unittest.TestCase):
         self.assertEqual(outside.count('class="more-line"'), 0)
         self.assertIn("30 restaurants checked", self.plain(at))
         self.assertFalse(more[0].proto.expanded)  # collapsed
+
+    # ---- the search index is loaded only when the saved result is not served ----------------------------------------
+    def test_a_chip_served_from_its_saved_result_never_loads_the_search_index(self):
+        self.saved_peanut()
+        at = self.start()
+        self.click(at, "Peanut")
+        self.assertIn("a saved result from", self.plain(at))
+        self.assertEqual(self.loaded, [])  # no index, so no embedding model either
+        self.click(at, "Change")  # and a second saved chip
+        self.click(at, "Peanut")
+        self.assertEqual(self.loaded, [])
+
+    def test_demo_mode_with_a_saved_typed_query_never_loads_the_search_index(self):
+        outcome, _ = pipeline.run_search("vegan options", "Both", "semantic_capped", retriever=FakeRetriever(),
+                                         client=pipeline.UsageRecorder(FakeClient()), model="m", log_path=None)
+        demo_cache.save_outcome(outcome, self.cache_dir)
+        at = self.start()
+        next(c for c in at.checkbox if c.label == "Demo mode").check().run()
+        self.loaded.clear()
+        self.search(at, "vegan options")
+        self.assertIn("a saved result from", self.plain(at))
+        self.assertEqual(self.loaded, [])
+
+    def test_a_typed_query_loads_the_index(self):
+        at = self.start()
+        self.search(at)
+        self.assertEqual(self.loaded, ["semantic"])
+
+    def test_a_cache_miss_loads_nothing_until_the_user_runs_it_live(self):
+        at = self.start()
+        self.click(at, "Peanut")  # no saved result for this chip in the temporary cache
+        self.assertIn("No saved result for this setting", self.plain(at))
+        self.assertEqual(self.loaded, [])
+        self.click(at, "Run it live")
+        self.assertEqual(self.loaded, ["semantic"])
+
+    def test_compare_rankings_loads_both_indexes(self):
+        at = self.start(retrievers={"semantic_stance": FakeStance()})
+        next(c for c in at.checkbox if c.label == "Compare rankings").check().run()
+        self.loaded.clear()
+        self.search(at)
+        self.assertEqual(self.loaded, ["semantic", "semantic_stance"])
+
+    def test_a_live_run_after_a_failed_saved_lookup_loads_the_index_for_the_chosen_method(self):
+        at = self.start()
+        self.method_box(at).select("semantic_log").run()
+        self.search(at)  # typed, Demo mode off: live
+        self.assertEqual(self.loaded, ["semantic"])  # semantic_log and semantic_capped share the "semantic" retriever
 
     def test_the_saved_setting_itself_is_served_from_the_cache(self):
         self.saved_peanut()

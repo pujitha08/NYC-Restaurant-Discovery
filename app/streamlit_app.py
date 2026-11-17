@@ -19,6 +19,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import chips, compare, demo_cache, evidence_filter, examples, pipeline  # noqa: E402
+from app.page_config import PAGE_CONFIG  # noqa: E402
 from app import view_model as vm  # noqa: E402
 from app.highlight import MARK, highlight_terms, html_text, md, squash  # noqa: E402,F401 (md is used by the tests)
 from app.styles import CSS, ICON_GUARD, PALETTE, TEXT_ELEMENTS  # noqa: E402,F401 (the CSS tests read these)
@@ -574,14 +575,12 @@ def run_pending(pending, tools, client, model, setup_error):
         return
     # A chip or Demo mode answers from the saved results only. A setting with none says so and offers to run it live.
     wants_saved = (demo_mode or pending.get("from_chip", False)) and not pending.get("force_live", False)
-    if wants_saved and not compare_mode and demo_cache.load_cached(query, borough, method) is None:
-        ss["last_miss"] = (query, borough, method, client is not None)
-        return
-    retriever_name, _ = pipeline.METHODS[method]
-    retriever = get_retriever(retriever_name)
-    if retriever is None:
-        st.error(f"The {retriever_name} index is not built yet. Run `python -m src.retrieval.semantic --build` and restart the app.")
-        return
+    saved = None
+    if wants_saved and not compare_mode:
+        saved = demo_cache.load_cached(query, borough, method)
+        if saved is None:
+            ss["last_miss"] = (query, borough, method, client is not None)
+            return
     if compare_mode:
         base_retriever = get_retriever(pipeline.METHODS[compare.BASE_METHOD][0])
         if base_retriever is None:
@@ -595,6 +594,16 @@ def run_pending(pending, tools, client, model, setup_error):
                 progress=progress),
             lambda c: "Done" if c.base.cached or c.stance is not None else "Done (the stance ranking was unavailable)")
         return
+    # The search index (and with it the embedding model) is loaded only when the saved result is not what gets served: a typed query,
+    # a setting with no saved result that the user chose to run live, or Compare rankings. A chip answered from its saved result
+    # never touches it.
+    retriever = None
+    if saved is None:
+        retriever_name, _ = pipeline.METHODS[method]
+        retriever = get_retriever(retriever_name)
+        if retriever is None:
+            st.error(f"The {retriever_name} index is not built yet. Run `python -m src.retrieval.semantic --build` and restart the app.")
+            return
     outcome, raw = run_staged(
         lambda progress, detail: demo_cache.search_with_fallback(
             query, borough, method, demo_mode=wants_saved, retriever=retriever, client=client, model=model,
@@ -603,9 +612,11 @@ def run_pending(pending, tools, client, model, setup_error):
     ss["last_search"] = (outcome, raw)
 
 
-def main():
-    st.set_page_config(page_title="NYC Restaurant Discovery", page_icon="🍽️", layout="wide",
-                       initial_sidebar_state="collapsed")
+def main(configure_page=True):
+    """Draw the app. configure_page=False when the caller (deploy/streamlit_cloud_app.py) has already made the page's first
+    Streamlit call, st.set_page_config(**PAGE_CONFIG)."""
+    if configure_page:
+        st.set_page_config(**PAGE_CONFIG)
     st.markdown(CSS, unsafe_allow_html=True)
     if pipeline.data_dir_missing():
         st.error(f"The data folder was not found: `{pipeline.DATA_DIR}`. Download the search data there, or point "
