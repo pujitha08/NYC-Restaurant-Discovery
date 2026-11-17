@@ -388,21 +388,35 @@ def column_head(outcome, column):
                 unsafe_allow_html=True)
 
 
+def show_care_column(outcome, c, has_mixed):
+    column_head(outcome, vm.CARE)
+    for view in c.care:
+        show_card(outcome, view, vm.CARE)
+    if not c.care:
+        st.markdown(f'<div class="empty-col">{html_text(vm.care_column_note(outcome, has_mixed))}</div>', unsafe_allow_html=True)
+
+
+def show_concerns_column(outcome, c, has_mixed):
+    column_head(outcome, vm.PROBLEMS)
+    for view in c.problems:
+        show_card(outcome, view, vm.PROBLEMS)
+    if not c.problems:
+        st.markdown(f'<div class="empty-col">{html_text(vm.problems_column_note(outcome, has_mixed))}</div>', unsafe_allow_html=True)
+
+
 def show_columns(outcome, c):
-    left, right = st.columns(2)
+    """Two columns, praise and concerns. For a diet, group or general search with no concerns column to show, the praise column
+    takes the full width under one line saying so; an allergy search always keeps both columns, empty or not."""
     has_mixed = bool(c.mixed)
+    if not vm.is_allergy_request(outcome) and not c.problems:
+        st.markdown(f'<div class="helper-line">{html_text(vm.no_concerns_note(has_mixed))}</div>', unsafe_allow_html=True)
+        show_care_column(outcome, c, has_mixed)
+        return
+    left, right = st.columns(2)
     with left:
-        column_head(outcome, vm.CARE)
-        for view in c.care:
-            show_card(outcome, view, vm.CARE)
-        if not c.care:
-            st.markdown(f'<div class="empty-col">{html_text(vm.care_column_note(outcome, has_mixed))}</div>', unsafe_allow_html=True)
+        show_care_column(outcome, c, has_mixed)
     with right:
-        column_head(outcome, vm.PROBLEMS)
-        for view in c.problems:
-            show_card(outcome, view, vm.PROBLEMS)
-        if not c.problems:
-            st.markdown(f'<div class="empty-col">{html_text(vm.problems_column_note(outcome, has_mixed))}</div>', unsafe_allow_html=True)
+        show_concerns_column(outcome, c, has_mixed)
 
 
 def show_mixed_section(outcome, c):

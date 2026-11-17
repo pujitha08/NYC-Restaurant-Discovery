@@ -274,6 +274,17 @@ def problems_column_note(outcome, has_mixed):
         "No restaurant in the top results has reviews that raise concerns. Reviews are anecdotal."
 
 
+def no_concerns_note(has_mixed):
+    """The one line above a full-width praise column when a diet, group or general search has no concerns column.
+
+    If some restaurants have both praise and concerns (the Reviewers disagree section), "no concerns found" would not be true,
+    so the line points to that section instead.
+    """
+    if has_mixed:
+        return "Concerns only appear in the section below, where reviewers disagree. Reviews are anecdotal."
+    return "No concerns found in the top results. Reviews are anecdotal."
+
+
 def count_line(outcome):
     """"10 restaurants checked · 3 mention allergy care · 2 report problems · 1 with mixed reviews · 4 not enough evidence".
     For a diet, group or general search: "… · 2 raise concerns · …" ("1 raises concerns").

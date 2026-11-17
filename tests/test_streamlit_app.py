@@ -476,7 +476,7 @@ class PageTests(unittest.TestCase):
         self.assertIn("nothing on the menu was", warned)
         self.assertIn("others raise concerns about them", html)
         self.assertIn("4 with mixed reviews", self.plain(at))
-        self.assertLess(html.index("col-head problems"), html.index("Reviewers disagree</div>"))  # below the columns
+        self.assertLess(html.index("col-head care"), html.index("Reviewers disagree</div>"))  # below the praise column
         self.assertIn("Reviews that mention care only appear below", html)
 
     def test_an_allergy_result_keeps_the_warned_wording(self):
@@ -502,6 +502,59 @@ class PageTests(unittest.TestCase):
         self.assertIn("⚠ Reviews report problems</div>", html)
         self.assertIn("4 report problems", plain)
         self.assertNotIn("raise concerns", plain)
+
+    def column_blocks(self, at):
+        """How many st.columns blocks the page has (the header and the search box each use two)."""
+        return len(at.columns)
+
+    def test_a_diet_result_with_no_concerns_renders_one_full_width_column_and_the_note(self):
+        with_concerns = self.search(self.start(ProblemsClient(location=None)), "vegan options")
+        two = self.column_blocks(with_concerns)
+        at = self.search(self.start(FakeClient(location=None)), "vegan options")  # every summary is praise: no concerns
+        html = self.html(at)
+        self.assertEqual(self.column_blocks(at), two - 2)  # no st.columns(2) for the results
+        self.assertIn("No concerns found in the top results. Reviews are anecdotal.", self.plain(at))
+        self.assertNotIn("col-head problems", html)  # no concerns column
+        self.assertNotIn("Reviews raise concerns", html)
+        self.assertNotIn('class="empty-col"', html)  # and no empty box
+        self.assertIn("col-head care", html)
+        self.assertEqual(html.count('class="care-card"'), 4)
+        self.assertLess(html.index("No concerns found"), html.index("col-head care"))  # the line is above the column
+
+    def test_a_diet_result_with_concerns_keeps_the_two_column_layout(self):
+        baseline = self.column_blocks(self.search(self.start(FakeClient(location=None)), "vegan options")) + 2
+        at = self.search(self.start(ProblemsClient(location=None)), "vegan options")
+        html = self.html(at)
+        self.assertEqual(self.column_blocks(at), baseline)
+        self.assertIn("col-head care", html)
+        self.assertIn("col-head problems", html)
+        self.assertNotIn("No concerns found", self.plain(at))
+        self.assertEqual(html.count('class="problems-card"'), 4)
+
+    def test_a_diet_result_with_concerns_only_in_the_disagree_section_does_not_claim_there_are_none(self):
+        at = self.search(self.start(FakeClient(summary="mixed", location=None)), "vegan options")
+        plain = self.plain(at)
+        self.assertNotIn("No concerns found in the top results", plain)
+        self.assertIn("Concerns only appear in the section below, where reviewers disagree. Reviews are anecdotal.", plain)
+        self.assertNotIn("col-head problems", self.html(at))
+
+    def test_an_allergy_result_keeps_both_columns_even_when_one_is_empty(self):
+        two = self.column_blocks(self.search(self.start(ProblemsClient(location=None)), "vegan options"))  # a layout with both columns
+        # no concerns (care claims only): the concerns column is still drawn, with its message
+        care_only = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}),
+                                "restaurant careful about peanut allergies")
+        html = self.html(care_only)
+        self.assertEqual(self.column_blocks(care_only), two)
+        self.assertIn("col-head problems", html)
+        self.assertIn('class="empty-col">No restaurant in the top results has reviews reporting allergy problems. That is not a safety guarantee.', html)
+        self.assertNotIn("No concerns found", self.plain(care_only))
+        # no care (problems only): the care column is still drawn, with its message
+        problems_only = self.search(self.start(ProblemsAllergy(location=None), retrievers={"semantic": CueRetriever()}),
+                                    "restaurant careful about peanut allergies")
+        html = self.html(problems_only).replace("&#x27;", "'")
+        self.assertEqual(self.column_blocks(problems_only), two)
+        self.assertIn("col-head care", html)
+        self.assertIn('class="empty-col">No restaurant in the top results has reviews describing care for peanut allergies', html)
 
     def test_no_restaurant_appears_twice_anywhere_on_the_page(self):
         for summary in ("ok", "mixed"):
@@ -552,7 +605,7 @@ class PageTests(unittest.TestCase):
         self.assertIn("1 summary unavailable", self.plain(at))
         self.assertIn('<div class="section-title">Summary unavailable</div>', html)
         self.assertGreater(html.index("Summary unavailable</div>"), html.rindex('class="care-card"'))  # below the columns
-        self.assertGreater(html.index("Summary unavailable</div>"), html.index("col-head problems"))
+        self.assertGreater(html.index("Summary unavailable</div>"), html.index("col-head care"))
         self.assertEqual(len(at.error), 0)
         client.recovered = True  # the provider recovered
         self.click(at, "Try the summary again")
