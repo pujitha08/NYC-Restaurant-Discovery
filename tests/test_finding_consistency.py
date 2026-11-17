@@ -202,18 +202,30 @@ class SavedResultRegressionTests(unittest.TestCase):
         view_ = next(v for v in lists[column] if v.name == name)
         return o, view_
 
-    def test_peanut_mission_is_suppressed_and_keeps_its_quote(self):
+    def test_peanut_mission_finding_names_no_allergen_so_it_is_not_checked_and_keeps_its_quote(self):
         o, v = self.card("restaurant careful about peanut allergies", "Mission", "problems")
+        f = vm.finding_for(v, o, vm.PROBLEMS)
+        self.assertEqual(f.text, "One reviewer warned that the staff and kitchen were inattentive to food allergies and advised avoiding "
+                                 "the restaurant for diners with allergies.")  # the top-30 build's wording: no peanut in it
+        self.assertEqual(vm.allergen_gaps(f, v.name), [])
+        self.assertIn(vm.quote_for(v, o, vm.PROBLEMS).review_id, f.review_ids)
+
+    def test_the_original_mission_case_is_suppressed(self):
+        # the first saved Peanut result said "peanut allergies" about a review that is about tree nut and sesame
+        from tests.test_display_rules import MISSION
+        r = ex(1576831, MISSION, 1)
+        v = view("Mission", [("One reviewer warned that the restaurant was not attentive to peanut allergies and advised patrons with "
+                              "such allergies to avoid the venue.", "contradiction", [1576831])], [r])
+        o = outcome([v])
         cand = vm.finding_candidate(v, o, vm.PROBLEMS)
-        self.assertIn("peanut", cand.text)
-        self.assertEqual(vm.allergen_gaps(cand, v.name), [("peanut", ["peanut"])])  # its reviews are about tree nut and sesame
+        self.assertEqual(vm.allergen_gaps(cand, "Mission"), [("peanut", ["peanut"])])
         self.assertIsNone(vm.finding_for(v, o, vm.PROBLEMS))
         self.assertIsNotNone(vm.quote_for(v, o, vm.PROBLEMS))
 
     def test_peanut_ladybird_warned_is_suppressed_and_the_praised_half_has_no_finding_either(self):
         o, v = self.card("restaurant careful about peanut allergies", "Ladybird", "mixed")
         cand = vm.finding_candidate(v, o, vm.PROBLEMS)
-        self.assertIn("peanuts", cand.text)
+        self.assertIn("peanut", cand.text.lower())
         self.assertIn("peanut", [g for g, _ in vm.allergen_gaps(cand, v.name)])
         self.assertIsNone(vm.finding_for(v, o, vm.PROBLEMS))
         self.assertIsNotNone(vm.quote_for(v, o, vm.PROBLEMS))
@@ -240,8 +252,8 @@ class SavedResultRegressionTests(unittest.TestCase):
     def test_peanut_pig_and_khao_keeps_its_finding(self):
         o, v = self.card("restaurant careful about peanut allergies", "Pig and Khao", "problems")
         f = vm.finding_for(v, o, vm.PROBLEMS)
-        self.assertEqual(f.text, "One reviewer reported that the manager claimed peanut allergies would not be a problem, although the "
-                                 "reviewer later experienced a severe allergic reaction.")
+        self.assertIn("severe peanut allergy sufferers should avoid the restaurant", f.text)
+        self.assertEqual(vm.allergen_gaps(f, v.name), [])  # its cited reviews say peanut
         self.assertIn(vm.quote_for(v, o, vm.PROBLEMS).review_id, f.review_ids)
 
     def test_celiac_friedmans_herald_square_keeps_its_finding(self):

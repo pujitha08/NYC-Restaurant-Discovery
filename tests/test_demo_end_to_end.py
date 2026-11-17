@@ -72,9 +72,9 @@ class ChipsFromTheSavedResultsTests(unittest.TestCase):
                 count = re.search(r"(\d+) restaurants checked · (\d+) mention [^·]+ · (\d+) (?:report problems|raises? concerns)"
                                   r"(?: · (\d+) with mixed reviews)? · (\d+) not enough evidence", html)
                 self.assertIsNotNone(count)
-                self.assertEqual(int(count.group(1)), 10)
+                self.assertEqual(int(count.group(1)), len(demo_cache.load_cached(query, examples.CHIP_BOROUGH, examples.CHIP_METHOD).results))  # 10, or the 30 of a top-30 build
                 care, problems, mixed, rest = (int(count.group(i) or 0) for i in (2, 3, 4, 5))
-                self.assertEqual(1 + 0 + care + problems + mixed + rest - 1, 10)  # the parts add up
+                self.assertEqual(care + problems + mixed + rest, int(count.group(1)))  # the parts add up
                 self.assertEqual(html.count('class="care-card"'), care)
                 self.assertEqual(html.count('class="problems-card"'), problems)
                 self.assertEqual(html.count('class="mixed-card"'), mixed)
@@ -111,8 +111,13 @@ class PeanutSavedResultTests(unittest.TestCase):
         from app import view_model as vm
         o = demo_cache.load_cached("restaurant careful about peanut allergies", "Both", "semantic_capped")
         c = vm.columns(o)
-        self.assertEqual([v.name for v in c.mixed], ["Ladybird"])  # confirmed from the data, not assumed
+        self.assertIn("Ladybird", [v.name for v in c.mixed])  # confirmed from the data, not assumed
         self.assertNotIn("Ladybird", [v.name for v in c.care + c.problems])
         ids = [v.gmap_id for lst in (c.care, c.problems, c.mixed, c.insufficient, c.unavailable) for v in lst]
-        self.assertEqual(len(ids), 10)
-        self.assertEqual(len(set(ids)), 10)
+        self.assertEqual(len(ids), len(o.results))
+        self.assertEqual(len(set(ids)), len(o.results))  # the top-30 pool: all accounted for, nobody twice
+        self.assertEqual(len(o.results), 30)
+
+
+if __name__ == "__main__":
+    unittest.main()
