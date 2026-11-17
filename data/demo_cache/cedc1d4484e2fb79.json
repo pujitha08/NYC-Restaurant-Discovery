@@ -1,0 +1,674 @@
+{
+ "cached_at": "2026-11-16",
+ "outcome": {
+  "request_id": "",
+  "query": "kosher restaurants",
+  "borough_choice": "Both",
+  "method": "semantic_capped",
+  "parsed": {
+   "location": null,
+   "dietary_restrictions": [
+    "kosher"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "restaurants"
+   ]
+  },
+  "summary_context": {
+   "location": null,
+   "dietary_restrictions": [
+    "kosher"
+   ],
+   "allergens": [],
+   "group_needs": [],
+   "preferences": [
+    "restaurants"
+   ]
+  },
+  "boroughs": null,
+  "results": [
+   {
+    "rank": 1,
+    "gmap_id": "0x89c25886a145a1cf:0x1496ea4998c44db7",
+    "name": "Kasbah Grill",
+    "borough": "Manhattan",
+    "address": "Kasbah Grill, 251 W 85th St, New York, NY 10024",
+    "avg_rating": 4.5,
+    "num_reviews": 185,
+    "low_evidence": false,
+    "score": 2.4424806952476503,
+    "excerpts": [
+     {
+      "review_id": 832008,
+      "date": "2018-09",
+      "text": "Great kosher restaurant with a variety of food!",
+      "rating": 5
+     },
+     {
+      "review_id": 831808,
+      "date": "2021-04",
+      "text": "Incredible Kosher restaurant hidden in the Upper West side of Manhattan. The Chef has created a menu with flavors from just about every country in and around the mediterranean. They now have dine in and a sidewalk enclosure for sit down service. Amazing steak, seafood, etc and everything is Kosher!",
+      "rating": 5
+     },
+     {
+      "review_id": 832025,
+      "date": "2019-09",
+      "text": "Kosher restaurant, not so inviting place, great service, very high quality delicious food, expensive prices, good desserts. .................................................. ............................................ .................................................. ............................................",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer described the restaurant as a great kosher establishment with a variety of food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 832008,
+         "date": "2018-09",
+         "text": "Great kosher restaurant with a variety of food!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer called the place an incredible kosher restaurant offering diverse Mediterranean‑inspired dishes, including steak and seafood.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 831808,
+         "date": "2021-04",
+         "text": "Incredible Kosher restaurant hidden in the Upper West side of Manhattan. The Chef has created a menu with flavors from just about every country in and around the mediterranean. They now have dine in and a sidewalk enclosure for sit down service. Amazing steak, seafood, etc and everything is Kosher!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted the restaurant is kosher, highlighting high‑quality food, good service, and desserts despite the pricey atmosphere.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 832025,
+         "date": "2019-09",
+         "text": "Kosher restaurant, not so inviting place, great service, very high quality delicious food, expensive prices, good desserts. .................................................. ............................................ .................................................. ............................................",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "All excerpts focus on the kosher status; no information about other dietary needs or overall experience beyond what is quoted.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 2,
+    "gmap_id": "0x89c258fc48fd39d7:0x4bdd709b58d7781e",
+    "name": "The Prime Grill",
+    "borough": "Manhattan",
+    "address": "The Prime Grill, 550 Madison Ave, New York, NY 10022",
+    "avg_rating": 3.8,
+    "num_reviews": 42,
+    "low_evidence": false,
+    "score": 2.402952802181244,
+    "excerpts": [
+     {
+      "review_id": 1798349,
+      "date": "2006-03",
+      "text": "kosher restaurant with dependable food but hits a little heavy in the wallet.",
+      "rating": 3
+     },
+     {
+      "review_id": 1798330,
+      "date": "2016-07",
+      "text": "One of he best (if not the best) kosher restaurant in New York serving a combination of meat, poultry and fish dishes served in a nice atmosphere with good service. Sushi choices are excellent too. I ordered a spicy tuna roll, Cesar salad, pepper steak and the sea bass. All very good.",
+      "rating": 4
+     },
+     {
+      "review_id": 1798354,
+      "date": "2017-03",
+      "text": "High class Kosher restaurant, extremely pricey though... don't go without your corporate card..",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer described the restaurant as a kosher establishment with dependable food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1798349,
+         "date": "2006-03",
+         "text": "kosher restaurant with dependable food but hits a little heavy in the wallet.",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer called it one of the best kosher restaurants in New York, noting meat, poultry, fish, and sushi options.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1798330,
+         "date": "2016-07",
+         "text": "One of he best (if not the best) kosher restaurant in New York serving a combination of meat, poultry and fish dishes served in a nice atmosphere with good service. Sushi choices are excellent too. I ordered a spicy tuna roll, Cesar salad, pepper steak and the sea bass. All very good.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer identified the venue as a high‑class kosher restaurant, albeit very pricey.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1798354,
+         "date": "2017-03",
+         "text": "High class Kosher restaurant, extremely pricey though... don't go without your corporate card..",
+         "rating": 3
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "All excerpts focus on the kosher status and price; no information is provided about other aspects such as service consistency or menu breadth beyond what is mentioned.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 3,
+    "gmap_id": "0x89c25861fc009801:0xdea9bebf3bb9fb87",
+    "name": "My Most Favorite Food",
+    "borough": "Manhattan",
+    "address": "My Most Favorite Food, 247 W 72nd St, New York, NY 10023",
+    "avg_rating": 4.1,
+    "num_reviews": 171,
+    "low_evidence": false,
+    "score": 2.3943669319152834,
+    "excerpts": [
+     {
+      "review_id": 614820,
+      "date": "2017-11",
+      "text": "Great kosher restaurant and a reliable catering services.",
+      "rating": 4
+     },
+     {
+      "review_id": 614885,
+      "date": "2018-08",
+      "text": "Kosher dairy restaurant. Delicious food, pleasant atmosphere.",
+      "rating": 4
+     },
+     {
+      "review_id": 614747,
+      "date": "2018-11",
+      "text": "Desserts are amazing. Food is good if your looking for Kosher dishes.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer described the restaurant as a great kosher establishment offering reliable catering services.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 614820,
+         "date": "2017-11",
+         "text": "Great kosher restaurant and a reliable catering services.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that the restaurant is a kosher dairy venue with delicious food and a pleasant atmosphere.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 614885,
+         "date": "2018-08",
+         "text": "Kosher dairy restaurant. Delicious food, pleasant atmosphere.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer mentioned that the desserts and overall food are good for those seeking kosher dishes.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 614747,
+         "date": "2018-11",
+         "text": "Desserts are amazing. Food is good if your looking for Kosher dishes.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "All reviews are positive mentions of kosher status but do not detail certification or specific kosher compliance procedures.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 4,
+    "gmap_id": "0x89c259ab90e5330f:0xd64167ba11e7aa35",
+    "name": "Jerusalem Cafe",
+    "borough": "Manhattan",
+    "address": "Jerusalem Cafe, 7 W 36th St, New York, NY 10018",
+    "avg_rating": 4.3,
+    "num_reviews": 190,
+    "low_evidence": false,
+    "score": 2.3656331419944765,
+    "excerpts": [
+     {
+      "review_id": 992496,
+      "date": "2018-04",
+      "text": "There is a place for kosher food",
+      "rating": 5
+     },
+     {
+      "review_id": 992354,
+      "date": "2018-08",
+      "text": "Very good food, affordable kosher casual restaurant.",
+      "rating": 4
+     },
+     {
+      "review_id": 992362,
+      "date": "2018-08",
+      "text": "Kosher food. Convenient midtown lo ation",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer noted that the restaurant offers kosher food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 992496,
+         "date": "2018-04",
+         "text": "There is a place for kosher food",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the venue as an affordable, casual kosher restaurant with very good food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 992354,
+         "date": "2018-08",
+         "text": "Very good food, affordable kosher casual restaurant.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer mentioned the location provides convenient kosher meals.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 992362,
+         "date": "2018-08",
+         "text": "Kosher food. Convenient midtown lo ation",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "All reviews only confirm the presence of kosher options; they do not address certification, strictness of adherence, or any potential cross‑contamination.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 5,
+    "gmap_id": "0x89c25a16b7a97607:0x6079907d162a8e8e",
+    "name": "Reserve Cut",
+    "borough": "Manhattan",
+    "address": "Reserve Cut, 40 Broad St 2nd Floor, New York, NY 10004",
+    "avg_rating": 4.6,
+    "num_reviews": 560,
+    "low_evidence": false,
+    "score": 2.3598328948020937,
+    "excerpts": [
+     {
+      "review_id": 1445390,
+      "date": "2018-08",
+      "text": "The only true high end kosher restaurant",
+      "rating": 5
+     },
+     {
+      "review_id": 1445468,
+      "date": "2018-05",
+      "text": "Best mm kosher restaurant outside of Israel",
+      "rating": 5
+     },
+     {
+      "review_id": 1445220,
+      "date": "2019-03",
+      "text": "The most over rated kosher restaurant. Place is nice but waiters have an attitude like they hate their job. The owner, put on a basketball game in front of my table. Steaks lack luster....Shilo's and Pat's Los Angeles put this place to shame. It's an attitude place! …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer described the restaurant as a true high‑end kosher establishment, and another called it the best kosher restaurant outside of Israel.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1445390,
+         "date": "2018-08",
+         "text": "The only true high end kosher restaurant",
+         "rating": 5
+        },
+        {
+         "review_id": 1445468,
+         "date": "2018-05",
+         "text": "Best mm kosher restaurant outside of Israel",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer criticized the restaurant’s service and atmosphere but did not comment on its kosher status.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1445220,
+         "date": "2019-03",
+         "text": "The most over rated kosher restaurant. Place is nice but waiters have an attitude like they hate their job. The owner, put on a basketball game in front of my table. Steaks lack luster....Shilo's and Pat's Los Angeles put this place to shame. It's an attitude place! …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The negative review focuses on service and ambiance, not on kosher compliance, so it does not confirm or refute the restaurant’s kosher offering.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 6,
+    "gmap_id": "0x89c244d7f9200127:0xdd2a3eb22460e73a",
+    "name": "Glatt A La Carte",
+    "borough": "Brooklyn",
+    "address": "Glatt A La Carte, 5123 18th Ave, Brooklyn, NY 11204",
+    "avg_rating": 4.8,
+    "num_reviews": 359,
+    "low_evidence": false,
+    "score": 2.3368585228919985,
+    "excerpts": [
+     {
+      "review_id": 1347346,
+      "date": "2018-01",
+      "text": "My favorite kosher restaurant. Amazing menu and good food",
+      "rating": 5
+     },
+     {
+      "review_id": 1347228,
+      "date": "2018-11",
+      "text": "Best kosher restaurant in the universe crate, delicate food, very good service, not so expensive, try it out you won't regrat it you will go again",
+      "rating": 5
+     },
+     {
+      "review_id": 1347205,
+      "date": "2018-09",
+      "text": "Very nice kosher meat restaurant. The food was out of this world, but be prepared for a steep bill.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "supported",
+     "claims": [
+      {
+       "text": "One reviewer described the restaurant as their favorite kosher option with an amazing menu and good food.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1347346,
+         "date": "2018-01",
+         "text": "My favorite kosher restaurant. Amazing menu and good food",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer called it the best kosher restaurant, noting delicate food, very good service, and reasonable prices.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1347228,
+         "date": "2018-11",
+         "text": "Best kosher restaurant in the universe crate, delicate food, very good service, not so expensive, try it out you won't regrat it you will go again",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer praised the kosher meat offerings as out of this world, while warning that the bill can be steep.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1347205,
+         "date": "2018-09",
+         "text": "Very nice kosher meat restaurant. The food was out of this world, but be prepared for a steep bill.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "All reviews are positive; no contradictory or uncertain reports about kosher offerings were found.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": false,
+     "note": null
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 7,
+    "gmap_id": "0x89c259abb97a5ba3:0x364d714c5cbc2f7d",
+    "name": "Mr. Broadway",
+    "borough": "Manhattan",
+    "address": "Mr. Broadway, 1372 Broadway, New York, NY 10018",
+    "avg_rating": 4.2,
+    "num_reviews": 706,
+    "low_evidence": false,
+    "score": 2.323833537101746,
+    "excerpts": [
+     {
+      "review_id": 2305256,
+      "date": "2018-06",
+      "text": "Kosher restaurant . Very tasty food with service in the Hebrew language. The sandwiches with the beacon are just insane. It is highly recommended to come hungry because the portions are large. Super kosher restaurant. Very good sandwich",
+      "rating": 5
+     },
+     {
+      "review_id": 2304908,
+      "date": "2018-03",
+      "text": "Good food but super overpriced. You can find better and cheaper kosher restaurants in the area!",
+      "rating": 2
+     },
+     {
+      "review_id": 2305258,
+      "date": "2018-07",
+      "text": "Nice, expensive restaurant, we tried quite a few kosher restaurants and this (again, relatively) was the most delicious Here too it was crowded and noisy (probably it's something in the acoustics)",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 8,
+    "gmap_id": "0x89c258e4b5af8a7d:0xc61bcc950a308dd4",
+    "name": "Mike's Bistro",
+    "borough": "Manhattan",
+    "address": "Mike's Bistro, 127 E 54th St, New York, NY 10022",
+    "avg_rating": 4.7,
+    "num_reviews": 291,
+    "low_evidence": false,
+    "score": 2.314088535308838,
+    "excerpts": [
+     {
+      "review_id": 2075757,
+      "date": "2017-07",
+      "text": "Excellent kosher restaurant, very high food, pleasant and warm atmosphere.",
+      "rating": 5
+     },
+     {
+      "review_id": 2075669,
+      "date": "2017-04",
+      "text": "Probably the best kosher restaurant on the the east coast!!",
+      "rating": 5
+     },
+     {
+      "review_id": 2075413,
+      "date": "2019-05",
+      "text": "The best kosher food in town",
+      "rating": 5
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 9,
+    "gmap_id": "0x89c258559970e091:0x832e9f5017a0d478",
+    "name": "Le Marais",
+    "borough": "Manhattan",
+    "address": "Le Marais, 150 W 46th St, New York, NY 10036",
+    "avg_rating": 4.3,
+    "num_reviews": 536,
+    "low_evidence": false,
+    "score": 2.300971043109894,
+    "excerpts": [
+     {
+      "review_id": 1960055,
+      "date": "2019-03",
+      "text": "Kosher restaurant, not good, not terrible",
+      "rating": 3
+     },
+     {
+      "review_id": 1960172,
+      "date": "2018-06",
+      "text": "Kosher OU, a very beautiful place, excellent waiters, delicious and beautiful food, in short, highly recommend ..",
+      "rating": 5
+     },
+     {
+      "review_id": 1960223,
+      "date": "2017-11",
+      "text": "Good place kosher food good clean environment hearty dishes good service and kitchen closes until 12 midnight worth the service very friendly and good",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 10,
+    "gmap_id": "0x89c259077764c719:0x31142d328dd7756e",
+    "name": "Tiberias",
+    "borough": "Manhattan",
+    "address": "Tiberias, 45 E 34th St, New York, NY 10016",
+    "avg_rating": 4.2,
+    "num_reviews": 310,
+    "low_evidence": false,
+    "score": 2.2890070199966432,
+    "excerpts": [
+     {
+      "review_id": 921417,
+      "date": "2021-04",
+      "text": "A kosher and excellent restaurant. Highly recommend",
+      "rating": 5
+     },
+     {
+      "review_id": 921419,
+      "date": "2019-07",
+      "text": "Kosher dairy restaurant in Manhattan. High level. Expensive. Worth every dollar!",
+      "rating": 5
+     },
+     {
+      "review_id": 921296,
+      "date": "2017-07",
+      "text": "Good kosher food with a variety of types of food. Excellent service.",
+      "rating": 4
+     }
+    ],
+    "summary": null,
+    "summary_error": null,
+    "summary_skipped": "not included in the cached demo result",
+    "stance_counts": null,
+    "stance_sentences": null
+   }
+  ],
+  "notices": [],
+  "parse_error": null,
+  "setup_error": null,
+  "timings": {},
+  "llm_calls": [],
+  "model": "openai/gpt-oss-120b",
+  "allergy_sensitive": false,
+  "cached": false,
+  "ranking_fallback": false,
+  "cached_at": null
+ }
+}
