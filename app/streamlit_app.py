@@ -349,7 +349,7 @@ def mixed_html(view, outcome):
     """One card for a restaurant with both kinds of review: a "Praised" half and a "Warned" half."""
     return (f'<div class="mixed-card">{card_head(view)}<div class="halves">'
             f'<div class="half praised"><div class="half-title">✓ Praised</div>{half_html(view, outcome, vm.CARE)}</div>'
-            f'<div class="half warned"><div class="half-title">⚠ Warned</div>{half_html(view, outcome, vm.PROBLEMS)}</div>'
+            f'<div class="half warned"><div class="half-title">⚠ {html_text(vm.warned_title(outcome))}</div>{half_html(view, outcome, vm.PROBLEMS)}</div>'
             "</div></div>")
 
 
@@ -386,7 +386,7 @@ def show_unavailable_card(outcome, raw, view, client, model):
 
 def column_head(outcome, column):
     care = column == vm.CARE
-    title, sub = (vm.care_title(outcome), vm.care_subline(outcome)) if care else (vm.problems_column_title(), vm.problems_subline(outcome))
+    title, sub = (vm.care_title(outcome), vm.care_subline(outcome)) if care else (vm.problems_column_title(outcome), vm.problems_subline(outcome))
     icon = "✓" if care else "⚠"
     css = "care" if care else "problems"
     st.markdown(f'<div class="col-head {css}"><div class="t">{icon} {html_text(title)}</div><div class="s">{html_text(sub)}</div></div>',
@@ -415,7 +415,7 @@ def show_mixed_section(outcome, c):
     if not c.mixed:
         return
     st.markdown('<div class="section-title">Reviewers disagree</div>'
-                '<div class="section-sub">Some reviews praise these restaurants and others warn about them. Read both.</div>',
+                f'<div class="section-sub">{html_text(vm.disagree_sub(outcome))}</div>',
                 unsafe_allow_html=True)
     for view in c.mixed:
         show_mixed_card(outcome, view)

@@ -213,8 +213,26 @@ def care_title(outcome):
     return f"Reviews mention {diet_text(outcome)} options" if kind == "diet" else "Reviews match your request"
 
 
-def problems_column_title():
-    return "Reviews report problems"
+def is_allergy_request(outcome):
+    """True for an allergy request: the same field the allergy guard uses (`outcome.allergy_sensitive`, set by
+    pipeline.is_allergy_sensitive at app/pipeline.py:431 and read by the guard at :401 and :413). Diet, group and general
+    searches are not allergy requests and get the milder wording (critical / criticized)."""
+    return bool(outcome.allergy_sensitive)
+
+
+def problems_column_title(outcome=None):
+    """"Reviews report problems" for an allergy request, "Reviews are critical" otherwise."""
+    return "Reviews report problems" if outcome is None or is_allergy_request(outcome) else "Reviews are critical"
+
+
+def warned_title(outcome):
+    """The negative half of a Reviewers disagree card: "Warned" for an allergy request, "Criticized" otherwise."""
+    return "Warned" if is_allergy_request(outcome) else "Criticized"
+
+
+def disagree_sub(outcome):
+    return ("Some reviews praise these restaurants and others warn about them. Read both." if is_allergy_request(outcome)
+            else "Some reviews praise these restaurants and others criticize them. Read both.")
 
 
 def care_subline(outcome):
@@ -224,8 +242,10 @@ def care_subline(outcome):
 
 def problems_subline(outcome):
     kind = need_kind(outcome)
-    what = "allergy trouble" if kind == "allergy" else f"{diet_text(outcome)} problems" if kind == "diet" else "problems"
-    return f"Reviewers describe {what} here. Read before you go."
+    if kind == "allergy":
+        return "Reviewers describe allergy trouble here. Read before you go."
+    what = f"the {diet_text(outcome)} options" if kind == "diet" else "these restaurants"
+    return f"Reviewers are critical of {what} here. Read before you go."
 
 
 def empty_problems_message():
@@ -248,13 +268,15 @@ def care_column_note(outcome, has_mixed):
 
 def problems_column_note(outcome, has_mixed):
     if has_mixed:
-        return "Reviews that report problems only appear below, where reviewers disagree."
-    return empty_problems_message() if outcome.allergy_sensitive else \
-        "No restaurant in the top results has reviews reporting problems. Reviews are anecdotal."
+        return ("Reviews that report problems only appear below, where reviewers disagree." if is_allergy_request(outcome)
+                else "Critical reviews only appear below, where reviewers disagree.")
+    return empty_problems_message() if is_allergy_request(outcome) else \
+        "No restaurant in the top results has critical reviews. Reviews are anecdotal."
 
 
 def count_line(outcome):
     """"10 restaurants checked · 3 mention allergy care · 2 report problems · 1 with mixed reviews · 4 not enough evidence".
+    For a diet, group or general search: "… · 2 are critical · …".
 
     The parts add up to the restaurants checked (each restaurant is in one). A summary-unavailable part appears only for a live
     search, never for a saved result.
@@ -264,7 +286,7 @@ def count_line(outcome):
     mention = "allergy care" if kind == "allergy" else f"{diet_text(outcome)} options" if kind == "diet" else "your request"
     n = c.checked
     parts = [f"{n} restaurant{'' if n == 1 else 's'} checked", f"{len(c.care)} mention {mention}",
-             f"{len(c.problems)} report problems"]
+             f"{len(c.problems)} report problems" if is_allergy_request(outcome) else f"{len(c.problems)} are critical"]
     if c.mixed:
         parts.append(f"{len(c.mixed)} with mixed reviews")
     parts.append(f"{len(c.insufficient)} not enough evidence")
@@ -522,6 +544,8 @@ BADGES = {CARE: ("✓", "Reviews mention it"), PROBLEMS: ("⚠", "Reviews report
 
 def badge_text(group, outcome):
     icon, text = BADGES[group]
+    if group == PROBLEMS and not is_allergy_request(outcome):
+        text = "Reviews are critical"
     if group == CARE:
         text = {"allergy": "Reviews mention allergy care", "diet": f"Reviews mention {diet_text(outcome)} options"}.get(
             need_kind(outcome), "Reviews match your request")

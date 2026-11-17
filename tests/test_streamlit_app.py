@@ -318,7 +318,7 @@ class PageTests(unittest.TestCase):
     def test_count_line_helper_line_and_trace_with_the_real_timings(self):
         at = self.search(self.start())
         plain = self.plain(at)
-        self.assertRegex(plain, r"4 restaurants checked · 4 mention vegan options · 0 report problems · 0 not enough evidence")
+        self.assertRegex(plain, r"4 restaurants checked · 4 mention vegan options · 0 are critical · 0 not enough evidence")
         self.assertIn("Stars show how much people liked the food. The columns below show what reviewers said about your need. "
                       "Sorted by how strongly reviews match it.", plain)
         self.assertRegex(plain, r"How this was found: 1 Understood · \d+\.\d s → 2 Searched 605,540 passages · \d+\.\d s → "
@@ -444,7 +444,9 @@ class PageTests(unittest.TestCase):
         html = self.html(at)
         self.assertEqual(html.count('class="problems-card"'), 4)
         self.assertEqual(html.count('class="care-card"'), 0)
-        self.assertIn("4 restaurants checked · 0 mention vegan options · 4 report problems", self.plain(at))
+        self.assertIn("4 restaurants checked · 0 mention vegan options · 4 are critical", self.plain(at))
+        self.assertIn("⚠ Reviews are critical</div>", html)  # a diet search
+        self.assertNotIn("Reviews report problems", html)
 
     def test_a_mixed_restaurant_appears_once_in_the_reviewers_disagree_section_with_a_praised_and_a_warned_half(self):
         at = self.search(self.start(FakeClient(summary="mixed", location=None)))
@@ -459,11 +461,37 @@ class PageTests(unittest.TestCase):
         praised, warned = card.split('class="half warned"')
         self.assertIn("✓ Praised", praised)
         self.assertIn("Great", praised)
-        self.assertIn("⚠ Warned", warned)
+        self.assertIn("⚠ Criticized", warned)  # a diet search: not "Warned"
+        self.assertNotIn("Warned", html)
         self.assertIn("nothing on the menu was", warned)
+        self.assertIn("others criticize them", html)
         self.assertIn("4 with mixed reviews", self.plain(at))
         self.assertLess(html.index("col-head problems"), html.index("Reviewers disagree</div>"))  # below the columns
         self.assertIn("Reviews that mention care only appear below", html)
+
+    def test_an_allergy_result_keeps_the_warned_wording(self):
+        class MixedPeanut(ParsedClient):
+            def __init__(self):
+                super().__init__(allergens=["peanut"])
+                self.summary = "mixed"
+        at = self.search(self.start(MixedPeanut(), retrievers={"semantic": CueRetriever()}), "restaurant careful about peanut allergies")
+        html = self.html(at)
+        self.assertEqual(html.count('class="mixed-card"'), 4)
+        self.assertIn("⚠ Warned", html)
+        self.assertNotIn("Criticized", html)
+        self.assertIn("others warn about them", html)
+        self.assertIn("Reviews report problems", html)
+        self.assertNotIn("Reviews are critical", html)
+        self.assertIn("4 with mixed reviews", self.plain(at))
+
+    def test_an_allergy_problems_result_keeps_report_problems_in_the_column_and_the_count_line(self):
+        at = self.search(self.start(ProblemsAllergy(location=None), retrievers={"semantic": CueRetriever()}),
+                         "restaurant careful about peanut allergies")
+        html, plain = self.html(at), self.plain(at)
+        self.assertIn("✓ Reviews mention allergy care</div>", html)
+        self.assertIn("⚠ Reviews report problems</div>", html)
+        self.assertIn("4 report problems", plain)
+        self.assertNotIn("are critical", plain)
 
     def test_no_restaurant_appears_twice_anywhere_on_the_page(self):
         for summary in ("ok", "mixed"):
