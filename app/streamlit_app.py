@@ -56,17 +56,17 @@ def get_data_stats():
 
 
 # ---- state helpers ---------------------------------------------------------------------------------------------------
-RESULT_KEYS = ("last_search", "last_compare", "last_unsupported")
+RESULT_KEYS = ("last_search", "last_compare", "last_unsupported", "last_miss")
 
 
-def request_search(query=None, borough=None, from_chip=False, split=True):
+def request_search(query=None, borough=None, from_chip=False, split=True, force_live=False):
     """Callback for chips, suggestions and "Search the dietary part": fill the form and ask main() to run the search."""
     ss = st.session_state
     if query is not None:
         ss["query"] = query
     if borough is not None:
         ss["borough"] = borough
-    ss["pending_search"] = {"from_chip": from_chip, "split": split}
+    ss["pending_search"] = {"from_chip": from_chip, "split": split, "force_live": force_live}
 
 
 def go_home():
@@ -75,16 +75,12 @@ def go_home():
         st.session_state.pop(key, None)
 
 
-def sync_evaluation_tools():
-    """The header toggle and the "Evaluation tools" expander are two views of one setting; whichever changed wins."""
+def valid_borough():
+    """The borough choice from session state, reset to Both boroughs when it is missing or not one of the choices (stale state)."""
     ss = st.session_state
-    toggle, expander = ss.get("eval_toggle", False), ss.get("eval_tools", False)
-    last = ss.get("_eval_last", (toggle, expander))
-    if toggle != last[0]:
-        expander = toggle
-    elif expander != last[1]:
-        toggle = expander
-    ss["eval_toggle"], ss["eval_tools"], ss["_eval_last"] = toggle, expander, (toggle, expander)
+    if ss.get("borough") not in pipeline.BOROUGH_CHOICES:
+        ss["borough"] = pipeline.BOROUGH_CHOICES[0]
+    return ss["borough"]
 
 
 def default_method(methods):
@@ -142,7 +138,7 @@ def search_form(compact):
 
 
 def where_selector():
-    st.session_state.setdefault("borough", pipeline.BOROUGH_CHOICES[0])
+    valid_borough()
     st.pills("Where", pipeline.BOROUGH_CHOICES, selection_mode="single", key="borough", required=True,
              format_func=lambda b: BOROUGH_LABEL.get(b, b), persist_state="session")  # kept while the results screen shows
 
@@ -167,8 +163,16 @@ def show_footer():
 
 
 def evaluation_tools(methods):
-    """Compare rankings, the retrieval method, low-evidence restaurants and Demo mode; closed by default."""
-    with st.expander("Evaluation tools", key="eval_tools", on_change="rerun"):
+    """Compare rankings, the retrieval method, low-evidence restaurants and Demo mode.
+
+    They are drawn only while the header toggle is on (off in a fresh session); with it off none of them exists and the
+    defaults apply (no comparison, the default method, no low-evidence restaurants, no Demo mode).
+    Returns ((compare, method, include_low, demo), slot): slot is a container inside the section for the comparison output,
+    or None when the tools are hidden.
+    """
+    if not st.session_state.get("eval_toggle", False):
+        return (False, default_method(methods), False, False), None
+    with st.expander("Evaluation tools", expanded=True):
         compare_mode = st.checkbox("Compare rankings", key="compare_mode",
                                    help="Show semantic_capped and semantic_capped_stance side by side for this query "
                                         "(the method selector is ignored; no summaries).")
@@ -176,9 +180,10 @@ def evaluation_tools(methods):
         method = st.selectbox("Retrieval method", methods or [pipeline.DEFAULT_METHOD], key="method")
         include_low = st.checkbox("Include restaurants with fewer than 5 reviews", key="include_low")
         demo_mode = st.checkbox("Demo mode", key="demo_mode",
-                                help="An exact demo query is answered from the saved results without calling the "
-                                     "language model. Any other query runs live.")
-    return compare_mode, method, include_low, demo_mode
+                                help="Answer from the saved results only (no language model call). A setting with no saved "
+                                     "result says so and offers to run it live.")
+        slot = st.container()
+    return (compare_mode, method, include_low, demo_mode), slot
 
 
 # ---- staged progress -------------------------------------------------------------------------------------------------
@@ -191,10 +196,10 @@ def stage_text():
             "rerank": "Re-ranking by what the reviews say", "cache": "Loading the saved result"}
 
 
-def run_staged(work, final_label):
+def run_staged(work, final_label, with_detail=False):
     """Run work(progress) inside an st.status that lists the stages as they happen, then collapses to one line.
 
-    work receives progress(stage); errors turn the status red and are re-raised (run_search itself turns LLM errors
+    work receives progress(stage) (and detail(done, total), the "Reading reviews: 3 of 6" line, when with_detail); errors turn the status red and are re-raised (run_search itself turns LLM errors
     and rate limits into per-card states, so those finish normally). final_label(result) is the closing line.
     """
     text = stage_text()
@@ -207,8 +212,11 @@ def run_staged(work, final_label):
             seen.append(stage)
             status.update(label=f"{text[stage]}…")
 
+        def detail(done, total):
+            status.update(label=f"Reading reviews: {done} of {total}…")
+
         try:
-            result = work(progress)
+            result = work(progress, detail) if with_detail else work(progress)
         except Exception:
             status.update(label="The search failed", state="error", expanded=True)
             raise
@@ -307,26 +315,57 @@ def evidence_html(view, outcome, group):
     return "".join(parts)
 
 
-def card_html(view, outcome, column, group, quote):
-    css = "care-card" if column == vm.CARE else "problems-card"
-    tag = '<span class="tag-disagree">Reviewers disagree</span>' if group == vm.MIXED else ""
-    body = (f'<blockquote class="quote">“{evidence_filter.highlight_outside_name(squash(quote.text), highlight_terms(outcome.query, outcome.parsed), view.name, MARK)}”</blockquote>'
-            if quote else '<div class="card-meta">No quote available.</div>')
+def quote_block(view, outcome, quote):
+    if not quote:
+        return '<div class="card-meta">No quote available.</div>'
+    terms = highlight_terms(outcome.query, outcome.parsed)
+    return (f'<blockquote class="quote">“{evidence_filter.highlight_outside_name(squash(quote.text), terms, view.name, MARK)}”'
+            "</blockquote>")
+
+
+def half_html(view, outcome, column):
+    """What one column says about a restaurant: the model's finding (bold, verbatim, when it passes the guard), its label, the
+    verbatim quote and the number of reviews behind it. With no usable finding it is the quote alone."""
+    finding = vm.finding_for(view, outcome, column)
+    quote = vm.quote_for(view, outcome, column)
+    lead = (f'<p class="finding">{html_text(finding.text)}</p><div class="ai-label">AI summary of the reviews below</div>'
+            if finding else "")
     n = quote.n_reviews if quote else 0
     pill = f'<span class="pill-n {"many" if n >= 2 else "one"}">{html_text(vm.review_pill(n))}</span>' if n else ""
-    other = (vm.problems_column_title() if column == vm.CARE else vm.care_title(outcome))
-    also = f'<div class="also-note">Also listed under “{html_text(other)}”</div>' if group == vm.MIXED else ""
-    return (f'<div class="{css}"><p class="card-name">{html_text(squash(view.name))}{tag}</p>'
-            f'<div class="card-meta">{html_text(view.borough)} · {html_text(stars(view.avg_rating))}</div>{body}{pill}{also}</div>')
+    return lead + quote_block(view, outcome, quote) + pill
+
+
+def card_head(view):
+    return (f'<p class="card-name">{html_text(squash(view.name))}</p>'
+            f'<div class="card-meta">{html_text(view.borough)} · {html_text(stars(view.avg_rating))}</div>')
+
+
+def card_html(view, outcome, column):
+    css = "care-card" if column == vm.CARE else "problems-card"
+    return f'<div class="{css}">{card_head(view)}{half_html(view, outcome, column)}</div>'
+
+
+def mixed_html(view, outcome):
+    """One card for a restaurant with both kinds of review: a "Praised" half and a "Warned" half."""
+    return (f'<div class="mixed-card">{card_head(view)}<div class="halves">'
+            f'<div class="half praised"><div class="half-title">✓ Praised</div>{half_html(view, outcome, vm.CARE)}</div>'
+            f'<div class="half warned"><div class="half-title">⚠ Warned</div>{half_html(view, outcome, vm.PROBLEMS)}</div>'
+            "</div></div>")
 
 
 def show_card(outcome, view, column):
     group = vm.group_of(view, outcome)
-    quote = vm.quote_for(view, outcome, column)
     with st.container(key=card_key("card", outcome, view, column)):
-        st.markdown(card_html(view, outcome, column, group, quote), unsafe_allow_html=True)
+        st.markdown(card_html(view, outcome, column), unsafe_allow_html=True)
         with st.expander("See the evidence", key=card_key("evidence", outcome, view, column)):
             st.markdown(evidence_html(view, outcome, group), unsafe_allow_html=True)
+
+
+def show_mixed_card(outcome, view):
+    with st.container(key=card_key("card", outcome, view, "mixed")):
+        st.markdown(mixed_html(view, outcome), unsafe_allow_html=True)
+        with st.expander("See the evidence", key=card_key("evidence", outcome, view, "mixed")):
+            st.markdown(evidence_html(view, outcome, vm.MIXED), unsafe_allow_html=True)
 
 
 def show_unavailable_card(outcome, raw, view, client, model):
@@ -356,20 +395,39 @@ def column_head(outcome, column):
 
 def show_columns(outcome, c):
     left, right = st.columns(2)
+    has_mixed = bool(c.mixed)
     with left:
         column_head(outcome, vm.CARE)
         for view in c.care:
             show_card(outcome, view, vm.CARE)
         if not c.care:
-            st.markdown(f'<div class="empty-col">{html_text(vm.empty_care_message(outcome))}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="empty-col">{html_text(vm.care_column_note(outcome, has_mixed))}</div>', unsafe_allow_html=True)
     with right:
         column_head(outcome, vm.PROBLEMS)
         for view in c.problems:
             show_card(outcome, view, vm.PROBLEMS)
         if not c.problems:
-            message = vm.empty_problems_message() if outcome.allergy_sensitive else \
-                "No restaurant in the top results has reviews reporting problems. Reviews are anecdotal."
-            st.markdown(f'<div class="empty-col">{html_text(message)}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="empty-col">{html_text(vm.problems_column_note(outcome, has_mixed))}</div>', unsafe_allow_html=True)
+
+
+def show_mixed_section(outcome, c):
+    """Restaurants with both praise and warnings: once, full width, below the columns."""
+    if not c.mixed:
+        return
+    st.markdown('<div class="section-title">Reviewers disagree</div>'
+                '<div class="section-sub">Some reviews praise these restaurants and others warn about them. Read both.</div>',
+                unsafe_allow_html=True)
+    for view in c.mixed:
+        show_mixed_card(outcome, view)
+
+
+def show_unavailable_section(outcome, raw, c, client, model):
+    """Restaurants whose summary failed: below the columns, never above them."""
+    if not c.unavailable:
+        return
+    st.markdown('<div class="section-title">Summary unavailable</div>', unsafe_allow_html=True)
+    for view in c.unavailable:
+        show_unavailable_card(outcome, raw, view, client, model)
 
 
 def show_more(outcome, c, need):
@@ -410,25 +468,52 @@ def show_unsupported(state):
                   kwargs={"query": unsupported.rest, "borough": borough, "from_chip": False, "split": False})
 
 
+def show_cache_miss(state):
+    """Demo mode or a chip with no saved result for this exact request, area and method: say so; going live is the user's call."""
+    query, borough, method, live_possible = state
+    st.markdown('<div class="state-title">No saved result for this setting</div>'
+                f'<div class="state-body">There is no saved result for “{html_text(query)}” with {html_text(BOROUGH_LABEL.get(borough, borough))} '
+                f'and the {html_text(method)} method. Saved results match the request, the area and the method exactly.</div>',
+                unsafe_allow_html=True)
+    if live_possible:
+        st.button("Run it live", key="run_live", type="primary", on_click=request_search,
+                  kwargs={"query": query, "borough": borough, "from_chip": False, "split": True, "force_live": True})
+    else:
+        st.caption("Live search isn't available right now. Try one of the saved examples.")
+    show_chips()
+
+
+def show_live_unavailable(reason):
+    """The parser, the model setup or every summary failed: one message and the saved examples, no half results."""
+    st.markdown(f'<div class="state-title">{html_text(vm.unavailable_message(reason))}</div>', unsafe_allow_html=True)
+    show_chips()
+
+
 def show_results(outcome, raw, client, model):
     show_notices(outcome)
+    reason = vm.live_unavailable(outcome)
+    if reason:
+        show_live_unavailable(reason)
+        return
     show_understood(outcome)
-    need = vm.need_phrase(outcome)
-    st.markdown(f'<h1 class="results-title">What reviewers say about {html_text(need)}</h1>', unsafe_allow_html=True)
+    st.markdown(f'<h1 class="results-title">{html_text(vm.results_heading(outcome))}</h1>', unsafe_allow_html=True)
     if outcome.parsed is not None and not has_dietary_need(outcome.parsed) and not outcome.allergy_sensitive:
         st.caption(NO_NEED_NOTICE)
     if not outcome.results:
         return
-    st.markdown(f'<div class="count-line">{html_text(vm.count_line(outcome))}</div>'
+    tag = "saved" if outcome.cached else "live"
+    st.markdown(f'<div class="count-line"><span class="source-tag {tag}">{html_text(vm.source_label(outcome))}</span> '
+                f'{html_text(vm.count_line(outcome))}</div>'
                 '<div class="helper-line">Stars show how much people liked the food. The columns below show what reviewers said '
                 'about your need. Sorted by how strongly reviews match it.</div>' + trace_html(outcome), unsafe_allow_html=True)
+    need = vm.need_phrase(outcome)
     c = vm.columns(outcome)
-    for view in c.unavailable:
-        show_unavailable_card(outcome, raw, view, client, model)
     if vm.is_no_evidence(outcome):
         show_no_evidence(outcome, need)
     else:
         show_columns(outcome, c)
+        show_mixed_section(outcome, c)
+    show_unavailable_section(outcome, raw, c, client, model)
     show_more(outcome, c, need)
 
 
@@ -468,7 +553,7 @@ def run_pending(pending, tools, client, model, setup_error):
     """Run the requested search (one per request) and store what the screen shows in session state."""
     compare_mode, method, include_low, demo_mode = tools
     ss = st.session_state
-    query, borough = (ss.get("query") or "").strip(), ss.get("borough") or pipeline.BOROUGH_CHOICES[0]
+    query, borough = (ss.get("query") or "").strip(), valid_borough()
     if not query:
         st.warning("Type what you are looking for first.")
         return
@@ -477,6 +562,11 @@ def run_pending(pending, tools, client, model, setup_error):
     unsupported = vm.split_unsupported(query) if pending.get("split", True) else None
     if unsupported:  # nothing to look up: no search and no model call
         ss["last_unsupported"] = (query, borough, unsupported)
+        return
+    # A chip or Demo mode answers from the saved results only. A setting with none says so and offers to run it live.
+    wants_saved = (demo_mode or pending.get("from_chip", False)) and not pending.get("force_live", False)
+    if wants_saved and not compare_mode and demo_cache.load_cached(query, borough, method) is None:
+        ss["last_miss"] = (query, borough, method, client is not None)
         return
     retriever_name, _ = pipeline.METHODS[method]
     retriever = get_retriever(retriever_name)
@@ -496,12 +586,11 @@ def run_pending(pending, tools, client, model, setup_error):
                 progress=progress),
             lambda c: "Done" if c.base.cached or c.stance is not None else "Done (the stance ranking was unavailable)")
         return
-    # A chip is answered from the saved results when there are some (no model call); anything else runs live.
     outcome, raw = run_staged(
-        lambda progress: demo_cache.search_with_fallback(
-            query, borough, method, demo_mode=demo_mode or pending.get("from_chip", False), retriever=retriever,
-            client=client, model=model, setup_error=setup_error, include_low_evidence=include_low, progress=progress),
-        search_final_label)
+        lambda progress, detail: demo_cache.search_with_fallback(
+            query, borough, method, demo_mode=wants_saved, retriever=retriever, client=client, model=model,
+            setup_error=setup_error, include_low_evidence=include_low, progress=progress, on_summary_progress=detail),
+        search_final_label, with_detail=True)
     ss["last_search"] = (outcome, raw)
 
 
@@ -514,9 +603,11 @@ def main():
                  "`NYC_DATA_DIR` at the folder that holds `processed/`, then restart the app.")
         return
     ss = st.session_state
-    sync_evaluation_tools()
+    valid_borough()
     show_header()
-    tools = evaluation_tools(pipeline.available_methods())  # a method whose index files are missing is not offered
+    tools, eval_slot = evaluation_tools(pipeline.available_methods())  # a method whose index files are missing is not offered
+    if eval_slot is None:
+        ss.pop("last_compare", None)  # the comparison lives inside Evaluation tools and goes with it
 
     client, model, setup_error = get_llm()
     if setup_error:
@@ -540,16 +631,19 @@ def main():
 
     if pending is not None:
         run_pending(pending, tools, client, model, setup_error)
-    if "last_compare" in ss:
-        comparison = ss["last_compare"]
-        show_understood(comparison.base)
-        st.markdown('<h1 class="results-title">Compare rankings</h1>', unsafe_allow_html=True)
-        show_compare(comparison)
+    if "last_compare" in ss and eval_slot is not None:
+        with eval_slot:
+            comparison = ss["last_compare"]
+            show_understood(comparison.base)
+            st.markdown('<div class="section-title">Compare rankings</div>', unsafe_allow_html=True)
+            show_compare(comparison)
     elif "last_search" in ss:
         outcome, raw = ss["last_search"]
         show_results(outcome, raw, client, model)
     elif "last_unsupported" in ss:
         show_unsupported(ss["last_unsupported"])
+    elif "last_miss" in ss:
+        show_cache_miss(ss["last_miss"])
     if not on_results:
         show_steps()
     show_footer()

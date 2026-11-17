@@ -13,7 +13,7 @@ from typing import List, Optional
 
 from app import pipeline
 from app.coverage import need_terms
-from app.evidence_filter import mentions
+from app.evidence_filter import NAME_ONLY_CLAIM, mentions
 from app.highlight import highlight_terms, squash
 from src.allergy import GENERIC_ALLERGY, GROUP_PATTERNS, NUT_GENERIC, NUT_GROUPS, allergen_groups, is_allergy_text
 from src.retrieval.evidence import _SENTENCE_RE
@@ -146,27 +146,28 @@ def group_of(view, outcome=None):
 
 @dataclass
 class Columns:
-    care: List  # views in the "mention care" column (mixed ones included), in rank order
-    problems: List  # views in the "report problems" column (mixed ones included)
-    mixed: List  # views in both
+    care: List  # restaurants whose counting claims are all supporting (care column), in rank order
+    problems: List  # restaurants whose counting claims are all contradicting (problems column)
+    mixed: List  # restaurants with both: shown once, in the "Reviewers disagree" section, never in a column
     insufficient: List  # "not enough evidence": insufficient + not summarized
     unavailable: List  # the summary failed (State A)
     checked: int
 
 
 def columns(outcome):
+    """Each restaurant lands in exactly one list: care, problems, mixed, insufficient or unavailable."""
     out = Columns([], [], [], [], [], len(outcome.results))
     for v in outcome.results:
         g = group_of(v, outcome)
-        if g in (CARE, MIXED):
+        if g == CARE:
             out.care.append(v)
-        if g in (PROBLEMS, MIXED):
+        elif g == PROBLEMS:
             out.problems.append(v)
-        if g == MIXED:
+        elif g == MIXED:
             out.mixed.append(v)
-        if g in (INSUFFICIENT, NOT_SUMMARIZED):
+        elif g in (INSUFFICIENT, NOT_SUMMARIZED):
             out.insufficient.append(v)
-        if g == UNAVAILABLE:
+        elif g == UNAVAILABLE:
             out.unavailable.append(v)
     return out
 
@@ -202,7 +203,7 @@ def need_phrase(outcome):
     diet = diet_text(outcome)
     if diet:
         return f"{diet} options"
-    return squash(outcome.query).lower() or "your request"
+    return "your request"
 
 
 def care_title(outcome):
@@ -240,19 +241,75 @@ def empty_care_message(outcome):
     return f"No restaurant in the top results has reviews describing {what}. That doesn't mean none exist; reviews just don't say."
 
 
+def care_column_note(outcome, has_mixed):
+    """Text for an empty care column: the "none" message, or a pointer to the mixed section when the care reviews are there."""
+    return "Reviews that mention care only appear below, where reviewers disagree." if has_mixed else empty_care_message(outcome)
+
+
+def problems_column_note(outcome, has_mixed):
+    if has_mixed:
+        return "Reviews that report problems only appear below, where reviewers disagree."
+    return empty_problems_message() if outcome.allergy_sensitive else \
+        "No restaurant in the top results has reviews reporting problems. Reviews are anecdotal."
+
+
 def count_line(outcome):
-    """"10 restaurants checked · 6 mention allergy care · 2 report problems · 2 not enough evidence" (zero parts kept)."""
+    """"10 restaurants checked · 3 mention allergy care · 2 report problems · 1 with mixed reviews · 4 not enough evidence".
+
+    The parts add up to the restaurants checked (each restaurant is in one). A summary-unavailable part appears only for a live
+    search, never for a saved result.
+    """
     c = columns(outcome)
     kind = need_kind(outcome)
     mention = "allergy care" if kind == "allergy" else f"{diet_text(outcome)} options" if kind == "diet" else "your request"
     n = c.checked
     parts = [f"{n} restaurant{'' if n == 1 else 's'} checked", f"{len(c.care)} mention {mention}",
-             f"{len(c.problems)} report problems", f"{len(c.insufficient)} not enough evidence"]
-    if c.unavailable:
-        parts.append(f"{len(c.unavailable)} summary unavailable")
+             f"{len(c.problems)} report problems"]
     if c.mixed:
-        parts.append(f"{len(c.mixed)} listed in both columns")
+        parts.append(f"{len(c.mixed)} with mixed reviews")
+    parts.append(f"{len(c.insufficient)} not enough evidence")
+    if c.unavailable and not outcome.cached:
+        parts.append(f"{len(c.unavailable)} summary unavailable")
     return " · ".join(parts)
+
+
+def results_heading(outcome):
+    """The heading above the results: the parsed need in plain words; neutral when the request was not parsed or named no need."""
+    if outcome.parsed is None:
+        return "What reviewers say"
+    need = need_phrase(outcome)
+    return "What reviewers say about your request" if need == "your request" else f"What reviewers say about {need}"
+
+
+def source_label(outcome):
+    return "Saved demo result" if outcome.cached else "Live search"
+
+
+def _reason(error):
+    return {"rate_limit": "rate limit", "timeout": "timeout", "network": "no connection"}.get(
+        error["category"], "the language model didn't answer")
+
+
+def live_unavailable(outcome):
+    """Why a live search produced nothing to show (a short phrase), or None when it did.
+
+    A parser failure, a model that is not set up, or every summary failing means there is nothing honest to put in the columns:
+    the page then says live search is unavailable instead of counting failed steps as "0 mention care". A saved result never is.
+    """
+    if outcome.cached:
+        return None
+    if outcome.parse_error:
+        return _reason(outcome.parse_error)
+    if outcome.setup_error:
+        return "the language model isn't set up"
+    tried = [v for v in outcome.results if v.summary or v.summary_error]
+    if tried and all(v.summary_error for v in tried):
+        return _reason(tried[0].summary_error)
+    return None
+
+
+def unavailable_message(reason):
+    return f"Live search is unavailable right now ({reason}). Try one of the saved examples."
 
 
 def trace_parts(outcome, passages=None):
@@ -403,6 +460,44 @@ def fallback_quote(view, outcome):
 
 def review_pill(n):
     return f"Based on {n} review{'' if n == 1 else 's'}"
+
+
+# ---- the finding on a card ---------------------------------------------------------------------------------------
+UNSAFE_FINDING = re.compile(r"\b(?:no risk|risk[- ]free|without (?:any )?risk|zero risk|no danger|completely safe)\b", re.IGNORECASE)
+
+
+@dataclass
+class Finding:
+    text: str  # the model's claim, verbatim
+    review_ids: List[int]  # the cited reviews that are in this restaurant's evidence
+
+
+def finding_is_shown_safely(text, outcome):
+    """For an allergy request the finding must not assert safety (safe, safely, safety, guarantee, reassure*, no risk, ...).
+    Looks at the whole sentence, quoted words included. Other requests are not checked."""
+    if not outcome.allergy_sensitive:
+        return True
+    return not (pipeline.SAFETY_WORDS.search(text) or UNSAFE_FINDING.search(text))
+
+
+def finding_for(view, outcome, group):
+    """The model's plain-language finding for a card in the column `group` (CARE or PROBLEMS), verbatim, or None.
+
+    It is the first counting claim of that column's label that (a) is a real finding (not the neutral replacement line the
+    wording guard or the name filter writes), (b) cites at least one review that is in this restaurant's evidence, and (c) for an
+    allergy request does not assert safety. With no such claim the card shows the quote alone.
+    """
+    evidence_ids = {e.review_id for e in view.excerpts}
+    for claim, label in effective_claims(view, outcome):
+        if label != LABEL_OF[group]:
+            continue
+        text = squash(claim.text)
+        if not text or text in (squash(pipeline.NEUTRAL_CLAIM), squash(NAME_ONLY_CLAIM)):
+            continue
+        ids = [e.review_id for e in claim.excerpts if e.review_id in evidence_ids]
+        if ids and finding_is_shown_safely(text, outcome):
+            return Finding(text, ids)
+    return None
 
 
 # ---- the evidence view --------------------------------------------------------------------------------------------

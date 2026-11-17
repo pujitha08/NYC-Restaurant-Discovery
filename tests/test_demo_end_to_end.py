@@ -69,10 +69,22 @@ class ChipsFromTheSavedResultsTests(unittest.TestCase):
                 self.assertEqual(at.status[0].label, "Done")
                 html = " ".join(m.value for m in at.markdown)
                 self.assertRegex(html, r"How this was found: a saved result from \d{4}-\d{2}-\d{2} \(no live search was run\)")
-                count = re.search(r"(\d+) restaurants checked · (\d+) mention [^·]+ · (\d+) report problems · (\d+) not enough evidence", html)
+                count = re.search(r"(\d+) restaurants checked · (\d+) mention [^·]+ · (\d+) report problems"
+                                  r"(?: · (\d+) with mixed reviews)? · (\d+) not enough evidence", html)
                 self.assertIsNotNone(count)
                 self.assertEqual(int(count.group(1)), 10)
-                self.assertGreaterEqual(html.count('class="care-card"') + html.count('class="problems-card"'), 1)
+                care, problems, mixed, rest = (int(count.group(i) or 0) for i in (2, 3, 4, 5))
+                self.assertEqual(1 + 0 + care + problems + mixed + rest - 1, 10)  # the parts add up
+                self.assertEqual(html.count('class="care-card"'), care)
+                self.assertEqual(html.count('class="problems-card"'), problems)
+                self.assertEqual(html.count('class="mixed-card"'), mixed)
+                self.assertIn("Saved demo result", html)
+                from app import view_model as vm
+                saved = demo_cache.load_cached(query, examples.CHIP_BOROUGH, examples.CHIP_METHOD)
+                c = vm.columns(saved)
+                ids = [v.gmap_id for lst in (c.care, c.problems, c.mixed, c.insufficient, c.unavailable) for v in lst]
+                self.assertEqual(len(ids), len(set(ids)))  # nobody twice (two branches with one name are two restaurants)
+                self.assertNotIn("summary unavailable", html)
                 self.assertEqual(html.count("not safety guarantees"), 1)  # the one footer line
 
     def test_saved_allergy_chips_never_say_supported_or_safe(self):
@@ -89,3 +101,18 @@ class ChipsFromTheSavedResultsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipIf(AppTest is None, "streamlit not installed")
+class PeanutSavedResultTests(unittest.TestCase):
+    """The saved Peanut result: Ladybird has both praise and warnings and must appear once."""
+
+    def test_ladybird_is_mixed_and_appears_once(self):
+        from app import view_model as vm
+        o = demo_cache.load_cached("restaurant careful about peanut allergies", "Both", "semantic_capped")
+        c = vm.columns(o)
+        self.assertEqual([v.name for v in c.mixed], ["Ladybird"])  # confirmed from the data, not assumed
+        self.assertNotIn("Ladybird", [v.name for v in c.care + c.problems])
+        ids = [v.gmap_id for lst in (c.care, c.problems, c.mixed, c.insufficient, c.unavailable) for v in lst]
+        self.assertEqual(len(ids), 10)
+        self.assertEqual(len(set(ids)), 10)

@@ -264,10 +264,11 @@ class GuardUiTests(unittest.TestCase):
         self.assertIn("badge badge-problems", text)
         self.assertNotRegex(text, r"(?i)supported|\bsafe\b")
 
-    def test_a_mixed_restaurant_shows_in_both_columns_with_the_disagree_tag(self):
+    def test_a_mixed_restaurant_is_shown_once_in_the_reviewers_disagree_section(self):
         text = self.page(self.run_app(MIXED))
-        self.assertEqual((text.count('class="care-card"'), text.count('class="problems-card"')), (1, 1))
-        self.assertEqual(text.count('class="tag-disagree"'), 2)
+        self.assertEqual((text.count('class="care-card"'), text.count('class="problems-card"')), (0, 0))
+        self.assertEqual(text.count('class="mixed-card"'), 1)
+        self.assertEqual(text.count('<p class="card-name">Mission</p>'), 1)
 
     def test_mission_shows_no_supported_safe_or_positive_label(self):
         at = self.run_app(MISSION_SUMMARY)

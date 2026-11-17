@@ -1,5 +1,6 @@
 """The redesigned page with streamlit.testing.v1.AppTest (fake retriever and fake LLM client: no data, network or Groq)."""
 
+import html as html_module
 import json
 import re
 import tempfile
@@ -77,6 +78,20 @@ class PeanutRetriever(FakeRetriever):
         return out
 
 
+class FailsPlaceOne(FakeClient):
+    """Summaries of Place 1 (reviews 101/102) are rate limited until `recovered` is set; the others are summarized normally."""
+
+    recovered = False
+
+    def create(self, **kwargs):
+        if kwargs["response_format"]["json_schema"]["name"] == "evidence_summary" and not self.recovered:
+            ids = [x["review_id"] for x in json.loads(kwargs["messages"][1]["content"])["snippets"]]
+            if 101 in ids:
+                from tests.test_app_pipeline import rate_limit_error
+                raise rate_limit_error()
+        return super().create(**kwargs)
+
+
 class ParsedClient(FakeClient):
     """A parser that returns the given fields (e.g. allergens), a summarizer as in FakeClient."""
 
@@ -151,7 +166,12 @@ class PageTests(unittest.TestCase):
 
     @staticmethod
     def plain(at):
-        return re.sub(r"<[^>]+>", " ", " ".join(m.value for m in at.markdown))
+        return html_module.unescape(re.sub(r"<[^>]+>", " ", " ".join(m.value for m in at.markdown)))
+
+    def open_tools(self, at):
+        at.toggle[0].set_value(True).run()
+        self.assertFalse(at.exception, at.exception)
+        return at
 
     @staticmethod
     def method_box(at):
@@ -203,29 +223,48 @@ class PageTests(unittest.TestCase):
             self.assertNotIn(old, text)
 
     # ---- evaluation tools ---------------------------------------------------------------------------------------
-    def test_evaluation_tools_hold_compare_method_low_evidence_and_demo_mode_and_start_closed(self):
+    def test_a_fresh_session_renders_none_of_the_evaluation_tools(self):
         at = self.start()
-        panel = next(e for e in at.expander if e.label == "Evaluation tools")
-        self.assertFalse(panel.proto.expanded)
+        self.assertFalse(at.toggle[0].value)  # the header toggle is off
+        self.assertEqual(len(at.checkbox), 0)  # no Compare rankings, no fewer-than-5, no Demo mode
+        self.assertEqual(len(at.selectbox), 0)  # no method dropdown
+        self.assertEqual([e.label for e in at.expander if e.label == "Evaluation tools"], [])
+        text = self.html(at) + " ".join(c.value for c in at.caption)
+        for word in ("Compare rankings", "Retrieval method", "fewer than 5 reviews", "Demo mode"):
+            self.assertNotIn(word, text)
+
+    def test_with_the_toggle_on_the_tools_hold_compare_method_low_evidence_and_demo_mode(self):
+        at = self.open_tools(self.start())
+        self.assertEqual([t.label for t in at.toggle], ["Evaluation tools"])
         self.assertEqual([c.label for c in at.checkbox], ["Compare rankings", "Include restaurants with fewer than 5 reviews", "Demo mode"])
         self.assertEqual(self.method_box(at).label, "Retrieval method")
-        self.assertEqual([t.label for t in at.toggle], ["Evaluation tools"])
+        self.assertEqual([e.label for e in at.expander], ["Evaluation tools"])
+        self.assertTrue(all(not c.value for c in at.checkbox))  # all off
 
-    def test_the_header_toggle_opens_the_expander_and_back(self):
-        at = self.start()
-        at.toggle[0].set_value(True).run()
-        self.assertTrue(next(e for e in at.expander if e.label == "Evaluation tools").proto.expanded)
+    def test_the_header_toggle_shows_and_hides_the_tools(self):
+        at = self.open_tools(self.start())
+        self.assertEqual(len(at.checkbox), 3)
         at.toggle[0].set_value(False).run()
-        self.assertFalse(next(e for e in at.expander if e.label == "Evaluation tools").proto.expanded)
+        self.assertEqual((len(at.checkbox), len(at.selectbox)), (0, 0))
+
+    def test_hiding_the_tools_returns_to_the_defaults(self):
+        retriever = FakeRetriever()
+        at = self.open_tools(self.start(retrievers={"semantic": retriever}))
+        self.method_box(at).select("semantic_log").run()
+        next(c for c in at.checkbox if c.label.startswith("Include restaurants")).check().run()
+        at.toggle[0].set_value(False).run()
+        self.search(at)
+        self.assertEqual(retriever.calls[-1]["density_mode"], "capped")  # the default method
+        self.assertFalse(retriever.calls[-1]["include_low_evidence"])
 
     def test_retrieval_method_defaults_to_semantic_capped_in_every_new_session(self):
         for _ in range(3):
-            at = self.start()
+            at = self.open_tools(self.start())
             self.assertEqual(self.method_box(at).value, "semantic_capped")
             self.assertEqual(list(self.method_box(at).options)[1], "chunk_tfidf_capped")  # the option that once showed
 
     def test_a_stored_choice_that_is_no_longer_offered_falls_back_to_the_default_not_to_the_option_order(self):
-        at = self.start()
+        at = self.open_tools(self.start())
         at.session_state["method"] = "chunk_tfidf_capped"
         with patch.object(pipeline, "available_methods", lambda: ["semantic_log", "semantic_capped", "semantic_capped_stance"]):
             at.run()
@@ -233,20 +272,20 @@ class PageTests(unittest.TestCase):
 
     def test_without_semantic_capped_a_semantic_method_is_preferred_over_a_tfidf_baseline(self):
         with patch.object(pipeline, "available_methods", lambda: ["chunk_tfidf_log", "chunk_tfidf_capped", "doc_tfidf", "semantic_log"]):
-            at = self.start()
+            at = self.open_tools(self.start())
         self.assertEqual(self.method_box(at).value, "semantic_log")
 
     def test_the_chosen_method_is_used_for_the_search(self):
         retriever = FakeRetriever()
-        at = self.start(retrievers={"semantic": retriever})
+        at = self.open_tools(self.start(retrievers={"semantic": retriever}))
         self.method_box(at).select("semantic_log").run()
         self.search(at)
         self.assertEqual(retriever.calls[-1]["density_mode"], "log")
 
     def test_low_evidence_checkbox_applies(self):
         retriever = FakeRetriever()
-        at = self.start(retrievers={"semantic": retriever})
-        next(c for c in at.checkbox if c.label.startswith("Include restaurants")).check()
+        at = self.open_tools(self.start(retrievers={"semantic": retriever}))
+        next(c for c in at.checkbox if c.label.startswith("Include restaurants")).check().run()
         self.search(at)
         self.assertTrue(retriever.calls[-1]["include_low_evidence"])
 
@@ -305,10 +344,63 @@ class PageTests(unittest.TestCase):
         self.assertRegex(card, r'pill-n one">Based on 1 review<')
         self.assertEqual([e.label for e in at.expander].count("See the evidence"), 4)
 
+    def test_card_shows_the_finding_first_then_the_quote_then_the_count(self):
+        at = self.search(self.start())
+        card = next(m.value for m in at.markdown if 'class="care-card"' in m.value)
+        self.assertIn('<p class="finding">One reviewer reported vegan options for a group.</p>', card)  # verbatim, bold by CSS
+        self.assertIn('<div class="ai-label">AI summary of the reviews below</div>', card)
+        self.assertLess(card.index('class="finding"'), card.index("<blockquote"))
+        self.assertLess(card.index("<blockquote"), card.index("Based on 1 review"))
+        self.assertEqual([e.label for e in at.expander].count("See the evidence"), 4)
+
+    def test_an_allergy_finding_that_asserts_safety_falls_back_to_the_quote_only_card(self):
+        class SaysSafe(ParsedClient):
+            def create(self, **kwargs):
+                res = super().create(**kwargs)
+                if kwargs["response_format"]["json_schema"]["name"] == "evidence_summary":
+                    body = json.loads(res.choices[0].message.content)
+                    body["claims"][0]["text"] = "One reviewer called the kitchen safe for peanut allergies with no risk."
+                    res.choices[0].message.content = json.dumps(body)
+                return res
+        at = self.search(self.start(SaysSafe(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}),
+                         "restaurant careful about peanut allergies")
+        card = next(m.value for m in at.markdown if 'class="care-card"' in m.value)
+        self.assertNotIn('class="finding"', card)
+        self.assertNotIn("safe for peanut", card)
+        self.assertIn("<blockquote", card)  # the quote card is still there
+
+    def test_the_heading_uses_the_parsed_need_not_the_raw_query(self):
+        at = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}),
+                         "I would really love somewhere that is careful about peanut allergies please")
+        html = self.html(at)
+        self.assertIn('<h1 class="results-title">What reviewers say about peanut allergies</h1>', html)
+        self.assertNotIn("really love", html)
+
+    def test_the_source_label_says_live_search_for_a_live_result(self):
+        at = self.search(self.start())
+        self.assertIn('<span class="source-tag live">Live search</span>', self.html(at))
+
+    def test_a_stale_borough_in_session_state_is_reset_to_both_boroughs(self):
+        at = self.start()
+        at.session_state["borough"] = "Queens"
+        at.run()
+        self.assertFalse(at.exception, at.exception)
+        self.assertEqual(at.pills[0].value, "Both")
+        retriever = FakeRetriever()
+        at2 = self.start(retrievers={"semantic": retriever}, run=False)
+        at2.session_state["borough"] = "Staten Island"
+        at2.run()
+        self.search(at2)
+        self.assertIsNone(retriever.calls[-1]["boroughs"])  # searched both boroughs, not a bogus filter
+
+    def test_the_change_link_goes_back_to_the_home_screen(self):
+        at = self.search(self.start())
+        self.assertIn("Change", [b.label for b in at.button])
+
     def test_the_evidence_view(self):
         at = self.search(self.start())
-        body = next(m.value for m in at.markdown if "AI summary of the reviews below" in m.value)
-        self.assertIn("badge badge-care", body)
+        body = next(m.value for m in at.markdown if "badge badge-care" in m.value)
+        self.assertIn("AI summary of the reviews below", body)
         self.assertIn("✓ Reviews mention vegan options", body)
         self.assertIn("One reviewer reported vegan options for a group.", body)
         self.assertIn("1. 2019-", body)
@@ -320,8 +412,9 @@ class PageTests(unittest.TestCase):
             self.assertIn(fact, body)
 
     def test_allergy_evidence_view_has_the_confirm_with_the_restaurant_caveat(self):
-        at = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}), "restaurant careful about peanut allergies")
-        body = next(m.value for m in at.markdown if "AI summary of the reviews below" in m.value)
+        at = self.search(self.start(ParsedClient(allergens=["peanut"]), retrievers={"semantic": PeanutRetriever()}),
+                         "restaurant careful about peanut allergies")
+        body = next(m.value for m in at.markdown if "badge badge-care" in m.value)
         self.assertIn("Confirm with the restaurant before you order.", body)
 
     def test_the_allergy_guard_never_says_supported_or_safe(self):
@@ -353,19 +446,30 @@ class PageTests(unittest.TestCase):
         self.assertEqual(html.count('class="care-card"'), 0)
         self.assertIn("4 restaurants checked · 0 mention vegan options · 4 report problems", self.plain(at))
 
-    def test_a_mixed_restaurant_is_in_both_columns_with_its_own_quote_and_a_tag(self):
+    def test_a_mixed_restaurant_appears_once_in_the_reviewers_disagree_section_with_a_praised_and_a_warned_half(self):
         at = self.search(self.start(FakeClient(summary="mixed", location=None)))
         html = self.html(at)
-        self.assertEqual(html.count('class="care-card"'), 4)
-        self.assertEqual(html.count('class="problems-card"'), 4)
-        self.assertEqual(html.count('class="tag-disagree"'), 8)
-        self.assertIn("Also listed under “Reviews report problems”", html)
-        self.assertIn("Also listed under “Reviews mention vegan options”", html)
-        care = next(m.value for m in at.markdown if 'class="care-card"' in m.value)
-        problems = next(m.value for m in at.markdown if 'class="problems-card"' in m.value)
-        self.assertIn("Great", care)
-        self.assertIn("nothing on the menu was", problems)
-        self.assertIn("4 listed in both columns", self.plain(at))
+        self.assertEqual(html.count('class="mixed-card"'), 4)  # every restaurant is mixed, each shown once
+        self.assertEqual(html.count('class="care-card"') + html.count('class="problems-card"'), 0)  # in no column
+        self.assertIn('<div class="section-title">Reviewers disagree</div>', html)
+        self.assertEqual(html.count('class="half praised"'), 4)
+        self.assertEqual(html.count('class="half warned"'), 4)
+        self.assertEqual(html.count('<p class="card-name">Place 1</p>'), 1)  # once, not once per column
+        card = next(m.value for m in at.markdown if 'class="mixed-card"' in m.value)
+        praised, warned = card.split('class="half warned"')
+        self.assertIn("✓ Praised", praised)
+        self.assertIn("Great", praised)
+        self.assertIn("⚠ Warned", warned)
+        self.assertIn("nothing on the menu was", warned)
+        self.assertIn("4 with mixed reviews", self.plain(at))
+        self.assertLess(html.index("col-head problems"), html.index("Reviewers disagree</div>"))  # below the columns
+        self.assertIn("Reviews that mention care only appear below", html)
+
+    def test_no_restaurant_appears_twice_anywhere_on_the_page(self):
+        for summary in ("ok", "mixed"):
+            at = self.search(self.start(FakeClient(summary=summary, location=None)))
+            names = re.findall(r'<p class="card-name">([^<]+)</p>', self.html(at))
+            self.assertEqual(len(names), len(set(names)), names)
 
     def test_restaurants_without_a_summary_are_listed_under_not_enough_evidence_as_not_summarized(self):
         retriever = FakeRetriever(gids=("G1", "G2", "G3", "G4", "G6"))
@@ -400,19 +504,41 @@ class PageTests(unittest.TestCase):
         self.click(at, "A broader request")
         self.assertEqual(at.text_input[0].value, "vegan restaurants")
 
-    def test_summary_unavailable_state_a_and_retry(self):
-        client = FakeClient(summary="rate_limit", location=None)
+    def test_summary_unavailable_state_a_is_below_the_columns_and_retry_works(self):
+        client = FailsPlaceOne(location=None)
         at = self.search(self.start(client))
         html = self.html(at)
-        self.assertEqual(html.count("The AI summary isn&#x27;t available right now. Here are the most relevant reviews we found."), 4)
-        self.assertNotIn('class="care-card"', html)
-        self.assertEqual([b.label for b in at.button].count("Try the summary again"), 4)
-        self.assertIn("4 summary unavailable", self.plain(at))
-        self.assertEqual(len(at.error) + len([e for e in at.exception]), 0)
-        client.summary = "ok"  # the provider recovered
+        self.assertEqual(html.count("The AI summary isn&#x27;t available right now. Here are the most relevant reviews we found."), 1)
+        self.assertEqual(html.count('class="care-card"'), 3)
+        self.assertEqual([b.label for b in at.button].count("Try the summary again"), 1)
+        self.assertIn("1 summary unavailable", self.plain(at))
+        self.assertIn('<div class="section-title">Summary unavailable</div>', html)
+        self.assertGreater(html.index("Summary unavailable</div>"), html.rindex('class="care-card"'))  # below the columns
+        self.assertGreater(html.index("Summary unavailable</div>"), html.index("col-head problems"))
+        self.assertEqual(len(at.error), 0)
+        client.recovered = True  # the provider recovered
         self.click(at, "Try the summary again")
-        self.assertEqual(self.html(at).count('class="care-card"'), 1)
-        self.assertEqual([b.label for b in at.button].count("Try the summary again"), 3)
+        self.assertEqual(self.html(at).count('class="care-card"'), 4)
+        self.assertEqual([b.label for b in at.button].count("Try the summary again"), 0)
+
+    def test_when_every_summary_fails_the_page_says_live_search_is_unavailable_and_offers_the_saved_examples(self):
+        client = FakeClient(summary="rate_limit", location=None)
+        at = self.search(self.start(client))
+        html, plain = self.html(at), self.plain(at)
+        self.assertIn("Live search is unavailable right now (rate limit). Try one of the saved examples.", plain)
+        for hidden in ("mention vegan options", "restaurants checked", 'class="care-card"', "Summary unavailable", "Try the summary again"):
+            self.assertNotIn(hidden, html)
+        self.assertIn("Peanut", [b.label for b in at.button])  # the example chips
+        self.assertEqual(len(at.error), 0)
+
+    def test_when_the_parser_fails_the_page_says_so_instead_of_half_results(self):
+        at = self.search(self.start(FakeClient(parser="bad", location=None)))
+        plain, html = self.plain(at), self.html(at)
+        self.assertIn("Live search is unavailable right now (the language model didn't answer). Try one of the saved examples.", plain)
+        self.assertNotIn("Request not interpreted", html)
+        self.assertNotIn("restaurants checked", html)
+        self.assertNotIn("0 mention", html)
+        self.assertIn("Kosher", [b.label for b in at.button])
 
     def test_request_about_hours_is_state_c_with_no_search_and_no_model_call(self):
         retriever = FakeRetriever()
@@ -432,11 +558,12 @@ class PageTests(unittest.TestCase):
         self.assertIn("Try describing a diet or an allergy", self.plain(at))
         self.assertNotIn("Search the dietary part", [b.label for b in at.button])
 
-    def test_a_missing_key_shows_the_setup_message_and_still_searches(self):
+    def test_a_missing_key_shows_the_setup_message_and_no_half_results(self):
         err = {"category": "configuration", "code": "x", "message": "The language model is not configured."}
         at = self.search(self.start(setup_error=err))
         self.assertIn("not configured", at.error[0].value)
-        self.assertIn("What reviewers say about", self.plain(at))
+        self.assertIn("Live search is unavailable right now (the language model isn't set up).", self.plain(at))
+        self.assertNotIn("restaurants checked", self.html(at))
 
     def test_empty_query_warns(self):
         at = self.start()
@@ -454,11 +581,32 @@ class PageTests(unittest.TestCase):
         self.assertIn("&lt;script&gt;x&lt;/script&gt; Cafe", html)
 
     # ---- chips and demo mode ---------------------------------------------------------------------------------------
-    def test_a_chip_fills_the_box_and_runs_the_search(self):
+    def test_a_chip_with_no_saved_result_says_so_and_does_not_go_live_by_itself(self):
         at = self.start()
         self.click(at, "Peanut")
         self.assertEqual(at.text_input[0].value, "restaurant careful about peanut allergies")
+        plain = self.plain(at)
+        self.assertIn("No saved result for this setting", plain)
+        self.assertIn("Both boroughs and the semantic_capped method", plain)
+        self.assertEqual(self.client.calls, [])  # nothing was sent to the model
+        self.assertIn("Run it live", [b.label for b in at.button])
+        self.assertNotIn("We understood:", plain)
+
+    def test_run_it_live_runs_the_search(self):
+        at = self.start()
+        self.click(at, "Peanut")
+        self.click(at, "Run it live")
+        self.assertEqual(self.client.calls[0], "parsed_query")
         self.assertIn("We understood:", self.plain(at))
+        self.assertNotIn("No saved result", self.plain(at))
+
+    def test_without_a_model_the_miss_offers_no_live_button(self):
+        err = {"category": "configuration", "code": "x", "message": "The language model is not configured."}
+        at = self.start(setup_error=err)
+        self.click(at, "Kosher")
+        self.assertIn("No saved result for this setting", self.plain(at))
+        self.assertNotIn("Run it live", [b.label for b in at.button])
+        self.assertIn("Live search isn't available right now.", " ".join(c.value for c in at.caption))
 
     def test_a_chip_is_served_from_the_saved_result_without_a_model_call(self):
         query = "restaurant careful about peanut allergies"
@@ -472,34 +620,42 @@ class PageTests(unittest.TestCase):
         self.assertIn("a saved result from", self.plain(at))
         self.assertIn("(no live search was run)", self.plain(at))
 
-    def test_demo_mode_without_a_saved_result_runs_live_without_a_banner(self):
-        at = self.start()
-        next(c for c in at.checkbox if c.label == "Demo mode").check()
+    def test_demo_mode_without_a_saved_result_says_so_instead_of_silently_going_live(self):
+        at = self.open_tools(self.start())
+        next(c for c in at.checkbox if c.label == "Demo mode").check().run()
         self.search(at, "tacos for a vegan")
-        self.assertEqual(self.client.calls[0], "parsed_query")  # live
-        self.assertEqual(len(at.info), 0)
-        self.assertNotIn("Demo mode is on", self.html(at) + " ".join(c.value for c in at.caption))
+        self.assertEqual(self.client.calls, [])
+        self.assertIn("No saved result for this setting", self.plain(at))
         self.assertNotIn("notice-cache", self.html(at))
+        self.click(at, "Run it live")
+        self.assertEqual(self.client.calls[0], "parsed_query")  # the user chose to go live
+        self.assertEqual(len(at.info), 0)
 
     def test_demo_mode_serves_a_saved_result(self):
         outcome, _ = pipeline.run_search("vegan options", "Both", "semantic_capped", retriever=FakeRetriever(),
                                          client=pipeline.UsageRecorder(FakeClient()), model="m", log_path=None)
         demo_cache.save_outcome(outcome, self.cache_dir)
         client = FakeClient(location=None)
-        at = self.start(client)
-        next(c for c in at.checkbox if c.label == "Demo mode").check()
+        at = self.open_tools(self.start(client))
+        next(c for c in at.checkbox if c.label == "Demo mode").check().run()
         self.search(at, "vegan options")
         self.assertEqual(client.calls, [])
         self.assertIn("a saved result from", self.plain(at))
+        self.assertIn("Saved demo result", self.plain(at))
 
     # ---- compare ---------------------------------------------------------------------------------------------------
-    def test_compare_mode_shows_two_rankings(self):
-        at = self.start(retrievers={"semantic_stance": FakeStance()})
-        next(c for c in at.checkbox if c.label == "Compare rankings").check()
+    def test_compare_mode_shows_two_rankings_inside_the_evaluation_tools_section(self):
+        at = self.open_tools(self.start(retrievers={"semantic_stance": FakeStance()}))
+        next(c for c in at.checkbox if c.label == "Compare rankings").check().run()
         self.search(at)
-        plain = self.plain(at)
-        self.assertIn("Compare rankings", plain)
-        self.assertIn("semantic_capped_stance", plain)
+        panel = next(e for e in at.expander if e.label == "Evaluation tools")
+        inside = " ".join(m.value for m in panel.markdown)
+        self.assertIn("Compare rankings", inside)
+        self.assertIn("semantic_capped_stance", inside)
+        outside = " ".join(m.value for m in at.main.markdown if m.value not in inside)
+        self.assertNotIn("semantic_capped_stance", outside)
+        at.toggle[0].set_value(False).run()  # hiding the tools takes the comparison with them
+        self.assertNotIn("semantic_capped_stance", self.html(at))
 
 
 if __name__ == "__main__":

@@ -68,14 +68,16 @@ class MappingTests(unittest.TestCase):
         v = view(1, claims=[(n, "support", [1]), (n, "support", [3])], excerpts=[E1, E3], guarded=True)
         self.assertEqual(vm.group_of(v), vm.CARE)
 
-    def test_columns_put_mixed_in_both_and_unsummarized_under_not_enough(self):
+    def test_each_restaurant_is_in_exactly_one_list_and_mixed_ones_are_in_no_column(self):
         c = vm.columns(outcome([CARE, PROBLEMS, MIXED, INSUFF, UNCERTAIN, FAILED, SKIPPED]))
-        self.assertEqual([v.rank for v in c.care], [1, 3])
-        self.assertEqual([v.rank for v in c.problems], [2, 3])
+        self.assertEqual([v.rank for v in c.care], [1])
+        self.assertEqual([v.rank for v in c.problems], [2])
         self.assertEqual([v.rank for v in c.mixed], [3])
         self.assertEqual([v.rank for v in c.insufficient], [4, 5, 7])
         self.assertEqual([v.rank for v in c.unavailable], [6])
         self.assertEqual(c.checked, 7)
+        ranks = [v.rank for lst in (c.care, c.problems, c.mixed, c.insufficient, c.unavailable) for v in lst]
+        self.assertEqual(sorted(ranks), [1, 2, 3, 4, 5, 6, 7])  # nobody twice, nobody missing
 
     def test_no_label_or_badge_says_supported_or_safe(self):
         o = outcome([CARE])
@@ -110,16 +112,22 @@ class EmptyColumnTests(unittest.TestCase):
 class CountLineTests(unittest.TestCase):
     def test_allergy_wording(self):
         o = outcome([CARE, PROBLEMS, MIXED, INSUFF, SKIPPED])
-        self.assertEqual(vm.count_line(o), "5 restaurants checked · 2 mention allergy care · 2 report problems · "
-                                           "2 not enough evidence · 1 listed in both columns")
+        self.assertEqual(vm.count_line(o), "5 restaurants checked · 1 mention allergy care · 1 report problems · "
+                                           "1 with mixed reviews · 2 not enough evidence")
 
     def test_diet_wording(self):
         o = outcome([CARE], query="halal restaurants", parsed=ParsedQuery(dietary_restrictions=["halal"]), allergy=False)
         self.assertEqual(vm.count_line(o), "1 restaurant checked · 1 mention halal options · 0 report problems · "
                                            "0 not enough evidence")
 
-    def test_unavailable_summaries_are_counted_apart(self):
+    def test_unavailable_summaries_are_counted_apart_for_a_live_search_only(self):
         self.assertIn("1 summary unavailable", vm.count_line(outcome([CARE, FAILED])))
+        self.assertNotIn("unavailable", vm.count_line(outcome([CARE, FAILED], cached=True)))
+
+    def test_the_parts_add_up_to_the_restaurants_checked(self):
+        o = outcome([CARE, PROBLEMS, MIXED, INSUFF, FAILED, SKIPPED])
+        numbers = [int(n) for n in re.findall(r"(?:^|· )(\d+) ", vm.count_line(o))]
+        self.assertEqual(numbers[0], sum(numbers[1:]))
 
 
 class WordingTests(unittest.TestCase):
@@ -129,7 +137,7 @@ class WordingTests(unittest.TestCase):
                          "peanut and milk allergies")
         self.assertEqual(vm.need_phrase(outcome([], parsed=ParsedQuery(dietary_restrictions=["halal"]), allergy=False)),
                          "halal options")
-        self.assertEqual(vm.need_phrase(outcome([], query="Pizza  Place", parsed=ParsedQuery(), allergy=False)), "pizza place")
+        self.assertEqual(vm.need_phrase(outcome([], query="Pizza  Place", parsed=ParsedQuery(), allergy=False)), "your request")  # never the raw query
 
     def test_titles_by_kind(self):
         diet = outcome([], parsed=ParsedQuery(dietary_restrictions=["kosher"]), allergy=False)
@@ -239,3 +247,99 @@ class UnsupportedTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HeadingAndLabelTests(unittest.TestCase):
+    def test_heading_uses_the_parsed_need_and_is_neutral_otherwise(self):
+        self.assertEqual(vm.results_heading(outcome([])), "What reviewers say about peanut allergies")
+        diet = outcome([], parsed=ParsedQuery(dietary_restrictions=["halal"]), allergy=False)
+        self.assertEqual(vm.results_heading(diet), "What reviewers say about halal options")
+        self.assertEqual(vm.results_heading(outcome([], query="pizza", parsed=ParsedQuery(), allergy=False)),
+                         "What reviewers say about your request")  # no need parsed: not the raw query
+        failed = outcome([])
+        failed.parsed = None
+        self.assertEqual(vm.results_heading(failed), "What reviewers say")  # the parser failed
+
+    def test_source_label(self):
+        self.assertEqual(vm.source_label(outcome([], cached=True)), "Saved demo result")
+        self.assertEqual(vm.source_label(outcome([])), "Live search")
+
+
+class LiveUnavailableTests(unittest.TestCase):
+    def err(self, category):
+        return {"category": category, "code": "x", "message": "m"}
+
+    def test_a_parser_failure_is_unavailable_with_its_reason(self):
+        for category, reason in (("rate_limit", "rate limit"), ("timeout", "timeout"), ("network", "no connection"),
+                                 ("bad_request", "the language model didn't answer")):
+            o = outcome([CARE], parse_error=self.err(category))
+            self.assertEqual(vm.live_unavailable(o), reason)
+
+    def test_every_summary_failing_is_unavailable_but_some_failing_is_not(self):
+        a, b = view(1, error=self.err("rate_limit"), excerpts=[E1]), view(2, error=self.err("rate_limit"), excerpts=[E1])
+        self.assertEqual(vm.live_unavailable(outcome([a, b])), "rate limit")
+        self.assertIsNone(vm.live_unavailable(outcome([a, CARE])))
+
+    def test_a_missing_model_setup_is_unavailable(self):
+        self.assertEqual(vm.live_unavailable(outcome([SKIPPED], setup_error=self.err("configuration"))),
+                         "the language model isn't set up")
+
+    def test_a_saved_result_is_never_unavailable_and_a_normal_search_is_not(self):
+        self.assertIsNone(vm.live_unavailable(outcome([CARE], cached=True, parse_error=self.err("rate_limit"))))
+        self.assertIsNone(vm.live_unavailable(outcome([CARE, PROBLEMS])))
+        self.assertIsNone(vm.live_unavailable(outcome([])))
+
+    def test_message(self):
+        self.assertEqual(vm.unavailable_message("rate limit"),
+                         "Live search is unavailable right now (rate limit). Try one of the saved examples.")
+
+
+class FindingTests(unittest.TestCase):
+    def finding(self, claims, excerpts, allergy=True, guarded=True, **kw):
+        v = view(1, claims=claims, excerpts=excerpts, guarded=guarded)
+        o = outcome([v], allergy=allergy, **kw)
+        return vm.finding_for(v, o, vm.CARE), vm.finding_for(v, o, vm.PROBLEMS)
+
+    def test_the_finding_is_the_models_claim_verbatim_with_its_cited_reviews(self):
+        care, problems = self.finding([("One reviewer reported that staff were careful with a peanut allergy.", "support", [1]),
+                                       ("Another reviewer got sick.", "contradiction", [2])],
+                                      [excerpt(1, "They were careful with my peanut allergy."), excerpt(2, "I got sick after the peanut satay.")])
+        self.assertEqual(care.text, "One reviewer reported that staff were careful with a peanut allergy.")
+        self.assertEqual(care.review_ids, [1])
+        self.assertEqual(problems.text, "Another reviewer got sick.")
+
+    def test_no_finding_without_a_cited_review_in_the_restaurants_evidence(self):
+        v = view(1, claims=[("A finding.", "support", [99])], excerpts=[E1], guarded=True)
+        self.assertEqual(v.summary.claims[0].excerpts, [])  # the id is not among the restaurant's excerpts
+        self.assertIsNone(vm.finding_for(v, outcome([v]), vm.CARE))
+        v.summary.claims[0].excerpts = [excerpt(99, "peanut allergy care")]  # cited, but not in v.excerpts either
+        self.assertIsNone(vm.finding_for(v, outcome([v]), vm.CARE))
+
+    def test_the_neutral_replacement_lines_are_not_findings(self):
+        from app import evidence_filter
+        for text in (pipeline.NEUTRAL_CLAIM, evidence_filter.NAME_ONLY_CLAIM):
+            care, _ = self.finding([(text, "support", [1])], [E1])
+            self.assertIsNone(care, text)
+
+    def test_an_allergy_finding_that_asserts_safety_is_dropped_and_the_next_claim_is_used(self):
+        for bad in ("The restaurant is safe for peanut allergies.", "One reviewer called it safely prepared.", "It is a guaranteed peanut-free kitchen with a guarantee.",
+                    "There is no risk for peanut allergies.", "A risk-free place for nut allergies.", "The staff were reassuring about peanuts.",
+                    "SAFE for peanut allergies"):
+            care, _ = self.finding([(bad, "support", [1]), ("One reviewer said staff asked about peanut allergies.", "support", [1])], [E1])
+            self.assertEqual(care.text, "One reviewer said staff asked about peanut allergies.", bad)
+            only, _ = self.finding([(bad, "support", [1])], [E1])
+            self.assertIsNone(only, bad)
+
+    def test_the_safety_check_is_for_allergy_requests_only(self):
+        care, _ = self.finding([("A safe and friendly place for vegans.", "support", [1])], [E1], allergy=False,
+                               parsed=ParsedQuery(dietary_restrictions=["vegan"]))
+        self.assertEqual(care.text, "A safe and friendly place for vegans.")
+
+    def test_a_finding_only_comes_from_a_counting_claim(self):
+        low = excerpt(1, "Staff said no peanuts.", 1)  # a 1-star review: the care gate drops the claim
+        care, _ = self.finding([("They said no peanuts.", "support", [1])], [low])
+        self.assertIsNone(care)
+
+    def test_finding_is_not_escaped_here_so_the_page_must_escape_it(self):
+        care, _ = self.finding([("<b>bold</b> peanut allergy care", "support", [1])], [E1])
+        self.assertEqual(care.text, "<b>bold</b> peanut allergy care")

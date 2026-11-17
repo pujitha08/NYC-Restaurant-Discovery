@@ -55,13 +55,14 @@ CSS = """
 .step {{ flex: 1 1 14rem; background: {P['card']}; border: 1px solid {P['line']}; border-radius: 12px; padding: 0.8rem 1rem; }}
 .step-n {{ color: {P['accent']}; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.06em; }}
 .step-t {{ color: {P['muted']}; font-size: 0.95rem; line-height: 1.45; margin-top: 0.2rem; }}
-.understood {{ display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 0.3rem 0; }}
+.understood {{ display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 0; }}
+.st-key-change button {{ padding: 0 0.5rem; text-decoration: underline; }}
 .understood-label {{ color: {P['muted']}; font-size: 0.9rem; font-weight: 600; }}
 .chip {{ display: inline-block; border-radius: 999px; padding: 0.15rem 0.75rem; font-size: 0.9rem; font-weight: 600;
   background: {P['neutral_bg']}; color: {P['neutral_fg']}; border: 1px solid transparent; line-height: 1.5; }}
 .chip-allergen {{ background: {P['problems_bg']}; color: {P['problems_fg']}; }}
 .chip-diet {{ background: {P['care_bg']}; color: {P['care_fg']}; }}
-.results-title {{ font-size: clamp(1.4rem, 4vw, 2rem); line-height: 1.2; font-weight: 700; color: {P['ink']}; margin: 0.8rem 0 0.3rem; }}
+.results-title {{ font-size: clamp(1.15rem, 3vw, 1.5rem); line-height: 1.25; font-weight: 700; color: {P['ink']}; margin: 0.5rem 0 0.3rem; }}
 .count-line {{ color: {P['ink']}; font-size: 1rem; font-weight: 600; margin: 0.2rem 0; }}
 .helper-line, .trace {{ color: {P['muted']}; font-size: 0.92rem; margin: 0.15rem 0; }}
 .col-head {{ border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 0.6rem; }}
@@ -74,6 +75,8 @@ CSS = """
 .card-meta {{ color: {P['muted']}; font-size: 0.9rem; margin: 0.1rem 0 0.3rem; }}
 .stApp blockquote.quote {{ margin: 0.5rem 0 0.4rem 0; padding: 0.1rem 0 0.1rem 0.8rem; border-left: 3px solid {P['line']};
   color: {P['ink']} !important; opacity: 1 !important; font-size: 1rem; line-height: 1.5; }}
+.praised blockquote.quote {{ border-left: 3px solid {P['care_fg']}; }}
+.warned blockquote.quote {{ border-left: 6px double {P['problems_fg']}; }}
 .care-card blockquote.quote {{ border-left: 3px solid {P['care_fg']}; }}
 .problems-card blockquote.quote {{ border-left: 6px double {P['problems_fg']}; }}  /* a different line style, not only a different hue */
 .pill-n {{ display: inline-block; border-radius: 999px; padding: 0.1rem 0.7rem; font-size: 0.85rem; font-weight: 600;
@@ -103,6 +106,21 @@ details.found summary {{ cursor: pointer; font-weight: 600; }}
 .footer {{ color: {P['muted']}; font-size: 0.85rem; border-top: 1px solid {P['line']}; margin-top: 2rem; padding-top: 0.8rem; }}
 .more-line {{ margin: 0.2rem 0; color: {P['ink']}; }}
 .more-line span {{ color: {P['muted']}; }}
+.finding {{ font-weight: 700; font-size: 1.02rem; line-height: 1.4; color: {P['ink']}; margin: 0.35rem 0 0.1rem; }}
+.ai-label {{ color: {P['muted']}; font-size: 0.78rem; margin-bottom: 0.2rem; }}
+.halves {{ display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem; }}
+.half {{ flex: 1 1 18rem; border-radius: 10px; padding: 0.6rem 0.9rem; color: {P['ink']}; }}
+.half.praised {{ background: {P['care_bg']}; }}
+.half.warned {{ background: {P['problems_bg']}; }}
+.half-title {{ font-weight: 700; font-size: 0.95rem; }}
+.half.praised .half-title {{ color: {P['care_fg']}; }}
+.half.warned .half-title {{ color: {P['problems_fg']}; }}
+.praised blockquote.quote {{ border-left: 3px solid {P['care_fg']}; }}
+.warned blockquote.quote {{ border-left: 6px double {P['problems_fg']}; }}
+.section-title {{ font-size: 1.15rem; font-weight: 700; color: {P['ink']}; margin: 1.4rem 0 0.2rem; }}
+.section-sub {{ color: {P['muted']}; font-size: 0.92rem; margin-bottom: 0.5rem; }}
+.source-tag {{ display: inline-block; border-radius: 6px; padding: 0.05rem 0.5rem; font-size: 0.8rem; font-weight: 700; margin-right: 0.35rem;
+  background: {P['neutral_bg']}; color: {P['neutral_fg']}; }}
 @media (max-width: 640px) {{ .block-container {{ padding: 0.75rem 1rem 2.5rem 1rem; }} .hero {{ margin-top: 0.6rem; }} }}
 </style>
 """
