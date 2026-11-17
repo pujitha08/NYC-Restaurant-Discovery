@@ -281,13 +281,32 @@ def diet_text(outcome):
     return _join([d for d in p.dietary_restrictions if d.strip()]) if p is not None and p.dietary_restrictions else ""
 
 
+_MODIFIER = re.compile(r"cross[\s-]*(?:contamination|contact)", re.IGNORECASE)  # how careful, not what: dropped from the heading
+_CONDITION = re.compile(r"\b(?:celiac|coeliac)\b", re.IGNORECASE)  # a condition takes no "allergies" suffix
+_PLURAL_ALLERGEN = {"nuts": "nut", "peanuts": "peanut", "eggs": "egg", "almonds": "almond", "walnuts": "walnut", "cashews": "cashew",
+                    "pistachios": "pistachio", "pecans": "pecan", "hazelnuts": "hazelnut"}
+
+
+def _singular(term):
+    """"tree nuts" -> "tree nut": the allergen name in the heading only (the parsed terms are untouched)."""
+    head, _, last = term.rpartition(" ")
+    last = _PLURAL_ALLERGEN.get(last.lower(), last)
+    return f"{head} {last}" if head else last
+
+
 def need_phrase(outcome):
-    """The need in plain words for the heading: "peanut allergies", "halal", "vegan and gluten-free options"."""
+    """The need in plain words for the heading: "peanut allergies", "celiac disease", "halal options", "vegan and gluten-free options".
+    A cross-contamination term is a modifier and is dropped; a condition such as celiac disease takes no "allergies" suffix;
+    plural allergen names are singularized here only."""
     p = outcome.parsed
-    allergens = [_ALLERGY_SUFFIX.sub("", a.strip()).strip() for a in (p.allergens if p else []) if a and a.strip()]
-    allergens = [a for a in allergens if a and a.lower() not in ("allergy", "allergies")]
-    if allergens:
-        return f"{_join(allergens)} allergies"
+    terms = [_ALLERGY_SUFFIX.sub("", a.strip()).strip() for a in (p.allergens if p else []) if a and a.strip()]
+    terms = [t for t in terms if t and t.lower() not in ("allergy", "allergies") and not _MODIFIER.search(t)]
+    conditions = [t for t in terms if _CONDITION.search(t)]
+    allergens = [_singular(t) for t in terms if t not in conditions]
+    conditions = [t if re.search(r"disease", t, re.IGNORECASE) else f"{t} disease" for t in conditions]
+    parts = ([f"{_join(allergens)} allergies"] if allergens else []) + conditions
+    if parts:
+        return " and ".join(parts)
     diet = diet_text(outcome)
     if diet:
         return f"{diet} options"

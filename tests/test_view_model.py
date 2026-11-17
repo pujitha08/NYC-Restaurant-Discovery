@@ -267,6 +267,54 @@ class HeadingAndLabelTests(unittest.TestCase):
         self.assertEqual(vm.source_label(outcome([])), "Live search")
 
 
+class ChipHeadingTests(unittest.TestCase):
+    """The results heading for every chip: parsed terms in, heading out (the parsed terms themselves are not changed)."""
+
+    def heading(self, allergens=(), diet=(), allergy=True):
+        parsed = ParsedQuery(allergens=list(allergens), dietary_restrictions=list(diet))
+        return vm.results_heading(outcome([], parsed=parsed, allergy=allergy))
+
+    def check(self, expected, **kw):
+        self.assertEqual(self.heading(**kw), f"What reviewers say about {expected}")
+
+    def test_peanut(self):
+        self.check("peanut allergies", allergens=["peanut"])
+
+    def test_tree_nut_is_singular(self):
+        self.check("tree nut allergies", allergens=["tree nuts"])
+
+    def test_shellfish(self):
+        self.check("shellfish allergies", allergens=["shellfish"])
+
+    def test_sesame(self):
+        self.check("sesame allergies", allergens=["sesame"])
+
+    def test_dairy_free_keeps_dairy_allergies(self):
+        self.check("dairy allergies", allergens=["dairy"])
+
+    def test_celiac_is_a_condition_without_the_cross_contamination_modifier(self):
+        self.check("celiac disease", allergens=["celiac disease", "cross-contamination"], diet=["gluten-free"])
+
+    def test_typed_celiac_query(self):
+        heading = self.heading(allergens=["celiac disease", "cross contamination"], diet=["gluten-free"])
+        self.assertEqual(heading, "What reviewers say about celiac disease")
+        self.assertNotIn("cross", heading)
+        self.assertNotIn("allergies", heading)
+
+    def test_bare_celiac_becomes_celiac_disease(self):
+        self.check("celiac disease", allergens=["celiac"])
+
+    def test_condition_and_allergen_together(self):
+        self.check("peanut allergies and celiac disease", allergens=["peanut", "celiac disease"])
+
+    def test_diet_chips_do_not_change(self):
+        self.check("halal options", diet=["halal"], allergy=False)
+        self.check("vegan and gluten-free options", diet=["vegan", "gluten-free"], allergy=False)
+        self.check("gluten-free options", diet=["gluten-free"], allergy=False)
+        self.check("vegetarian options", diet=["vegetarian"], allergy=False)
+        self.check("kosher options", diet=["kosher"], allergy=False)
+
+
 class LiveUnavailableTests(unittest.TestCase):
     def err(self, category):
         return {"category": category, "code": "x", "message": "m"}
