@@ -25,7 +25,7 @@ def is_allergy_text(query):
 ALLERGEN_GROUPS = {
     "shellfish": ("shellfish", "seafood", "shrimp", "prawn", "lobster", "crab", "crawfish", "crayfish", "oyster", "clam",
                   "mussel", "scallop"),
-    "peanut": ("peanut",),
+    "peanut": ("peanut", "groundnut"),
     "tree nut": ("tree nut", "nut", "almond", "cashew", "walnut", "pecan", "pistachio", "hazelnut", "macadamia"),
     "sesame": ("sesame", "tahini"),
     "dairy": ("dairy", "milk", "lactose", "cheese"),

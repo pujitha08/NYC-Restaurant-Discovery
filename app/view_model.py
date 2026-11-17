@@ -8,12 +8,12 @@ Nothing here says a restaurant is safe: reviews are evidence, not a verdict.
 """
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 from app import pipeline
 from app.coverage import need_terms
-from app.evidence_filter import NAME_ONLY_CLAIM, mentions
+from app.evidence_filter import NAME_ONLY_CLAIM, mask_name, mentions
 from app.highlight import highlight_terms, squash
 from src.allergy import GENERIC_ALLERGY, GROUP_PATTERNS, NUT_GENERIC, NUT_GROUPS, allergen_groups, is_allergy_text
 from src.retrieval.evidence import _SENTENCE_RE
@@ -393,9 +393,10 @@ def _score(sentence, name, terms, needs, prefer_cue=False):
     return (int(prefer_cue and has_allergy_cue(sentence)), need_hits, other_hits, -len(sentence))
 
 
-def best_match(excerpts, name, terms, needs, prefer_cue=False):
-    """(sentences of the review, index of the matched one, excerpt): the sentence with the most need-word hits outside the
-    restaurant's name, then other matched words. With prefer_cue, a sentence with an allergy cue word wins first."""
+def best_match_key(excerpts, name, terms, needs, prefer_cue=False):
+    """(sentences of the review, index of the matched one, excerpt, score key): the sentence with the most need-word hits
+    outside the restaurant's name, then other matched words. With prefer_cue, a sentence with an allergy cue word wins first.
+    The key is (cue, need hits, other hits, -length); a key with no hits means nothing in the text matched."""
     best = None
     for e in excerpts:
         parts = sentences(e.text)
@@ -403,7 +404,13 @@ def best_match(excerpts, name, terms, needs, prefer_cue=False):
             key = _score(sentence, name, terms, needs, prefer_cue)
             if best is None or key > best[0]:
                 best = (key, parts, i, e)
-    return (best[1], best[2], best[3]) if best else (None, None, None)
+    return (best[1], best[2], best[3], best[0]) if best else (None, None, None, None)
+
+
+def best_match(excerpts, name, terms, needs, prefer_cue=False):
+    """(sentences of the review, index of the matched one, excerpt); see best_match_key."""
+    parts, i, excerpt, _ = best_match_key(excerpts, name, terms, needs, prefer_cue)
+    return parts, i, excerpt
 
 
 MIN_MATCH_WORDS = 8  # a shorter matched sentence also gets the one before it
@@ -471,13 +478,23 @@ def quote_for(view, outcome, group):
     """The one quote for a card in the column `group` (CARE or PROBLEMS), from the reviews cited by the counting claims of that
     column's label (care: reviews rated 3 stars or more). Problems cards in an allergy request prefer a sentence with an allergy
     cue word. "Based on N reviews" counts the distinct cited reviews that mention the need or an allergy cue.
-    Falls back to the best sentence of any retrieved review; None if there is no text."""
+
+    When the card shows a finding, the quote comes from a review that finding cites: the matched sentence if it lies in one of
+    them, otherwise the best matching sentence inside the cited reviews, or their first two sentences if nothing matches.
+    Falls back to the best sentence of any retrieved review; None if there is no text.
+    """
     terms = highlight_terms(outcome.query, outcome.parsed)
     needs = need_words(outcome)
     cited = cited_reviews(view, LABEL_OF[group], outcome)
     pool = [e for e in cited if group != CARE or getattr(e, "rating", None) is None or e.rating >= MIN_CARE_STARS] or cited
     prefer_cue = group == PROBLEMS and outcome.allergy_sensitive
     parts, i, excerpt = best_match(pool, view.name, terms, needs, prefer_cue)
+    finding = finding_for(view, outcome, group)
+    if finding is not None and (excerpt is None or excerpt.review_id not in set(finding.review_ids)):
+        own = [e for e in finding.excerpts if group != CARE or getattr(e, "rating", None) is None or e.rating >= MIN_CARE_STARS] or finding.excerpts
+        parts, i, excerpt, key = best_match_key(own, view.name, terms, needs, prefer_cue)
+        if parts is not None and not any(key[:3]):  # nothing in the cited review matched: its first two sentences
+            i = 0
     if parts is None:
         parts, i, excerpt = best_match(view.excerpts, view.name, terms, needs, prefer_cue)
     if parts is None:
@@ -507,6 +524,7 @@ UNSAFE_FINDING = re.compile(r"\b(?:no risk|risk[- ]free|without (?:any )?risk|ze
 class Finding:
     text: str  # the model's claim, verbatim
     review_ids: List[int]  # the cited reviews that are in this restaurant's evidence
+    excerpts: List = field(default_factory=list)  # those cited reviews (the claim's excerpts)
 
 
 def finding_is_shown_safely(text, outcome):
@@ -517,13 +535,25 @@ def finding_is_shown_safely(text, outcome):
     return not (pipeline.SAFETY_WORDS.search(text) or UNSAFE_FINDING.search(text))
 
 
-def finding_for(view, outcome, group):
-    """The model's plain-language finding for a card in the column `group` (CARE or PROBLEMS), verbatim, or None.
+def allergen_gaps(finding, name=None):
+    """[(group, terms in the finding)] for every allergen group the finding names but no cited review names.
 
-    It is the first counting claim of that column's label that (a) is a real finding (not the neutral replacement line the
-    wording guard or the name filter writes), (b) cites at least one review that is in this restaurant's evidence, and (c) for an
-    allergy request does not assert safety. With no such claim the card shows the quote alone.
+    For each group of src.allergy.ALLERGEN_GROUPS that has a term in the finding sentence, at least one term of the SAME group
+    must occur in at least one cited review (the excerpt text the claim cites). The restaurant's own name is masked in both, so
+    "Red Lobster" is neither a mention nor a support. A group that is not named in the finding is not checked.
     """
+    said = mask_name(finding.text, name)
+    gaps = []
+    for group, pattern in GROUP_PATTERNS.items():
+        terms = sorted({m.group(0).lower() for m in pattern.finditer(said)})
+        if terms and not any(pattern.search(mask_name(e.text, name)) for e in finding.excerpts):
+            gaps.append((group, terms))
+    return gaps
+
+
+def finding_candidate(view, outcome, group):
+    """The first counting claim of the column's label that is a real finding (not the neutral replacement line), cites a review that
+    is in this restaurant's evidence, and (for an allergy request) does not assert safety; or None. Before the allergen check."""
     evidence_ids = {e.review_id for e in view.excerpts}
     for claim, label in effective_claims(view, outcome):
         if label != LABEL_OF[group]:
@@ -531,10 +561,20 @@ def finding_for(view, outcome, group):
         text = squash(claim.text)
         if not text or text in (squash(pipeline.NEUTRAL_CLAIM), squash(NAME_ONLY_CLAIM)):
             continue
-        ids = [e.review_id for e in claim.excerpts if e.review_id in evidence_ids]
-        if ids and finding_is_shown_safely(text, outcome):
-            return Finding(text, ids)
+        cited = [e for e in claim.excerpts if e.review_id in evidence_ids and squash(e.text)]
+        if cited and finding_is_shown_safely(text, outcome):
+            return Finding(text, [e.review_id for e in cited], cited)
     return None
+
+
+def finding_for(view, outcome, group):
+    """The model's plain-language finding for a card in the column `group` (CARE or PROBLEMS), verbatim, or None.
+
+    The candidate (see finding_candidate) is shown only if every allergen group it names is also named in a cited review
+    (allergen_gaps); otherwise it is suppressed and the card shows the quote alone, as it does when there is no candidate.
+    """
+    finding = finding_candidate(view, outcome, group)
+    return finding if finding and not allergen_gaps(finding, view.name) else None
 
 
 # ---- the evidence view --------------------------------------------------------------------------------------------
