@@ -59,7 +59,7 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported that the manager claimed peanut allergies would not be a problem, although the reviewer later experienced a severe allergic reaction.",
+       "text": "One reviewer warned that severe peanut allergy sufferers should avoid the restaurant, noting that despite the manager's claim that allergies would not be a problem, the reviewer cautioned against dining there.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -71,7 +71,7 @@
        ]
       },
       {
-       "text": "Another reviewer described having an allergic reaction after eating at the restaurant and advised others with severe allergies to avoid it.",
+       "text": "Another reviewer reported experiencing an allergic reaction after consuming food that appeared to have been cooked near peanuts or peanut oil, advising others with severe peanut allergies to stay away.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -84,6 +84,7 @@
       }
      ],
      "limitations": [
+      "Only three excerpts were provided; two mention peanut allergy concerns while the third is unrelated to allergies.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -122,7 +123,7 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer warned that the restaurant was not attentive to peanut allergies and advised patrons with such allergies to avoid the venue.",
+       "text": "One reviewer warned that the staff and kitchen were inattentive to food allergies and advised avoiding the restaurant for diners with allergies.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -134,7 +135,7 @@
        ]
       },
       {
-       "text": "Another reviewer reported that a waiter acknowledged a nut allergy but did not address any concerns, implying insufficient accommodation for peanut allergies.",
+       "text": "Another reviewer reported that, despite notifying the waitress of a nut allergy, the restaurant did not accommodate the allergy and recommended going elsewhere.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -147,6 +148,7 @@
       }
      ],
      "limitations": [
+      "Reviews mention tree nut and general nut allergies but do not specifically reference peanuts; the applicability to peanut allergies is inferred.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -179,7 +181,7 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported that despite the restaurant’s claim that the burger contained no nuts, the reviewer experienced an anaphylactic reaction, indicating a potential allergy issue.",
+       "text": "One reviewer warned that despite being told the burger contained no nuts, they experienced severe allergic symptoms, suggesting the restaurant may not handle peanut allergies properly.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -192,6 +194,7 @@
       }
      ],
      "limitations": [
+      "Only a single review addresses the peanut allergy concern, limiting the ability to generalize about overall safety.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -236,7 +239,7 @@
      "status": "mixed",
      "claims": [
       {
-       "text": "One reviewer reported throwing up after eating a meal that likely contained peanuts, and urged the restaurant to indicate nut allergens on menus.",
+       "text": "One reviewer reported becoming ill after the meal and warned that the restaurant did not clearly indicate the presence of nuts, suggesting a risk for peanut‑allergic diners.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -248,7 +251,7 @@
        ]
       },
       {
-       "text": "One reviewer described a waitress confirming no nuts were used, yet the suggested strawberry cheesecake contained cashews, and the kitchen later claimed it was nut‑free.",
+       "text": "Another reviewer described staff assuring that no nuts were used, yet a dessert that was recommended contained cashews, indicating a failure to reliably avoid nuts for allergic patrons.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -273,7 +276,8 @@
       }
      ],
      "limitations": [
-      "Only three reviews were available, and they give conflicting accounts of the restaurant’s handling of peanut allergies.",
+      "Reviews provide conflicting accounts of nut handling; some report successful accommodation while others describe exposure and illness.",
+      "The term \"nuts\" is used broadly and may include peanuts, but specific confirmation for peanuts is not always explicit.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -316,34 +320,9 @@
     ],
     "summary": {
      "status": "insufficient evidence",
-     "claims": [
-      {
-       "text": "Reviewers noted the presence of peanuts in the restaurant but did not report whether the staff handled peanut allergies or took precautions.",
-       "label": "uncertainty",
-       "excerpts": [
-        {
-         "review_id": 1869131,
-         "date": "2018-03",
-         "text": "For peanuts lovers ~ but table not cleaned regularly",
-         "rating": 3
-        },
-        {
-         "review_id": 1869239,
-         "date": "2018-06",
-         "text": "The service was very slow we asked for the food for eat in and they gave it to us in a paper bag and the peanuts were empty which is one of the Staples of this restaurant",
-         "rating": 3
-        },
-        {
-         "review_id": 1868818,
-         "date": "2019-04",
-         "text": "Great food ... Burgers made to order. Fries are delicious and plentiful ... Love the Cajun seasoning! I'm not a peanut lover, but my friends enjoyed the peanuts while waiting for the burgers.",
-         "rating": 5
-        }
-       ]
-      }
-     ],
+     "claims": [],
      "limitations": [
-      "No excerpts describe how the restaurant manages peanut allergy concerns or confirm safety measures.",
+      "Reviews mention peanuts being served or available but do not discuss how the restaurant handles peanut allergies.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -373,11 +352,11 @@
      }
     ],
     "summary": {
-     "status": "insufficient evidence",
+     "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer mentioned a possible peanut allergy reaction but reported no severe outcome.",
-       "label": "uncertainty",
+       "text": "One reviewer reported a possible nut piece in the pancake mix, indicating a failure to prevent peanut (or other nut) contamination and expressed disappointment with the restaurant's handling of allergies.",
+       "label": "contradiction",
        "excerpts": [
         {
          "review_id": 91632,
@@ -389,6 +368,7 @@
       }
      ],
      "limitations": [
+      "Only a single review excerpt addresses peanut allergies; no reports confirm consistent careful handling.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -429,9 +409,44 @@
       "rating": 5
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported receiving peanut butter chocolates despite indicating a peanut allergy, with no labeling.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 73237,
+         "date": "2018-04",
+         "text": "… Dinner was over salted, over cooked and cold. Told our server I was allergic to peanuts..... The chocolates given at the end of the meal to take away were peanut butter!. Absolutely no label indicating peanut...Thank goodness I only have a mild allergy. Mediocre food, mediocre service.... There are too many other wonderful places in NYC.... …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that their brother experienced an allergic reaction and advised informing the waiter of food allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 73590,
+         "date": "2016-05",
+         "text": "Jean Georges is a spectacular restaurant but my brother did have an allergic reaction from something there i would recommend telling the waiter food allergies. But other wise very nice and polite staff and delicious food .",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only two reviews mentioned peanut allergy issues; no evidence of the restaurant consistently accommodating peanut allergies.",
+      "The third excerpt does not address allergen handling.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -465,9 +480,44 @@
       "rating": 1
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that a veggie burger contained nuts despite no menu indication, leading to an allergic reaction.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 136010,
+         "date": "2016-10",
+         "text": "The food is pretty good. BUT. I ordered a Veggie Burger. I'm allergic to nuts. I didn't expect a veggie burger to have nuts in it. & the was nothing saying or indicating that on the menu at all. So after a couple bites, the person I went with went to get Benadryl at DuaneReade. …",
+         "rating": 2
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer mentioned a severe reaction after informing staff of food allergies, but did not specify peanuts.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 135512,
+         "date": "2018-04",
+         "text": "If you have food allergies - STAY AWAY! Went with my friends for dinner. After 35 minutes of waiting, we finally set and made an order. I informed the waitress about my food allergies and she confirmed that the food is gluten free. Well - I got back home really sick and vomited until 4am. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only one review directly addresses peanuts, reporting a problem.",
+      "Other reviews discuss allergies in general without confirming handling of peanuts.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -501,9 +551,32 @@
       "rating": 3
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that the restaurant could not be trusted to avoid peanut butter for a severely allergic friend, noting the lack of any mention in menu descriptions.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1315265,
+         "date": "2017-03",
+         "text": "… My friend is deathly allergic to peanut butter and there was never a mention of peanut butter in the description (ie: it shouldn't be there and thus they don't follow recipes and really can't be trusted to follow procedure). …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review addressed peanut allergies; other reviews did not mention allergens.",
+      "The review expressed doubt rather than confirming any specific safety practices.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -537,9 +610,1368 @@
       "rating": 5
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the waiter was super helpful and accommodating for all allergies and dietary preferences.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 79278,
+         "date": "2019-11",
+         "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described friendly staff who took time to inquire about ingredients for guests with allergies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 79107,
+         "date": "2019-07",
+         "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "One reviewer experienced a bad reaction because allergy information was not made clear on the menu.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 79848,
+         "date": "2013-08",
+         "text": "… I had a bad reaction and was very sick afterwards. Allergy info wasn't made clear on the menu. I now always mention this allergy wherever I go, especially for Asian restaurants to be safe. Bad experience, BUT, the food really was very good and we had a great time. …",
+         "rating": 3
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The supportive reviews mention allergies in general but do not specifically reference peanut allergies.",
+      "The contradictory review does not specify which allergen caused the reaction, only that allergy information was unclear.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 11,
+    "gmap_id": "0x89c25ba4b344e261:0x6f60a1fe04a3d323",
+    "name": "Emily",
+    "borough": "Brooklyn",
+    "address": "Emily, 919 Fulton St, Brooklyn, NY 11238",
+    "avg_rating": 4.5,
+    "num_reviews": 551,
+    "low_evidence": false,
+    "score": 1.799111221046951,
+    "excerpts": [
+     {
+      "review_id": 2508373,
+      "date": "2019-01",
+      "text": "Great food for my husband but horrible service for people with allergies. I am allergic to dairy and I was very specific with that, so I ordered a dairy free pizza (pomodoro sauce, basil and mushrooms). The waitress told us that I was able to order anything because it could be prepared without dairy. …",
+      "rating": 1
+     },
+     {
+      "review_id": 2508451,
+      "date": "2019-01",
+      "text": "… the time we spent at urgent care was not cool for a free pizza... My point: if you are not willing to attend a person with an allergy with a minimum of caution, just tell them you can't.",
+      "rating": 2
+     },
+     {
+      "review_id": 2508117,
+      "date": "2020-06",
+      "text": "… I can’t believe this. I’m regretting it now! Lesson learned! Newly owner has no idea of restaurant business and customer service, just wanted to come over and started to high price all foods so people would assume they serve best foods , This is such an unethical business practice. Hope no one has to experience that.",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The provided reviews discuss dairy allergies and general service issues but do not mention peanuts or the restaurant's handling of peanut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 12,
+    "gmap_id": "0x89c259762e26a813:0xf37426d261b7d2db",
+    "name": "Tompkins Square Bagels",
+    "borough": "Manhattan",
+    "address": "Tompkins Square Bagels, 165 Avenue A, New York, NY 10009",
+    "avg_rating": 4.5,
+    "num_reviews": 543,
+    "low_evidence": false,
+    "score": 1.798976045846939,
+    "excerpts": [
+     {
+      "review_id": 2270530,
+      "date": "2018-06",
+      "text": "… Also getting it all over the cutting board.) They assured me it would change— nope. Good luck if you have a nut allergy. It is a shame that they can’t get their act together. The people are nice and the food is good— when your order is right.",
+      "rating": 2
+     },
+     {
+      "review_id": 2270456,
+      "date": "2018-01",
+      "text": "I can't emphasize my love for this place enough! The food is incredible, the service is phenomenal, and the prices are totally reasonable. A safe haven for anyone with gluten allergies!!",
+      "rating": 5
+     },
+     {
+      "review_id": 2270434,
+      "date": "2018-08",
+      "text": "We were visiting the area to move my son to college and discovered this bagel shop down the street from the apartment we stayed at. So far I've gone twice. I'll start by saying that the flavors of bagels that are listed on their web site is not accurate. They do not have chocolate chip or garlic. …",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that the restaurant failed to prevent cross-contact with nuts, stating it was unsafe for someone with a nut allergy.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2270530,
+         "date": "2018-06",
+         "text": "… Also getting it all over the cutting board.) They assured me it would change— nope. Good luck if you have a nut allergy. It is a shame that they can’t get their act together. The people are nice and the food is good— when your order is right.",
+         "rating": 2
+        }
+       ]
+      },
+      {
+       "text": "A reviewer’s comment about this allergy is quoted below.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2270456,
+         "date": "2018-01",
+         "text": "I can't emphasize my love for this place enough! The food is incredible, the service is phenomenal, and the prices are totally reasonable. A safe haven for anyone with gluten allergies!!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer discussed inaccurate bagel flavor listings without mentioning peanut allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2270434,
+         "date": "2018-08",
+         "text": "We were visiting the area to move my son to college and discovered this bagel shop down the street from the apartment we stayed at. So far I've gone twice. I'll start by saying that the flavors of bagels that are listed on their web site is not accurate. They do not have chocolate chip or garlic. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only one review directly addresses peanut allergies, and it reports a problem.",
+      "No reviews provide positive evidence of peanut‑allergy accommodations.",
+      "The remaining reviews do not discuss peanut allergies, leaving the restaurant's handling of this need unclear.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 13,
+    "gmap_id": "0x89c25991f36073d3:0xf0157af58ce77e02",
+    "name": "Senza Gluten",
+    "borough": "Manhattan",
+    "address": "Senza Gluten, 206 Sullivan St, New York, NY 10012",
+    "avg_rating": 4.5,
+    "num_reviews": 429,
+    "low_evidence": false,
+    "score": 1.7982800424098968,
+    "excerpts": [
+     {
+      "review_id": 1065571,
+      "date": "2019-04",
+      "text": "The food was delicious and the service was great! Accommodating and understanding when it comes to food allergies. I would recommend this restaurant to everyone.",
+      "rating": 5
+     },
+     {
+      "review_id": 1065525,
+      "date": "2018-09",
+      "text": "Food was good. Service was terrific. Pizza was excellent! The waiter asked if there were any other food allergies or concerns. I really appreciated that.",
+      "rating": 5
+     },
+     {
+      "review_id": 1065716,
+      "date": "2018-08",
+      "text": "I appreciate that they are extremely allergy conscious and that it is a completely gluten free restaurant, so you don't have to worry about cross-contamination. They also gave us a free sample of their bread basket, which was very nice of them to do. These are the only reasons they get two stars. …",
+      "rating": 2
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [
+      {
+       "text": "One reviewer noted that the staff were accommodating and understanding regarding food allergies, but did not specifically mention peanuts.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1065571,
+         "date": "2019-04",
+         "text": "The food was delicious and the service was great! Accommodating and understanding when it comes to food allergies. I would recommend this restaurant to everyone.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the waiter asked about any food allergies or concerns, indicating attentiveness, though peanuts were not specifically addressed.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1065525,
+         "date": "2018-09",
+         "text": "Food was good. Service was terrific. Pizza was excellent! The waiter asked if there were any other food allergies or concerns. I really appreciated that.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer described the restaurant as extremely allergy‑conscious and praised its gluten‑free focus, yet made no specific reference to peanut allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1065716,
+         "date": "2018-08",
+         "text": "I appreciate that they are extremely allergy conscious and that it is a completely gluten free restaurant, so you don't have to worry about cross-contamination. They also gave us a free sample of their bread basket, which was very nice of them to do. These are the only reasons they get two stars. …",
+         "rating": 2
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "None of the excerpts mention peanuts specifically, so the evidence does not confirm how the restaurant handles peanut allergies.",
+      "Positive remarks about general allergy awareness do not guarantee safe handling of peanuts.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 14,
+    "gmap_id": "0x89e673ab7efcef35:0xab8e64454caf5ffd",
+    "name": "Virgil's Real BBQ - Times Square",
+    "borough": "Manhattan",
+    "address": "Virgil's Real BBQ - Times Square, 152 W 44th St, New York, NY 10036",
+    "avg_rating": 4.3,
+    "num_reviews": 1650,
+    "low_evidence": false,
+    "score": 1.78865054182585,
+    "excerpts": [
+     {
+      "review_id": 2397577,
+      "date": "2019-03",
+      "text": "Great for allergy sufferers. The only place I walked into in New York and got given an allergy menu with options for gluten, dairy, egg, onion, garlic etc etc.. Simply put... the food was safe and amazing!",
+      "rating": 5
+     },
+     {
+      "review_id": 2397512,
+      "date": "2019-05",
+      "text": "This restaurant is okay, but they do take allergy's seriously. That is good and bad. My child has a nut allergy, and they worried about cross contamination. They wouldn't let her eat these chips that they served. I am a mother and I know what my child can and can't eat with cross contamination. …",
+      "rating": 1
+     },
+     {
+      "review_id": 2397545,
+      "date": "2019-05",
+      "text": "… The wings tasted like charcoal, and the brisket was okay. To be honest i'd rather eat a McDonald's. My daughter has many allergies, so they had a menu for her because of her allergies. Good thought, but no. The food on the menu was so bad, my dad wouldn't even eat it, and he eats everything. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant refused to serve a chip to a child with a nut allergy due to concerns about cross‑contamination.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2397512,
+         "date": "2019-05",
+         "text": "This restaurant is okay, but they do take allergy's seriously. That is good and bad. My child has a nut allergy, and they worried about cross contamination. They wouldn't let her eat these chips that they served. I am a mother and I know what my child can and can't eat with cross contamination. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A reviewer’s comment about this allergy is quoted below.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2397577,
+         "date": "2019-03",
+         "text": "Great for allergy sufferers. The only place I walked into in New York and got given an allergy menu with options for gluten, dairy, egg, onion, garlic etc etc.. Simply put... the food was safe and amazing!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "One reviewer mentioned that a menu was offered for a daughter with multiple allergies, yet no specific information about peanut handling was provided.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2397545,
+         "date": "2019-05",
+         "text": "… The wings tasted like charcoal, and the brisket was okay. To be honest i'd rather eat a McDonald's. My daughter has many allergies, so they had a menu for her because of her allergies. Good thought, but no. The food on the menu was so bad, my dad wouldn't even eat it, and he eats everything. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The reviews do not directly address how the restaurant manages peanut allergies specifically.",
+      "Positive remarks are general to all allergies and do not confirm peanut‑specific precautions.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 15,
+    "gmap_id": "0x89c25cbc566d49c5:0xa91f660878bd457d",
+    "name": "Footprints Cafe",
+    "borough": "Brooklyn",
+    "address": "Footprints Cafe, 5814 Clarendon Rd, Brooklyn, NY 11203",
+    "avg_rating": 3.9,
+    "num_reviews": 1291,
+    "low_evidence": false,
+    "score": 1.7885308384895324,
+    "excerpts": [
+     {
+      "review_id": 1624356,
+      "date": "2018-03",
+      "text": "I've ordered from here and told them that I have an allergy to specific foods; when the order came out it was exactly what I couldn't eat. The workers are always rude, terrible customer service and will never give you a correct order after waiting one to two hrs to get any type of food. …",
+      "rating": 2
+     },
+     {
+      "review_id": 1624030,
+      "date": "2020-04",
+      "text": "Don't get me wrong, the stew chicken and Mac and cheese is good, but the lack of attention on the employees behalf is bad ..I specifically state on my Uber order allergy request notes that I am allergic to cabbage and yet they go out of their way to pile it on. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1624536,
+      "date": "2018-12",
+      "text": "… They must've been busy beyond belief. I found 4 shrimp in my jerk chicken pasta. Luckily I'm not allergic so I was blessed. I know its busy af over there but tighten up a system to get people in and out faster who aren't dining in and watch their orders not to negligently serving allergens.",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The provided reviews mention allergies to unspecified foods, cabbage, and shrimp, but none reference peanuts.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 16,
+    "gmap_id": "0x89c2447919fb99c9:0x454d24cda42b3df3",
+    "name": "Roll N Roaster",
+    "borough": "Brooklyn",
+    "address": "Roll N Roaster, 2901 Emmons Ave, Brooklyn, NY 11235",
+    "avg_rating": 4.5,
+    "num_reviews": 1378,
+    "low_evidence": false,
+    "score": 1.7868440270423889,
+    "excerpts": [
+     {
+      "review_id": 1367596,
+      "date": "2018-09",
+      "text": "If you have any allergies to anything , stay away from this awful place. I put in an order to be delivered for lunch and wound up in the ER. I heard the girl on the other line say “oh”. There was a shrimp tail in my fries. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1367150,
+      "date": "2019-05",
+      "text": "I must say the food is not as good as it used to be. I will no longer be visiting. Roll n Roaster does not take Food ALLERGIES into consideration when prepping and cooking the food. The shrimp is cooked in the same oil as everything else. PEOPLE WITH ALLERGIES BE CAREFUL WHEN EATTING AT THIS PLACE.",
+      "rating": 1
+     },
+     {
+      "review_id": 1366739,
+      "date": "2020-08",
+      "text": "… THANK YOU! That's why you guys are around so long... It's about serving your community and keeping everyone safe while serving delicious food. I wish I didn't have to say this, but a lot of restaurants out there are not complying with the mandatory masks rule. …",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that the restaurant caused a severe allergic reaction, describing a shrimp tail in their fries and a subsequent ER visit.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1367596,
+         "date": "2018-09",
+         "text": "If you have any allergies to anything , stay away from this awful place. I put in an order to be delivered for lunch and wound up in the ER. I heard the girl on the other line say “oh”. There was a shrimp tail in my fries. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that the restaurant does not consider food allergies when preparing meals, noting that shrimp is cooked in the same oil as other items.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1367150,
+         "date": "2019-05",
+         "text": "I must say the food is not as good as it used to be. I will no longer be visiting. Roll n Roaster does not take Food ALLERGIES into consideration when prepping and cooking the food. The shrimp is cooked in the same oil as everything else. PEOPLE WITH ALLERGIES BE CAREFUL WHEN EATTING AT THIS PLACE.",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The reviews specifically mention shrimp and cross‑contamination concerns but do not explicitly reference peanuts.",
+      "No reviewer provided evidence that the restaurant accommodates peanut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 17,
+    "gmap_id": "0x89c25854a455ae87:0xfe858f6fb775e8ac",
+    "name": "Five Guys",
+    "borough": "Manhattan",
+    "address": "Five Guys, 253 W 42nd St, New York, NY 10036",
+    "avg_rating": 4.4,
+    "num_reviews": 1469,
+    "low_evidence": false,
+    "score": 1.7843067169189453,
+    "excerpts": [
+     {
+      "review_id": 2757468,
+      "date": "2019-01",
+      "text": "… However, I encountered a very rude and hostile service regarding grabbing peanuts on the go. Apparently, this location does not allow people to grab peanuts for free even when I purchased a meal. Very inconsiderate and while I enjoy the food, I would not come to this location again for its rude and inexperience in customer relations employees.",
+      "rating": 2
+     },
+     {
+      "review_id": 2757632,
+      "date": "2019-12",
+      "text": "no peanuts : ( but burgers rly good, waiting times short",
+      "rating": 4
+     },
+     {
+      "review_id": 2758701,
+      "date": "2018-10",
+      "text": "Piglet! Like, burger luxury! Peanuts smelled everywhere, a bit of a mess and a lot of people :) it's just good to check what you ordered.",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that peanuts were smelled throughout the restaurant, suggesting the presence of peanuts and a potential risk for those with peanut allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2758701,
+         "date": "2018-10",
+         "text": "Piglet! Like, burger luxury! Peanuts smelled everywhere, a bit of a mess and a lot of people :) it's just good to check what you ordered.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "One reviewer noted that the location does not allow customers to take peanuts for free, but the comment focused on service attitude rather than allergy accommodations.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2757468,
+         "date": "2019-01",
+         "text": "… However, I encountered a very rude and hostile service regarding grabbing peanuts on the go. Apparently, this location does not allow people to grab peanuts for free even when I purchased a meal. Very inconsiderate and while I enjoy the food, I would not come to this location again for its rude and inexperience in customer relations employees.",
+         "rating": 2
+        }
+       ]
+      },
+      {
+       "text": "One reviewer mentioned that there were no peanuts observed, but did not provide information about the restaurant's handling of peanut allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2757632,
+         "date": "2019-12",
+         "text": "no peanuts : ( but burgers rly good, waiting times short",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Reviews do not explicitly address how the restaurant manages or communicates about peanut allergy safety.",
+      "Observations about peanuts being present or absent are anecdotal and do not confirm systematic allergy precautions.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 18,
+    "gmap_id": "0x89c258fe9139b79f:0xde80ce51158407c9",
+    "name": "TGI Fridays",
+    "borough": "Manhattan",
+    "address": "TGI Fridays, 604 5th Ave, New York, NY 10023",
+    "avg_rating": 3.1,
+    "num_reviews": 622,
+    "low_evidence": false,
+    "score": 1.782382082939148,
+    "excerpts": [
+     {
+      "review_id": 2096329,
+      "date": "2017-12",
+      "text": "food allergies are evidently not common or known at this place. food wasnt fresh. order wrong",
+      "rating": 1
+     },
+     {
+      "review_id": 2096253,
+      "date": "2016-02",
+      "text": "… They rush me to make an order, then take half an hour or more to get it to you... after which you are greeted with child-size portions and ingredients you requested be left out... thank God I'm not allergic, just hate the taste of pickles in my food. Oh and these kiddie size meals cost upwards of $20 ... …",
+      "rating": 1
+     },
+     {
+      "review_id": 2096171,
+      "date": "2018-12",
+      "text": "AVOID! AVOID!AVOID! The service is horrible! They can’t get the orders right. There’s especially one waitress with curly hair that is extremely rude. We had to call the manager because they kept on bringing the wrong food!",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "Reviews do not mention peanuts specifically, only general comments about allergies or lack thereof.",
+      "No reviewer reported the restaurant's handling of peanut allergies, either positively or negatively.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 19,
+    "gmap_id": "0x89c2585488ece671:0x6a6b02420feb010f",
+    "name": "Jekyll and Hyde Club",
+    "borough": "Manhattan",
+    "address": "Jekyll and Hyde Club, 91 7th Ave S, New York, NY 10014",
+    "avg_rating": 3.9,
+    "num_reviews": 1059,
+    "low_evidence": false,
+    "score": 1.782237422466278,
+    "excerpts": [
+     {
+      "review_id": 724024,
+      "date": "2016-08",
+      "text": "BEWARE IF YOU HAVE FOOD ALLERGIES!!! This should be a zero star rating, but the system doesn't allow for it. I took my family to this restaurant after a day in the city. My son has a severe peanut/tree nut allergy. I emphasized this to our waitress several times before and throughout the meal and again before ordering dessert. …",
+      "rating": 1
+     },
+     {
+      "review_id": 723946,
+      "date": "2019-10",
+      "text": "Worst overall experience I’ve ever had at an eatery. I’m shocked this sort of treatment is allowed or still exist in such a beautiful and welcoming city. This was my first/last visit to J&H. 👎👎👎👎",
+      "rating": 1
+     },
+     {
+      "review_id": 724467,
+      "date": "2017-07",
+      "text": "Would NOT tell anyone to go there. We had ordered cheeseburgers and a chicken sandwich. As soon as the girl brought the food out, the smell of the French fries got me sick. All oil! It was like he saturated them. My burger had something hard in it. I had only taken 3 bites. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that despite repeatedly emphasizing a severe peanut/tree nut allergy to the waitress, the restaurant failed to accommodate the need, leading to a serious concern.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 724024,
+         "date": "2016-08",
+         "text": "BEWARE IF YOU HAVE FOOD ALLERGIES!!! This should be a zero star rating, but the system doesn't allow for it. I took my family to this restaurant after a day in the city. My son has a severe peanut/tree nut allergy. I emphasized this to our waitress several times before and throughout the meal and again before ordering dessert. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described a highly negative overall experience but did not mention peanut allergies, leaving it unclear whether the restaurant addressed such allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 723946,
+         "date": "2019-10",
+         "text": "Worst overall experience I’ve ever had at an eatery. I’m shocked this sort of treatment is allowed or still exist in such a beautiful and welcoming city. This was my first/last visit to J&H. 👎👎👎👎",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer reported an issue with a hard object in a burger and an unpleasant fry odor, without reference to peanut allergies, so the restaurant's handling of peanut allergies is uncertain.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 724467,
+         "date": "2017-07",
+         "text": "Would NOT tell anyone to go there. We had ordered cheeseburgers and a chicken sandwich. As soon as the girl brought the food out, the smell of the French fries got me sick. All oil! It was like he saturated them. My burger had something hard in it. I had only taken 3 bites. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only one review directly addresses peanut allergies, and it reports a problem, providing no evidence of proper accommodation.",
+      "The other reviews do not mention peanuts, so they cannot confirm or refute the restaurant's care for peanut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 20,
+    "gmap_id": "0x89c259a6cfd76611:0x5654dfd3ae8aa92c",
+    "name": "Eleven Madison Park",
+    "borough": "Manhattan",
+    "address": "Eleven Madison Park, 11 Madison Ave, New York, NY 10010",
+    "avg_rating": 4.6,
+    "num_reviews": 803,
+    "low_evidence": false,
+    "score": 1.7743000083404374,
+    "excerpts": [
+     {
+      "review_id": 84689,
+      "date": "2019-10",
+      "text": "… But I certainly shouldn’t feel like they didn’t care about it either. What I could eat was fantastic. Highly recommend you go. But if you have food allergies, I’d recommend you skip them all together.",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that diners with food allergies should skip the restaurant, indicating it may not be careful about peanut allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 84689,
+         "date": "2019-10",
+         "text": "… But I certainly shouldn’t feel like they didn’t care about it either. What I could eat was fantastic. Highly recommend you go. But if you have food allergies, I’d recommend you skip them all together.",
+         "rating": 3
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review excerpt was provided, limiting the ability to assess overall practices.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 21,
+    "gmap_id": "0x89c258fa26aabefd:0x47196a17525231ed",
+    "name": "Five Guys",
+    "borough": "Manhattan",
+    "address": "Five Guys, 43 W 55th St, New York, NY 10019",
+    "avg_rating": 4.3,
+    "num_reviews": 726,
+    "low_evidence": false,
+    "score": 1.7481216311454773,
+    "excerpts": [
+     {
+      "review_id": 2236013,
+      "date": "2018-11",
+      "text": "From the best hamburgers in NY, free peanuts for snacks, I treat the customer very well.",
+      "rating": 5
+     },
+     {
+      "review_id": 2235959,
+      "date": "2019-01",
+      "text": "The top of the burger that you compose yourself, which helps to manage allergens. Traceability on products especially on potatoes! Nice peanuts during the wait even if the service is super efficient. It smells good products as we like at home. Very clean place including the toilet. Put a 👍 if you like the opinion.",
+      "rating": 5
+     },
+     {
+      "review_id": 2235749,
+      "date": "2018-04",
+      "text": "Special type of burgers with free peanuts",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "Reviewers reported that the restaurant offers free peanuts to customers, which suggests a lack of careful handling of peanut allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2236013,
+         "date": "2018-11",
+         "text": "From the best hamburgers in NY, free peanuts for snacks, I treat the customer very well.",
+         "rating": 5
+        },
+        {
+         "review_id": 2235959,
+         "date": "2019-01",
+         "text": "The top of the burger that you compose yourself, which helps to manage allergens. Traceability on products especially on potatoes! Nice peanuts during the wait even if the service is super efficient. It smells good products as we like at home. Very clean place including the toilet. Put a 👍 if you like the opinion.",
+         "rating": 5
+        },
+        {
+         "review_id": 2235749,
+         "date": "2018-04",
+         "text": "Special type of burgers with free peanuts",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The reviews do not mention any specific measures, policies, or staff communication regarding peanut allergy accommodations.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 22,
+    "gmap_id": "0x89c258f9f5f6365f:0x12448b5388945afe",
+    "name": "Bengal Tiger",
+    "borough": "Manhattan",
+    "address": "Bengal Tiger, 58 W 56th St, New York, NY 10019",
+    "avg_rating": 4.5,
+    "num_reviews": 638,
+    "low_evidence": false,
+    "score": 1.7463926821678637,
+    "excerpts": [
+     {
+      "review_id": 2738654,
+      "date": "2019-11",
+      "text": "This is the worst place. I had food poisoning after eating here. They don’t separate allergy food like nuts etc. The manager is very rude. I had a peek at the kitchen and it is very unclean. I have reported this to food inspection/ health department.",
+      "rating": 1
+     },
+     {
+      "review_id": 2738504,
+      "date": "2020-08",
+      "text": "Have been meaning to leave Bengal Tiger a review for awhile. Visited here back in February. Have never been able to eat out at Indian restaurants due to my severe peanut and tree nut allergy. Decided to give Bengal Tiger a try given their outstanding reviews especially when it comes to allergies. I was not disappointed. …",
+      "rating": 5
+     },
+     {
+      "review_id": 2738540,
+      "date": "2018-08",
+      "text": "Ambience :4/5 Service :5/5 Food :4/5 Indian restaurants near central park ? We got you . Located just 2 blocks from the central park , found this restaurant on the way from 'Trump tower' , dimly lit the place has a different feel with a dark background and fusion music playing in the restaurant. …",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant does not separate foods containing nuts, leading to a severe reaction and describing the staff as unhelpful regarding allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2738654,
+         "date": "2019-11",
+         "text": "This is the worst place. I had food poisoning after eating here. They don’t separate allergy food like nuts etc. The manager is very rude. I had a peek at the kitchen and it is very unclean. I have reported this to food inspection/ health department.",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer, who has a severe peanut and tree‑nut allergy, said the restaurant lived up to its reputation for handling allergies and did not disappoint.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2738504,
+         "date": "2020-08",
+         "text": "Have been meaning to leave Bengal Tiger a review for awhile. Visited here back in February. Have never been able to eat out at Indian restaurants due to my severe peanut and tree nut allergy. Decided to give Bengal Tiger a try given their outstanding reviews especially when it comes to allergies. I was not disappointed. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only two reviews directly address peanut allergies; the third review is unrelated.",
+      "The supportive review is truncated, so details about how the allergy was managed are not fully known.",
+      "Conflicting accounts mean the overall reliability of the restaurant's handling of peanut allergies is uncertain.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 23,
+    "gmap_id": "0x89c25993746f7c47:0xdd4d74c2df0a22ee",
+    "name": "Five Guys",
+    "borough": "Manhattan",
+    "address": "Five Guys, 296 Bleecker St, New York, NY 10014",
+    "avg_rating": 4.2,
+    "num_reviews": 312,
+    "low_evidence": false,
+    "score": 1.741633367538452,
+    "excerpts": [
+     {
+      "review_id": 1752174,
+      "date": "2019-12",
+      "text": "It's a higher level of faster food and basically good. They didn't have any peanuts as most of the other 5 guys. That's good or disappointing depends on what you want and also likely not ok for allergies. So...",
+      "rating": 4
+     },
+     {
+      "review_id": 1752533,
+      "date": "2019-12",
+      "text": "I didn't have any peanuts here There were no peanuts at all",
+      "rating": 3
+     },
+     {
+      "review_id": 1752208,
+      "date": "2018-07",
+      "text": "Stopped by for a chocolate milk shake. Unfortunately, they were out of chocolate sauce and were not able to make that flavor. We had a peanut butter milk shake instead. It was okay, but not what we were looking forward to that evening. Peanuts were a tasty snack.",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer noted that the location did not have any peanuts, unlike other Five Guys outlets.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1752174,
+         "date": "2019-12",
+         "text": "It's a higher level of faster food and basically good. They didn't have any peanuts as most of the other 5 guys. That's good or disappointing depends on what you want and also likely not ok for allergies. So...",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that there were no peanuts present at all.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1752533,
+         "date": "2019-12",
+         "text": "I didn't have any peanuts here There were no peanuts at all",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "A reviewer described being served a peanut butter milkshake, indicating peanuts were used in menu items.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1752208,
+         "date": "2018-07",
+         "text": "Stopped by for a chocolate milk shake. Unfortunately, they were out of chocolate sauce and were not able to make that flavor. We had a peanut butter milk shake instead. It was okay, but not what we were looking forward to that evening. Peanuts were a tasty snack.",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The reviews do not provide information about staff communication or protocols for handling peanut allergies.",
+      "Presence of peanuts in a menu item does not confirm whether the restaurant can accommodate allergy concerns safely.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 24,
+    "gmap_id": "0x89c2f7b229b0cdff:0xaa3ce7c9b798af7b",
+    "name": "Chipotle Mexican Grill",
+    "borough": "Manhattan",
+    "address": "Chipotle Mexican Grill, 72 W 125th St, New York, NY 10027",
+    "avg_rating": 3.8,
+    "num_reviews": 201,
+    "low_evidence": false,
+    "score": 1.7409342348575592,
+    "excerpts": [
+     {
+      "review_id": 1313567,
+      "date": "2019-11",
+      "text": "it's your average Chipotle. Nothing too great, nothing too bad. The cashiers are nice and they are quick. It could be a little cleaner and some of them should be retrained about cross-contamination between foods for ppl with food allergies. There should be a spoon or other untensil for every item. …",
+      "rating": 3
+     },
+     {
+      "review_id": 1313568,
+      "date": "2019-08",
+      "text": "Great customer service. Friendly staff. Great food. Not enough green tobacco sauce in dining room. Trash cans were overflowing",
+      "rating": 4
+     },
+     {
+      "review_id": 1313521,
+      "date": "2021-02",
+      "text": "… a couple times later, i found another hair in my food. today while i was eating my burrito bowl, a bug crawls out of my food. i have no words for how disgusted i am. never again. i would give negative stars if i could. chipotle, if u see this get a health inspection❤️",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that staff should be retrained about cross‑contamination for people with food allergies, indicating the restaurant may not be careful about peanut allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1313567,
+         "date": "2019-11",
+         "text": "it's your average Chipotle. Nothing too great, nothing too bad. The cashiers are nice and they are quick. It could be a little cleaner and some of them should be retrained about cross-contamination between foods for ppl with food allergies. There should be a spoon or other untensil for every item. …",
+         "rating": 3
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review mentioned allergy handling; other reviews did not address peanut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 25,
+    "gmap_id": "0x89c25983fc377491:0x51fd90260704236c",
+    "name": "Momofuku Ssam Bar",
+    "borough": "Manhattan",
+    "address": "Momofuku Ssam Bar, 89 South Street, Pier 17, New York, NY 10038",
+    "avg_rating": 4.5,
+    "num_reviews": 635,
+    "low_evidence": false,
+    "score": 1.7363730408864286,
+    "excerpts": [
+     {
+      "review_id": 2352440,
+      "date": "2018-06",
+      "text": "!! IMPORTANT concerning allergies !! We had a friend who was with us that has a severe allergy to shellfish; shrimp, crab, etc. Right away as we were seated, we made our waitress aware of his allergy and she told us bluntly \"we don't make any effort to prevent cross contamination of food\". Knives, pots/pans, nothing was safe. Unbelievable!!! …",
+      "rating": 2
+     },
+     {
+      "review_id": 2352426,
+      "date": "2019-08",
+      "text": "… Super unprofessional made me and my daughter sick who both have bad allergies to dairy. Will nwve eat here again they won't take serious allergies serious. Shame on this place.",
+      "rating": 1
+     },
+     {
+      "review_id": 2352450,
+      "date": "2019-06",
+      "text": "Pricy but dishes we ordered (broccoli salad, pork bun and grilled blowfish tail) are fine. Reason for 3 stars: we were disappointed by the waitress to put another 2 customers right next (cannot help to ear drop ) to our table when 90% tables are empty! While we finished our meal 6 tables are still empty. …",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The provided reviews discuss shellfish and dairy allergies but do not mention peanuts or the restaurant's handling of peanut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 26,
+    "gmap_id": "0x89c24495d9f889a1:0xb751c1d21c057a42",
+    "name": "Highway Bagels",
+    "borough": "Brooklyn",
+    "address": "Highway Bagels, 1923 Kings Hwy, Brooklyn, NY 11229",
+    "avg_rating": 3.9,
+    "num_reviews": 211,
+    "low_evidence": false,
+    "score": 1.733768206834793,
+    "excerpts": [
+     {
+      "review_id": 795466,
+      "date": "2015-07",
+      "text": "… The last time I ordered here was once again a sesame bagel with cream cheese. I got home eager to eat it and as I am half way through the bagel there was peanut butter in it! What if someone who was allergic to peanut butter ate it!!! …",
+      "rating": 1
+     },
+     {
+      "review_id": 795345,
+      "date": "2021-04",
+      "text": "I have been coming to this store since I was in middle school and as an adult, I can say that the service is still awesome and only got better. They accommodate based on your allergies and help you find different options so that everyone can have something to eat. …",
+      "rating": 5
+     },
+     {
+      "review_id": 795490,
+      "date": "2017-12",
+      "text": "… However, they have been getting my orders wrong as of late. Its Super annoying that When it finally arrives, its not what you ordered. Your food is bit pricey, so to not be satisfied customer is making me not want to order from you guys anymore. In addition, One of the girls who works there is very rude. …",
+      "rating": 2
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported finding unexpected peanut butter in a bagel, warning that it could be dangerous for someone with a peanut allergy.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 795466,
+         "date": "2015-07",
+         "text": "… The last time I ordered here was once again a sesame bagel with cream cheese. I got home eager to eat it and as I am half way through the bagel there was peanut butter in it! What if someone who was allergic to peanut butter ate it!!! …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer stated that the staff accommodate allergies and help customers find suitable options.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 795345,
+         "date": "2021-04",
+         "text": "I have been coming to this store since I was in middle school and as an adult, I can say that the service is still awesome and only got better. They accommodate based on your allergies and help you find different options so that everyone can have something to eat. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The reviews provide conflicting accounts: one describes a peanut exposure incident, while another claims the restaurant accommodates allergies.",
+      "No information is given about how consistently allergy accommodations are applied.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 27,
+    "gmap_id": "0x89c2599b92cfd14b:0x78a90f009161bc07",
+    "name": "Shake Shack",
+    "borough": "Manhattan",
+    "address": "Shake Shack, 51 Astor Pl, New York, NY 10003",
+    "avg_rating": 4.4,
+    "num_reviews": 480,
+    "low_evidence": false,
+    "score": 1.730602089376953,
+    "excerpts": [
+     {
+      "review_id": 2329715,
+      "date": "2019-03",
+      "text": "They got rid of the peanut butter milkshakes due to allergen concerns. This is super sad for those who loved their chocolate peanut butter milkshakes, but much safer for those with deadly peanut butter allergies. The bathroom signs are confusing, but all their bathrooms are gender neutral and handicapped accessible with baby changing stations.",
+      "rating": 5
+     },
+     {
+      "review_id": 2329590,
+      "date": "2021-03",
+      "text": "Very rude customer service. Also there were two tables sitting inside eating, but the server forced us to leave and wait outside for order pick up! So confusing... fried chicken here is not good at all, especially the honey mustard sauce is so bitter. Not recommend this place at all! …",
+      "rating": 1
+     },
+     {
+      "review_id": 2329717,
+      "date": "2019-01",
+      "text": "… I see y’all, I recognize y’all and I appreciate it. Little things like being greeted as soon as you walk in and asking if they can take my tray when I was finished goes a long way. Not to mention their delicious burgers, you can’t go wrong with this Shake Shack location.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant removed peanut butter milkshakes because of allergen concerns, indicating a careful approach to peanut allergies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2329715,
+         "date": "2019-03",
+         "text": "They got rid of the peanut butter milkshakes due to allergen concerns. This is super sad for those who loved their chocolate peanut butter milkshakes, but much safer for those with deadly peanut butter allergies. The bathroom signs are confusing, but all their bathrooms are gender neutral and handicapped accessible with baby changing stations.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review mentions the restaurant's handling of peanut allergens; other menu items and overall allergy management are not addressed.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 28,
+    "gmap_id": "0x89c2599c7f6ef0d5:0xaf1405bf4b3c7f86",
+    "name": "Mamoun's Falafel - East Village, Manhattan, NY",
+    "borough": "Manhattan",
+    "address": "Mamoun's Falafel - East Village, Manhattan, NY, 30 St Marks Pl, New York, NY 10003",
+    "avg_rating": 4.5,
+    "num_reviews": 519,
+    "low_evidence": false,
+    "score": 1.7262073874473571,
+    "excerpts": [
+     {
+      "review_id": 485860,
+      "date": "2018-05",
+      "text": "Absolute worst F***ing staff! I asked about the Top four main allergens which all send me into anaphylactic shock, and watched as the front of house staff did not get a response from the kitchen staff, and then LIED TO MY FACE! SAYIN THERE'S NO DAIRY, NO EGGS, NO SESAME, NO MUSTARD, AND NO NUTMEG??? …",
+      "rating": 1
+     },
+     {
+      "review_id": 485891,
+      "date": "2017-12",
+      "text": "So I just order 7 sandwich 4 falafel and 3 shawerma I took the stuff and went to my friend and open the bag to find 6 falfel sandwiches.So I called they told me that they can't do anything about it and that they are sorry. …",
+      "rating": 1
+     },
+     {
+      "review_id": 485539,
+      "date": "2021-04",
+      "text": "… 3 days after I called and spoke to the manager just to encounter the most UNPROFESSIONAL AND RUDE PERSON EVER, now I understand the attitude of the lady that I saw with gloves on pick up the entrance carpet and then go to the counter to pack food without changing them🤢",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that staff falsely claimed the kitchen contained no nuts (among other allergens) and failed to provide reliable information about peanut allergens.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 485860,
+         "date": "2018-05",
+         "text": "Absolute worst F***ing staff! I asked about the Top four main allergens which all send me into anaphylactic shock, and watched as the front of house staff did not get a response from the kitchen staff, and then LIED TO MY FACE! SAYIN THERE'S NO DAIRY, NO EGGS, NO SESAME, NO MUSTARD, AND NO NUTMEG??? …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review mentions allergen handling, and it does not specifically confirm or deny the presence of peanuts.",
+      "No other excerpts address peanut allergy precautions at the restaurant.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 29,
+    "gmap_id": "0x89c25b53027c74dd:0x3497971be283f969",
+    "name": "Five Guys",
+    "borough": "Brooklyn",
+    "address": "Five Guys, 1628 Shore Pkwy, Brooklyn, NY 11214",
+    "avg_rating": 4.1,
+    "num_reviews": 251,
+    "low_evidence": false,
+    "score": 1.7223485231399536,
+    "excerpts": [
+     {
+      "review_id": 522411,
+      "date": "2019-01",
+      "text": "The best I've tried so far, the peanut is free and helps you stand your order.",
+      "rating": 3
+     },
+     {
+      "review_id": 522152,
+      "date": "2019-07",
+      "text": "Delicious, but pricey, Peanut are very Salty salty,and Taste funny!",
+      "rating": 4
+     },
+     {
+      "review_id": 522333,
+      "date": "2016-08",
+      "text": "Greasy as heck burgers and pretty expensive prices for the neighborhood (feel like they literally dropped a Manhattan location franchise into this neighborhood, along with the prices). But heck, free peanuts, right?",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [
+      {
+       "text": "One reviewer noted that peanuts were \"free\" at the restaurant, but did not specify whether the establishment accommodates peanut allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 522411,
+         "date": "2019-01",
+         "text": "The best I've tried so far, the peanut is free and helps you stand your order.",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer mentioned the taste and saltiness of peanuts, without addressing allergy handling.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 522152,
+         "date": "2019-07",
+         "text": "Delicious, but pricey, Peanut are very Salty salty,and Taste funny!",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer referenced \"free peanuts\" being offered, providing no information about allergy accommodations.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 522333,
+         "date": "2016-08",
+         "text": "Greasy as heck burgers and pretty expensive prices for the neighborhood (feel like they literally dropped a Manhattan location franchise into this neighborhood, along with the prices). But heck, free peanuts, right?",
+         "rating": 3
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Reviews mention peanuts being offered or described but do not indicate whether the restaurant takes special care for peanut allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 30,
+    "gmap_id": "0x89c25907fe443a0b:0x719bfe9629f56e77",
+    "name": "Chipotle Mexican Grill",
+    "borough": "Manhattan",
+    "address": "Chipotle Mexican Grill, 464 Park Ave S, New York, NY 10016",
+    "avg_rating": 4,
+    "num_reviews": 155,
+    "low_evidence": false,
+    "score": 1.7150203108787536,
+    "excerpts": [
+     {
+      "review_id": 2022627,
+      "date": "2019-09",
+      "text": "I ordered food and there was a fair skin gentleman work throwing food in the bowls like he didn’t wanna be there. Then the food was too salty I complained about it and the manager said that’s how the chicken is. I have eat chipotle for years and my experience with this store gave me a different outlook. …",
+      "rating": 1
+     },
+     {
+      "review_id": 2022599,
+      "date": "2019-10",
+      "text": "… The last time, the server placed my food on top of other food that had dropped on the counter. I am not sure I will go to this Chipotle again. Fortunately, I do have others in NYC, but just not in that particular area. I hope that someone does a quality control visit to the restaurant.",
+      "rating": 2
+     },
+     {
+      "review_id": 2022601,
+      "date": "2019-12",
+      "text": "… The cashier had excellent customer service skills. Unfortunately the server’s weren’t. The food looked like it was just dumped to be served, the pink beans weren’t cooked, they were hard white rice wasn’t cooked. To top off the food was Cold. They had no means of heating food up, we took food home. Horrible!!!",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The provided reviews do not mention peanuts, peanut allergies, or any handling of peanut ingredients.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    }
@@ -549,7 +1981,7 @@
   "setup_error": null,
   "timings": {},
   "llm_calls": [],
-  "model": "openai/gpt-oss-20b",
+  "model": "openai/gpt-oss-120b",
   "allergy_sensitive": true,
   "cached": false,
   "ranking_fallback": false,

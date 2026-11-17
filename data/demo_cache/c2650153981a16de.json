@@ -50,10 +50,29 @@
      }
     ],
     "summary": {
-     "status": "insufficient evidence",
-     "claims": [],
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "Reviewers warned that the restaurant is not attentive to food allergies and advised diners with any allergy, including dairy, to avoid the venue.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1576831,
+         "date": "2017-08",
+         "text": "If you or anyone in your party suffers from food allergies, please avoid this restaurant. Unfortunately, the waitstaff and kitchen are not attentive to food allergies. We informed the waitstaff when ordering concerning one diner in our party with a tree nut and sesame allergy. …",
+         "rating": 1
+        },
+        {
+         "review_id": 1576786,
+         "date": "2017-07",
+         "text": "If you have a food allergy, you should seriously consider going elsewhere. Our party of four had one nut and one wheat allergy--both of which were explicitly shared with our waitress when our order was placed. She acknowledged, and offered no concerns regarding our menu choices in light of this information. We ordered six plates to share. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
      "limitations": [
-      "The supplied excerpts do not mention dairy or dairy allergy handling.",
+      "Both reviews discuss nut and wheat allergies but do not specifically mention dairy; the warning is generalized to all allergies.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -98,7 +117,7 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported that the restaurant included chocolate chips in the pancakes, which triggered a dairy allergy reaction, indicating the establishment was not careful about dairy allergies.",
+       "text": "One reviewer reported that the pancakes contained chocolate chips, which triggered problems for their milk allergy.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -108,9 +127,35 @@
          "rating": 5
         }
        ]
+      },
+      {
+       "text": "Another reviewer noted that the restaurant offers all‑vegan options but did not comment on dairy handling.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 91798,
+         "date": "2018-12",
+         "text": "All vegan options, they are quick taking orders, not too crowded during lunch hours.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer described a gluten issue unrelated to dairy, providing no information about dairy allergy accommodation.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 91801,
+         "date": "2017-12",
+         "text": "… My friend who medically cannot eat gluten was served gluten pasta. Vegan/GF restaurants should be more careful and realize that not everyone is vegan/gf out of choice. She had to rush to the pharmacy after one bite of the mac n cheese to get medicine. …",
+         "rating": 2
+        }
+       ]
       }
      ],
      "limitations": [
+      "Only one review directly mentions a dairy‑related problem; the other reviews do not address dairy allergies.",
+      "The sample size is small, so overall restaurant practices regarding dairy allergies remain unclear.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -155,7 +200,7 @@
      "status": "Reviews report problems",
      "claims": [
       {
-       "text": "One reviewer reported that the restaurant offers no non‑dairy milk or vegetarian/vegan options, suggesting it is not careful about dairy allergies.",
+       "text": "One reviewer warned that the restaurant did not offer non-dairy milk, indicating a lack of accommodation for dairy allergies.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -167,7 +212,19 @@
        ]
       },
       {
-       "text": "Another reviewer described the waiter repeatedly offering grated cheese and not addressing a dairy allergy, indicating a lack of attention to dairy concerns.",
+       "text": "One reviewer mentioned gluten‑free noodles but did not discuss dairy, leaving the restaurant’s handling of dairy allergies unclear.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 117709,
+         "date": "2019-07",
+         "text": "… The pasta then showed up with noodles which were not gluten free. The waiter's response to the mishap was that I never said she has an allergy. Then he went on to explain that they have different pots for people with allergies and people that eat gluten free for \"fun\". …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer reported that, after noting a dairy restriction, staff still offered to grate cheese onto the meal, suggesting the restaurant did not properly accommodate dairy allergies.",
        "label": "contradiction",
        "excerpts": [
         {
@@ -180,6 +237,8 @@
       }
      ],
      "limitations": [
+      "Only three reviews were provided; no positive (support) reports about dairy‑allergy accommodation were found.",
+      "One review focused on gluten rather than dairy, so it does not provide evidence either way.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -224,7 +283,7 @@
      "status": "insufficient evidence",
      "claims": [],
      "limitations": [
-      "No excerpt mentions how the restaurant handles dairy allergies or related concerns.",
+      "The provided reviews mention dairy products and service quality but do not discuss how the restaurant handles dairy allergies or accommodates dairy‑allergic patrons.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -257,7 +316,7 @@
      "status": "insufficient evidence",
      "claims": [
       {
-       "text": "One reviewer mentioned having a moderate dairy allergy but did not report whether the restaurant accommodated that need.",
+       "text": "One reviewer noted having a moderate dairy allergy and described the challenge of restaurants adapting to food allergies, but did not indicate whether the restaurant successfully accommodated the dairy restriction.",
        "label": "uncertainty",
        "excerpts": [
         {
@@ -270,7 +329,7 @@
       }
      ],
      "limitations": [
-      "No explicit mention of the restaurant’s handling of dairy allergies; the review only states the reviewer’s allergy without describing any experience at the restaurant.",
+      "The excerpt does not specify whether the restaurant actually handled the dairy allergy appropriately.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -313,9 +372,47 @@
     ],
     "summary": {
      "status": "insufficient evidence",
-     "claims": [],
+     "claims": [
+      {
+       "text": "One reviewer noted that the restaurant was accommodating and understanding of food allergies, but did not specify handling of dairy allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1065571,
+         "date": "2019-04",
+         "text": "The food was delicious and the service was great! Accommodating and understanding when it comes to food allergies. I would recommend this restaurant to everyone.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer highlighted the restaurant's allergy consciousness and gluten‑free focus, without mentioning dairy allergy accommodation.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1065716,
+         "date": "2018-08",
+         "text": "I appreciate that they are extremely allergy conscious and that it is a completely gluten free restaurant, so you don't have to worry about cross-contamination. They also gave us a free sample of their bread basket, which was very nice of them to do. These are the only reasons they get two stars. …",
+         "rating": 2
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer mentioned having both gluten and dairy‑free requirements and expressed concern about cross‑contamination, but gave no clear outcome regarding dairy allergy handling.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1065702,
+         "date": "2016-07",
+         "text": "This past weekend was my wife's first visit to NYC and I wanted her to experience the wonderful Italian food options the city has to offer, however, I have a gluten and dairy free requirement. This constraint makes dinning quite challenging especially since cross contamination is a major concern. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
      "limitations": [
-      "None of the supplied excerpts explicitly reports that the restaurant accommodated a dairy allergy or that it failed to do so. The reviews mention allergies in general, gluten‑free policy, and cross‑contamination concerns, but they do not provide concrete evidence regarding dairy allergens.",
+      "No review explicitly confirms that the restaurant properly manages dairy allergies.",
+      "Reviews discuss allergies in general or focus on gluten, leaving dairy‑specific practices unclear.",
       "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
      ],
      "guarded": true,
@@ -356,9 +453,56 @@
       "rating": 3
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that staff were extremely rude when asked about a dairy‑free option and implied the restaurant did not accommodate the allergy.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2503734,
+         "date": "2019-02",
+         "text": "Called inquiring about dairy free option for breakfast the person on the phone was extremely rude! Had a rather large order that we were looking to place. I am only one with food allergies the rest would have been normal. Too bad for them we went elsewhere",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer warned that the restaurant failed to help a severely ill guest with food allergies and advised against dining there for allergy sufferers.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2504317,
+         "date": "2015-03",
+         "text": "… They could see that she was very ill and did nothing to help. They should be ashamed of themselves. Please do not dine here if you have food allergies. It could be a matter of life and death.",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A reviewer’s comment about this allergy is quoted below.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2504104,
+         "date": "2018-11",
+         "text": "… Very disappointed in this day in age that they didn't have a gluten free menu, or that they stopped \"oatmeal\" right at 11 am, when we showed up. The staff was NOT helpful in finding something that I could eat with the several food allergies that I unfortunately have. …",
+         "rating": 3
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "All three reviews mention general allergy issues but do not provide specific details about dairy‑free menu items or procedures.",
+      "No reviewer confirmed successful accommodation of dairy allergies, so the overall ability of the restaurant to handle dairy allergies remains uncertain.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -392,9 +536,57 @@
       "rating": 2
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that, despite being a non‑dairy eater, they were served a cheese‑filled dish and cheesecake because staff did not accommodate the dairy restriction.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 1939811,
+         "date": "2017-02",
+         "text": "Went with a college trip, unfortunately as a none dairy eater I'm awkward to feed in the first place, however staff were rude and brash and I had no chance to tell them so was served with a dish full of cheese and a cheesecake for dessert! …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "One reviewer mentioned difficulty accommodating seafood allergies but did not address dairy, leaving the restaurant's handling of dairy allergies unclear.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1939834,
+         "date": "2017-12",
+         "text": "This place could not think how to accommodate myself and another family member with our seafood allergies. I was very disappointed, all I had was salad and bread, while the rest of my family members were being provided all seafood dishes. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "One reviewer noted that the restaurant offers few options for people with food allergies, without specifying dairy, so the level of dairy accommodation is uncertain.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1939672,
+         "date": "2020-03",
+         "text": "Not many options for people with food allergies...very expensive drinks..",
+         "rating": 2
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "No reviewer explicitly confirmed that the restaurant successfully accommodates dairy allergies.",
+      "Only a single negative report directly addresses dairy, indicating a failure to accommodate.",
+      "Other reviews mention allergies generally but do not provide details about dairy handling.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -428,9 +620,56 @@
       "rating": 1
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that the waiter was super helpful and accommodating for all allergies, implying attention to dairy allergies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 79278,
+         "date": "2019-11",
+         "text": "Did a tasting menu here. Everything was delicious. Our waiter was super helpful and accommodating for all the allergies and dietary preferences.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described friendly staff who took time to inquire about ingredients for those with allergies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 79107,
+         "date": "2019-07",
+         "text": "Great and friendly staff that took time to inquire about ingredients for those with allergies.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A reviewer warned that the staff have no idea what ingredients go into their food, cautioning allergy sufferers.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 80054,
+         "date": "2015-04",
+         "text": "… So here I am on Google voicing my concerns. Think twice about eating here, particularly if you have a food allergy because the staff has no idea what ingredients go into their food. It makes me wonder how many vegetarians have unknowingly ingested meat in this establishment after being told the food did not have meat in it. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The positive reviews do not mention dairy specifically, only allergies in general.",
+      "The contradictory report suggests inconsistent knowledge among staff, creating uncertainty about overall reliability.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    },
@@ -464,9 +703,1449 @@
       "rating": 2
      }
     ],
-    "summary": null,
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported being able to eat all menu items without experiencing an allergic reaction and recommended the restaurant for people with food allergies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 124746,
+         "date": "2020-01",
+         "text": "… I was so happy and in tears because I was able to eat all of my food without me having an allergic reaction. I highly recommend anyone to come here! Especially those who may suffer from having a food allergy. I will be returning here again and look forward to trying out their milkshakes next time!",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described that, despite explicitly requesting no dairy, staff added cream and ice cream to a shake, causing a dairy‑allergy incident.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 125003,
+         "date": "2019-04",
+         "text": "… She has a dairy allergy, so we brought a shake and they said they would put any toppings on it. Even though we told them to not put dairy on it, and I even spoke to the manager, they still put cream and ice cream on it. My daughter was devastated. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted that the milkshakes contain ice cream and whipped cream but did not mention any allergic reaction or staff handling of dairy allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 124905,
+         "date": "2016-04",
+         "text": "… The food did not compensate for the poor experience. The milkshakes were visually impressive, but 10 percent ice cream topped with 90 percent whipped cream. The Greg Norman burger was pleasing but the fries and onion rings were equivalent to dairy queens'.",
+         "rating": 2
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only three reviews were provided, offering mixed experiences.",
+      "The supportive review does not specify dairy, only a general lack of reaction.",
+      "The uncertainty claim mentions dairy ingredients but gives no information on allergy management.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
     "summary_error": null,
-    "summary_skipped": "not included in the cached demo result",
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 11,
+    "gmap_id": "0x89c25981bc0101af:0x6f023e0cb73a8463",
+    "name": "Pig and Khao",
+    "borough": "Manhattan",
+    "address": "Pig and Khao, 68 Clinton St, New York, NY 10002",
+    "avg_rating": 4.3,
+    "num_reviews": 492,
+    "low_evidence": false,
+    "score": 1.8278024192815447,
+    "excerpts": [
+     {
+      "review_id": 2117626,
+      "date": "2020-03",
+      "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies.",
+      "rating": 1
+     },
+     {
+      "review_id": 2117639,
+      "date": "2020-03",
+      "text": "… I end up having something that clearly had either touched or been cooked near peanuts / peanut oil and I go into an allergic reaction. Thank god im alive but I will never go to this restaurant again and you should not either if you or your family/friends have severe allergies.",
+      "rating": 1
+     },
+     {
+      "review_id": 2117796,
+      "date": "2019-02",
+      "text": "… As others have noted, this is not an initially welcoming place. No smiles, except between co-workers chatting amongst themselves. Once seated, the fact that we needed a few extra minutes with the menu was an annoyance for the staff, and when we asked questions about the food, our server seemed reluctant to answer. I felt I was a nuisance. …",
+      "rating": 2
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The provided reviews discuss peanut exposure and general service issues, but do not mention dairy or the restaurant's handling of dairy allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 12,
+    "gmap_id": "0x89c259bc576e6fdf:0xa6b40e37709dce7c",
+    "name": "Cafeteria",
+    "borough": "Manhattan",
+    "address": "Cafeteria, 119 7th Ave, New York, NY 10010, United States",
+    "avg_rating": 4.2,
+    "num_reviews": 1069,
+    "low_evidence": false,
+    "score": 1.8246472597122192,
+    "excerpts": [
+     {
+      "review_id": 135512,
+      "date": "2018-04",
+      "text": "If you have food allergies - STAY AWAY! Went with my friends for dinner. After 35 minutes of waiting, we finally set and made an order. I informed the waitress about my food allergies and she confirmed that the food is gluten free. Well - I got back home really sick and vomited until 4am. …",
+      "rating": 1
+     },
+     {
+      "review_id": 136010,
+      "date": "2016-10",
+      "text": "… So after a couple bites, the person I went with went to get Benadryl at DuaneReade. And I felt like they shouldve taken my other meal choice off of the bill as an apology. They didn't. Isn't it illegal to have no allergen indicators on the menu & not ask about food allergies?",
+      "rating": 2
+     },
+     {
+      "review_id": 136005,
+      "date": "2017-11",
+      "text": "… We will not be back here due to this discourteous treatment. Read below: I wish i could have given Cafeteria a big fat zero but i had to pick a star. They made it clear today that they do not care at all about food allergies. My daughter has a dairy allergy and wanted scrambled eggs. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported becoming severely ill after informing staff of food allergies, indicating the restaurant failed to accommodate dairy allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 135512,
+         "date": "2018-04",
+         "text": "If you have food allergies - STAY AWAY! Went with my friends for dinner. After 35 minutes of waiting, we finally set and made an order. I informed the waitress about my food allergies and she confirmed that the food is gluten free. Well - I got back home really sick and vomited until 4am. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer warned that the menu lacked allergen indicators and the staff did not address dairy allergy concerns.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 136010,
+         "date": "2016-10",
+         "text": "… So after a couple bites, the person I went with went to get Benadryl at DuaneReade. And I felt like they shouldve taken my other meal choice off of the bill as an apology. They didn't. Isn't it illegal to have no allergen indicators on the menu & not ask about food allergies?",
+         "rating": 2
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer described staff as uncaring about food allergies, noting their daughter’s dairy allergy was not accommodated.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 136005,
+         "date": "2017-11",
+         "text": "… We will not be back here due to this discourteous treatment. Read below: I wish i could have given Cafeteria a big fat zero but i had to pick a star. They made it clear today that they do not care at all about food allergies. My daughter has a dairy allergy and wanted scrambled eggs. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "All cited reviews describe negative experiences; no supportive evidence of dairy‑allergy accommodation was found.",
+      "The reviews do not specify whether any staff offered remedies or explanations beyond the reported problems.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 13,
+    "gmap_id": "0x89c25a29a00a48a7:0x579084c6ad6adcd2",
+    "name": "Jajaja Plantas Mexicana",
+    "borough": "Manhattan",
+    "address": "Jajaja Plantas Mexicana, 162 E Broadway, New York, NY 10002",
+    "avg_rating": 4.6,
+    "num_reviews": 651,
+    "low_evidence": false,
+    "score": 1.8155796647071838,
+    "excerpts": [
+     {
+      "review_id": 2034806,
+      "date": "2018-08",
+      "text": "… I have also had friends who have been since that enjoy the restaurant and stated that the servers notify of allergies with orders sometimes now as well. I have tried reaching out to management - with no response. Really sad that this place nearly cost me my life with negligence by both staff and owners.",
+      "rating": 1
+     },
+     {
+      "review_id": 2035081,
+      "date": "2019-02",
+      "text": "… Oh and by the way, they suggested we sit at the bar instead and their bar stool was completely wobbly- someone’s going to fall off that... Think I’ve had enough of their bad customer service- it’s nyc- I’m sure there’s gonna be another good vegan taco place soon enough.",
+      "rating": 3
+     },
+     {
+      "review_id": 2035082,
+      "date": "2019-04",
+      "text": "Excellent vegan food, awesome service, a bit loud because it's small...",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that staff failed to notify of dairy allergies and that negligence nearly caused a serious incident.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2034806,
+         "date": "2018-08",
+         "text": "… I have also had friends who have been since that enjoy the restaurant and stated that the servers notify of allergies with orders sometimes now as well. I have tried reaching out to management - with no response. Really sad that this place nearly cost me my life with negligence by both staff and owners.",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that the menu is vegan, which may imply no dairy, but did not comment on the restaurant's handling of dairy allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2035082,
+         "date": "2019-04",
+         "text": "Excellent vegan food, awesome service, a bit loud because it's small...",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only one review directly mentions a problem with dairy allergy handling; the other reviews do not address dairy allergies.",
+      "No positive evidence of the restaurant accommodating dairy allergies was found.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 14,
+    "gmap_id": "0x89c2588a934f97df:0xf8b6aae16508c16d",
+    "name": "Noi Due Cafe",
+    "borough": "Manhattan",
+    "address": "Noi Due Cafe, 491 Columbus Ave, New York, NY 10024",
+    "avg_rating": 4.5,
+    "num_reviews": 314,
+    "low_evidence": false,
+    "score": 1.7925285816192627,
+    "excerpts": [
+     {
+      "review_id": 2306944,
+      "date": "2019-11",
+      "text": "Dairy restaurant Excellent food Fast and efficient service",
+      "rating": 5
+     },
+     {
+      "review_id": 2306586,
+      "date": "2021-02",
+      "text": "I never had such good dairy food !!! Didn't even know what to order first I would give it a 10 star I I can",
+      "rating": 5
+     },
+     {
+      "review_id": 2306814,
+      "date": "2018-05",
+      "text": "Top dairy cafe in the city. Not one bad item on the menu!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [
+      {
+       "text": "Reviewers praised the dairy offerings but did not mention how the restaurant handles dairy allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2306944,
+         "date": "2019-11",
+         "text": "Dairy restaurant Excellent food Fast and efficient service",
+         "rating": 5
+        },
+        {
+         "review_id": 2306586,
+         "date": "2021-02",
+         "text": "I never had such good dairy food !!! Didn't even know what to order first I would give it a 10 star I I can",
+         "rating": 5
+        },
+        {
+         "review_id": 2306814,
+         "date": "2018-05",
+         "text": "Top dairy cafe in the city. Not one bad item on the menu!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The excerpts contain no information about allergy accommodations or safety practices.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 15,
+    "gmap_id": "0x89c25853e76f3785:0xc87f73e5e6745ded",
+    "name": "Bareburger",
+    "borough": "Manhattan",
+    "address": "Bareburger, 366 W 46th St, New York, NY 10036",
+    "avg_rating": 4.5,
+    "num_reviews": 933,
+    "low_evidence": false,
+    "score": 1.7901378691196441,
+    "excerpts": [
+     {
+      "review_id": 2718626,
+      "date": "2019-06",
+      "text": "An absolutely wonderful spot to get burgers! We had 4 people, 1 with gluten, dairy allergies and 1 with just dairy allergies. This was the most accommodating restaurant ever! Before we even ordered our server asked about any allergies and made sure to mark them down. …",
+      "rating": 5
+     },
+     {
+      "review_id": 2718996,
+      "date": "2018-04",
+      "text": "… they gave me someone else's bacon cheeseburger on whole wheat. For a place that claims to be sensitive to allergies, they need to be more careful. That said, when I did get the correct meal it was freakin' awesome.",
+      "rating": 4
+     },
+     {
+      "review_id": 2718647,
+      "date": "2020-01",
+      "text": "I feel SO SAFE ordering food from Bareburger. I’ve been to this location once in person and 3x ordered through grub hub and no problems! I can’t have dairy but I can order my CHEESEburger anyway I want it here because I know they are accommodating and have many vegan options so I can safely eat dairy free!! …",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer reported that staff proactively asked about dairy allergies and marked them, describing the restaurant as highly accommodating.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2718626,
+         "date": "2019-06",
+         "text": "An absolutely wonderful spot to get burgers! We had 4 people, 1 with gluten, dairy allergies and 1 with just dairy allergies. This was the most accommodating restaurant ever! Before we even ordered our server asked about any allergies and made sure to mark them down. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer warned that they received a bacon cheeseburger meant for someone else despite the restaurant’s allergy‑sensitivity claims.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2718996,
+         "date": "2018-04",
+         "text": "… they gave me someone else's bacon cheeseburger on whole wheat. For a place that claims to be sensitive to allergies, they need to be more careful. That said, when I did get the correct meal it was freakin' awesome.",
+         "rating": 4
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer said they felt confident ordering dairy‑free meals, noting the restaurant’s accommodating approach and vegan options.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2718647,
+         "date": "2020-01",
+         "text": "I feel SO SAFE ordering food from Bareburger. I’ve been to this location once in person and 3x ordered through grub hub and no problems! I can’t have dairy but I can order my CHEESEburger anyway I want it here because I know they are accommodating and have many vegan options so I can safely eat dairy free!! …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Conflicting experiences exist: one reviewer experienced a cross‑contact error, while others reported positive accommodation.",
+      "The reviews do not provide systematic evidence of overall dairy‑allergy safety or consistency.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 16,
+    "gmap_id": "0x89c259be6aaf51c7:0xa94bda30596a5c6a",
+    "name": "Black Tap",
+    "borough": "Manhattan",
+    "address": "Black Tap, 248 W 14th St, New York, NY 10011",
+    "avg_rating": 4,
+    "num_reviews": 313,
+    "low_evidence": false,
+    "score": 1.7882187485694885,
+    "excerpts": [
+     {
+      "review_id": 1465273,
+      "date": "2016-09",
+      "text": "… We planned this trip 5 days in advance and my daughter was excited to finally experience a restaurant milkshake since everyone else uses milk. After waiting an hour to be seated, I noticed the vegan milkshake also included Almond Milk which my daughter, with her nut allergy, could not consume. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1465335,
+      "date": "2018-03",
+      "text": "… When it comes to things like this im very understanding but the manager did not try to reason at all and was incredibly rude. I will never eat here again and make sure not to go to any of there other locations as well. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The provided reviews do not discuss the restaurant's handling of dairy allergens.",
+      "One review mentions a vegan milkshake containing almond milk, which relates to a nut allergy, not dairy.",
+      "The other review focuses on manager behavior without reference to dairy or dairy allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 17,
+    "gmap_id": "0x89c259a772739aa9:0x5caa571453a457b2",
+    "name": "Sarabeth's",
+    "borough": "Manhattan",
+    "address": "Sarabeth's, 381 Park Ave S, New York, NY 10016",
+    "avg_rating": 4.2,
+    "num_reviews": 430,
+    "low_evidence": false,
+    "score": 1.7860984354942797,
+    "excerpts": [
+     {
+      "review_id": 2126517,
+      "date": "2015-12",
+      "text": "… I informed the restaurant of my food allergy when making the reservation, reminded them again when I arrived, and spoke with the waiter and manager who assured me it would not be a problem, yet they served me food that may have contained the allergen anyway. …",
+      "rating": 1
+     },
+     {
+      "review_id": 2126416,
+      "date": "2019-10",
+      "text": "… I like that servers are interested if I'm enjoying the food, but the waiters asked us about 15 times if we enjoy the food and it became annoying after few times, and seemed like something automated without any thought.",
+      "rating": 4
+     },
+     {
+      "review_id": 2126418,
+      "date": "2020-03",
+      "text": "Great breakfast! We were visiting NY and my aunt suggested this restaurant! Very sweet!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that, despite being told the restaurant would avoid dairy, they were served food that may have contained dairy.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2126517,
+         "date": "2015-12",
+         "text": "… I informed the restaurant of my food allergy when making the reservation, reminded them again when I arrived, and spoke with the waiter and manager who assured me it would not be a problem, yet they served me food that may have contained the allergen anyway. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review addressed dairy allergies; other excerpts did not mention dairy, so overall evidence is limited.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 18,
+    "gmap_id": "0x89c259917bd96775:0xab9393586a14ef2",
+    "name": "Ladybird",
+    "borough": "Manhattan",
+    "address": "Ladybird, 111 E 7th St, New York, NY 10009",
+    "avg_rating": 4.6,
+    "num_reviews": 191,
+    "low_evidence": false,
+    "score": 1.7842141211032867,
+    "excerpts": [
+     {
+      "review_id": 1664372,
+      "date": "2020-08",
+      "text": "… ended up throwing up my whole $80 meal within 30 minutes of eating it which kind of sucks. please put allergens on your menu or make sure the server specifies that things have nuts in them, vegans allergic to nuts are few and far between but we exist!",
+      "rating": 4
+     },
+     {
+      "review_id": 1664367,
+      "date": "2021-02",
+      "text": "Would never return to Ladybird. We dined here on Friday the 11th of December. Given it was a vegan restaurant, at the start of the meal I specifically asked the waitress if she could alert us to any item that we may order that could contain cashews or pistachios as I have an allergy. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1664379,
+      "date": "2019-01",
+      "text": "Excellent vegan restaurant! The four different dishes we tired where all full of flavors. Most of the dishes can be made/are gluten free as well. Service staff was a bit in a hurry, and try to sit as far as possible from the entrance door in the cold winter season.",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [],
+     "limitations": [
+      "The supplied excerpts discuss nut allergies and general food quality but do not mention dairy allergies or the restaurant's handling of dairy allergens.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 19,
+    "gmap_id": "0x89c2447a553b7957:0x91595c49017b12f",
+    "name": "Opera Cafe Lounge",
+    "borough": "Brooklyn",
+    "address": "Opera Cafe Lounge, 2255 Emmons Ave, Brooklyn, NY 11235",
+    "avg_rating": 4.4,
+    "num_reviews": 957,
+    "low_evidence": false,
+    "score": 1.7832799673080444,
+    "excerpts": [
+     {
+      "review_id": 2681929,
+      "date": "2018-09",
+      "text": "Could not accamodate my daughters dairy allergy.",
+      "rating": 1
+     },
+     {
+      "review_id": 2681177,
+      "date": "2020-08",
+      "text": "… Food was not up to the quality, bland and fries were not done properly. I tried Chicken Ceaser Salad Wrap and I had food poisoning the next morning. Waiters were constantly walking around our table, looking at our table, As if it was something unusual on our table Not a good experience at all!!",
+      "rating": 1
+     },
+     {
+      "review_id": 2681080,
+      "date": "2020-09",
+      "text": "… But then... I went to the restroom and returned to one of my friends telling me to check my chair. One of the waiters dropped an entire cup of marinara sauce on my chair and didn't say anything. Had I not checked, I would have been COVERED in marinara sauce. The manager came over and offered a fruit plate. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant could not accommodate the reviewer’s daughter’s dairy allergy.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2681929,
+         "date": "2018-09",
+         "text": "Could not accamodate my daughters dairy allergy.",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review directly addressed dairy allergies; other reviews did not mention dairy handling.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 20,
+    "gmap_id": "0x89c259a225db7ac5:0x1e26c04d3e270100",
+    "name": "abcV",
+    "borough": "Manhattan",
+    "address": "abcV, 38 E 19th St, New York, NY 10003",
+    "avg_rating": 4.5,
+    "num_reviews": 378,
+    "low_evidence": false,
+    "score": 1.7818864703178405,
+    "excerpts": [
+     {
+      "review_id": 1694854,
+      "date": "2018-04",
+      "text": "This place consistently exceeds expectations and has incredible food / service. Last time we dined here, I brought my mother. She has food allergies that can be difficult to accommodate at a restaurant. Our waiter was incredibly willing to help and kind to her when she mentioned it. …",
+      "rating": 5
+     },
+     {
+      "review_id": 1694856,
+      "date": "2018-06",
+      "text": "I wish this was completely vegan; the idea of leaving a dairy ingredient off a dish that was designed with that element in mind feels like a copout for a conscientious restaurant. That wouldn't happen if all the dishes were designed cruelty-free...",
+      "rating": 3
+     },
+     {
+      "review_id": 1694886,
+      "date": "2018-12",
+      "text": "… While I appreciate the manager's effort, we won't come back to ABCV and do not recommend to anyone. We sincerely thought ABCV was the best vegan food in town. I recommend telling your server you are vegan and mention coconut yogurt and vegan cheese and no egg to the server and try at your own risk.",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported that the staff were very willing to accommodate a guest with food allergies.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 1694854,
+         "date": "2018-04",
+         "text": "This place consistently exceeds expectations and has incredible food / service. Last time we dined here, I brought my mother. She has food allergies that can be difficult to accommodate at a restaurant. Our waiter was incredibly willing to help and kind to her when she mentioned it. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer mentioned that dishes contain dairy ingredients but expressed doubt about the restaurant's ability to omit them.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1694856,
+         "date": "2018-06",
+         "text": "I wish this was completely vegan; the idea of leaving a dairy ingredient off a dish that was designed with that element in mind feels like a copout for a conscientious restaurant. That wouldn't happen if all the dishes were designed cruelty-free...",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "A reviewer’s comment about this allergy is quoted below.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1694886,
+         "date": "2018-12",
+         "text": "… While I appreciate the manager's effort, we won't come back to ABCV and do not recommend to anyone. We sincerely thought ABCV was the best vegan food in town. I recommend telling your server you are vegan and mention coconut yogurt and vegan cheese and no egg to the server and try at your own risk.",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The supportive review does not specify dairy allergies, only general food allergies.",
+      "No reviewer explicitly confirms safe handling of dairy allergens.",
+      "The negative and uncertain reviews focus on vegan menu reliability rather than dairy‑allergy accommodations.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 21,
+    "gmap_id": "0x89c25856265dceff:0x1e8167222d4fd3db",
+    "name": "Ellen's Stardust Diner",
+    "borough": "Manhattan",
+    "address": "Ellen's Stardust Diner, 1650 Broadway, New York, NY 10019",
+    "avg_rating": 4.4,
+    "num_reviews": 5711,
+    "low_evidence": false,
+    "score": 1.7771936774253845,
+    "excerpts": [
+     {
+      "review_id": 2494487,
+      "date": "2019-08",
+      "text": "… We queued for 1.5 hours. Food was average - upon explaining I have a dairy allergy I ordered a meal without it which appeared fine. On arrival to the table my food arrived without the side of Waffle Fries which everyone else had. …",
+      "rating": 2
+     },
+     {
+      "review_id": 2493676,
+      "date": "2020-11",
+      "text": "They are not reliable for understanding allergies. A person in our group was allergic to eggs and staff were notified well in advance and at the time of being served. She was served a dessert with eggs. She had an anaphylaxis reaction and had to be hospitalized. The food and entertainment were second to none.",
+      "rating": 1
+     },
+     {
+      "review_id": 2494790,
+      "date": "2018-04",
+      "text": "… I ordered grilled cheese sandwich for the kids, that was bland!! It was made with some cheap cheese that was unpalatable!! How can you mess up with grilled cheese sandwich for God’s sake! The orzo soup my cousin ordered was lumpy and bland! The waffles fries tasted like they have been fried in oil that has been used 100 times! …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported that after informing staff of a dairy allergy, the ordered meal arrived without dairy and was acceptable, though a side dish was omitted.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 2494487,
+         "date": "2019-08",
+         "text": "… We queued for 1.5 hours. Food was average - upon explaining I have a dairy allergy I ordered a meal without it which appeared fine. On arrival to the table my food arrived without the side of Waffle Fries which everyone else had. …",
+         "rating": 2
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that the restaurant was unreliable for handling allergies in general, but the incident involved eggs, leaving the handling of dairy allergies unclear.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2493676,
+         "date": "2020-11",
+         "text": "They are not reliable for understanding allergies. A person in our group was allergic to eggs and staff were notified well in advance and at the time of being served. She was served a dessert with eggs. She had an anaphylaxis reaction and had to be hospitalized. The food and entertainment were second to none.",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review directly addresses a dairy allergy, providing limited evidence of consistent accommodation.",
+      "The negative allergy experience cited concerns eggs, not dairy, so it does not definitively indicate how dairy allergies are managed.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 22,
+    "gmap_id": "0x89c25ba090128dd7:0x2450e8aa104e702a",
+    "name": "Brooklyn Natural Market & Cafe",
+    "borough": "Brooklyn",
+    "address": "Brooklyn Natural Market & Cafe, 810 Washington Ave, Brooklyn, NY 11238",
+    "avg_rating": 3.9,
+    "num_reviews": 75,
+    "low_evidence": false,
+    "score": 1.7764422037320402,
+    "excerpts": [
+     {
+      "review_id": 456007,
+      "date": "2021-03",
+      "text": "Oh my god finally place where I can get a burger with vegan condiments! I have been dying trying to avoid these restaurants where everything contains dairy. If it’s not cheese it’s an egg or milk batter and my skin just cannot. I have an allergic reaction to ALL things containing the smallest amount of dairy. …",
+      "rating": 5
+     },
+     {
+      "review_id": 456027,
+      "date": "2020-09",
+      "text": "Food is okay, but I have been there twice now and no one working has been wearing a mask, including people who are preparing food.",
+      "rating": 2
+     },
+     {
+      "review_id": 456024,
+      "date": "2020-04",
+      "text": "… I said are you sure and he said oh yeah. Then he backtracked as soon as I sent the picture. I ended up getting it replaced, but I a had already eaten some before figuring it out. The excuse is new chef, people calling out. Shut it down if you can’t figure it out FFS!",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant offered a burger with vegan condiments, allowing them to avoid any dairy ingredients despite a severe dairy allergy.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 456007,
+         "date": "2021-03",
+         "text": "Oh my god finally place where I can get a burger with vegan condiments! I have been dying trying to avoid these restaurants where everything contains dairy. If it’s not cheese it’s an egg or milk batter and my skin just cannot. I have an allergic reaction to ALL things containing the smallest amount of dairy. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "One reviewer described a replacement issue with a dish but did not mention whether dairy was involved.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 456024,
+         "date": "2020-04",
+         "text": "… I said are you sure and he said oh yeah. Then he backtracked as soon as I sent the picture. I ended up getting it replaced, but I a had already eaten some before figuring it out. The excuse is new chef, people calling out. Shut it down if you can’t figure it out FFS!",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "One reviewer noted staff not wearing masks, without any reference to dairy or dairy‑allergy accommodations.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 456027,
+         "date": "2020-09",
+         "text": "Food is okay, but I have been there twice now and no one working has been wearing a mask, including people who are preparing food.",
+         "rating": 2
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review explicitly mentions a dairy‑free option; other reviews do not address dairy handling.",
+      "No reviewer reported staff reassurance or a confirmed policy regarding dairy allergies.",
+      "The absence of negative reports does not guarantee consistent dairy‑allergy accommodations.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 23,
+    "gmap_id": "0x89c258fcd37169af:0xa248df9032a332f1",
+    "name": "Bistango",
+    "borough": "Manhattan",
+    "address": "Bistango, 145 East 50th Street BETWEEN LEXINGTON AND, 3rd Ave, New York, NY 10022",
+    "avg_rating": 4.4,
+    "num_reviews": 165,
+    "low_evidence": false,
+    "score": 1.7674936049419236,
+    "excerpts": [
+     {
+      "review_id": 784326,
+      "date": "2019-08",
+      "text": "Super allergen friendly. I have a life threatening dairy allergy and I was able to eat safely. The bread was dairy free and I can't usually eat the bread at most restaurants. To be honest that was my favorite part.",
+      "rating": 5
+     },
+     {
+      "review_id": 784351,
+      "date": "2018-05",
+      "text": "Our son has food allergies and we we're amazed that all pasta and pizzas had a GF options for him. They worked with other allergy issues as well, to make this one of the best dinner experiences he has ever had. …",
+      "rating": 5
+     },
+     {
+      "review_id": 784314,
+      "date": "2019-07",
+      "text": "Everything on the menu is either already gluten free or can be made gf. They have a special section of the kitchen. Servers ask about allergies when they first greet you. Inloved it!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "A reviewer’s comment about this allergy is quoted below.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 784326,
+         "date": "2019-08",
+         "text": "Super allergen friendly. I have a life threatening dairy allergy and I was able to eat safely. The bread was dairy free and I can't usually eat the bread at most restaurants. To be honest that was my favorite part.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer mentioned that the restaurant accommodated various food allergies, but did not specify whether dairy was among them.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 784351,
+         "date": "2018-05",
+         "text": "Our son has food allergies and we we're amazed that all pasta and pizzas had a GF options for him. They worked with other allergy issues as well, to make this one of the best dinner experiences he has ever had. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted that staff ask about allergies and that many dishes can be made gluten‑free, yet gave no specific information about dairy allergy handling.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 784314,
+         "date": "2019-07",
+         "text": "Everything on the menu is either already gluten free or can be made gf. They have a special section of the kitchen. Servers ask about allergies when they first greet you. Inloved it!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only three reviews mention allergy handling, and only one directly addresses dairy.",
+      "No contradictory reports were found, but the lack of explicit dairy information in two reviews leaves overall certainty limited.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 24,
+    "gmap_id": "0x89c25908538632bd:0xc1c8c73450bff681",
+    "name": "Bistango",
+    "borough": "Manhattan",
+    "address": "Bistango, 415 3rd Avenue AT, E 29th St, New York, NY 10016",
+    "avg_rating": 4.4,
+    "num_reviews": 172,
+    "low_evidence": false,
+    "score": 1.7589376091957092,
+    "excerpts": [
+     {
+      "review_id": 530192,
+      "date": "2013-05",
+      "text": "My husband has several food allergies and during our trip to NYC, this restaurant was a breath of fresh air. Our server, Juli, was so kind and accommodating to my husband's needs. In fact, her first question to us was if either of us had any food allergies. We went twice during our trip and loved it. …",
+      "rating": 5
+     },
+     {
+      "review_id": 530186,
+      "date": "2017-06",
+      "text": "… The owner Anthony and his manager Heron welcome you like you are family and remember you when you come back. Great food and wonderful accommodations for all allergies. In fact, the first thing the server will ask is, \"are there any allergies at the table?\" Then the rest of your meal is flawlessly delivered to your specifications.",
+      "rating": 5
+     },
+     {
+      "review_id": 530208,
+      "date": "2019-01",
+      "text": "Food allergies?? BEWARE!!! My daughter ate here on New Year's Eve which resulted in her falling ill due to a severe allergic reaction caused by eating gluten. She was then taken by ambulance to Mount Sinai emergency department for urgent medical treatment. Despite the good reviews and reassurances by staff that her food would be gluten-free it clearly was not. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "Reviews discuss this — read each claim",
+     "claims": [
+      {
+       "text": "One reviewer reported that the server proactively asked about food allergies and accommodated the couple's needs on multiple visits.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 530192,
+         "date": "2013-05",
+         "text": "My husband has several food allergies and during our trip to NYC, this restaurant was a breath of fresh air. Our server, Juli, was so kind and accommodating to my husband's needs. In fact, her first question to us was if either of us had any food allergies. We went twice during our trip and loved it. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described staff asking about allergies at the start of the meal and delivering dishes according to the specified restrictions.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 530186,
+         "date": "2017-06",
+         "text": "… The owner Anthony and his manager Heron welcome you like you are family and remember you when you come back. Great food and wonderful accommodations for all allergies. In fact, the first thing the server will ask is, \"are there any allergies at the table?\" Then the rest of your meal is flawlessly delivered to your specifications.",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A reviewer mentioned a severe reaction to gluten despite staff assurances, but did not address dairy allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 530208,
+         "date": "2019-01",
+         "text": "Food allergies?? BEWARE!!! My daughter ate here on New Year's Eve which resulted in her falling ill due to a severe allergic reaction caused by eating gluten. She was then taken by ambulance to Mount Sinai emergency department for urgent medical treatment. Despite the good reviews and reassurances by staff that her food would be gluten-free it clearly was not. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "The reviews do not specifically mention dairy allergies; support is based on general allergy accommodation.",
+      "The negative report concerns gluten, not dairy, so its relevance to dairy allergy safety is unclear.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 25,
+    "gmap_id": "0x89c2447919fb99c9:0x454d24cda42b3df3",
+    "name": "Roll N Roaster",
+    "borough": "Brooklyn",
+    "address": "Roll N Roaster, 2901 Emmons Ave, Brooklyn, NY 11235",
+    "avg_rating": 4.5,
+    "num_reviews": 1378,
+    "low_evidence": false,
+    "score": 1.756414008140564,
+    "excerpts": [
+     {
+      "review_id": 1367596,
+      "date": "2018-09",
+      "text": "If you have any allergies to anything , stay away from this awful place. I put in an order to be delivered for lunch and wound up in the ER. I heard the girl on the other line say “oh”. There was a shrimp tail in my fries. …",
+      "rating": 1
+     },
+     {
+      "review_id": 1366739,
+      "date": "2020-08",
+      "text": "… THANK YOU! That's why you guys are around so long... It's about serving your community and keeping everyone safe while serving delicious food. I wish I didn't have to say this, but a lot of restaurants out there are not complying with the mandatory masks rule. …",
+      "rating": 5
+     },
+     {
+      "review_id": 1367314,
+      "date": "2018-07",
+      "text": "… Then after spending $20 dollars on a milkshake, chicken tenders, and fries AND waiting 15 minutes (standing) for my FAST FOOD, I find a hair AND mold on my chicken. I was very upset. …",
+      "rating": 1
+     }
+    ],
+    "summary": {
+     "status": "insufficient evidence",
+     "claims": [
+      {
+       "text": "One reviewer reported an allergic reaction after eating, but the review did not mention dairy, leaving the restaurant's handling of dairy allergies unclear.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 1367596,
+         "date": "2018-09",
+         "text": "If you have any allergies to anything , stay away from this awful place. I put in an order to be delivered for lunch and wound up in the ER. I heard the girl on the other line say “oh”. There was a shrimp tail in my fries. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review mentions an allergy incident, and it does not specify dairy as the allergen.",
+      "No reviews directly address how the restaurant manages or accommodates dairy allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 26,
+    "gmap_id": "0x89c258f9cbc9ec63:0x4993a4d346f54e60",
+    "name": "Black Tap",
+    "borough": "Manhattan",
+    "address": "Black Tap, 136 W 55th St, New York, NY 10019",
+    "avg_rating": 4.4,
+    "num_reviews": 1422,
+    "low_evidence": false,
+    "score": 1.7490329265594482,
+    "excerpts": [
+     {
+      "review_id": 2675261,
+      "date": "2018-11",
+      "text": "A little disappointed they didnt have anything non dairy for my daughter. Other than that the food was good.",
+      "rating": 3
+     },
+     {
+      "review_id": 2675183,
+      "date": "2018-11",
+      "text": "I find it embarrassing that a place where they give milkshakes do not have dairy products for customers who can not take lactose. very bad. High prices and slow service. We will not be going back",
+      "rating": 1
+     },
+     {
+      "review_id": 2674393,
+      "date": "2020-02",
+      "text": "Service at this restaurant was amazing. I actually didn’t eat at the restaurant, but got the food to go. I ordered and drove to the location and was told the line goes out the door for this restaurant chain. …",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that the restaurant did not have any non‑dairy options for a child with a dairy restriction.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2675261,
+         "date": "2018-11",
+         "text": "A little disappointed they didnt have anything non dairy for my daughter. Other than that the food was good.",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer complained that, despite offering milkshakes, the restaurant lacked dairy‑free products for customers who cannot consume lactose.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2675183,
+         "date": "2018-11",
+         "text": "I find it embarrassing that a place where they give milkshakes do not have dairy products for customers who can not take lactose. very bad. High prices and slow service. We will not be going back",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer praised the service but did not mention any dairy‑related accommodations or issues.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2674393,
+         "date": "2020-02",
+         "text": "Service at this restaurant was amazing. I actually didn’t eat at the restaurant, but got the food to go. I ordered and drove to the location and was told the line goes out the door for this restaurant chain. …",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only three reviews were provided, and two of them explicitly note a lack of dairy‑free options, while the third gives no information about dairy allergy handling.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 27,
+    "gmap_id": "0x89c25ae1e7d02085:0x2d7e89d3805e83b",
+    "name": "Giovanni's Brooklyn Eats",
+    "borough": "Brooklyn",
+    "address": "Giovanni's Brooklyn Eats, 1657 8th Ave, Brooklyn, NY 11215",
+    "avg_rating": 4.5,
+    "num_reviews": 301,
+    "low_evidence": false,
+    "score": 1.7480833526616717,
+    "excerpts": [
+     {
+      "review_id": 962150,
+      "date": "2013-09",
+      "text": "This is a wonderful neighborhood restaurant. We appreciate the attention to our allergy concerns, Delicious pasta and fantastic meatballs! We recommend the chocolate mousse cake and love the fact that it is safe for someone with a tree nut allergy.",
+      "rating": 5
+     },
+     {
+      "review_id": 961943,
+      "date": "2021-04",
+      "text": "… Anyway, the brunch menu barely had anything to accommodate my vegan husband and my lactose intolerant self. …",
+      "rating": 1
+     },
+     {
+      "review_id": 962148,
+      "date": "2019-03",
+      "text": "Terrible service, ok food, avoid if you can... we went for a birthday dinner, our very simple first appetizer came in 45 mins, the second arrived 15 mins later, the main courses came in a total of 75 mins. They were ok, if not bad. The place has a potential to ruin any nite of importance. …",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that the brunch menu barely accommodated a lactose‑intolerant diner, indicating poor handling of dairy allergies.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 961943,
+         "date": "2021-04",
+         "text": "… Anyway, the brunch menu barely had anything to accommodate my vegan husband and my lactose intolerant self. …",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer mentioned attention to allergy concerns but only referenced a tree‑nut allergy, providing no information about dairy allergy handling.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 962150,
+         "date": "2013-09",
+         "text": "This is a wonderful neighborhood restaurant. We appreciate the attention to our allergy concerns, Delicious pasta and fantastic meatballs! We recommend the chocolate mousse cake and love the fact that it is safe for someone with a tree nut allergy.",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "No reviewer explicitly confirmed that the restaurant accommodates dairy allergies.",
+      "Only a single negative report addresses dairy intolerance; other reviews do not discuss dairy.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 28,
+    "gmap_id": "0x89c25994b4f25379:0xfc3ba7dd257e3760",
+    "name": "Wild",
+    "borough": "Manhattan",
+    "address": "Wild, 535 Hudson St, New York, NY 10014",
+    "avg_rating": 3.9,
+    "num_reviews": 238,
+    "low_evidence": false,
+    "score": 1.742851686477661,
+    "excerpts": [
+     {
+      "review_id": 342308,
+      "date": "2019-10",
+      "text": "A 100% gluten free restaurant is killer when you are allergic. Great looking menu...I had a pepperoni pizza and it tastes just like a bar pie! Not like frozen and reheated cardboard. Sitting outside on a fall day made for a great break in my day!",
+      "rating": 5
+     },
+     {
+      "review_id": 342435,
+      "date": "2019-03",
+      "text": "This restaurant have zero responsibility for vegetarians and allergies. They do multiple serious mistakes such as putting real chicken on a pizza that says vegan. Being vegan or vegetarian or have food allergies, don't come here.",
+      "rating": 1
+     },
+     {
+      "review_id": 342352,
+      "date": "2019-11",
+      "text": "Our food was delicious and worthy of a 5 star review. The restaurant is beautifully appointed and the menu has wonderful variety for us with allergens. What it lacks however is soul/life simply because of the staff. The staff appears to be attempting high french service in a setting where it is both impractical and comes across as pretentious. …",
+      "rating": 3
+     }
+    ],
+    "summary": {
+     "status": "mixed",
+     "claims": [
+      {
+       "text": "One reviewer warned that the restaurant shows no responsibility for food allergies, advising those with allergies not to come.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 342435,
+         "date": "2019-03",
+         "text": "This restaurant have zero responsibility for vegetarians and allergies. They do multiple serious mistakes such as putting real chicken on a pizza that says vegan. Being vegan or vegetarian or have food allergies, don't come here.",
+         "rating": 1
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer noted that the menu offers a wonderful variety for diners with allergens.",
+       "label": "support",
+       "excerpts": [
+        {
+         "review_id": 342352,
+         "date": "2019-11",
+         "text": "Our food was delicious and worthy of a 5 star review. The restaurant is beautifully appointed and the menu has wonderful variety for us with allergens. What it lacks however is soul/life simply because of the staff. The staff appears to be attempting high french service in a setting where it is both impractical and comes across as pretentious. …",
+         "rating": 3
+        }
+       ]
+      },
+      {
+       "text": "A reviewer mentioned the restaurant is gluten‑free but did not comment on dairy handling.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 342308,
+         "date": "2019-10",
+         "text": "A 100% gluten free restaurant is killer when you are allergic. Great looking menu...I had a pepperoni pizza and it tastes just like a bar pie! Not like frozen and reheated cardboard. Sitting outside on a fall day made for a great break in my day!",
+         "rating": 5
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only one review explicitly mentions general allergen accommodation without specifying dairy.",
+      "The warning about allergies does not detail dairy-specific issues.",
+      "No direct evidence confirms careful handling of dairy allergies.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 29,
+    "gmap_id": "0x89c259c0b2265971:0x10be5b78c2b9222",
+    "name": "Del Posto",
+    "borough": "Manhattan",
+    "address": "Del Posto, 85 10th Ave, New York, NY 10011",
+    "avg_rating": 4.6,
+    "num_reviews": 544,
+    "low_evidence": false,
+    "score": 1.7383003231053973,
+    "excerpts": [
+     {
+      "review_id": 2011614,
+      "date": "2017-04",
+      "text": "… I wish I was joking. And what's worse, management assured to me that this was their best effort possible. My suspicion is that, absurd as it sounds, no one in management nor the kitchen nor the serving staff know the difference between lactose intolerance and lactose allergy. …",
+      "rating": 1
+     },
+     {
+      "review_id": 2011445,
+      "date": "2015-10",
+      "text": "sat at the bar and had the most wonderful experience. i was with my niece and we are both celiac and they could not have been more attentive to our allergy. the bread was fabulous, the special plates they served us before dinner were scrumptious and then the pastas were perfect. cannot wait to return!!!!",
+      "rating": 5
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer warned that the staff appeared unable to distinguish lactose intolerance from lactose allergy, despite management assurances of their best effort.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2011614,
+         "date": "2017-04",
+         "text": "… I wish I was joking. And what's worse, management assured to me that this was their best effort possible. My suspicion is that, absurd as it sounds, no one in management nor the kitchen nor the serving staff know the difference between lactose intolerance and lactose allergy. …",
+         "rating": 1
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only a single review addressed dairy allergies, and it reported a problem rather than a solution.",
+      "The other provided review discussed celiac concerns only and did not mention dairy, offering no evidence either way.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
+    "stance_counts": null,
+    "stance_sentences": null
+   },
+   {
+    "rank": 30,
+    "gmap_id": "0x89c244eca88384f3:0x9e5a90ebdc71ae12",
+    "name": "Sunflower Cafe",
+    "borough": "Brooklyn",
+    "address": "Sunflower Cafe, 1223 Quentin Rd, Brooklyn, NY 11229",
+    "avg_rating": 4.4,
+    "num_reviews": 238,
+    "low_evidence": false,
+    "score": 1.734868448972702,
+    "excerpts": [
+     {
+      "review_id": 2657194,
+      "date": "2018-07",
+      "text": "I placed an order and requested multiple times that they make sure they are dairy free. Only once I got home did I notice one of the dishes had cream sauce in it. I came back to the store and was helped by a nice guy named Shakhar. He went above and beyond to compensate and accommodate. …",
+      "rating": 5
+     },
+     {
+      "review_id": 2657355,
+      "date": "2018-10",
+      "text": "Hands down my favorite dairy restaurant",
+      "rating": 5
+     },
+     {
+      "review_id": 2657170,
+      "date": "2019-10",
+      "text": "Great kosher dairy cafe offering breakfast lunch and limited dairy options . I tryed the spinach omelet with israeli salad and everything was cooked to perfection only negative is space is very limited otherwise would recommend and try again.",
+      "rating": 4
+     }
+    ],
+    "summary": {
+     "status": "Reviews report problems",
+     "claims": [
+      {
+       "text": "One reviewer reported that despite repeatedly requesting dairy‑free meals, a dish arrived with cream sauce, indicating the restaurant did not meet the dairy‑allergy need.",
+       "label": "contradiction",
+       "excerpts": [
+        {
+         "review_id": 2657194,
+         "date": "2018-07",
+         "text": "I placed an order and requested multiple times that they make sure they are dairy free. Only once I got home did I notice one of the dishes had cream sauce in it. I came back to the store and was helped by a nice guy named Shakhar. He went above and beyond to compensate and accommodate. …",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "Another reviewer described the restaurant as their favorite dairy establishment, which mentions dairy but does not address how dairy allergies are handled.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2657355,
+         "date": "2018-10",
+         "text": "Hands down my favorite dairy restaurant",
+         "rating": 5
+        }
+       ]
+      },
+      {
+       "text": "A third reviewer noted that the cafe offers dairy options and praised the food, yet gave no information about accommodation of dairy allergies.",
+       "label": "uncertainty",
+       "excerpts": [
+        {
+         "review_id": 2657170,
+         "date": "2019-10",
+         "text": "Great kosher dairy cafe offering breakfast lunch and limited dairy options . I tryed the spinach omelet with israeli salad and everything was cooked to perfection only negative is space is very limited otherwise would recommend and try again.",
+         "rating": 4
+        }
+       ]
+      }
+     ],
+     "limitations": [
+      "Only three reviews were provided, and only one directly mentions a failure to keep a meal dairy‑free.",
+      "No reviews explicitly confirm successful handling of dairy‑allergy requests.",
+      "The presence of dairy‑focused language in other reviews does not indicate the restaurant's allergy practices.",
+      "Review excerpts are anecdotal and may be incomplete or outdated; they do not establish allergen safety."
+     ],
+     "guarded": true,
+     "note": "Allergy suitability can't be confirmed from reviews. Ask the restaurant about ingredients, preparation and cross-contact before ordering."
+    },
+    "summary_error": null,
+    "summary_skipped": null,
     "stance_counts": null,
     "stance_sentences": null
    }
@@ -476,7 +2155,7 @@
   "setup_error": null,
   "timings": {},
   "llm_calls": [],
-  "model": "openai/gpt-oss-20b",
+  "model": "openai/gpt-oss-120b",
   "allergy_sensitive": true,
   "cached": false,
   "ranking_fallback": false,
